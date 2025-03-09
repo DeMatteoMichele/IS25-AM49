@@ -2,19 +2,21 @@ package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
-
 import java.awt.*;
 
 public abstract class State {
-    State(Game game){
+    public State(Game game){
         this.game = game;
     }
     protected final Game game;
-    public void transition(State nextState) {}
+    public void transition(State nextState) {
+        game.set_state(nextState);
+    }
 
     public void admin_select_gamemode(GameMode gamemode) {}
     public void user_select_color(Player player, Color playerColor) {}
     public void user_insert_name(Player player,String playerName) {}
+
     // public void admin_create_lobby(Player) {}
     // public void user_join_lobby() {}
     // public void admin_start_game() {}
@@ -37,5 +39,4 @@ public abstract class State {
     public void user_activate_component(Player player, Point coordinates) {}
     public void user_activate_days_update() {}
     public void user_quit_game(Player player) {}
-
 }

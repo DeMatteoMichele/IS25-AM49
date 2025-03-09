@@ -1,18 +1,17 @@
 package it.polimi.ingsw.is25am49.model.states;
+
 import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
-
 import java.awt.*;
 
 public class InitState extends State {
-    InitState(Game game){
+    public InitState(Game game){
         super(game);
     }
-    public void transition(State nextState) {}
-
     public void admin_select_gamemode(GameMode gamemode) {}
     public void user_select_color(Player player, Color playerColor) {}
     public void user_insert_name(Player player,String playerName) {}
+
     // public void admin_create_lobby(Player) {}
     // public void user_join_lobby() {}
     // public void admin_start_game() {}
