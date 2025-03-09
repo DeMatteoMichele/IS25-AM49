@@ -4,4 +4,7 @@ import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 
 public abstract class  Component {
     final protected ComponentType type;
+    final protected int level;
+    final protected
+
 }
