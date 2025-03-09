@@ -1,4 +1,16 @@
 package it.polimi.ingsw.is25am49.model.enums;
 
 public enum ComponentType {
+    CABINE,
+    ENGINE,
+    DOUBLE_ENGINE,
+    CANNON,
+    DOUBLE_CANNON,
+    SHIELD,
+    STORAGE,
+    SPECIAL_STORAGE,
+    BATTERY_CELLS,
+    FRAME_SECTION,
+    PURPLE_ALIEN_MODULE,
+    BROWN_ALIEN_MODULE;
 }
