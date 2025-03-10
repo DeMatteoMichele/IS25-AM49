@@ -16,9 +16,10 @@ public class Game {
 
 
 
-    public Game(List<Player> players) {
+    public Game(List<Player> players,GameMode mode) {
         this.players = players;
         currentState = new InitState(this);
+        this.mode = mode;
     }
 
     public GameBoard get_gameboard() {
