@@ -1,8 +1,11 @@
 package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.*;
+import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
+
 import java.awt.*;
+
 
 public abstract class State {
     public State(Game game){
