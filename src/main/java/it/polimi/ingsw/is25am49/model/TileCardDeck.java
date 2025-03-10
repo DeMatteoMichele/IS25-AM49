@@ -18,7 +18,7 @@ public class TileCardDeck {
     }
 
     public void add_discard_tile(Tile tile){
-        tileDeck.put(tile.get_id_tile(),tile);
+        tileDeck.put(tile.getIdTile(),tile);
     }
 
     public Tile draw(Integer index){

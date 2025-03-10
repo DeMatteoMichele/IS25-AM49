@@ -20,7 +20,11 @@ public class ContainerComponent extends Component {
     @Override
     public int getNumberOfToken() {return tokens.size();}
     @Override
-    public void addToken(Token token) {tokens.add(token);}
+    public void addToken(Token token) {
+        try{
+            tokens.add(token);
+        }catch (IndexOutOfBoundsException e){System.out.println("component pieno\tERROR: " + e.getMessage());}
+    }
     @Override
     public void removeToken(Token token) {
         tokens.remove(token);

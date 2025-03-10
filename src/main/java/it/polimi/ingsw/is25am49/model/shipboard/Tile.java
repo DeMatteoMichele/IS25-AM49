@@ -35,6 +35,12 @@ public class Tile {
         this.isCovered= true;
     }
 
+    public int getIdTile() {
+        return idTile;
+    }
+    public Component getComponent() {
+        return component;
+    }
 
     public Orientation getTileRotation() {
         return tileRotation;
@@ -83,4 +89,5 @@ public class Tile {
     public ConnectorType getConnector(Orientation orientation){
         return connectors.get(orientation.ordinal());
     }
+
 }

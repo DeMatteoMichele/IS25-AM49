@@ -57,7 +57,7 @@ public class Player {
     }
 
     public Tile pickTile(Point coordinates){
-        return //shipBoard.getShip().getTile(coordinates);
+        return shipBoard.getTile(coordinates);
     }
     public void place_tile(Point coordinates){
 
