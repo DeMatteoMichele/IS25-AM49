@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
-import it.polimi.ingsw.is25am49.model.adventure_cards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class GameBoard {
     }
 
     public AdventureCard draw_adventure_card() {
-        return //mainAdvenureDeck.getdeck().draw();
+        return mainAdvenureDeck.draw();
     }
 
     public void add_player_to_leaderboard(Integer days ,Player player) {
@@ -41,11 +42,11 @@ public class GameBoard {
     }
 
     public void add_discarded_tile(Tile tile) {
-        //tilesDeck.getDeck().put(tile.getIdTile(),tile);
+        tilesDeck.put(tile.getIdTile(),tile);
     }
 
-    public Tile draw_tile() {
-        return //tilesDeck.getDeck().draw();
+    public Tile draw_tile(Integer index) {
+        return tilesDeck.draw(index);
     }
 
     public Player get_leader() {
@@ -66,7 +67,7 @@ public class GameBoard {
     }
 
     public AdventureCard get_next_card() {
-        return //mainAdvenureDeck.getDeck().draw();
+        return mainAdvenureDeck.draw();
     }
 
     public void update_leaderboard() {
