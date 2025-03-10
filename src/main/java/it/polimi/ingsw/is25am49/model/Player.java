@@ -1,6 +1,8 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 
 import java.awt.*;
 

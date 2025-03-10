@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
-import it.polimi.ingsw.is25am49.model.adventure_cards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
