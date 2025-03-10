@@ -1,7 +1,6 @@
-package it.polimi.ingsw.is25am49.model.effects;
+package it.polimi.ingsw.is25am49.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.model.*;
-import javafx.scene.effect.Effect;
 
 public class EffectMeteoriti extends CardEffect {
     public EffectMeteoriti(String name_effect) {
