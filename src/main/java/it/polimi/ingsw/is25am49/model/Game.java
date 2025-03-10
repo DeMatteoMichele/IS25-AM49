@@ -4,20 +4,20 @@ import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.states.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
     private GameMode mode;
     private GameBoard board;
-    private final List<Player> players;
+    private final List<Player> players = new ArrayList<Player>();
     private int gameId;
     private State currentState;
 
 
 
 
-    public Game(List<Player> players,GameMode mode) {
-        this.players = players;
+    public Game(GameMode mode) {
         currentState = new InitState(this);
         this.mode = mode;
     }

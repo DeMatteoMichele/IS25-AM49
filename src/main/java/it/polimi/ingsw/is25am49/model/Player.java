@@ -1,8 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.model.shipboard.*;
 
 import java.awt.*;
 
@@ -80,7 +79,7 @@ public class Player {
     public Color get_color() {
         return color;
     }
-    
+
 
     public int get_days_this_turn() {
         return daysThisTurn;

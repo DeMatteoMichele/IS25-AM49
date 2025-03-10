@@ -34,7 +34,7 @@ public class GameBoard {
     }
 
     public AdventureCard draw_adventure_card() {
-        return //mainAdvenureDeck.getdeck().draw();
+        return mainAdvenureDeck.draw();
     }
 
     public void add_player_to_leaderboard(Integer days ,Player player) {
@@ -42,11 +42,11 @@ public class GameBoard {
     }
 
     public void add_discarded_tile(Tile tile) {
-        //tilesDeck.getDeck().put(tile.getIdTile(),tile);
+        tilesDeck.put(tile.getIdTile(),tile);
     }
 
-    public Tile draw_tile() {
-        return //tilesDeck.getDeck().draw();
+    public Tile draw_tile(Integer index) {
+        return tilesDeck.draw(index);
     }
 
     public Player get_leader() {
@@ -67,7 +67,7 @@ public class GameBoard {
     }
 
     public AdventureCard get_next_card() {
-        return //mainAdvenureDeck.getDeck().draw();
+        return mainAdvenureDeck.draw();
     }
 
     public void update_leaderboard() {
