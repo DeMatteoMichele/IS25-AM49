@@ -9,7 +9,7 @@ public enum ComponentType {
     SHIELD,
     STORAGE,
     SPECIAL_STORAGE,
-    BATTERY_CELLS,
+    BATTERY,
     FRAME_SECTION,
     PURPLE_ALIEN_MODULE,
     BROWN_ALIEN_MODULE;
