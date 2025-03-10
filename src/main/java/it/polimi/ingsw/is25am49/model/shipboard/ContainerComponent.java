@@ -33,9 +33,9 @@ public class ContainerComponent extends Component {
     }
 
     @Override
-    public Boolean getIsActive() {
+    public boolean getIsActive() {
         // lancio eccezione??
-        return null;
+        return false;
     }
     @Override
     public void turnOn() {

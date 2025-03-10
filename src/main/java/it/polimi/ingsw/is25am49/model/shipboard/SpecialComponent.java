@@ -6,7 +6,7 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import java.util.ArrayList;
 
 public class SpecialComponent extends Component {
-    private Boolean isActive;
+    private boolean isActive;
     public SpecialComponent(ComponentType type, int level) {
         super(type, level);
         this.isActive = false;
@@ -40,7 +40,7 @@ public class SpecialComponent extends Component {
     }
 
     @Override
-    public Boolean getIsActive() {
+    public boolean getIsActive() {
         return isActive;
     }
     @Override

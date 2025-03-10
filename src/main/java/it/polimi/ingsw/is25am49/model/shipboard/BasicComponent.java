@@ -39,9 +39,9 @@ public class BasicComponent extends Component {
     }
 
     @Override
-    public Boolean getIsActive() {
+    public boolean getIsActive() {
         //LANCIO ECCEZIONE??
-        return null;
+        return false;
     }
     @Override
     public void turnOn() {
