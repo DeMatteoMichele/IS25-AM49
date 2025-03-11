@@ -31,7 +31,7 @@ public class Game {
     }
 
     public void admin_select_gamemode(GameMode mode){
-        currentState.admin_select_gamemode(mode);
+        currentState.adminSelectGameMode(mode);
     }
 
     public void user_select_color(Player player, Color color){
@@ -111,7 +111,7 @@ public class Game {
     }
 
     public void user_quit_game(Player player){
-        currentState.user_quit_game(player);
+        currentState.userQuitGame(player);
     }
     public void set_state(State currentState){
         this.currentState = currentState;
