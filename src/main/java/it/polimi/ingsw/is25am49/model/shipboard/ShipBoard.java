@@ -1,8 +1,11 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 
 import java.awt.Point;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 public class ShipBoard {
     private final HashMap<Point,Tile> grid;
@@ -43,9 +46,7 @@ public class ShipBoard {
     public Tile getTile(Point coordinates){
         return grid.get(coordinates);
     }
-    public void InsertTile(Point coordinates, Tile tile){
-        grid.put(coordinates, tile);
-    }
+    public void InsertTile(Point coordinates, Tile tile){grid.put(coordinates, tile);}
     public Tile removeTile(Point coordinates){
         return grid.remove(coordinates);
     }
@@ -90,20 +91,36 @@ public class ShipBoard {
         turnOnComponent(coordinates);
         consumeComponentToken(donator);
     }
-
-    public int getFirePower(){
-        //algoritmo mistico
-        return 0;
+    public ArrayList<Point> getActivatableComponents(ComponentType type){
+        if(type.equals(ComponentType.DOUBLE_CANNON) || type.equals(ComponentType.DOUBLE_ENGINE) || type.equals(ComponentType.SHIELD)){
+            return grid.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue().getComponent().getType().equals(type))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }else return null;//eccezione?
     }
-    public int getRocketPower(){
-        //algoritmo mistico
-        return 0;
+
+    public double getTotalFirePower(){
+        return grid.values()
+                .stream()
+                .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.CANNON))
+                .mapToDouble(Tile::getFirePower)
+                .sum();
+    }
+    public int getEnginePower(){
+        return grid.values()
+                .stream()
+                .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.ENGINE))
+                .mapToInt(t->t.getComponent().getLevel())
+                .sum();
     }
 
     public int getTotalNumberOfaToken (Token token){
         //scorro griglia e sommo
         return 0;
     }
+    public void removeAllTokens(){}
 
     public void checkRocketTile(Point coordinates){}
     public void checkCannonTile(Point coordinates){}

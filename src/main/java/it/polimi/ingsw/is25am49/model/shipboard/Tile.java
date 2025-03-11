@@ -26,10 +26,10 @@ public class Tile {
         this.idTile = idTile;
         this.component = component;
         this.connectors = new HashMap<>(4);
-        connectors.put(1,c1);
-        connectors.put(2,c2);
-        connectors.put(3,c3);
-        connectors.put(4,c4);
+        connectors.put(0,c1);
+        connectors.put(1,c2);
+        connectors.put(2,c3);
+        connectors.put(3,c4);
         this.tileRotation= Orientation.NORTH;
         this.isLocked= false;
         this.isCovered= true;
@@ -51,14 +51,22 @@ public class Tile {
         this.tileRotation = tileRotation;
 
         for (int i = 0; i < 4; i++) {
-            int oldIndex=(oldOrientation-1+i)%4+1;
-            int newIndex=(newOrientation-1+i)%4+1;
+            int oldIndex=(oldOrientation+i)%4;
+            int newIndex=(newOrientation+i)%4;
             ConnectorType tempConnector = connectors.get(newIndex);
             connectors.put(newIndex, connectors.get(oldIndex));
             connectors.put(oldIndex, tempConnector);
         }
-
     }
+    public void rotateTileClockwise(){
+        Orientation newTileRotation= Orientation.values()[(tileRotation.ordinal()+1)%4];
+        setTileRotation(newTileRotation);
+    }
+    public void rotateTileCounterClockwise(){
+        Orientation newTileRotation= Orientation.values()[(tileRotation.ordinal()-1)%4];
+        setTileRotation(newTileRotation);
+    }
+
     public boolean isLocked() {
         return isLocked;
     }
@@ -90,4 +98,7 @@ public class Tile {
         return connectors.get(orientation.ordinal());
     }
 
+    public double getFirePower(){
+        return tileRotation.equals(Orientation.NORTH)?this.getComponent().level:this.getComponent().level*0.5;
+    }
 }
