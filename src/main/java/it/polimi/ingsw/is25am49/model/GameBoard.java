@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
@@ -44,7 +45,7 @@ public class GameBoard {
     public void addDiscardedTile(Player player) {
         Tile newTile = player.discardTile();
         tilesDeck.addDiscardTile(newTile);
-        
+
     }
 
     public Tile drawTile(Integer index) {
@@ -54,6 +55,30 @@ public class GameBoard {
     public Player getLeader() {
         return leaderBoard.get(0).getValue();
     }
+
+    public void calculate_final_score(Player player) {
+        int toAdd = 0;
+        toAdd = 5 - leaderBoard.indexOf(player);
+        toAdd = toAdd - player.getLostComponents();
+
+        int redToken= player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
+        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
+        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
+        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
+        toAdd = toAdd + redToken*4 + blueToken + yellowToken*3 + greenToken*2;
+        player.getShipBoard().removeAllTokens();
+
+
+    }
+
+    public Player minimumExposedComponents(){
+        for(Pair<Integer, Player> pair : leaderBoard){
+            Player p = pair.getValue();
+            int temp=p.getShipBoard().getNumberOfExposedConnectors();
+            Math.min(temp,)
+        }
+    }
+
 
     public Player getNextPlayer(Player player) {
         int currentIndex= leaderBoard.indexOf(player);
