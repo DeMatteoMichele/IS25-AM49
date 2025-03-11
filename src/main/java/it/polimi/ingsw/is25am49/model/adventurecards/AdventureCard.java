@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,9 @@ public abstract class AdventureCard {
 
     public void rollDices(){}
 
-    public abstract void askForDecision();
+    public abstract void askForDecision(Player player);
 
-    public abstract void applyEffect(ArrayList<Player> players);
+    public abstract void applyEffect(ArrayList<Pair<Integer,Player>> leaderboard);
 
     public int getLevel() {
         return level;

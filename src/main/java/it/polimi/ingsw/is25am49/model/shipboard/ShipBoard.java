@@ -1,8 +1,10 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import javafx.util.Pair;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.List;
 
 public class ShipBoard {
     private final HashMap<Point,Tile> grid;
@@ -91,11 +93,11 @@ public class ShipBoard {
         consumeComponentToken(donator);
     }
 
-    public int getFirePower(){
+    public int getTotalFirePower(){
         //algoritmo mistico
         return 0;
     }
-    public int getRocketPower(){
+    public int getTotalRocketPower(){
         //algoritmo mistico
         return 0;
     }
@@ -104,6 +106,8 @@ public class ShipBoard {
         //scorro griglia e sommo
         return 0;
     }
+
+
 
     public void checkRocketTile(Point coordinates){}
     public void checkCannonTile(Point coordinates){}
