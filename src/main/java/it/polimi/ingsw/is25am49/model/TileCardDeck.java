@@ -9,7 +9,7 @@ import java.util.Map;
 public class TileCardDeck {
     private final Map<Integer, Tile> tileDeck = new HashMap<>();
 
-    public void generate_deck(){
+    public void generateDeck(){
 
     }
 
@@ -17,7 +17,8 @@ public class TileCardDeck {
 
     }
 
-    public void add_discard_tile(Tile tile){
+    public void addDiscardTile(Tile tile){
+
         tileDeck.put(tile.getIdTile(),tile);
     }
 

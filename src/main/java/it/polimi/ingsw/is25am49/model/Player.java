@@ -18,7 +18,7 @@ public class Player {
     private int lostComponents=0;
 
 
-    public void set_handTile(Tile tile){
+    public void setHandTile(Tile tile){
         this.handTile = tile;
     }
 
@@ -36,52 +36,56 @@ public class Player {
     public void setPlayerNumber(Integer playerNumber) {
         this.playerNumber = playerNumber;
     }
-
-    public void add_lost_components(Integer numberOfLostComponents) {
+    public Tile getHandTile(){
+        return handTile;
+    }
+    public void addLostComponents(Integer numberOfLostComponents) {
         lostComponents = lostComponents + numberOfLostComponents;
     }
 
-    public ShipBoard get_shipBoard() {
+    public ShipBoard getShipBoard() {
         return shipBoard;
     }
 
-    public Integer get_score() {
+    public Integer getScore() {
         return finalsScore;
     }
 
-    public void calculate_finalsScore() {
+    public void calculateFinalsScore() {
 
     }
-    public void add_credit(int amount){
+    public void addCredit(int amount){
         totCredits = totCredits + amount;
     }
 
-    public Tile pickTile(Point coordinates){
-        return shipBoard.getTile(coordinates);
+    public void pickTile(Point coordinates){
+        handTile = shipBoard.removeTile(coordinates);
     }
-    public void place_tile(Point coordinates){
+    public void placeTile(Point coordinates){
+        shipBoard.insertTile(coordinates, handTile);
+    }
+    public void rotateTile(){
+        handTile.setTileRotation(handTile.getTileRotation());
+    }
+    public Tile discardTile(){
+        Tile temp = handTile;
+        handTile = null;
+        return temp;
+    }
 
-    }
-    public void rotate_tile(){
-        //handTile.rotate()
-    }
-    public Tile discard_tile(){
-
-    }
-
-    public Integer get_lost_components() {
+    public Integer getLostComponents() {
         return lostComponents;
     }
 
-    public Integer get_credits(){
+    public Integer getCredits(){
         return totCredits;
     }
-    public Color get_color() {
+    public Color getColor() {
         return color;
     }
 
 
-    public int get_days_this_turn() {
+    public int getDaysThisTurn() {
         return daysThisTurn;
 
     }

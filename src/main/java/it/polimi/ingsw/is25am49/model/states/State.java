@@ -13,7 +13,7 @@ public abstract class State {
     }
     protected final Game game;
     public void transition(State nextState) {
-        game.set_state(nextState);
+        game.setState(nextState);
     }
 
     public abstract void adminSelectGameMode(GameMode gamemode);

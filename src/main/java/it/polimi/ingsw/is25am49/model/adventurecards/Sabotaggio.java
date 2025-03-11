@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,12 @@ public class Sabotaggio extends AdventureCard {
     }
 
     @Override
-    public void askForDecision() {
+    public void askForDecision(Player player) {
 
     }
 
     @Override
-    public void applyEffect(ArrayList<Player> players) {
+    public void applyEffect(ArrayList<Pair<Integer, Player>> leaderboard) {
 
     }
 
