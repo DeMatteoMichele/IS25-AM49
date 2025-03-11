@@ -6,5 +6,6 @@ public class EffectModifyEquipment extends CardEffect {
     public EffectModifyEquipment(String name_effect) {
         super(name_effect);
     }
-    public void action(Player p) {}
+    public void action(Player player) {}
+    public void setPosition(int position) {}
 }

@@ -51,8 +51,8 @@ public class Tile {
         this.tileRotation = tileRotation;
 
         for (int i = 0; i < 4; i++) {
-            int oldIndex=(oldOrientation-1+i)%4+1;
-            int newIndex=(newOrientation-1+i)%4+1;
+            int oldIndex=(oldOrientation+i)%4;
+            int newIndex=(newOrientation+i)%4;
             ConnectorType tempConnector = connectors.get(newIndex);
             connectors.put(newIndex, connectors.get(oldIndex));
             connectors.put(oldIndex, tempConnector);
