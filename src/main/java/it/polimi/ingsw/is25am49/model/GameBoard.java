@@ -17,43 +17,45 @@ public class GameBoard {
     private int currentPlayer;
     private Timer timer;
 
-    public AdventureCardDeck get_small_adventure_deck(Integer index) {
+    public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
 
-    public List<Pair<Integer, Player>> get_leaderBoard(){
+    public List<Pair<Integer, Player>> getLeaderBoard(){
         return leaderBoard;
     }
 
-    public void set_currentCard(AdventureCard card) {
+    public void setCurrentCard(AdventureCard card) {
         currentCard = card;
     }
 
-    public AdventureCard get_current_card(){
+    public AdventureCard getCurrentCard(){
         return currentCard;
     }
 
-    public AdventureCard draw_adventure_card() {
+    public AdventureCard drawAdventureCard() {
         return mainAdvenureDeck.draw();
     }
 
-    public void add_player_to_leaderboard(Integer days ,Player player) {
+    public void addPlayerToLeaderboard(Integer days , Player player) {
         leaderBoard.add(new Pair<>(days, player));
     }
 
-    public void add_discarded_tile(Tile tile) {
-        tilesDeck.put(tile.getIdTile(),tile);
+    public void addDiscardedTile(Player player) {
+        Tile newTile = player.discardTile();
+        tilesDeck.addDiscardTile(newTile);
+        
     }
 
-    public Tile draw_tile(Integer index) {
+    public Tile drawTile(Integer index) {
         return tilesDeck.draw(index);
     }
 
-    public Player get_leader() {
+    public Player getLeader() {
         return leaderBoard.get(0).getValue();
     }
 
-    public Player get_next_player(Player player) {
+    public Player getNextPlayer(Player player) {
         int currentIndex= leaderBoard.indexOf(player);
 
         if(currentIndex == -1){
@@ -66,11 +68,11 @@ public class GameBoard {
 
     }
 
-    public AdventureCard get_next_card() {
+    public AdventureCard getNextCard() {
         return mainAdvenureDeck.draw();
     }
 
-    public void update_leaderboard() {
+    public void updateLeaderboard() {
 
     }
 }

@@ -12,14 +12,14 @@ public class AdventureCardDeck {
     public AdventureCard draw(){
         return deck.peek();
     }
-    public void generate_deck(){
+    public void generateDeck(){
 
     }
     public void shuffle(){
 
     }
 
-    public void show_cards(Player player){
+    public void showCards(Player player){
 
     }
 

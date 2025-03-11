@@ -22,23 +22,23 @@ public class Game {
         this.mode = mode;
     }
 
-    public GameBoard get_gameboard() {
+    public GameBoard getGameboard() {
         return board;
     }
 
-    public State get_state() {
+    public State getState() {
         return currentState;
     }
 
-    public void admin_select_gamemode(GameMode mode){
+    public void adminSelectGamemode(GameMode mode){
         currentState.admin_select_gamemode(mode);
     }
 
-    public void user_select_color(Player player, Color color){
+    public void userSelectColor(Player player, Color color){
         currentState.user_select_color(player,color);
     }
 
-    public void user_insert_name(Player player, String playerName) {
+    public void userInsertName(Player player, String playerName) {
         currentState.user_insert_name(player,playerName);
     }
     /*public void admin_create_lobby(Player player) {
@@ -50,70 +50,70 @@ public class Game {
     public void admin_start_game(GameMode mode) {
         currentState.admin_start_game
     }*/
-    public void user_place_tile(Player player, Point coordinates) {
+    public void userPlaceTile(Player player, Point coordinates) {
         currentState.user_place_tile(player,coordinates);
     }
 
-    public void user_rotate_tile(Player player, Point coordinates) {
+    public void userRotateTile(Player player, Point coordinates) {
         currentState.user_rotate_tile(player,coordinates);
     }
 
-    public void user_pick_tile(Player player, Point coordinates) {
+    public void userPickTile(Player player, Point coordinates) {
         currentState.user_pick_tile(player,coordinates);
     }
 
-    public void user_discard_tile(Player player){
+    public void userDiscardTile(Player player){
         currentState.user_discard_tile(player);
     }
 
-    public void user_draw_tile(Player player,int idTile ){
+    public void userDrawTile(Player player, int idTile ){
         currentState.user_draw_tile(player,idTile);
     }
 
-    public void user_finish_shipboard(Player player){
+    public void userFinishShipboard(Player player){
         currentState.user_finish_shipboard(player);
     }
 
-    public void user_look_small_adventure_card_deck(Player player,int index){
+    public void userLookSmallAdventureCardDeck(Player player, int index){
         currentState.user_look_small_adventure_card_deck(player,index);
     }
 
-    public void user_stop_look_small_adventure_card_deck(Player player, int index){
+    public void userStopLookSmallAdventureCardDeck(Player player, int index){
         currentState.user_stop_look_small_adventure_card_deck(player, index);
     }
 
-    public void user_place_timer(Player player){
+    public void userPlaceTimer(Player player){
         currentState.user_place_timer(player);
     }
 
-    public void user_throw_dices(Player player){
+    public void userThrowDices(Player player){
         currentState.user_throw_dices(player);
     }
 
-    public void user_draw_adventure_card(Player player){
+    public void userDrawAdventureCard(Player player){
         currentState.user_draw_adventure_card(player);
     }
 
-    public void user_play_adventure_card(Player player){
+    public void userPlayAdventureCard(Player player){
         currentState.user_play_adventure_card(player);
     }
 
-    public void user_effect_decision(Player player){
+    public void userEffectDecision(Player player){
         currentState.user_effect_decision(player);
     }
 
-    public void user_activate_component(Player player, Point coordinates) {
+    public void userActivateComponent(Player player, Point coordinates) {
         currentState.user_activate_component(player,coordinates);
     }
 
-    public void user_activate_days_update(){
+    public void userActivateDaysUpdate(){
         currentState.user_activate_days_update();
     }
 
-    public void user_quit_game(Player player){
+    public void userQuitGame(Player player){
         currentState.user_quit_game(player);
     }
-    public void set_state(State currentState){
+    public void setState(State currentState){
         this.currentState = currentState;
     }
 
