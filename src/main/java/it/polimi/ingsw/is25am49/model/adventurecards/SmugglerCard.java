@@ -12,8 +12,8 @@ import java.util.List;
 public class SmugglerCard extends AdventureCard {
     private final int minimumFirePower;
 
-    public SmugglerCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, List<CardEffect> ListEffects) {
-        super(description, daysLost, level, creditsEarned, ListEffects);
+    public SmugglerCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, List<CardEffect> listEffects) {
+        super(description, daysLost, level, creditsEarned, listEffects);
         this.minimumFirePower = minimumFirePower;
     }
 
@@ -26,7 +26,7 @@ public class SmugglerCard extends AdventureCard {
         double standardFirePower =player.getShipBoard().getTotalFirePower();
         ShipBoard shipBoard=player.getShipBoard();
         int numBatteries=shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS);
-        List<Point> activatableCannons=shipBoard.getActivatableComponents(ComponentType.CANNON);
+        List<Point> activatableCannons=shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON);
         double firePowerUserCanActivateWithBatteries = activatableCannons.stream()
                 .mapToDouble(point->shipBoard.getTile(point).getFirePower())
                 .sorted()
@@ -70,15 +70,21 @@ public class SmugglerCard extends AdventureCard {
         if(totalFirePower > minimumFirePower){
             System.out.println("Hai sconfitto i contrabbandieri con la tua potenza di fuoco! Vinci delle casse per averli sconfitti");
             listEffects.get(0).action(player); //effetto wingoods
+            player.setDaysThisTurn(-daysLost);
+            isFinished = true; //card has finished, now we go to draw state
+            return false;
         }
-        if(totalFirePower == minimumFirePower){
+        else if(totalFirePower == minimumFirePower){
             System.out.println("Hai pareggiato con i contrabbandieri! Non vinci nulla");
+            player.setDaysThisTurn(-daysLost);
+            return true;
         }
-        if(totalFirePower < minimumFirePower){
+        else {
             System.out.println("Hai perso contro i contrabbandieri! Perdi delle casse");
             listEffects.get(1).action(player); //effetto losegoods
+            player.setDaysThisTurn(-daysLost);
+            return true;
         }
-        return true;//we must go to state check requirements to check the next player
     }
 
 

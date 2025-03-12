@@ -10,18 +10,18 @@ import java.util.List;
 public abstract class AdventureCard {
     protected String description;
     protected int daysLost;
-    protected int flagDecision;
+    protected boolean isFinished;
     protected int creditsEarned;
     protected final List<CardEffect> listEffects;
     protected int level;
 
-    public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
+    public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
         this.description = description;
         this.daysLost = daysLost;
-//        this.flagDecision = 0;
+        this.isFinished = false;
         this.creditsEarned = creditsEarned;
         this.level = level;
-        this.listEffects = new ArrayList<>(ListEffects);
+        this.listEffects = new ArrayList<>(listEffects);
     }
 
     public String getDescription() {
