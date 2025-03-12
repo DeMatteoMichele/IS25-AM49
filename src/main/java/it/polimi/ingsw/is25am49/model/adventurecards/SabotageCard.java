@@ -22,8 +22,8 @@ public class SabotageCard extends AdventureCard {
 //    }
 
     @Override
-    public void applyEffect(Player player) {
-
+    public boolean applyEffect(Player player) {
+        return true;
     }
 
 }

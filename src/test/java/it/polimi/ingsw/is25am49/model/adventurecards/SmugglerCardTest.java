@@ -1,10 +1,12 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
+import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectMeteoriti;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SmugglerCardTest {
     private SmugglerCard smugglerCard;
+    private Player player;
+    private ShipBoard shipBoard;
     String description ="CIAO";
     int daysLost = 10;
     int level=4;
     int minimumFirePower = 5;
     int creditsEarned = 40;
     List<CardEffect> ListEffect= new ArrayList<>();
-    List<Token> LostTokens=new ArrayList<>();
-    List<Token> Prize=new ArrayList<>();
 
 
 
@@ -31,18 +33,17 @@ class SmugglerCardTest {
 
     @BeforeEach
     void init(){
-        ListEffect.add(new EffectCannonata("Cannonata", 1, Orientation.NORTH));
-        LostTokens.add(Token.BLUE_GOODS);
-        Prize.add(Token.RED_GOODS);
-        smugglerCard=new SmugglerCard(description,daysLost, level, creditsEarned, minimumFirePower,ListEffect,LostTokens,Prize);
+        smugglerCard=new SmugglerCard(description,daysLost, level, creditsEarned, minimumFirePower,ListEffect);
     }
 
     @Test
     void drawCard(){
         smugglerCard.drawCard();
     }
+
     @Test
     void checkRequirements() {
+
     }
 
     @Test

@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public abstract class AdventureCard {
     protected int daysLost;
     protected int flagDecision;
     protected int creditsEarned;
-    protected final List<CardEffect> ListEffects;
+    protected final List<CardEffect> listEffects;
     protected int level;
 
     public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
@@ -22,7 +21,7 @@ public abstract class AdventureCard {
 //        this.flagDecision = 0;
         this.creditsEarned = creditsEarned;
         this.level = level;
-        this.ListEffects = new ArrayList<>(ListEffects);
+        this.listEffects = new ArrayList<>(ListEffects);
     }
 
     public String getDescription() {
@@ -37,6 +36,11 @@ public abstract class AdventureCard {
 //        this.flagDecision = flagDecision;
 //    }
 
+
+    // methods return an int based on what state we must go to
+    // 0 = check requirements
+    // 1 = decision
+    // 2 = effect
     public abstract int checkRequirements(Player player);
 
     public void drawCard() {
@@ -45,28 +49,19 @@ public abstract class AdventureCard {
 
 
 
-    public void addEffect(CardEffect effect) {
-        ListEffects.add(effect);
-    }
 
     public void rollDices(){
         throw new IllegalMethodOnThisCardException("Non puoi chiamare rollDices su questa carta");
     }
 
-//    public abstract void askForDecision(Player player);
 
-    public abstract void applyEffect(Player player);
+
+    //method return true if we must change player
+    //false if we must remain in the same player
+    public abstract boolean applyEffect(Player player);
 
     public int getLevel() {
         return level;
-    }
-
-    public List<Token> getLostTokens(){
-        throw new IllegalMethodOnThisCardException("Non puoi chiamare getLostTokens su questa carta");
-    }
-
-    public List<Token> getPrize(){
-        throw new IllegalMethodOnThisCardException("Non puoi chiamare getPrize su questa carta");
     }
 
 }

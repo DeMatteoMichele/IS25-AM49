@@ -7,24 +7,22 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SmugglerCard extends AdventureCard {
     private final int minimumFirePower;
-    private final List<Token> LostTokens=new ArrayList<>();
-    private final List<Token> Prize=new ArrayList<>();
 
-    public SmugglerCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, List<CardEffect> ListEffects, List<Token> LostTokens, List<Token> Prize) {
+    public SmugglerCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, List<CardEffect> ListEffects) {
         super(description, daysLost, level, creditsEarned, ListEffects);
         this.minimumFirePower = minimumFirePower;
-        this.LostTokens.addAll(LostTokens);
-        this.Prize.addAll(Prize);
     }
 
-
+    // methods return an int based on what state we must go to
+    // 0 = check requirements
+    // 1 = decision
+    // 2 = effect
     @Override
-    public int checkRequirements(Player player) {
+    public int checkRequirements(Player player) { // methods return an int based on what state we must go to
         double standardFirePower =player.getShipBoard().getTotalFirePower();
         ShipBoard shipBoard=player.getShipBoard();
         int numBatteries=shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS);
@@ -34,11 +32,11 @@ public class SmugglerCard extends AdventureCard {
                 .sorted()
                 .limit(numBatteries)
                 .sum();
-        if (standardFirePower >minimumFirePower) {
+        if (standardFirePower > minimumFirePower) {
             System.out.println("Hai" + player.getShipBoard().getTotalFirePower() + " potenza di fuoco, puoi sconfiggere i contrabbandieri!");
             return 2; //we must go to state effect
         }
-        else if (standardFirePower ==minimumFirePower) {
+        else if (standardFirePower == minimumFirePower) {
             System.out.println("Hai esattamente la stessa potenza di fuoco dei contrabbandieri! Pareggio!");
             return 0; //we remain in check requirements to check the next player
         }
@@ -64,22 +62,26 @@ public class SmugglerCard extends AdventureCard {
 //    }
 
 
+    //method return true if we must change player
+    //false if we must remain in the same player
     @Override
-    public void applyEffect(Player player) {
+    public boolean applyEffect(Player player) {
         double totalFirePower=player.getShipBoard().getTotalFirePower();
         if(totalFirePower > minimumFirePower){
             System.out.println("Hai sconfitto i contrabbandieri con la tua potenza di fuoco! Vinci delle casse per averli sconfitti");
+            listEffects.get(0).action(player); //effetto wingoods
         }
+        if(totalFirePower == minimumFirePower){
+            System.out.println("Hai pareggiato con i contrabbandieri! Non vinci nulla");
+        }
+        if(totalFirePower < minimumFirePower){
+            System.out.println("Hai perso contro i contrabbandieri! Perdi delle casse");
+            listEffects.get(1).action(player); //effetto losegoods
+        }
+        return true;//we must go to state check requirements to check the next player
     }
 
-    @Override
-    public List<Token> getLostTokens() {
-        return LostTokens;
-    }
 
-    @Override
-    public List<Token> getPrize() {
-        return Prize;
-    }
+
 
 }
