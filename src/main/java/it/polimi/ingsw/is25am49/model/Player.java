@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.*;
 
 import java.awt.*;
@@ -16,6 +17,12 @@ public class Player {
     private int travelDays=0;
     private Color color;
     private int lostComponents=0;
+
+    public int scoreOfGoods(){
+        int totale= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;
+        shipBoard.removeAllTokens();
+        return totale;
+    }
 
 
     public void setHandTile(Tile tile){
@@ -51,9 +58,7 @@ public class Player {
         return finalsScore;
     }
 
-    public void calculateFinalsScore() {
 
-    }
     public void addCredit(int amount){
         totCredits = totCredits + amount;
     }
@@ -84,6 +89,10 @@ public class Player {
         return color;
     }
 
+
+    public void setDaysThisTurn(int daysThisTurn) {
+        this.daysThisTurn = daysThisTurn;
+    }
 
     public int getDaysThisTurn() {
         return daysThisTurn;

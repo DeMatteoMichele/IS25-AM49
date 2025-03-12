@@ -5,7 +5,7 @@ import it.polimi.ingsw.is25am49.model.enums.Orientation;
 
 public class EffectCannonata extends CardEffect {
     private final int level;
-    private Orientation direction;
+    private final Orientation direction;
     private int position;
 
     public EffectCannonata(String name_effect, int level, Orientation direction) {
@@ -13,6 +13,10 @@ public class EffectCannonata extends CardEffect {
         this.level = level;
         this.direction = direction;
     }
-    public void action(Player player) {}
-    public void setPosition(int position) {}
+    public void action(Player player) {
+
+    }
+    public void setPosition(int position) {
+        //indica dove colpisce il cannone
+    }
 }

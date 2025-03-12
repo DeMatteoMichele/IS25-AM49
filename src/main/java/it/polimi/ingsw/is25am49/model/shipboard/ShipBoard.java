@@ -46,7 +46,7 @@ public class ShipBoard {
     public Tile getTile(Point coordinates){
         return grid.get(coordinates);
     }
-    public void InsertTile(Point coordinates, Tile tile){grid.put(coordinates, tile);}
+    public void insertTile(Point coordinates, Tile tile){grid.put(coordinates, tile);}
     public Tile removeTile(Point coordinates){
         return grid.remove(coordinates);
     }

@@ -2,7 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import javafx.util.Pair;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,48 +10,58 @@ import java.util.List;
 public abstract class AdventureCard {
     protected String description;
     protected int daysLost;
-    protected int flagDecision;
+    protected boolean isFinished;
     protected int creditsEarned;
-    protected final List<CardEffect> ListEffects;
+    protected final List<CardEffect> listEffects;
     protected int level;
 
-    public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
+    public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
         this.description = description;
         this.daysLost = daysLost;
-        this.flagDecision = 0;
+        this.isFinished = false;
         this.creditsEarned = creditsEarned;
         this.level = level;
-        this.ListEffects = new ArrayList<>(ListEffects);
+        this.listEffects = new ArrayList<>(listEffects);
     }
 
     public String getDescription() {
         return description;
     }
+//
+//    public void setDaysLost(int daysLost) {
+//        this.daysLost = daysLost;
+//    }
+//
+//    public void setFlagDecision(int flagDecision) {
+//        this.flagDecision = flagDecision;
+//    }
 
-    public void setDaysLost(int daysLost) {
-        this.daysLost = daysLost;
+
+    // methods return an int based on what state we must go to
+    // 0 = check requirements
+    // 1 = decision
+    // 2 = effect
+    public abstract int checkRequirements(Player player);
+
+    public void drawCard() {
+        System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
     }
 
-    public void setFlagDecision(int flagDecision) {
-        this.flagDecision = flagDecision;
+
+
+
+    public void rollDices(){
+        throw new IllegalMethodOnThisCardException("Non puoi chiamare rollDices su questa carta");
     }
 
-    public abstract void checkRequirements(Player player);
 
-    public void addEffect(CardEffect effect) {
-        ListEffects.add(effect);
-    }
 
-    public void rollDices(){}
-
-    public abstract void askForDecision(Player player);
-
-    public abstract void applyEffect(ArrayList<Pair<Integer,Player>> leaderboard);
+    //method return true if we must change player
+    //false if we must remain in the same player
+    public abstract boolean applyEffect(Player player);
 
     public int getLevel() {
         return level;
     }
-
-
 
 }

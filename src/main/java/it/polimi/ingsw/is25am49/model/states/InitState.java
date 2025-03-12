@@ -17,7 +17,8 @@ public class InitState extends State {
     // public void userJoinLobby() {}
     // public void adminStartGame() {}
 
-    public void userPlaceTile(Player player, Point coordinates) {}
+    public void userPlaceTile(Player player, Point coordinates) {
+    }
     public void userRotateTile(Player player, Point coordinates) {}
     public void userPickTile(Player player, Point coordinates) {}
     public void userDiscardTile(Player player) {}
