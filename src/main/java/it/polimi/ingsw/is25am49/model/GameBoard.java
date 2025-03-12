@@ -1,13 +1,11 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameBoard {
     private final List<Pair<Integer, Player>> leaderBoard = new ArrayList<>();
@@ -56,29 +54,40 @@ public class GameBoard {
         return leaderBoard.get(0).getValue();
     }
 
-    public void calculate_final_score(Player player) {
+    public void calculateAdditionalCredits(Player player) {
         int toAdd = 0;
-        toAdd = 5 - leaderBoard.indexOf(player);
-        toAdd = toAdd - player.getLostComponents();
-
-        int redToken= player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
-        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
-        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
-        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
-        toAdd = toAdd + redToken*4 + blueToken + yellowToken*3 + greenToken*2;
-        player.getShipBoard().removeAllTokens();
-
-
-    }
-
-    public Player minimumExposedComponents(){
-        for(Pair<Integer, Player> pair : leaderBoard){
-            Player p = pair.getValue();
-            int temp=p.getShipBoard().getNumberOfExposedConnectors();
-            Math.min(temp,)
+        toAdd = 5 - leaderBoard.indexOf(player); //crediti per la posizione
+        toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
+        toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
+        if(minimumExposedComponents().contains(player)) {
+            toAdd += 2;
         }
+        player.addCredit(toAdd);
+
+
     }
 
+    public List<Player> minimumExposedComponents() {
+
+        int minValue = leaderBoard.
+                stream()
+                .map(Pair :: getValue)
+                .mapToInt(p-> p.getShipBoard().getNumberOfExposedConnectors())
+                .min()
+                .orElse(0);
+
+        return leaderBoard
+                .stream()
+                .map(Pair:: getValue) //ritorna il player
+                //cerco se il player ha il minimo valore di conncetors, se si lo filtro 
+                .filter(p-> p.getShipBoard().getNumberOfExposedConnectors()==minValue)
+                .collect(Collectors.toList());
+
+
+
+
+
+    }
 
     public Player getNextPlayer(Player player) {
         int currentIndex= leaderBoard.indexOf(player);

@@ -20,7 +20,7 @@ public class ZonaDiGuerra extends AdventureCard {
     }
 
     @Override
-    public void askForDecision() {
+    public void askForDecision(Player player) {
 
     }
 

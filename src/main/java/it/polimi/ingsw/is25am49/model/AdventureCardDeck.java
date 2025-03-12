@@ -13,7 +13,7 @@ public class AdventureCardDeck {
     private boolean isBeingLooked;
 
 
-    public AdventureCard draw() throws FinishDeckExceptions{
+    public AdventureCard draw() {
 
         if(deck.isEmpty()){
             throw new FinishDeckExceptions("Il deck è vuoto");
@@ -22,6 +22,9 @@ public class AdventureCardDeck {
     }
     public void generateDeck(){
 
+    }
+    public void add(AdventureCard card){
+        deck.add(card);
     }
     public void shuffle(){
         Collections.shuffle(deck);

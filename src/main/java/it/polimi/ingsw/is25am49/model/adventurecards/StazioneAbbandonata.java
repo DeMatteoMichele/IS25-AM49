@@ -21,9 +21,11 @@ public class StazioneAbbandonata extends AdventureCard {
     }
 
     @Override
-    public void askForDecision() {
+    public void askForDecision(Player player) {
 
     }
+
+
 
     @Override
     public void applyEffect(ArrayList<Pair<Integer, Player>> leaderboard) {
