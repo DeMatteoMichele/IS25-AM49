@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponent;
 
 import java.util.ArrayList;
 
@@ -13,42 +14,43 @@ public class BasicComponent extends Component {
 
     @Override
     public ArrayList<Token> getTokenList() {
-        //LANCIO ECCEZIONE??
-        return null;
+        throw new IllegalMethodOnThisComponent("getTokenList non supportato su BasicComponent");
     }
     @Override
-    public int getNumberOfToken() {
-        //LANCIO ECCEZIONE??
-        return 0;
+    public int getNumberOfToken()  {
+        throw new IllegalMethodOnThisComponent("getNumberOfToken non supportato su BasicComponent");
     }
     @Override
     public void addToken(Token token) {
-        //LANCIO ECCEZIONE??
+        throw new IllegalMethodOnThisComponent("addToken non supportato su BasicComponent");
     }
     @Override
     public void removeToken(Token token) {
-        //LANCIO ECCEZIONE??
+        throw new IllegalMethodOnThisComponent("removeToken non supportato su BasicComponent");
     }
     @Override
     public void removeToken() {
-        //LANCIO ECCEZIONE??
+        throw new IllegalMethodOnThisComponent("removeToken non supportato su BasicComponent");
     }
     @Override
     public void fillComponent(Token token) {
-        //LANCIO ECCEZIONE??
+        throw new IllegalMethodOnThisComponent("fillComponent non supportato su BasicComponent");
+    }
+    @Override
+    public void clearComponent() {
+        throw new IllegalMethodOnThisComponent("clearComponent non supportato su BasicComponent");
     }
 
     @Override
     public boolean getIsActive() {
-        //LANCIO ECCEZIONE??
-        return false;
+        throw new IllegalMethodOnThisComponent("getIsActive non supportato su BasicComponent");
     }
     @Override
     public void turnOn() {
-        //LANCIO ECCEZIONE??
+        throw new IllegalMethodOnThisComponent("turnOn non supportato su BasicComponent");
     }
     @Override
     public void turnOff() {
-        //LANCIO ECCEZIONE??
+        throw new IllegalMethodOnThisComponent("turnOff non supportato su BasicComponent");
     }
 }

@@ -24,7 +24,7 @@ public class Contrabbandieri extends AdventureCard {
 
     @Override
     public void checkRequirements(Player player) {
-        int firePower=player.get_shipBoard().getTotalFirePower();
+        double firePower=player.getShipBoard().getTotalFirePower();
         if (firePower>=minimumFirePower)
             canBeDefeated=true;
     }
@@ -46,7 +46,7 @@ public class Contrabbandieri extends AdventureCard {
         for (Pair<Integer,Player> pair : Leaderboard) {
             Player p= pair.getValue();
             checkRequirements(p);
-            ShipBoard shipboard=p.get_shipBoard();
+            ShipBoard shipboard=p.getShipBoard();
             if(canBeDefeated){
             System.out.println("Hai" + shipboard.getTotalFirePower()+ " potenza di fuoco, puoi sconfiggere i contrabbandieri!");
             System.out.println("Hai sconfitto i contrabbandieri!");
@@ -55,8 +55,7 @@ public class Contrabbandieri extends AdventureCard {
             else{
                 System.out.println("Non hai abbastanza potenza di fuoco!");
                 if(shipboard.getTotalNumberOfaToken(Token.BATTERY_CELLS)>0){
-                    List<Point> ActivatableCannons=getActivatable(ComponentType.CANNON);
-
+                    List<Point> ActivatableCannons=shipboard.getActivatableComponents(ComponentType.DOUBLE_CANNON);
 
                 }
                 else {

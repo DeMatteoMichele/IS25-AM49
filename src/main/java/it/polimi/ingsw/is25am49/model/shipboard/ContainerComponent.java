@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,18 +36,21 @@ public class ContainerComponent extends Component {
     public void fillComponent(Token token) {
         Collections.fill(tokens, token);
     }
+    @Override
+    public void clearComponent() {
+        tokens.clear();
+    }
 
     @Override
     public boolean getIsActive() {
-        // lancio eccezione??
-        return false;
+        throw new IllegalMethodOnThisComponent("getIsActive non supportato su ContainerComponent");
     }
     @Override
     public void turnOn() {
-        // lancio eccezione??
+        throw new IllegalMethodOnThisComponent("turnOn non supportato su ContainerComponent");
     }
     @Override
     public void turnOff() {
-        // lancio eccezione??
+        throw new IllegalMethodOnThisComponent("turnOff non supportato su ContainerComponent");
     }
 }
