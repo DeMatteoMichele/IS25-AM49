@@ -13,10 +13,6 @@ public class Game {
     private final List<Player> players = new ArrayList<Player>();
     private int gameId;
     private State currentState;
-
-
-
-
     public Game(GameMode mode) {
         currentState = new InitState(this);
         this.mode = mode;

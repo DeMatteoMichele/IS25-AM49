@@ -49,6 +49,7 @@ public class Contrabbandieri extends AdventureCard {
             ShipBoard shipboard=p.get_shipBoard();
             if(canBeDefeated){
             System.out.println("Hai" + shipboard.getTotalFirePower()+ " potenza di fuoco, puoi sconfiggere i contrabbandieri!");
+            
             System.out.println("Hai sconfitto i contrabbandieri!");
             break;
             }
