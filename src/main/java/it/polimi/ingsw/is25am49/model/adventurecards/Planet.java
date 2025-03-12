@@ -5,12 +5,12 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pianeta {
+public class Planet {
     private boolean isOccupied;
     private int playernumber;
     private final List<Token> Prize;
 
-    public Pianeta(List<Token> Prize) {
+    public Planet(List<Token> Prize) {
         this.isOccupied = false;
         this.Prize =new ArrayList<>(Prize);
     }

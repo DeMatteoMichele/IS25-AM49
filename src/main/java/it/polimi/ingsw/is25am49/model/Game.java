@@ -13,10 +13,14 @@ public class Game {
     private final List<Player> players = new ArrayList<Player>();
     private int gameId;
     private State currentState;
+
     public Game(GameMode mode) {
+        board = new GameBoard();
         currentState = new InitState(this);
         this.mode = mode;
     }
+
+
 
     public GameBoard getGameboard() {
         return board;
@@ -36,6 +40,10 @@ public class Game {
 
     public void userInsertName(Player player, String playerName) {
         currentState.userInsertName(player,playerName);
+    }
+
+    public void addPlayer(Player player){
+        players.add(player);
     }
     /*public void admin_create_lobby(Player player) {
         currentState.admin_create_lobby(player);
