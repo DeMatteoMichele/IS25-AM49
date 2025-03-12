@@ -62,7 +62,7 @@ public class Player {
         handTile = shipBoard.removeTile(coordinates);
     }
     public void placeTile(Point coordinates){
-        shipBoard.insertTile(coordinates, handTile);
+//        shipBoard.insertTile(coordinates, handTile);
     }
     public void rotateTile(){
         handTile.setTileRotation(handTile.getTileRotation());

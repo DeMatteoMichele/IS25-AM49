@@ -34,8 +34,9 @@ public class GameBoard {
         return currentCard;
     }
 
-    public AdventureCard drawAdventureCard() {
-        return mainAdvenureDeck.draw();
+    public void drawAdventureCard() {
+        //return mainAdvenureDeck.draw();
+        currentCard= mainAdvenureDeck.draw();
     }
 
     public void addPlayerToLeaderboard(Integer days , Player player) {
@@ -71,13 +72,13 @@ public class GameBoard {
 
     }
 
-    public Player minimumExposedComponents(){
-        for(Pair<Integer, Player> pair : leaderBoard){
-            Player p = pair.getValue();
-            int temp=p.getShipBoard().getNumberOfExposedConnectors();
-            Math.min(temp,)
-        }
-    }
+//    public Player minimumExposedComponents(){
+//        for(Pair<Integer, Player> pair : leaderBoard){
+//            Player p = pair.getValue();
+//            int temp=p.getShipBoard().getNumberOfExposedConnectors();
+////            Math.min(temp,)
+//        }
+//    }
 
 
     public Player getNextPlayer(Player player) {
