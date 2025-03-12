@@ -13,6 +13,10 @@ public class EffectCannonata extends CardEffect {
         this.level = level;
         this.direction = direction;
     }
-    public void action(Player player) {}
-    public void setPosition(int position) {}
+    public void action(Player player) {
+
+    }
+    public void setPosition(int position) {
+        //indica dove colpisce il cannone
+    }
 }
