@@ -3,9 +3,10 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponent;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Objects;
 
 public class ContainerComponent extends Component {
     private final ArrayList<Token> tokens;
@@ -20,11 +21,24 @@ public class ContainerComponent extends Component {
     }
     @Override
     public int getNumberOfToken() {return tokens.size();}
+
+    @Override
+    public boolean checkIfTokenIsValid(Token token) {
+        switch (token){
+            case BATTERY_CELLS : return type.equals(ComponentType.BATTERY);
+            case ASTRONAUT: return type.equals(ComponentType.CABINE);
+            case PURPLE_ALIENS: return type.equals(ComponentType.PURPLE_ALIEN_MODULE);
+            case BROWN_ALIENS: return type.equals(ComponentType.BROWN_ALIEN_MODULE);
+            case RED_GOODS: return type.equals(ComponentType.SPECIAL_STORAGE);
+            default: return type.equals(ComponentType.STORAGE);
+        }
+    }
+
     @Override
     public void addToken(Token token) {
-        try{
-            tokens.add(token);
-        }catch (IndexOutOfBoundsException e){System.out.println("component pieno\tERROR: " + e.getMessage());}
+        if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
+        else if (Objects.equals(level, tokens.size())) throw new IllegalStateException("Cannot add tokens to container, is full!");
+        else tokens.add(token);
     }
     @Override
     public void removeToken(Token token) {
@@ -34,7 +48,10 @@ public class ContainerComponent extends Component {
     public void removeToken() {tokens.removeLast();}
     @Override
     public void fillComponent(Token token) {
-        Collections.fill(tokens, token);
+        if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
+        for (int i = 0; i < level; i++) {
+            tokens.add(token);
+        }
     }
     @Override
     public void clearComponent() {

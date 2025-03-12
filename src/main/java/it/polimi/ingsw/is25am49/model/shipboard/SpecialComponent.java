@@ -22,6 +22,10 @@ public class SpecialComponent extends Component {
         throw new IllegalMethodOnThisComponent("getNumberOfToken non supportato su SpecialComponent");
     }
     @Override
+    public boolean checkIfTokenIsValid(Token token) {
+        throw new IllegalMethodOnThisComponent("checkIfTokenIsValid non supportato su SpecialComponent");
+    }
+    @Override
     public void addToken(Token token) {
         throw new IllegalMethodOnThisComponent("addToken non supportato su SpecialComponent");
     }

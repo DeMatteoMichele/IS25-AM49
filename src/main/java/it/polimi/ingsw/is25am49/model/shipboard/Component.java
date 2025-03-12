@@ -21,6 +21,7 @@ public abstract class  Component {
 
     public abstract ArrayList<Token> getTokenList();
     public abstract int getNumberOfToken();
+    public abstract boolean checkIfTokenIsValid(Token token);
     public abstract void addToken(Token token);
     public abstract void removeToken(Token token);
     public abstract void removeToken();

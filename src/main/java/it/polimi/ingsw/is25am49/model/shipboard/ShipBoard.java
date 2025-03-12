@@ -102,18 +102,34 @@ public class ShipBoard {
     }
 
     public double getTotalFirePower(){
-        return grid.values()
+        double sum=0;
+        sum+= grid.values()
                 .stream()
                 .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.CANNON))
                 .mapToDouble(Tile::getFirePower)
                 .sum();
+        sum+=grid.values()
+                .stream()
+                .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.DOUBLE_CANNON))
+                .filter((Tile t) -> t.getComponent().getIsActive())
+                .mapToDouble(Tile::getFirePower)
+                .sum();
+        return sum;
     }
     public int getEnginePower(){
-        return grid.values()
+        int sum=0;
+        sum+= grid.values()
                 .stream()
                 .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.ENGINE))
                 .mapToInt(t->t.getComponent().getLevel())
                 .sum();
+        sum+= grid.values()
+                .stream()
+                .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.DOUBLE_ENGINE))
+                .filter((Tile t) -> t.getComponent().getIsActive())
+                .mapToInt(t->t.getComponent().getLevel())
+                .sum();
+        return sum;
     }
 
     public int getTotalNumberOfaToken (Token token){
