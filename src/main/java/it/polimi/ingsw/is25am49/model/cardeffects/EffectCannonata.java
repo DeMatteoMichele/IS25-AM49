@@ -5,7 +5,7 @@ import it.polimi.ingsw.is25am49.model.enums.Orientation;
 
 public class EffectCannonata extends CardEffect {
     private final int level;
-    private Orientation direction;
+    private final Orientation direction;
     private int position;
 
     public EffectCannonata(String name_effect, int level, Orientation direction) {

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
@@ -32,8 +33,9 @@ public class GameBoard {
         return currentCard;
     }
 
-    public AdventureCard drawAdventureCard() {
-        return mainAdvenureDeck.draw();
+    public void drawAdventureCard() {
+        //return mainAdvenureDeck.draw();
+        currentCard= mainAdvenureDeck.draw();
     }
 
     public void addPlayerToLeaderboard(Integer days , Player player) {
@@ -63,6 +65,21 @@ public class GameBoard {
             toAdd += 2; //crediti per i componentiesposti
         }
         player.addCredit(toAdd);
+    }
+
+    public void calculate_final_score(Player player) {
+        int toAdd = 0;
+        toAdd = 5 - leaderBoard.indexOf(player);
+        toAdd = toAdd - player.getLostComponents();
+
+        int redToken= player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
+        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
+        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
+        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
+        toAdd = toAdd + redToken*4 + blueToken + yellowToken*3 + greenToken*2;
+        player.getShipBoard().removeAllTokens();
+
+
     }
 
     public List<Player> minimumExposedComponents() {

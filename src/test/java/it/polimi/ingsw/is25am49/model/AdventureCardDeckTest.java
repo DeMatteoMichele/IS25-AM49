@@ -1,14 +1,12 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.model.adventurecards.Contrabbandieri;
-import it.polimi.ingsw.is25am49.model.adventurecards.Epidemia;
-import it.polimi.ingsw.is25am49.model.adventurecards.Pianeti;
+import it.polimi.ingsw.is25am49.model.adventurecards.SmugglerCard;
+import it.polimi.ingsw.is25am49.model.adventurecards.EpidemyCard;
+import it.polimi.ingsw.is25am49.model.adventurecards.PlanetCard;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyGoods;
 import it.polimi.ingsw.is25am49.model.exceptions.FinishDeckExceptions;
-import javafx.scene.effect.Effect;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -29,8 +27,8 @@ class AdventureCardDeckTest {
     void init(){
         deck2 = new AdventureCardDeck();
         effects.add(cannonata);
-        card = new Pianeti("pianeti",3,1,20, effects);
-        card2 = new Epidemia("epidemia", 2,3,15,effects);
+        card = new PlanetCard("pianeti",3,1,20, effects);
+        card2 = new EpidemyCard("epidemia", 2,3,15,effects);
 
 
     }

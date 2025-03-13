@@ -18,6 +18,7 @@ public class AdventureCardDeck {
         if(deck.isEmpty()){
             throw new FinishDeckExceptions("Il deck è vuoto");
         }
+        deck.get(0).drawCard();
         return deck.remove(0);
     }
     public void generateDeck(){

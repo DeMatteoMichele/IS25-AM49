@@ -105,6 +105,10 @@ public class Player {
     }
 
 
+    public void setDaysThisTurn(int daysThisTurn) {
+        this.daysThisTurn = daysThisTurn;
+    }
+
     public int getDaysThisTurn() {
         return daysThisTurn;
 

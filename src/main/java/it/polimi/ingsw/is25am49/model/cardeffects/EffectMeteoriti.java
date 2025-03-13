@@ -4,8 +4,8 @@ import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 
 public class EffectMeteoriti extends CardEffect {
-    private int level;
-    private Orientation direction;
+    private final int level;
+    private final Orientation direction;
     private int position;
 
     public EffectMeteoriti(String name_effect, int level, Orientation direction) {
