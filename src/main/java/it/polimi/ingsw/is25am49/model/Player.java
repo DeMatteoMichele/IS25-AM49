@@ -18,6 +18,21 @@ public class Player {
     private Color color;
     private int lostComponents=0;
 
+
+    public Player(int daysThisTurn, String username, int playerNumber, ShipBoard shipBoard, Tile handTile, int finalsScore,int totCredits,int travelDays,Color color,int lostComponents) {
+        this.daysThisTurn = daysThisTurn;
+        this.username = username;
+        this.playerNumber = playerNumber;
+        this.shipBoard = shipBoard;
+        this.handTile = handTile;
+        this.finalsScore = finalsScore;
+        this.totCredits = totCredits;
+        this.travelDays = travelDays;
+        this.color = color;
+        this.lostComponents = lostComponents;
+
+
+    }
     public int scoreOfGoods(){
         int totale= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;
         shipBoard.removeAllTokens();

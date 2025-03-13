@@ -17,7 +17,7 @@ public class Game {
     public Game(GameMode mode) {
         board = new GameBoard();
         currentState = new InitState(this);
-        this.mode = mode;
+        mode = GameMode.LEVEL_1;
     }
 
 

@@ -54,24 +54,23 @@ public class GameBoard {
         return leaderBoard.get(0).getValue();
     }
 
-    public void calculateAdditionalCredits(Player player) {
+    public void calculateFinalCredits(Player player) {
         int toAdd = 0;
         toAdd = 5 - leaderBoard.indexOf(player); //crediti per la posizione
         toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
         toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
         if(minimumExposedComponents().contains(player)) {
-            toAdd += 2;
+            toAdd += 2; //crediti per i componentiesposti
         }
         player.addCredit(toAdd);
-
-
     }
 
     public List<Player> minimumExposedComponents() {
 
         int minValue = leaderBoard.
                 stream()
-                .map(Pair :: getValue)
+                .map(Pair :: getValue)//ritorno il player
+                //ritorno solo il numero di connettori esposti dato il player
                 .mapToInt(p-> p.getShipBoard().getNumberOfExposedConnectors())
                 .min()
                 .orElse(0);
@@ -79,13 +78,9 @@ public class GameBoard {
         return leaderBoard
                 .stream()
                 .map(Pair:: getValue) //ritorna il player
-                //cerco se il player ha il minimo valore di conncetors, se si lo filtro 
+                //cerco se il player ha il minimo valore di conncetors, se si lo filtro
                 .filter(p-> p.getShipBoard().getNumberOfExposedConnectors()==minValue)
                 .collect(Collectors.toList());
-
-
-
-
 
     }
 
@@ -107,6 +102,6 @@ public class GameBoard {
     }
 
     public void updateLeaderboard() {
-
+        //con i daysthisturn devo fare update facendo perde i giorni
     }
 }
