@@ -2,10 +2,10 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class AdventureCard {
     protected String description;
@@ -14,6 +14,7 @@ public abstract class AdventureCard {
     protected int creditsEarned;
     protected final List<CardEffect> listEffects;
     protected int level;
+    protected int dicesResult;
 
     public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
         this.description = description;
@@ -48,11 +49,14 @@ public abstract class AdventureCard {
     }
 
 
-
-
     public void rollDices(){
-        throw new IllegalMethodOnThisCardException("Non puoi chiamare rollDices su questa carta");
-    }
+            Random random = new Random();
+            int firstDice = random.nextInt(6) + 1;
+            int secondDice = random.nextInt(6) + 1;
+            dicesResult = firstDice + secondDice;
+            System.out.println("Hai lanciato i dadi: " + firstDice + " e " + secondDice + ". Risultato totale: " + dicesResult);
+        }
+
 
 
 
