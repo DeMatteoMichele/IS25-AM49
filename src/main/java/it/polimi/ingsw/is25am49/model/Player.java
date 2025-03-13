@@ -19,17 +19,14 @@ public class Player {
     private int lostComponents=0;
 
 
-    public Player(int daysThisTurn, String username, int playerNumber, ShipBoard shipBoard, Tile handTile, int finalsScore,int totCredits,int travelDays,Color color,int lostComponents) {
-        this.daysThisTurn = daysThisTurn;
+    public Player( String username, int playerNumber, ShipBoard shipBoard, Color color) {
+
         this.username = username;
         this.playerNumber = playerNumber;
         this.shipBoard = shipBoard;
-        this.handTile = handTile;
-        this.finalsScore = finalsScore;
-        this.totCredits = totCredits;
-        this.travelDays = travelDays;
+
         this.color = color;
-        this.lostComponents = lostComponents;
+
 
 
     }
