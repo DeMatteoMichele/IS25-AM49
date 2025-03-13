@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +49,24 @@ public abstract class AdventureCard {
         System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
     }
 
+    public void landingOnStationOrShip(){
+        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    }
+
+    public void landingOnPlanet(){
+        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    }
+
+
+
 
     public void rollDices(){
             Random random = new Random();
             int firstDice = random.nextInt(6) + 1;
             int secondDice = random.nextInt(6) + 1;
             dicesResult = firstDice + secondDice;
-            System.out.println("Hai lanciato i dadi: " + firstDice + " e " + secondDice + ". Risultato totale: " + dicesResult);
+            System.out.println("You have rolled the dices: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
+
         }
 
 
