@@ -16,6 +16,7 @@ public class EffectCannonata extends CardEffect {
     public void action(Player player) {
 
     }
+
     public void setPosition(int position) {
         //indica dove colpisce il cannone
     }
