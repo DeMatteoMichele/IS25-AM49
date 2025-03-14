@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+import javafx.scene.effect.Effect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public abstract class AdventureCard {
     protected final List<CardEffect> listEffects;
     protected int level;
     protected int dicesResult;
+    protected CardEffect currentEffect;
 
     public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
         this.description = description;
@@ -55,6 +57,10 @@ public abstract class AdventureCard {
 
     public void landingOnPlanet(){
         throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    }
+
+    public CardEffect getCurrentEffect(){
+        return currentEffect;
     }
 
 
