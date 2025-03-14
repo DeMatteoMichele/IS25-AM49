@@ -19,9 +19,6 @@ public class Game {
         currentState = new InitState(this);
         this.mode = mode;
     }
-
-
-
     public GameBoard getGameboard() {
         return board;
     }
