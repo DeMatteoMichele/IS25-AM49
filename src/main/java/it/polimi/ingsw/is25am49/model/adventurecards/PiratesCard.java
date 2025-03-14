@@ -44,7 +44,6 @@ public class PiratesCard extends EnemyCard {
             System.out.println("Remember: you can't defend your ship from big cannonades!");
             return false;
         }
-
         //TODO LOGIC OF ROLL DICES AND DECISION
     }
 
