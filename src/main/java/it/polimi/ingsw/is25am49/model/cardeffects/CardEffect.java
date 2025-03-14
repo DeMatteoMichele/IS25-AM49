@@ -12,4 +12,6 @@ public abstract class CardEffect {
     public abstract void setPosition(int position);
 
 
+
+
 }

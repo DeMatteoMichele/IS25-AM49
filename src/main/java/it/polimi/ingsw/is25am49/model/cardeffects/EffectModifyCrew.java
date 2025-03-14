@@ -10,16 +10,17 @@ public class EffectModifyCrew extends CardEffect {
     private int lostAstronauts;
     private Point coordinate;
     public EffectModifyCrew(String nameEffect, int lostAstronauts) {
-
         super(nameEffect);
         this.lostAstronauts = lostAstronauts;
     }
+
     public void action(Player player) {
         while(player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT)!=0 && lostAstronauts!=0){
             player.getShipBoard().removeTokenFromTile(coordinate, Token.ASTRONAUT);
             lostAstronauts--;
         }
     }
+
     public void setPosition(int position) {
         throw new IllegalMethodOnThisCardException("Illegal Method on Effect ModifyCrew");
     }
