@@ -60,7 +60,7 @@ public abstract class EnemyCard extends AdventureCard {
 
 
     //this method below returns true if we must change player
-    //false if we must remain in the same player
+    //false if we must remain in the same player OR IF THE CARD ISFINISHED
     //isFinished is set to true if the card is finished and a new card has to be drawn
 
     //****************************************************************************************

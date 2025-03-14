@@ -2,39 +2,105 @@ package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.model.exceptions.GameDoesNotExistException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.model.exceptions.NormalUserCannotModifyGameSettingsException;
+
 import java.awt.*;
 
 public class InitState extends State {
-    public InitState(Game game){
-        super(game);
+    public InitState(GameSession gameSession){
+        super(gameSession);
     }
-    public void adminSelectGameMode(GameMode gamemode) {}
-    public void userSelectColor(Player player, Color playerColor) {}
-    public void userInsertName(Player player,String playerName) {}
 
-    // public void adminCreateLobby(Player) {}
-    // public void userJoinLobby() {}
-    // public void adminStartGame() {}
-
-    public void userPlaceTile(Player player, Point coordinates) {
+    //Implemented
+    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+        if(gameSession.getGame() == null)
+            throw new GameDoesNotExistException("The game has not been created");
+        if(player.equals(gameSession.getAdmin()))
+            gameSession.setGameMode(gamemode);
+        else
+            throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
     }
-    public void userRotateTile(Player player, Point coordinates) {}
-    public void userPickTile(Player player, Point coordinates) {}
-    public void userDiscardTile(Player player) {}
-    public void userDrawTile(Player player, int idTIle) {}
-    public void userFinishShipboard(Player player) {}
-    public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {}
-    public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {}
-    public void userPlaceTimer(Player player) {}
-    public void userThrowDices(Player player) {}
+    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {
+        if(gameSession.getGame() == null)
+            throw new GameDoesNotExistException("The game has not been created");
+        gameSession.userSelectColorAndUserName(playerColor, username);
+    }
+    public void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException {
+        if(player.equals(gameSession.getAdmin()))
+            gameSession.createNewGame();
+        else
+            throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
+    }
+    //not sure is complete
+    public void adminStartGame(Player player) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
+        if(gameSession.getGame() == null)
+            throw new GameDoesNotExistException("The game has not been created");
+        if(player.equals(gameSession.getAdmin()))
+            this.transition(new BuildState(gameSession));
+        else
+            throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
+
+    }
+    public void adminSelectTypeFlight(Player player, FlightMode flightMode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+        if(player.equals(gameSession.getAdmin()))
+            gameSession.adminSelectTypeFlight(flightMode);
+        else
+            throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
+    }
+
+    //Illegal
+    public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userThrowDices(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
 
 
-    public void userDrawAdventureCard(Player player) {}
-    public void userPlayAdventureCard(Player player) {}
-    public void userEffectDecision(Player player) {}
-    public void userActivateComponent(Player player, Point coordinates) {}
-    public void userActivateDaysUpdate() {}
-    public void userQuitGame(Player player) {}
-
+    public void userDrawAdventureCard(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userPlayAdventureCard(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userEffectDecision(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userActivateComponent(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userActivateDaysUpdate() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userQuitGame(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
 }

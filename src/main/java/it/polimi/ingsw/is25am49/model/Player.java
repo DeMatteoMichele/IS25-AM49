@@ -7,28 +7,29 @@ import it.polimi.ingsw.is25am49.model.shipboard.*;
 import java.awt.*;
 
 public class Player {
-    private int daysThisTurn=0;
+    private int daysThisTurn;
     private String username;
     private int playerNumber;
     private ShipBoard shipBoard;
     private Tile handTile;
-    private int finalsScore=0;
-    private int totCredits=0;
-    private int travelDays=0;
+    private int finalsScore;
+    private int totCredits;
+    private int travelDays;
     private Color color;
-    private int lostComponents=0;
+    private int lostComponents;
 
 
-    public Player( String username, int playerNumber, ShipBoard shipBoard, Color color) {
-
+    public Player(String username, Color color) {
         this.username = username;
-        this.playerNumber = playerNumber;
-        this.shipBoard = shipBoard;
-
         this.color = color;
-
-
-
+        daysThisTurn = 0;
+        playerNumber = 0;
+        shipBoard = new ShipBoard();
+        handTile = null;
+        finalsScore = 0;
+        totCredits = 0;
+        travelDays = 0;
+        lostComponents = 0;
     }
     public int scoreOfGoods(){
         int totale= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;
