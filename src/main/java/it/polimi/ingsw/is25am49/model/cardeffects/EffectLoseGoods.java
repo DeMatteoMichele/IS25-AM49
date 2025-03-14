@@ -20,7 +20,6 @@ public class EffectLoseGoods extends CardEffect {
         while(player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS)!=0 && numberOfTokensToLose!=0 ){
                 player.getShipBoard().removeTokenFromTile(coordinate, Token.RED_GOODS);
                 numberOfTokensToLose--;
-
         }
         while(player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS)!=0 && numberOfTokensToLose!=0 ){
                 player.getShipBoard().removeTokenFromTile(coordinate, Token.YELLOW_GOODS);

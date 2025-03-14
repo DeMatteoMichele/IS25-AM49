@@ -72,7 +72,7 @@ public abstract class AdventureCard {
             int secondDice = random.nextInt(6) + 1;
             dicesResult = firstDice + secondDice;
             System.out.println("You have rolled the dices: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
-
+            currentEffect.setPosition(dicesResult);
         }
 
 

@@ -17,6 +17,7 @@ public abstract class EnemyCard extends AdventureCard {
         super(description, daysLost, level, creditsEarned, listEffects);
         this.minimumFirePower = minimumFirePower;
         this.lostAstronauts = lostAstronauts;
+        isFinished=false;
     }
 
     // methods return an int based on what state we must go to

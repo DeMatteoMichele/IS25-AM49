@@ -16,8 +16,9 @@ public class AbandonedShipCard extends AdventureCard {
     public AbandonedShipCard(String description, int daysLost, int level, int creditsEarned, int lostAstronauts, List<CardEffect> ListEffects){
         super(description,daysLost,level,creditsEarned,ListEffects );
         this.lostAstronauts = lostAstronauts;
-        //ListEffects.add(new EffectModifyCrew("EffectModifyCrew",lostAstronauts));
+        listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
     }
+
 
     // methods return an int based on what state we must go to
     // 0 = check requirements
@@ -51,7 +52,6 @@ public class AbandonedShipCard extends AdventureCard {
     public boolean applyEffect(Player player) {
         if (isLanded) {
             System.out.println("You win " + creditsEarned + " credits");
-
             player.addCredit( creditsEarned);
             listEffects.getFirst().action(player);
             isFinished = true;
