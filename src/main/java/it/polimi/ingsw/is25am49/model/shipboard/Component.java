@@ -21,10 +21,12 @@ public abstract class  Component {
 
     public abstract ArrayList<Token> getTokenList();
     public abstract int getNumberOfToken();
+    public abstract boolean checkIfTokenIsValid(Token token);
     public abstract void addToken(Token token);
     public abstract void removeToken(Token token);
     public abstract void removeToken();
     public abstract void fillComponent(Token token);
+    public abstract void clearComponent();
 
     public abstract boolean getIsActive();
     public abstract void turnOn();

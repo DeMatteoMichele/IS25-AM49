@@ -1,14 +1,15 @@
 package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.Game;
+import it.polimi.ingsw.is25am49.model.GameSession;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
 
 public class DrawState extends AdventureState {
-    public DrawState(Game game){
-        super(game);
+    public DrawState(GameSession gameSession){
+        super(gameSession);
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {}
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {}

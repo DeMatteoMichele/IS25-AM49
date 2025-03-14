@@ -2,28 +2,29 @@ package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.model.exceptions.GameDoesNotExistException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.model.exceptions.NormalUserCannotModifyGameSettingsException;
 
 import java.awt.*;
 
 
 public abstract class State {
-    public State(Game game){
-        this.game = game;
+    public State(GameSession gameSession){
+        this.gameSession = gameSession;
     }
-    protected final Game game;
+    protected final GameSession gameSession;
     public void transition(State nextState) {
-        game.setState(nextState);
+        gameSession.setState(nextState);
     }
 
-    public abstract void adminSelectGameMode(GameMode gamemode) throws IllegalMethodOnThisStateException;
-    public abstract void userSelectColor(Player player, Color playerColor) throws IllegalMethodOnThisStateException;
-    public abstract void userInsertName(Player player,String playerName) throws IllegalMethodOnThisStateException;
-
-    // public abstract void adminCreateLobby(Player) {}
-    // public abstract void userJoinLobby() {}
-    // public abstract void adminStartGame() {}
+    public abstract void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException;
+    public abstract void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException;
+    public abstract void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException;
+    public abstract void adminStartGame(Player player) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException;
+    public abstract void adminSelectTypeFlight(Player player, FlightMode flightMode) throws IllegalMethodOnThisStateException,NormalUserCannotModifyGameSettingsException, GameDoesNotExistException;
 
     public abstract void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
     public abstract void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException;

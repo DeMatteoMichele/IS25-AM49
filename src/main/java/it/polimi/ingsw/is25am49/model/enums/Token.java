@@ -5,7 +5,7 @@ public enum Token {
     BLUE_GOODS,
     YELLOW_GOODS,
     GREEN_GOODS,
-    YELLOW_ALIENS,
+    BROWN_ALIENS,
     PURPLE_ALIENS,
     BATTERY_CELLS,
     ASTRONAUT;

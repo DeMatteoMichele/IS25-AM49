@@ -6,22 +6,24 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardExceptio
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class AdventureCard {
     protected String description;
     protected int daysLost;
-    protected int flagDecision;
+    protected boolean isFinished;
     protected int creditsEarned;
     protected final List<CardEffect> listEffects;
     protected int level;
+    protected int dicesResult;
 
-    public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
+    public AdventureCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
         this.description = description;
         this.daysLost = daysLost;
-//        this.flagDecision = 0;
+        this.isFinished = false;
         this.creditsEarned = creditsEarned;
         this.level = level;
-        this.listEffects = new ArrayList<>(ListEffects);
+        this.listEffects = new ArrayList<>(listEffects);
     }
 
     public String getDescription() {
@@ -47,12 +49,26 @@ public abstract class AdventureCard {
         System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
     }
 
+    public void landingOnStationOrShip(){
+        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    }
+
+    public void landingOnPlanet(){
+        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    }
+
 
 
 
     public void rollDices(){
-        throw new IllegalMethodOnThisCardException("Non puoi chiamare rollDices su questa carta");
-    }
+            Random random = new Random();
+            int firstDice = random.nextInt(6) + 1;
+            int secondDice = random.nextInt(6) + 1;
+            dicesResult = firstDice + secondDice;
+            System.out.println("You have rolled the dices: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
+
+        }
+
 
 
 

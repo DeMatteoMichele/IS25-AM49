@@ -2,40 +2,19 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
+import java.awt.*;
 import java.util.List;
 
-public class SlaverCard extends AdventureCard {
+public class SlaverCard extends EnemyCard {
 
-    int lostAstronauts;
-    int minimumFirePower;
-
-    public SlaverCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
-        super(description, daysLost, level, creditsEarned, ListEffects);
+    public SlaverCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int lostAstronauts, List<CardEffect> listEffects) {
+        super(description, daysLost, level, creditsEarned, minimumFirePower, lostAstronauts, listEffects);
     }
 
-    @Override
-    public int checkRequirements(Player player) {
-        return 0;
-    }
-
-//    @Override
-//    public void askForDecision(Player player) {
-//
-//    }
-
-    @Override
-    public boolean applyEffect(Player player) {
-        return true;
-
-    }
-
-    public void setMinimumFirePower(int minimumFirePower) {
-        this.minimumFirePower = minimumFirePower;
-    }
-
-    public void setLostAstronauts(int lostAstronauts) {
-        this.lostAstronauts = lostAstronauts;
-    }
+    //ALL IMPLEMENTED IN ENEMYCARD
 
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
@@ -16,7 +17,11 @@ public class GameBoard {
     private AdventureCard currentCard;
     private int currentPlayer;
     private Timer timer;
+    private FlightMode flightMode;
 
+    public void setFlightMode(FlightMode flightMode){
+        this.flightMode = flightMode;
+    }
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
@@ -56,17 +61,15 @@ public class GameBoard {
         return leaderBoard.get(0).getValue();
     }
 
-    public void calculateAdditionalCredits(Player player) {
+    public void calculateFinalCredits(Player player) {
         int toAdd = 0;
         toAdd = 5 - leaderBoard.indexOf(player); //crediti per la posizione
         toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
         toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
         if(minimumExposedComponents().contains(player)) {
-            toAdd += 2;
+            toAdd += 2; //crediti per i componentiesposti
         }
         player.addCredit(toAdd);
-
-
     }
 
     public void calculate_final_score(Player player) {
@@ -88,7 +91,8 @@ public class GameBoard {
 
         int minValue = leaderBoard.
                 stream()
-                .map(Pair :: getValue)
+                .map(Pair :: getValue)//ritorno il player
+                //ritorno solo il numero di connettori esposti dato il player
                 .mapToInt(p-> p.getShipBoard().getNumberOfExposedConnectors())
                 .min()
                 .orElse(0);
@@ -120,6 +124,6 @@ public class GameBoard {
     }
 
     public void updateLeaderboard() {
-
+        //con i daysthisturn devo fare update facendo perde i giorni
     }
 }

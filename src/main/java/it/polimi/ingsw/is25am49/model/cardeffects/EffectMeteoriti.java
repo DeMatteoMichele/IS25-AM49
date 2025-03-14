@@ -14,5 +14,7 @@ public class EffectMeteoriti extends CardEffect {
         this.direction = direction;
     }
     public void action(Player player) {}
-    public void setPosition(int position) {}
+    public void setPosition(int position) {
+        //serve per i meteoriti per selezionare la riga in cui viene colpito, rollando i dadi aggiorni set position
+    }
 }

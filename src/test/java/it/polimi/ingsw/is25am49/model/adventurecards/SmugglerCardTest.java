@@ -24,7 +24,8 @@ class SmugglerCardTest {
     int daysLost = 10;
     int level=4;
     int minimumFirePower = 5;
-    int creditsEarned = 40;
+    int lostAstronauts = 0;
+    int creditsEarned = 0;
     List<CardEffect> ListEffect= new ArrayList<>();
 
 
@@ -33,7 +34,7 @@ class SmugglerCardTest {
 
     @BeforeEach
     void init(){
-        smugglerCard=new SmugglerCard(description,daysLost, level, creditsEarned, minimumFirePower,ListEffect);
+        smugglerCard=new SmugglerCard(description,daysLost, level, creditsEarned, minimumFirePower, lostAstronauts,ListEffect);
     }
 
     @Test
