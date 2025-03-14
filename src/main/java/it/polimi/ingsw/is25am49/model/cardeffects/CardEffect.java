@@ -10,4 +10,6 @@ public abstract class CardEffect {
     }
     public abstract void action(Player player);
     public abstract void setPosition(int position);
+
+
 }

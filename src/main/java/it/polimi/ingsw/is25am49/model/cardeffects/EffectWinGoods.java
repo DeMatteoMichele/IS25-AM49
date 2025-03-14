@@ -1,6 +1,9 @@
 package it.polimi.ingsw.is25am49.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+
+import java.util.IllegalFormatWidthException;
 
 public class EffectWinGoods extends CardEffect {
     private int redGoods;
@@ -17,8 +20,9 @@ public class EffectWinGoods extends CardEffect {
     }
     public void action(Player player) {
 
+
     }
     public void setPosition(int position) {
-
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 }
