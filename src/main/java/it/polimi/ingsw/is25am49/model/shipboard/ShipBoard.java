@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import java.awt.Point;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 public class ShipBoard {
@@ -71,7 +72,6 @@ public class ShipBoard {
         //algoritmo mistico
         return 0;
     }
-
     public void addTokenToTile(Point coordinates, Token  token){
         grid.get(coordinates).getComponent().addToken(token);
     }
@@ -135,6 +135,14 @@ public class ShipBoard {
     public int getTotalNumberOfaToken (Token token){
         //scorro griglia e sommo
         return 0;
+    }
+    public ArrayList<Point> getPositionsOfaToken(Token token){
+        return grid.entrySet().stream()
+                .filter(entry -> entry.getValue().getComponent().checkIfTokenIsValid(token))
+                .filter(entry -> entry.getValue().getComponent().checkIfContainsToken(token))
+                .flatMap(entry -> IntStream.range(0, entry.getValue().getComponent().getNumberOfToken())
+                        .mapToObj(i -> entry.getKey()))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
     public void removeAllTokens(){}
 
