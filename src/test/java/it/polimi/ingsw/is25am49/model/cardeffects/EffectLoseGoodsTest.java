@@ -22,28 +22,37 @@ class EffectLoseGoodsTest {
     ShipBoard shipBoard;
     Tile tile;
     Component component;
+    Component component2;
     Point coordinate = new Point(3, 2);
+    Point coordinate2 = new Point(3, 4);
     CardEffect card;
+    Tile tile2;
 
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        player = new Player("io",Color.RED);
-
-        component = new ContainerComponent(ComponentType.STORAGE, 4);
+        player = new Player("io",Color.RED,3);
+        component2 = new ContainerComponent(ComponentType.BATTERY,4);
+        component = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 5);
         tile = new Tile(3, component );
-        shipBoard.insertTile(coordinate, tile);
-        shipBoard.addTokenToTile(coordinate, Token.YELLOW_GOODS);
-        shipBoard.addTokenToTile(coordinate, Token.BLUE_GOODS);
-        shipBoard.addTokenToTile(coordinate, Token.YELLOW_GOODS);
-        shipBoard.addTokenToTile(coordinate, Token.GREEN_GOODS);
+        tile2 = new Tile(2,component2);
+        player.getShipBoard().insertTile(coordinate, tile);
+        player.getShipBoard().insertTile(coordinate2, tile2);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.RED_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.RED_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.BLUE_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.YELLOW_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.GREEN_GOODS);
         card = new EffectLoseGoods("perdi", 2);
 
     }
     @Test
     void action() {
         card.action(player);
-        assertEquals(0, shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS));
+        assertEquals(1, player.getShipBoard().getPositionsOfaToken(Token.GREEN_GOODS).size());
 
     }
 

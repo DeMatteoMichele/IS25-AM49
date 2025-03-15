@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model.cardeffects;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalSizeToRemove;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -18,9 +19,14 @@ public class EffectModifyCrew extends CardEffect {
     }
 
     public void action(Player player) {
+        if(coordinates.size()!=lostCrew) {
+            throw new IllegalSizeToRemove("Please select the right amount of crew to remove");
+        }
         //per tutte le coordinate nella lista rimuovo il rispettivo Token
         for(Pair<Point, Token> coordinate : coordinates) {
             player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
+            System.out.println("rimozione di "+ coordinate.getValue() + " dalla posizione "+ coordinate.getKey());
+
         }
     }
 

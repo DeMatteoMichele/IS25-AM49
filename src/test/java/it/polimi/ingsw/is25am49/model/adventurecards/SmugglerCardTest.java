@@ -4,8 +4,10 @@ import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectMeteoriti;
+
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
+
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -40,7 +42,7 @@ class SmugglerCardTest {
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        Player player = new Player("Pippo", Color.BLUE);
+        Player player = new Player("Pippo", Color.BLUE,2);
         smugglerCard=new SmugglerCard(description,daysLost, level, creditsEarned, minimumFirePower, lostAstronauts,ListEffect);
     }
 
