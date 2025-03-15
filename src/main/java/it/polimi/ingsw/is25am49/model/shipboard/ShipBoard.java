@@ -32,6 +32,7 @@ public class ShipBoard {
 
         switch (level){
             case 1:
+                //inizializzo tutte le tile posizioni della nave con componenti Type SKY;
                 break;
             case 2:
                 break ;
@@ -57,8 +58,8 @@ public class ShipBoard {
         this.destroyedTiles += n;
     }
 
-    public void checkValidPosition(Point p){
-
+    public boolean checkValidCoordinates(Point coordinates) {
+        return grid.containsKey(coordinates);
     }
     public Tile getTile(Point coordinates){
         return grid.get(coordinates);

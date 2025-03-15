@@ -40,7 +40,7 @@ class SmugglerCardTest {
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        Player player = new Player("Pippo", 1, shipBoard, Color.BLUE);
+        Player player = new Player("Pippo", Color.BLUE);
         smugglerCard=new SmugglerCard(description,daysLost, level, creditsEarned, minimumFirePower, lostAstronauts,ListEffect);
     }
 

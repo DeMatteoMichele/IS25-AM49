@@ -9,6 +9,7 @@ class ShipBoardTest {
 
     @BeforeEach
     void setUp() {
+        var ship = new ShipBoard(1,1);;
     }
 
     @Test

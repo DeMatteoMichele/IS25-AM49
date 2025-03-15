@@ -28,7 +28,7 @@ class EffectLoseGoodsTest {
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        player = new Player("io",Color.RED,2);
+        player = new Player("io",Color.RED);
 
         component = new ContainerComponent(ComponentType.STORAGE, 4);
         tile = new Tile(3, component );

@@ -23,31 +23,40 @@ class EffectModifyEnergyTest {
     Player player;
     ShipBoard shipBoard;
     Tile tile;
+    Tile tile2;
     Component component;
     Point coordinate = new Point(0, 0);
+    Point coordinate2 = new Point(1, 1);
     CardEffect cardEffect;
+    Component component2;
 
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        player = new Player("io",Color.RED,2);
+        player = new Player("io",Color.RED);
 
         component = new ContainerComponent(ComponentType.BATTERY, 4);
+        component2 = new ContainerComponent(ComponentType.BATTERY,4);
         tile = new Tile(1, component );
-        shipBoard.insertTile(coordinate, tile);
-        shipBoard.addTokenToTile(coordinate, Token.BATTERY_CELLS);
-        shipBoard.addTokenToTile(coordinate, Token.BATTERY_CELLS);
-        shipBoard.addTokenToTile(coordinate, Token.BATTERY_CELLS);
-        shipBoard.addTokenToTile(coordinate, Token.BATTERY_CELLS);
+        tile2 = new Tile(2,component2);
+        player.getShipBoard().insertTile(coordinate, tile);
+        player.getShipBoard().insertTile(coordinate2, tile2);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate,Token.BATTERY_CELLS);
 
-        cardEffect = new EffectModifyEnergy("perdi energia", 3);
+        cardEffect = new EffectModifyEnergy("perdi energia", 5);
     }
 
     @Test
     void action() {
         //when(player.getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(1);
         cardEffect.action(player);
-        assertEquals(0, shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS));
+        assertEquals(2, player.getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS));
     }
 
     @Test
