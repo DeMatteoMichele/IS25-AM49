@@ -1,13 +1,9 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
-import com.sun.tools.javac.Main;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 
 import java.awt.Point;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,21 +32,9 @@ public class ShipBoard {
 
         switch (level){
             case 1:
-                try {
-                    // Ottieni il path del file nel classpath
-                    String path = Objects.requireNonNull(Main.class.getClassLoader()
-                            .getResource("it/polimi/ingsw/is25am49/shipboard_config.json")).getPath();
-
-                    // Leggi il file in una stringa
-                    String shipPoints = Files.readString(Path.of(path));
-
-                    System.out.println(shipPoints);
-                } catch (IOException | NullPointerException e) {
-                    e.printStackTrace();
-                }
                 break;
             case 2:
-            break ;
+                break ;
         }
     }
 

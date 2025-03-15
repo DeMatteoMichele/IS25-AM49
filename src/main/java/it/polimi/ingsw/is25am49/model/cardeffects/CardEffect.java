@@ -13,6 +13,6 @@ public abstract class CardEffect {
     }
     public abstract void action(Player player);
     public abstract void setPosition(int position);
-    public abstract void setListOfCoordinates(ArrayList<Point> coordinates);
+    //public abstract void setListOfCoordinates(ArrayList<Point> coordinates);
 
 }

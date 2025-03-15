@@ -27,7 +27,7 @@ class EffectModifyCrewTest {
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        player = new Player("io",2,shipBoard, Color.RED);
+        player = new Player("io", Color.RED,2);
 
         component = new ContainerComponent(ComponentType.CABINE, 5);
         tile = new Tile(3, component );

@@ -30,7 +30,7 @@ class EffectModifyEnergyTest {
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        player = new Player("io",2,shipBoard,Color.RED);
+        player = new Player("io",Color.RED,2);
 
         component = new ContainerComponent(ComponentType.BATTERY, 4);
         tile = new Tile(1, component );
