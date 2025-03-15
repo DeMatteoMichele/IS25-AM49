@@ -20,14 +20,15 @@ public abstract class  Component {
     public ComponentType getType(){return type;}
 
     public abstract ArrayList<Token> getTokenList();
-    public abstract int getNumberOfToken();
+    public abstract int getNumberOfTokens();
+    public abstract int getNumberOfaToken(Token token);
     public abstract boolean checkIfTokenIsValid(Token token);
     public abstract void addToken(Token token);
     public abstract void removeToken(Token token);
     public abstract void removeToken();
     public abstract void fillComponent(Token token);
     public abstract void clearComponent();
-    public abstract boolean checkIfContainsToken(Token token);
+
 
     public abstract boolean getIsActive();
     public abstract void turnOn();

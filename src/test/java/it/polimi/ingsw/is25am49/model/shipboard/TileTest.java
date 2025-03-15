@@ -6,7 +6,6 @@ import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +28,7 @@ class TileTest {
         t3= new Tile(3, new SpecialComponent(ComponentType.SHIELD,1));
 
         t11.setConnectors(ConnectorType.FLAT, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
+        t11.setTileRotation(Orientation.NORTH);
     }
     @AfterEach
     void tearDown() {
@@ -58,21 +58,29 @@ class TileTest {
     }
 
     @Test
-    void rotateTileClockwise() {
+    void testRotateTileClockwise() {
         t11.rotateTileClockwise();
         assertEquals(Orientation.EAST, t11.getTileRotation());
-        assertEquals(ConnectorType.UNIVERSAL, t11.getConnector(Orientation.WEST));
-        assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.NORTH));
-        assertEquals(ConnectorType.SINGLE, t11.getConnector(Orientation.EAST));
-        assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.SOUTH));
+        assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.WEST));
+        assertEquals(ConnectorType.SINGLE, t11.getConnector(Orientation.NORTH));
+        assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.EAST));
+        assertEquals(ConnectorType.UNIVERSAL, t11.getConnector(Orientation.SOUTH));
     }
-
     @Test
-    void rotateTileCounterClockwise() {
+    void testTileCounterClockwise() {
+        t11.rotateTileCounterClockwise();
+        assertEquals(Orientation.WEST, t11.getTileRotation());
+        assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.WEST));
+        assertEquals(ConnectorType.UNIVERSAL, t11.getConnector(Orientation.NORTH));
+        assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.EAST));
+        assertEquals(ConnectorType.SINGLE, t11.getConnector(Orientation.SOUTH));
     }
 
     @Test
     void lockTile() {
+        t22.lockTile();
+        assertTrue(t22.isLocked());
+        assertFalse(t11.isLocked());
     }
 
     @Test
@@ -82,10 +90,11 @@ class TileTest {
     }
 
     @Test
-    void getFirePower() {
+    void testGetFirePower() {
+        assertEquals(0,t11.getFirePower());
+        assertEquals(2,t12.getFirePower());
+        t12.rotateTileCounterClockwise();
+        assertEquals(1,t12.getFirePower());
     }
 
-    @Test
-    void addToken() {
-    }
 }
