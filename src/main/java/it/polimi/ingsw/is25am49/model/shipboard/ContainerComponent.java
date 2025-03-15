@@ -30,22 +30,27 @@ public class ContainerComponent extends Component {
             case PURPLE_ALIENS: return type.equals(ComponentType.PURPLE_ALIEN_MODULE);
             case BROWN_ALIENS: return type.equals(ComponentType.BROWN_ALIEN_MODULE);
             case RED_GOODS: return type.equals(ComponentType.SPECIAL_STORAGE);
-            default: return type.equals(ComponentType.STORAGE);
+            default: return (type.equals(ComponentType.STORAGE) || (type.equals(ComponentType.SPECIAL_STORAGE)));
         }
     }
 
     @Override
     public void addToken(Token token) {
         if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
-        else if (Objects.equals(level, tokens.size())) throw new IllegalStateException("Cannot add tokens to container, is full!");
+        if (Objects.equals(level, tokens.size())) throw new IllegalStateException("Cannot add tokens to "+type+",container is full! level: " +level + "size: "+tokens.size());
         else tokens.add(token);
     }
     @Override
     public void removeToken(Token token) {
-        tokens.remove(token);
+        if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("ContainerComponent is empty!");
+        if (tokens.contains(token)) tokens.remove(token);
+        else throw new IllegalTokenInComponentEcxeption("Token: " + token + " is not in the container!");
     }
     @Override
-    public void removeToken() {tokens.removeLast();}
+    public void removeToken() {
+        if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("ContainerComponent is empty!");
+        else tokens.removeLast();
+    }
     @Override
     public void fillComponent(Token token) {
         if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
@@ -59,15 +64,20 @@ public class ContainerComponent extends Component {
     }
 
     @Override
+    public boolean checkIfContainsToken(Token token) {
+        return tokens.contains(token);
+    }
+
+    @Override
     public boolean getIsActive() {
-        throw new IllegalMethodOnThisComponent("getIsActive non supportato su ContainerComponent");
+        throw new IllegalMethodOnThisComponent("getIsActive non supported su ContainerComponent");
     }
     @Override
     public void turnOn() {
-        throw new IllegalMethodOnThisComponent("turnOn non supportato su ContainerComponent");
+        throw new IllegalMethodOnThisComponent("turnOn non supported su ContainerComponent");
     }
     @Override
     public void turnOff() {
-        throw new IllegalMethodOnThisComponent("turnOff non supportato su ContainerComponent");
+        throw new IllegalMethodOnThisComponent("turnOff non supported su ContainerComponent");
     }
 }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 
 import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.model.enums.Token;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,21 +42,44 @@ public class Tile {
     public Component getComponent() {
         return component;
     }
+    boolean checkIfContainsToken(Token token) {return component.checkIfContainsToken(token);}
+    public void addToken(Token token) {
+        component.addToken(token);
+    }
 
     public Orientation getTileRotation() {
         return tileRotation;
     }
+    //this method rotates the map of connector to match the component orientation, using the Juggling algorithm
     public void setTileRotation(Orientation tileRotation) {
         int oldOrientation = this.tileRotation.ordinal();
         int newOrientation = tileRotation.ordinal();
-        this.tileRotation = tileRotation;
 
-        for (int i = 0; i < 4; i++) {
-            int oldIndex=(oldOrientation+i)%4;
-            int newIndex=(newOrientation+i)%4;
-            ConnectorType tempConnector = connectors.get(newIndex);
-            connectors.put(newIndex, connectors.get(oldIndex));
-            connectors.put(oldIndex, tempConnector);
+        this.tileRotation = tileRotation;
+        int diff= Math.abs(newOrientation-oldOrientation);
+
+        //calc GCD
+        int numOfCycles=4;
+        int k=diff;
+        while (k != 0) {
+            int temp = k;
+            k = numOfCycles % k;
+            numOfCycles = temp;
+        }
+
+        //Rotation cycles
+        for (int i = 0; i < numOfCycles; i++) {
+            int currIndex=i;
+            ConnectorType currType=connectors.get(currIndex);
+            //System.out.println("ciclo="+i +"\nNorth: " + getConnector(Orientation.NORTH)+"\nEast: "+getConnector(Orientation.EAST)+"\nSouth: "+getConnector(Orientation.SOUTH)+"\nWest: "+getConnector(Orientation.WEST));
+            do {
+                int newIndex=(currIndex+diff)%4;
+                ConnectorType newType=connectors.get(newIndex);
+                connectors.put(newIndex, currType);
+                currType=newType;
+
+                currIndex=newIndex;
+            }while(currIndex!=i);
         }
     }
     public void rotateTileClockwise(){
@@ -81,21 +105,17 @@ public class Tile {
     }
 
     public void setConnectors(ConnectorType c1, ConnectorType c2, ConnectorType c3, ConnectorType c4) {
-        connectors.put(1,c1);
-        connectors.put(2,c2);
-        connectors.put(3,c3);
-        connectors.put(4,c4);
+        connectors.put(0,c1);
+        connectors.put(1,c2);
+        connectors.put(2,c3);
+        connectors.put(3,c4);
     }
-    public void setConnectors(ArrayList<ConnectorType> connectors) {
-        for(int i=0;i<connectors.size();i++) {
-            this.connectors.put(i,connectors.get(i));
-        }
-    }
-    public void setConnector(int i,ConnectorType c){
-        connectors.put(i,c);
-    }
+
     public ConnectorType getConnector(Orientation orientation){
         return connectors.get(orientation.ordinal());
+    }
+    public ConnectorType getConnector(int index){
+        return connectors.get(index);
     }
 
     public double getFirePower(){

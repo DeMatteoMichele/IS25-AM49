@@ -4,8 +4,11 @@ import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectMeteoriti;
+<<<<<<< HEAD
+=======
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
+>>>>>>> ac1eaf3e87e9d4ebd6c09e76f498b55fe99125c8
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;

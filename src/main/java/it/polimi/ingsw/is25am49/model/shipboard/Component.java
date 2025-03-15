@@ -27,6 +27,7 @@ public abstract class  Component {
     public abstract void removeToken();
     public abstract void fillComponent(Token token);
     public abstract void clearComponent();
+    public abstract boolean checkIfContainsToken(Token token);
 
     public abstract boolean getIsActive();
     public abstract void turnOn();

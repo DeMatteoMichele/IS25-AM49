@@ -30,15 +30,34 @@ public class BuildState extends State {
     public void adminSelectTypeFlight(Player player, FlightMode flightMode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {}
-    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {}
-    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {}
-    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {}
-    public void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException {}
-    public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {}
-    public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {}
-    public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {}
-    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {}
+
+    public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {
+
+    }
+    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {
+
+    }
 
     public void userThrowDices(Player player) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
@@ -60,5 +79,14 @@ public class BuildState extends State {
     }
     public void userQuitGame(Player player) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+    }
+    public void calculateScore() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+    }
+    public void userShowWinner() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userEndGame() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }
