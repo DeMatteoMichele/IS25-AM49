@@ -42,8 +42,9 @@ public class Player {
         shipBoard.removeAllTokens();
         return totale;
     }
-
-
+    public void completeShipboard(){
+        getShipBoard().completeShipBoard();
+    }
     public void setHandTile(Tile tile){
         this.handTile = tile;
     }
@@ -88,8 +89,11 @@ public class Player {
     public void placeTile(Point coordinates){
         shipBoard.insertTile(coordinates, handTile);
     }
-    public void rotateTile(){
-        handTile.setTileRotation(handTile.getTileRotation());
+    public void rotateTile(boolean isClockwise){
+        if(isClockwise)
+            handTile.rotateTileClockwise();
+        else
+            handTile.rotateTileCounterClockwise();
     }
     public Tile discardTile(){
         Tile temp = handTile;

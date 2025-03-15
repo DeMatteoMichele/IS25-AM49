@@ -33,8 +33,11 @@ public abstract class AdventureState extends State {
     public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+    public void userRotateTileClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userRotateTileCounterClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException{
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");

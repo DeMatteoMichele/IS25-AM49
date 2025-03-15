@@ -47,14 +47,11 @@ public class GameSession {
     public void userRotateTile(Player player, Point coordinates) {
 
     }
-
-    public void userPickTile(Player player, Point coordinates) {}
-
     public void userDiscardTile(Player player){
     }
 
     public void userDrawTile(Player player, int idTile ){
-
+        player.setHandTile(game.getGameboard().drawTile(idTile));
     }
 
     public void userFinishShipboard(Player player){

@@ -10,7 +10,6 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateExcepti
 import it.polimi.ingsw.is25am49.model.exceptions.NormalUserCannotModifyGameSettingsException;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class FinishScoreState extends State {
     public FinishScoreState(GameSession gameSession){
@@ -34,7 +33,10 @@ public class FinishScoreState extends State {
     public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+    public void userRotateTileClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void userRotateTileCounterClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException{
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {

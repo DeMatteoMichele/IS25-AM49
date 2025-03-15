@@ -57,8 +57,11 @@ public class InitState extends State {
     public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+    public void userRotateTileClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userRotateTileCounterClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException{
+
     }
     public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");

@@ -22,7 +22,7 @@ public class TileCardDeck {
         tileDeck.put(tile.getIdTile(),tile);
     }
 
-    public Tile draw(Integer index){
+    public Tile draw(int index){
         return tileDeck.get(index);
     }
 

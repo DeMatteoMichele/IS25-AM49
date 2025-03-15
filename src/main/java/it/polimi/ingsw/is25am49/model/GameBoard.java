@@ -58,7 +58,7 @@ public class GameBoard {
 
     }
 
-    public Tile drawTile(Integer index) {
+    public Tile drawTile(int index) {
         return tilesDeck.draw(index);
     }
 

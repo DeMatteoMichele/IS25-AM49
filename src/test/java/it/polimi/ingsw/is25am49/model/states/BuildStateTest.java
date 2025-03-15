@@ -9,7 +9,7 @@ class BuildStateTest {
     }
 
     @Test
-    void userRotateTile() {
+    void userRotateTileClockwise() {
     }
 
     @Test

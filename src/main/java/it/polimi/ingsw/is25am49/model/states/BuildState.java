@@ -32,25 +32,28 @@ public class BuildState extends State {
     }
 
     public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
-
+        player.placeTile(coordinates);
     }
-    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
-
+    public void userRotateTileClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        player.rotateTile(true);
+    }
+    public void userRotateTileCounterClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException{
+        player.rotateTile(false);
     }
     public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
-
+        player.pickTile(coordinates);
     }
     public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
-
+        player.discardTile();
     }
     public void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException {
-
+        gameSession.userDrawTile(player, idTIle);
     }
     public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {
-
+        player.completeShipboard();
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {
-
+        
     }
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {
 

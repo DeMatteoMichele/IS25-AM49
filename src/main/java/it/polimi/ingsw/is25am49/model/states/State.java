@@ -27,9 +27,8 @@ public abstract class State {
     public abstract void adminSelectTypeFlight(Player player, FlightMode flightMode) throws IllegalMethodOnThisStateException,NormalUserCannotModifyGameSettingsException, GameDoesNotExistException;
 
     public abstract void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
-    public abstract void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
-    public abstract void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
-    public abstract void userDiscardTile(Player player) throws IllegalMethodOnThisStateException;
+    public abstract void userRotateTileClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
+    public abstract void userRotateTileCounterClockwise(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
     public abstract void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException;
     public abstract void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException;
     public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException;
@@ -48,3 +47,4 @@ public abstract class State {
     public abstract void userShowWinner() throws IllegalMethodOnThisStateException;
     public abstract void userEndGame() throws IllegalMethodOnThisStateException;
 }
+
