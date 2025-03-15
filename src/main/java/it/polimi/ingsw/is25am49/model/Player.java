@@ -10,13 +10,13 @@ public class Player {
     private int daysThisTurn;
     private String username;
     private int playerNumber;
-    private ShipBoard shipBoard;
+    private final ShipBoard shipBoard;
     private Tile handTile;
     private int finalScore;
     private int totCredits;
-    private int travelDays;
-    private Color color;
+    private final Color color;
     private int lostComponents;
+    int travelDays;
 
 
     public Player(String username, Color color) {
@@ -28,7 +28,7 @@ public class Player {
         handTile = null;
         finalScore = 0;
         totCredits = 0;
-        travelDays = 0;
+        int travelDays = 0;
         lostComponents = 0;
     }
     //Qua bisogna calcolare lo Score finale
@@ -72,7 +72,7 @@ public class Player {
     }
 
     public Integer getScore() {
-        return finalsScore;
+        return finalScore;
     }
 
 

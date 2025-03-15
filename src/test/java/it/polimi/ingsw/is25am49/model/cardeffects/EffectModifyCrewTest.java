@@ -9,10 +9,13 @@ import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,12 +26,16 @@ class EffectModifyCrewTest {
     Component component;
     Point coordinate = new Point(1, 0);
     CardEffect cardEffect;
+    List<Pair<Point,Token>> coordinates;
 
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
         player = new Player("io", Color.RED);
-
+        coordinates = new ArrayList<>();
+        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
+        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
+        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         component = new ContainerComponent(ComponentType.CABINE, 5);
         tile = new Tile(3, component );
         shipBoard.insertTile(coordinate, tile);
