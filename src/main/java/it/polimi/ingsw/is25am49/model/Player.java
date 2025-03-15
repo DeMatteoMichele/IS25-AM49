@@ -28,7 +28,7 @@ public class Player {
         handTile = null;
         finalScore = 0;
         totCredits = 0;
-        int travelDays = 0;
+        travelDays = 0;
         lostComponents = 0;
     }
     //Qua bisogna calcolare lo Score finale
