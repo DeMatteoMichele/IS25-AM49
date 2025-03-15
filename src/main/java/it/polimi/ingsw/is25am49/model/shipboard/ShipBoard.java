@@ -133,7 +133,6 @@ public class ShipBoard {
     }
 
     public int getTotalNumberOfaToken (Token token){
-        //scorro griglia e sommo
         return 0;
     }
     public ArrayList<Point> getPositionsOfaToken(Token token){

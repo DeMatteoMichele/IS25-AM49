@@ -19,10 +19,12 @@ public class EffectLoseGoods extends CardEffect {
         this.numberOfTokensToLose = numberOfTokensToLose;
     }
     public void action(Player player) {
-
+        System.out.println(player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS));
+        System.out.println(player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS));
         //rimuovo in ordine di importanza dal rosso finchè non sono finiti tutte le merci da rimuovere
         //oppure finchè non ci sono più merci di quel colore nella nave
         while (player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS) != 0 && numberOfTokensToLose != 0) {
+
             List<Point> coordinates = player.getShipBoard().getPositionsOfaToken(Token.RED_GOODS);
             player.getShipBoard().removeTile(coordinates.getFirst());
             numberOfTokensToLose--;
