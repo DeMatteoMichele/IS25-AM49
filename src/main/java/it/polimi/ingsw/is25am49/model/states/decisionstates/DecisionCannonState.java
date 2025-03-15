@@ -1,5 +1,9 @@
 package it.polimi.ingsw.is25am49.model.states.decisionstates;
 
-public class DecisionCannonState extends DecisionState {
+import it.polimi.ingsw.is25am49.model.GameSession;
 
+public class DecisionCannonState extends DecisionState {
+    public DecisionCannonState(GameSession gameSession) {
+        super(gameSession);
+    }
 }

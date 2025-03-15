@@ -31,7 +31,10 @@ public class GameSession {
         game.setGameMode(mode);
     }
     public void userSelectColorAndUserName(Color playerColor, String username) {
-        Player tempPlayer = new Player(username, playerColor);
+        Player tempPlayer = new Player(username, playerColor, game.getListPlayers().size());
+        if(game.getListPlayers().size() == 0){
+            admin = tempPlayer;
+        }
         game.addPlayer(tempPlayer);
     }
     public State getState() {
