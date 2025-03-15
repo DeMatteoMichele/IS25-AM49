@@ -12,5 +12,6 @@ public enum ComponentType {
     BATTERY,
     FRAME_SECTION,
     PURPLE_ALIEN_MODULE,
-    BROWN_ALIEN_MODULE;
+    BROWN_ALIEN_MODULE,
+    SKY;
 }

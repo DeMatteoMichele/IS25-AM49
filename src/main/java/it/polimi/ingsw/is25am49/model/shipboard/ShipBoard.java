@@ -3,7 +3,12 @@ import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,7 +37,18 @@ public class ShipBoard {
 
         switch (level){
             case 1:
-                //inizializzo tutte le tile posizioni della nave con componenti Type SKY;
+                try{
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    ArrayList<Point> points= objectMapper.readValue(new
+                                    File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_one_config.json"),
+                            new TypeReference<ArrayList<Point>>(){});
+                    System.out.println(points);
+                    for(int i=0;i<points.size();i++){
+                        System.out.println(points.get(i).x+","+points.get(i).y);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case 2:
                 break ;
@@ -170,9 +186,8 @@ public class ShipBoard {
     }
     public ArrayList<Point> getPositionsOfaToken(Token token){
         return grid.entrySet().stream()
-                .filter(entry -> entry.getValue().getComponent().checkIfTokenIsValid(token))
-                .filter(entry -> entry.getValue().getComponent().getNumberOfTokens()>0)
-                .flatMap(entry -> IntStream.range(0, entry.getValue().getComponent().getNumberOfTokens())
+                .filter(entry -> entry.getValue().getComponent().getNumberOfaToken(token)>0)
+                .flatMap(entry -> IntStream.range(0, entry.getValue().getComponent().getNumberOfaToken(token))
                         .mapToObj(i -> entry.getKey()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
