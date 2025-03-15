@@ -22,7 +22,7 @@ public class AdventureCardDeck {
         return deck.remove(0);
     }
     public void generateDeck(){
-
+        //crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect
     }
     public void add(AdventureCard card){
         deck.add(card);

@@ -11,12 +11,69 @@ import java.util.List;
 
 public class PiratesCard extends EnemyCard {
 
-    int currentEffectIndex;
+    int index;
     public PiratesCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int lostAstronauts, List<CardEffect> ListEffects) {
         super(description, daysLost, level, creditsEarned, minimumFirePower, lostAstronauts, ListEffects);
-        currentEffectIndex=0;
+        index=0;
     }
 
+
+    // methods return an int based on what state we must go to
+    // 0 = check requirements
+    // 1 = decision
+    // 2 = effect
+    @Override
+    public int checkRequirements(Player player) {
+        double standardFirePower =player.getShipBoard().getTotalFirePower();
+        ShipBoard shipBoard=player.getShipBoard();
+        int numBatteries=shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS);
+        List<Point> activatableCannons=shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON);
+        double firePowerUserCanActivateWithBatteries = activatableCannons.stream()
+                .mapToDouble(point->shipBoard.getTile(point).getFirePower())
+                .sorted()
+                .limit(numBatteries)
+                .sum();
+        if (standardFirePower > minimumFirePower) {
+            System.out.println("You have" + player.getShipBoard().getTotalFirePower() + " fire power, it is enough to defeat"+ getClass().getSimpleName());
+            return 2; //we must go to state effect
+        }
+        else if (standardFirePower == minimumFirePower) {
+            System.out.println("You have exactly the same fire power of"+ getClass().getSimpleName() +"! You can decide to activate some cannons or to mantain your ship as it is!");
+            return 1; //we must go to state decision
+        }
+        else {
+            if ((standardFirePower + firePowerUserCanActivateWithBatteries < minimumFirePower)&&index==0) {
+                System.out.println("You don't have enough batteries to defeat"+getClass().getSimpleName());
+                rollDices();
+                index++;
+                return 1; //we must go to state decision
+            }
+            else if ((standardFirePower + firePowerUserCanActivateWithBatteries < minimumFirePower)) {
+                rollDices();
+                return 1; //we must go to state decision
+            }
+            else if ((standardFirePower + firePowerUserCanActivateWithBatteries == minimumFirePower)&&index==0) {
+                System.out.println("You have enough batteries to draw with"+getClass().getSimpleName());
+                rollDices();
+                index++;
+                return 1; //we must go to state decision
+            }
+            else if ((standardFirePower + firePowerUserCanActivateWithBatteries == minimumFirePower)) {
+                rollDices();
+                return 1; //we must go to state decision
+            }
+            else if ((standardFirePower + firePowerUserCanActivateWithBatteries > minimumFirePower)&&index==0) {
+                System.out.println("You have enough batteries to win against"+getClass().getSimpleName());
+                rollDices();
+                index++;
+                return 1; //we must go to state decision
+            }
+            else {
+                rollDices();
+                return 1; //we must go to state decision
+            }
+        }
+    }
 
 
 
@@ -38,15 +95,19 @@ public class PiratesCard extends EnemyCard {
             player.setDaysThisTurn(-daysLost);
             return true;
         }
-        else{
-            System.out.println("You can't defeat" + getClass().getSimpleName() + "! Now they attack you with cannonades!");
-            System.out.println("Before every cannonade you have to throw the dices! You can decide to activate some shield or to mantain your ship as it is!");
-            System.out.println("Remember: you can't defend your ship from big cannonades!");
+        else if(totalFirePower<minimumFirePower&&!listEffects.isEmpty()){
+            listEffects.getFirst().action(player);
+            listEffects.removeFirst();
+            currentEffect=listEffects.getFirst();
             return false;
         }
+        else {
+            System.out.println("You have been defeated by" + getClass().getSimpleName() + "! The cannonades are terminated!");
+            player.setDaysThisTurn(-daysLost);
+            isFinished=true;
+            return false;
+        }
+
         //TODO LOGIC OF ROLL DICES AND DECISION
     }
-
-
-
 }

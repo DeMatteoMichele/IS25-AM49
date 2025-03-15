@@ -2,7 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyEquipment;
+import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
@@ -16,8 +16,9 @@ public class AbandonedShipCard extends AdventureCard {
     public AbandonedShipCard(String description, int daysLost, int level, int creditsEarned, int lostAstronauts, List<CardEffect> ListEffects){
         super(description,daysLost,level,creditsEarned,ListEffects );
         this.lostAstronauts = lostAstronauts;
-       // ListEffects.add(new EffectModifyEquipment("EffectModifyCrew",lostAstronauts));
+        listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
     }
+
 
     // methods return an int based on what state we must go to
     // 0 = check requirements
@@ -49,8 +50,7 @@ public class AbandonedShipCard extends AdventureCard {
     //isFinished is set to true if the card is finished and a new card has to be drawn
     @Override
     public boolean applyEffect(Player player) {
-
-        if (isLanded){
+        if (isLanded) {
             System.out.println("You win " + creditsEarned + " credits");
             player.addCredit( creditsEarned);
             listEffects.getFirst().action(player);
