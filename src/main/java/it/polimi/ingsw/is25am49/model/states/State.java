@@ -44,4 +44,7 @@ public abstract class State {
     public abstract void userActivateComponent(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
     public abstract void userActivateDaysUpdate() throws IllegalMethodOnThisStateException;
     public abstract void userQuitGame(Player player) throws IllegalMethodOnThisStateException;
+    public abstract void calculateScore() throws IllegalMethodOnThisStateException;
+    public abstract void userShowWinner() throws IllegalMethodOnThisStateException;
+    public abstract void userEndGame() throws IllegalMethodOnThisStateException;
 }

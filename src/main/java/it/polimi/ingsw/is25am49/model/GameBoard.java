@@ -2,7 +2,9 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.model.enums.FlightMode;
+import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
@@ -18,7 +20,10 @@ public class GameBoard {
     private int currentPlayer;
     private Timer timer;
     private FlightMode flightMode;
+    //Bisogna modificare le possibili carte del mazzo, la lunghezza del percorso e l'utilizzo del tempo in base a flightMode e gameMode
+    public void configurateFlight(GameMode gameMode){
 
+    }
     public void setFlightMode(FlightMode flightMode){
         this.flightMode = flightMode;
     }

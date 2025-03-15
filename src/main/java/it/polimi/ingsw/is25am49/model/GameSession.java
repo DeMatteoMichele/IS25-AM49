@@ -92,4 +92,8 @@ public class GameSession {
     public void adminSelectTypeFlight(FlightMode flightMode){
         game.getGameboard().setFlightMode(flightMode);
     }
+    public void calculateScore() { game.calculateScore();}
+    public void configurateFlight(){
+        game.configurateFlight();
+    }
 }

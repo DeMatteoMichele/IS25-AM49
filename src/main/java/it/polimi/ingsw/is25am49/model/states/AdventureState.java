@@ -15,19 +15,39 @@ public abstract class AdventureState extends State {
     public AdventureState(GameSession gameSession){
         super(gameSession);
     }
-    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {}
-    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {}
-    public void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException {}
-    public void adminStartGame(Player player) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {}
+    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void adminStartGame(Player player) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
     public void adminSelectTypeFlight(Player player, FlightMode flightMode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {}
-    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {}
-    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {}
-    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {}
-    public void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException {}
-    public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {}
+    public void userPlaceTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userRotateTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userDrawTile(Player player, int idTIle) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
 
     public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException;
     public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException;
@@ -39,4 +59,14 @@ public abstract class AdventureState extends State {
     public abstract void userActivateComponent(Player player, Point coordinates) throws IllegalMethodOnThisStateException;
     public abstract void userActivateDaysUpdate() throws IllegalMethodOnThisStateException;
     public abstract void userQuitGame(Player player) throws IllegalMethodOnThisStateException;
+
+    public void calculateScore() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userShowWinner() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userEndGame() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
 }

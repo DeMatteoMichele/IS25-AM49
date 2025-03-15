@@ -12,7 +12,7 @@ public class Player {
     private int playerNumber;
     private ShipBoard shipBoard;
     private Tile handTile;
-    private int finalsScore;
+    private int finalScore;
     private int totCredits;
     private int travelDays;
     private Color color;
@@ -26,10 +26,14 @@ public class Player {
         playerNumber = 0;
         shipBoard = new ShipBoard();
         handTile = null;
-        finalsScore = 0;
+        finalScore = 0;
         totCredits = 0;
         travelDays = 0;
         lostComponents = 0;
+    }
+    //Qua bisogna calcolare lo Score finale
+    public void calculateFinalScore(){
+
     }
     public int scoreOfGoods(){
         int totale= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;

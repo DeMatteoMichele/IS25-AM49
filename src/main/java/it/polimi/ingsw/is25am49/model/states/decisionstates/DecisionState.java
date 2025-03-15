@@ -1,13 +1,13 @@
-package it.polimi.ingsw.is25am49.model.states;
+package it.polimi.ingsw.is25am49.model.states.decisionstates;
 
-import it.polimi.ingsw.is25am49.model.Game;
 import it.polimi.ingsw.is25am49.model.GameSession;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.model.states.AdventureState;
 
 import java.awt.*;
 
-public class DecisionState extends AdventureState{
+public abstract class DecisionState extends AdventureState {
     public DecisionState(GameSession gameSession){
         super(gameSession);
     }

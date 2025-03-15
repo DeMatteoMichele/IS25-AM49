@@ -35,12 +35,13 @@ public class InitState extends State {
         else
             throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
     }
-    //not sure is complete
     public void adminStartGame(Player player) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         if(gameSession.getGame() == null)
             throw new GameDoesNotExistException("The game has not been created");
-        if(player.equals(gameSession.getAdmin()))
-            this.transition(new BuildState(gameSession));
+        if(player.equals(gameSession.getAdmin())){
+            gameSession.configurateFlight();
+            transition(new BuildState(gameSession));
+        }
         else
             throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
 
@@ -102,5 +103,14 @@ public class InitState extends State {
     }
     public void userQuitGame(Player player) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void calculateScore() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userShowWinner() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userEndGame() throws IllegalMethodOnThisStateException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }
