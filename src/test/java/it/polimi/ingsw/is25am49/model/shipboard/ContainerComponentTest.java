@@ -3,10 +3,8 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,13 +27,20 @@ class ContainerComponentTest {
         battery.fillComponent(Token.BATTERY_CELLS);
     }
 
-
+    @Test
+    void testGetNumberOfaToken(){
+        assertEquals(battery.level,battery.getNumberOfaToken(Token.BATTERY_CELLS));
+        specialStorage.addToken(Token.RED_GOODS);
+        assertEquals(1,specialStorage.getNumberOfaToken(Token.RED_GOODS));
+        specialStorage.addToken(Token.BLUE_GOODS);
+        assertEquals(1,specialStorage.getNumberOfaToken(Token.RED_GOODS));
+    }
 
     @Test //test per fillComponent
-    void testNumberOfTokenEqualLevelInAFilledComponent() {
-        assertEquals(battery.level,battery.getNumberOfToken());
+    void testNumberOfTokensEqualLevelInAFilledComponent() {
+        assertEquals(battery.level,battery.getNumberOfTokens());
         assertThrows(IllegalTokenInComponentEcxeption.class, ()-> cabin.fillComponent(Token.PURPLE_ALIENS));
-        assertNotEquals(cabin.level,cabin.getNumberOfToken());
+        assertNotEquals(cabin.level,cabin.getNumberOfTokens());
     }
     @Test
     void testInsertWrongTokenToComponent(){
@@ -47,12 +52,12 @@ class ContainerComponentTest {
     void testInsertCorrectTokenToComponent(){
         cabin.addToken(Token.ASTRONAUT);
         assertEquals(Token.ASTRONAUT, cabin.getTokenList().getFirst());
-        int sNum= storage.getNumberOfToken();
+        int sNum= storage.getNumberOfTokens();
         storage.addToken(Token.GREEN_GOODS);
         storage.addToken(Token.YELLOW_GOODS);
         assertEquals(Token.GREEN_GOODS,storage.getTokenList().get(0));
         assertEquals(Token.YELLOW_GOODS,storage.getTokenList().get(1));
-        assertEquals(sNum+2,storage.getNumberOfToken());
+        assertEquals(sNum+2,storage.getNumberOfTokens());
         specialStorage.addToken(Token.RED_GOODS);
         specialStorage.addToken(Token.GREEN_GOODS);
         assertEquals(Token.RED_GOODS, specialStorage.getTokenList().getFirst());
@@ -74,10 +79,10 @@ class ContainerComponentTest {
         int oldSize = battery.getTokenList().size();
         battery.removeToken(Token.BATTERY_CELLS);
         assertEquals(oldSize-1,battery.getTokenList().size());
-        assertEquals(oldSize-1,battery.getNumberOfToken());
+        assertEquals(oldSize-1,battery.getNumberOfTokens());
         alienModule.addToken(Token.BROWN_ALIENS);
         alienModule.removeToken(Token.BROWN_ALIENS);
-        assertEquals(0, alienModule.getNumberOfToken());
+        assertEquals(0, alienModule.getNumberOfTokens());
     }
     @Test
     void testRemoveWrongToken(){
@@ -94,14 +99,14 @@ class ContainerComponentTest {
 
     @Test
     void testGetNumberOfToken() {
-        assertEquals(battery.getNumberOfToken(),battery.getTokenList().size());
-        assertEquals(cabin.getNumberOfToken(),cabin.getNumberOfToken());
+        assertEquals(battery.getNumberOfTokens(),battery.getTokenList().size());
+        assertEquals(cabin.getNumberOfTokens(),cabin.getNumberOfTokens());
     }
 
     @Test
     void clearComponent() {
         battery.clearComponent();
-        assertEquals (0,battery.getNumberOfToken());
+        assertEquals (0,battery.getNumberOfTokens());
     }
 
     @Test

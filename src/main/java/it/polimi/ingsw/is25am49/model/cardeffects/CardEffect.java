@@ -15,9 +15,13 @@ public abstract class CardEffect {
     }
     public abstract void action(Player player);
     public abstract void setPosition(int position);
+<<<<<<< HEAD
+    //public abstract void setListOfCoordinates(ArrayList<Point> coordinates);
+=======
     public abstract void setListOfCoordinates(ArrayList<Pair<Point, Token>> coordinates);
     public abstract void setCoordinate(Point coordinate);
 
 
+>>>>>>> 4a61cb96eccf5b7bc7cd53017625c02d73baa5d9
 
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 
 import java.awt.Point;
 import java.util.*;
@@ -14,19 +15,34 @@ public class ShipBoard {
     private boolean isCompleted;
     private int destroyedTiles;
 
-    public ShipBoard(){
+    public ShipBoard() {
         grid = new HashMap<>();
         lastPlacedPoint = null;
         isCompleted = false;
         destroyedTiles = 0;
     }
+    public ShipBoard(int level, int playerID){
+        grid = new HashMap<>();
+        lastPlacedPoint = null;
+        isCompleted = false;
+        destroyedTiles = 0;
+
+        var centerCabinTile =new Tile(playerID, new ContainerComponent(ComponentType.CABINE,2));
+        grid.put(new Point(7,7),centerCabinTile);
+
+        switch (level){
+            case 1:
+                //inizializzo tutte le tile posizioni della nave con componenti Type SKY;
+                break;
+            case 2:
+                break ;
+        }
+    }
 
     public Point getLastPlacedPoint() {
         return lastPlacedPoint;
     }
-    public void setLastPlacedPoint(Point lastPlacedPoint) {
-        this.lastPlacedPoint = lastPlacedPoint;
-    }
+    public void setLastPlacedPoint(Point lastPlacedPoint) {this.lastPlacedPoint = lastPlacedPoint;}
     public boolean isCompleted() {
         return isCompleted;
     }
@@ -34,9 +50,7 @@ public class ShipBoard {
         isCompleted = true;
     }
 
-    public void setDestroyedTiles(int n) {
-        this.destroyedTiles = n;
-    }
+    public void setDestroyedTiles(int n) {this.destroyedTiles = n;}
     public int getDestroyedTiles() {
         return destroyedTiles;
     }
@@ -44,6 +58,9 @@ public class ShipBoard {
         this.destroyedTiles += n;
     }
 
+    public boolean checkValidCoordinates(Point coordinates) {
+        return grid.containsKey(coordinates);
+    }
     public Tile getTile(Point coordinates){
         return grid.get(coordinates);
     }
@@ -73,19 +90,35 @@ public class ShipBoard {
         return 0;
     }
     public void addTokenToTile(Point coordinates, Token  token){
-        grid.get(coordinates).getComponent().addToken(token);
-    }
-    public void removeTokenFromTile(Point coordinates, Token token){
-        grid.get(coordinates).getComponent().removeToken(token);
-    }
-
-    public void consumeComponentToken(Point donator){
-        if(grid.get(donator).getComponent().getNumberOfToken()>0) {
-            grid.get(donator).getComponent().removeToken();
+        try{grid.get(coordinates).addToken(token);}
+        catch(IllegalMethodOnThisComponentException | ArrayIndexOutOfBoundsException e){
+            System.out.println("cannot add "+token+" from " + grid.get(coordinates).getComponent()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
         }
     }
-    public void turnOnComponent(Point coordinates){
-        grid.get(coordinates).getComponent().turnOn();
+
+    //method to remove a specific token from a tile
+    public void removeTokenFromTile(Point coordinates, Token token){
+        try{grid.get(coordinates).removeToken(token);}
+        catch(IllegalMethodOnThisComponentException | ArrayIndexOutOfBoundsException e){
+            System.out.println("cannot remove "+token+" from " + grid.get(coordinates).getComponent()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
+        }
+    }
+
+    //method to consume a token of a tile (BATTERY)
+    private void consumeComponentToken(Point donator){
+        try{grid.get(donator).removeToken();}
+        catch(IllegalMethodOnThisComponentException e){
+            System.out.println("cannot donate a BATTERY" + grid.get(donator).getComponent()+ " point<"+donator.x+","+donator.y+">\n"+e);
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            System.out.println("not enough BATTERY in " + grid.get(donator).getComponent()+ " point<"+donator.x+","+donator.y+">\n"+e);
+        }
+    }
+    private void turnOnComponent(Point coordinates){
+        try{grid.get(coordinates).getComponent().turnOn();}
+        catch(IllegalMethodOnThisComponentException e){
+            System.out.println("cannot turn on " + grid.get(coordinates).getComponent()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
+        }
     }
     public void turnOnComponent(Point coordinates, Point donator){
         turnOnComponent(coordinates);
@@ -138,8 +171,8 @@ public class ShipBoard {
     public ArrayList<Point> getPositionsOfaToken(Token token){
         return grid.entrySet().stream()
                 .filter(entry -> entry.getValue().getComponent().checkIfTokenIsValid(token))
-                .filter(entry -> entry.getValue().getComponent().checkIfContainsToken(token))
-                .flatMap(entry -> IntStream.range(0, entry.getValue().getComponent().getNumberOfToken())
+                .filter(entry -> entry.getValue().getComponent().getNumberOfTokens()>0)
+                .flatMap(entry -> IntStream.range(0, entry.getValue().getComponent().getNumberOfTokens())
                         .mapToObj(i -> entry.getKey()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }

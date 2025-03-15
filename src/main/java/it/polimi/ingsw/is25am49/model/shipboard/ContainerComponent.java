@@ -2,7 +2,7 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponent;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
 import java.util.ArrayList;
@@ -20,7 +20,11 @@ public class ContainerComponent extends Component {
         return tokens;
     }
     @Override
-    public int getNumberOfToken() {return tokens.size();}
+    public int getNumberOfTokens() {return tokens.size();}
+    @Override
+    public int getNumberOfaToken(Token token) {
+        return tokens.stream().filter(t -> t.equals(token)).mapToInt(t->1).sum();
+    }
 
     @Override
     public boolean checkIfTokenIsValid(Token token) {
@@ -37,11 +41,11 @@ public class ContainerComponent extends Component {
     @Override
     public void addToken(Token token) {
         if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
-        if (Objects.equals(level, tokens.size())) throw new IllegalStateException("Cannot add tokens to "+type+",container is full! level: " +level + "size: "+tokens.size());
+        if (Objects.equals(level, tokens.size())) throw new ArrayIndexOutOfBoundsException("Cannot add tokens to "+type+",container is full! level: " +level + "size: "+tokens.size());
         else tokens.add(token);
     }
     @Override
-    public void removeToken(Token token) {
+    public void removeToken(Token token){
         if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("ContainerComponent is empty!");
         if (tokens.contains(token)) tokens.remove(token);
         else throw new IllegalTokenInComponentEcxeption("Token: " + token + " is not in the container!");
@@ -52,7 +56,7 @@ public class ContainerComponent extends Component {
         else tokens.removeLast();
     }
     @Override
-    public void fillComponent(Token token) {
+    public void fillComponent(Token token) throws IllegalTokenInComponentEcxeption {
         if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
         for (int i = 0; i < level; i++) {
             tokens.add(token);
@@ -63,21 +67,18 @@ public class ContainerComponent extends Component {
         tokens.clear();
     }
 
-    @Override
-    public boolean checkIfContainsToken(Token token) {
-        return tokens.contains(token);
-    }
+
 
     @Override
     public boolean getIsActive() {
-        throw new IllegalMethodOnThisComponent("getIsActive non supported su ContainerComponent");
+        throw new IllegalMethodOnThisComponentException("getIsActive non supported su ContainerComponent");
     }
     @Override
     public void turnOn() {
-        throw new IllegalMethodOnThisComponent("turnOn non supported su ContainerComponent");
+        throw new IllegalMethodOnThisComponentException("turnOn non supported su ContainerComponent");
     }
     @Override
     public void turnOff() {
-        throw new IllegalMethodOnThisComponent("turnOff non supported su ContainerComponent");
+        throw new IllegalMethodOnThisComponentException("turnOff non supported su ContainerComponent");
     }
 }
