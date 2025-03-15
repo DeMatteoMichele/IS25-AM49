@@ -182,7 +182,7 @@ public class ShipBoard {
     }
 
     public int getTotalNumberOfaToken (Token token){
-        return 0;
+        return getPositionsOfaToken(token).size();
     }
     public ArrayList<Point> getPositionsOfaToken(Token token){
         return grid.entrySet().stream()

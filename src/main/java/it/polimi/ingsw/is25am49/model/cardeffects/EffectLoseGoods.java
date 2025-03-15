@@ -19,39 +19,36 @@ public class EffectLoseGoods extends CardEffect {
         this.numberOfTokensToLose = numberOfTokensToLose;
     }
     public void action(Player player) {
-        System.out.println(player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS));
-        System.out.println(player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS));
         //rimuovo in ordine di importanza dal rosso finchè non sono finiti tutte le merci da rimuovere
         //oppure finchè non ci sono più merci di quel colore nella nave
         while (player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS) != 0 && numberOfTokensToLose != 0) {
 
             List<Point> coordinates = player.getShipBoard().getPositionsOfaToken(Token.RED_GOODS);
-            player.getShipBoard().removeTile(coordinates.getFirst());
+            player.getShipBoard().removeTokenFromTile(coordinates.getFirst(),Token.RED_GOODS);
             numberOfTokensToLose--;
         }
         while (player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS) != 0 && numberOfTokensToLose != 0) {
             List<Point> coordinates = player.getShipBoard().getPositionsOfaToken(Token.YELLOW_GOODS);
-            player.getShipBoard().removeTile(coordinates.getFirst());
+            player.getShipBoard().removeTokenFromTile(coordinates.getFirst(),Token.YELLOW_GOODS);
             numberOfTokensToLose--;
         }
         while (player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS) != 0 && numberOfTokensToLose != 0) {
             List<Point> coordinates = player.getShipBoard().getPositionsOfaToken(Token.GREEN_GOODS);
-            player.getShipBoard().removeTile(coordinates.getFirst());
+            player.getShipBoard().removeTokenFromTile(coordinates.getFirst(),Token.GREEN_GOODS);
             numberOfTokensToLose--;
         }
         while (player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS) != 0 && numberOfTokensToLose != 0) {
             List<Point> coordinates = player.getShipBoard().getPositionsOfaToken(Token.BLUE_GOODS);
-            player.getShipBoard().removeTile(coordinates.getFirst());
+            player.getShipBoard().removeTokenFromTile(coordinates.getFirst(),Token.BLUE_GOODS);
             numberOfTokensToLose--;
         }
         if (numberOfTokensToLose != 0) {
             while (player.getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS) != 0 && numberOfTokensToLose != 0) {
                 List<Point> coordinates = player.getShipBoard().getPositionsOfaToken(Token.BATTERY_CELLS);
-                player.getShipBoard().removeTile(coordinates.getFirst());
+                player.getShipBoard().removeTokenFromTile((coordinates.getFirst()),Token.BATTERY_CELLS);
                 numberOfTokensToLose--;
             }
         }
-
 
     }
 
