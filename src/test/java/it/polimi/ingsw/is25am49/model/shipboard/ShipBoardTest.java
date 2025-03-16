@@ -1,23 +1,21 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
+import it.polimi.ingsw.is25am49.model.enums.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShipBoardTest {
+    ShipBoard ship1;
+    ShipBoard ship2;
 
     @BeforeEach
     void setUp() {
-        var ship = new ShipBoard(1,1);;
-    }
-
-    @Test
-    void getLastPlacedPoint() {
-    }
-
-    @Test
-    void setDestroyedTiles() {
+        ship1 = new ShipBoard(1,1);
+        ship2 = new ShipBoard(2,2);
     }
 
     @Test
@@ -49,7 +47,13 @@ class ShipBoardTest {
     }
 
     @Test
-    void addTokenToTile() {
+    void testAddTokenToTile() {
+        ship1.addTokenToTile(new Point(7,7), Token.BATTERY_CELLS);
+        ship1.addTokenToTile(new Point(7,7), Token.ASTRONAUT);
+        ship1.addTokenToTile(new Point(7,7), Token.ASTRONAUT);
+        ship1.addTokenToTile(new Point(7,7), Token.ASTRONAUT);
+        ship1.addTokenToTile(new Point(5,7), Token.ASTRONAUT);
+
     }
 
     @Test
@@ -102,5 +106,15 @@ class ShipBoardTest {
 
     @Test
     void afterBuildCheckShipboard() {
+    }
+
+    @Test
+    void testCheckValidCoordinates() {
+        ship1.printShipboard();
+        assertTrue(ship1.checkValidCoordinates(new Point(7,7)));
+        assertFalse(ship1.checkValidCoordinates(new Point(1,1)));
+        assertFalse(ship1.checkValidCoordinates(new Point(5,6)));
+        assertTrue(ship1.checkValidCoordinates(new Point(6,6)));
+        assertFalse(ship1.checkValidCoordinates(new Point(13,24)));
     }
 }

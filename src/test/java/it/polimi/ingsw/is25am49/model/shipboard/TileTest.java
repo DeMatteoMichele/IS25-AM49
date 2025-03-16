@@ -3,6 +3,8 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,6 +97,10 @@ class TileTest {
         assertEquals(2,t12.getFirePower());
         t12.rotateTileCounterClockwise();
         assertEquals(1,t12.getFirePower());
+    }
+    @Test
+    void testAddToken(){
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()->{t21.addToken(Token.BATTERY_CELLS);});
     }
 
 }

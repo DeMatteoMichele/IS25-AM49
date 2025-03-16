@@ -40,8 +40,8 @@ public class ContainerComponent extends Component {
 
     @Override
     public void addToken(Token token) {
-        if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a" + type);
-        if (Objects.equals(level, tokens.size())) throw new ArrayIndexOutOfBoundsException("Cannot add tokens to "+type+",container is full! level: " +level + "size: "+tokens.size());
+        if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a " + type);
+        if (Objects.equals(level, tokens.size())) throw new ArrayIndexOutOfBoundsException("Cannot add tokens to "+type+",container is full! level: " +level + " elements: "+tokens.size());
         else tokens.add(token);
     }
     @Override

@@ -65,7 +65,7 @@ class ContainerComponentTest {
     }
     @Test
     void testInsertTokenWhenFullComponent(){
-        assertThrows(IllegalStateException.class, ()-> battery.addToken(Token.BATTERY_CELLS));
+        assertThrows(ArrayIndexOutOfBoundsException.class, ()-> battery.addToken(Token.BATTERY_CELLS));
     }
     @Test
     void testAddToken(){

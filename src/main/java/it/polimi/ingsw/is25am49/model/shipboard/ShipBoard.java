@@ -6,8 +6,11 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentExc
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
+
 import java.awt.Point;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,56 +36,82 @@ public class ShipBoard {
         destroyedTiles = 0;
 
         var centerCabinTile =new Tile(playerID, new ContainerComponent(ComponentType.CABINE,2));
-        grid.put(new Point(7,7),centerCabinTile);
 
         switch (level){
             case 1:
                 try{
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    ArrayList<Point> points= objectMapper.readValue(new
-                                    File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_one_config.json"),
-                            new TypeReference<ArrayList<Point>>(){});
-                    System.out.println(points);
-                    for(int i=0;i<points.size();i++){
-                        System.out.println(points.get(i).x+","+points.get(i).y);
+                    File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_one_config.json");
+                    if(!file.exists()){throw new FileNotFoundException("File(shipboard_two_config.json) non trovato: " + file.getAbsolutePath());}
+                    else{
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        Set<Point> points= objectMapper.readValue(file, new TypeReference<Set<Point>>(){});
+
+                        for(Point p:points){grid.put(p,new Tile());}
+                        grid.put(new Point(7,7),centerCabinTile);
+                        //this.printShipboard();
                     }
+                }catch (FileNotFoundException e) {
+                    System.err.println("Errore: Il file di configurazione non è stato trovato.");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;
             case 2:
+                try{
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_two_config.json");
+                    Set<Point> points= objectMapper.readValue(file,new TypeReference<Set<Point>>(){});
+
+                    for(Point p:points){grid.put(p,new Tile());}
+                    grid.put(new Point(7,7),centerCabinTile);
+                    //this.printShipboard();
+
+                }catch (FileNotFoundException e) {
+                    System.err.println("Errore: Il file di configurazione non è stato trovato.");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 break ;
         }
     }
 
-    public Point getLastPlacedPoint() {
-        return lastPlacedPoint;
-    }
-    public void setLastPlacedPoint(Point lastPlacedPoint) {this.lastPlacedPoint = lastPlacedPoint;}
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-    public void completeShipBoard() {
-        isCompleted = true;
+    public void printShipboard(){
+        for (int i = 5; i <= 9; i++) {
+            if(i==5) System.out.println("\t4\t5\t6\t7\t8\t9\t10");
+            for (int j = 4; j <=10 ; j++) {
+                if(j==4) System.out.print(i+"\t");
+                var p= new Point(j,i);
+                if(grid.containsKey(p)) System.out.print(grid.get(p).getIdTile()+"\t");
+                else System.out.print("•\t");
+            }
+            System.out.print(i+"\n");
+        }
+        System.out.println("\t4\t5\t6\t7\t8\t9\t10\n");
     }
 
+    public Point getLastPlacedPoint() {return lastPlacedPoint;}
+    public void setLastPlacedPoint(Point lastPlacedPoint) {this.lastPlacedPoint = lastPlacedPoint;}
+    public boolean isCompleted() {return isCompleted;}
+    public void completeShipBoard() {isCompleted = true;}
+
+    //TODO metodo che restituisce la tessera + esterna per quando viene colpite
+    //TODO metodo che restituisce un array di orientation che indica dove la nave è protetta
+
     public void setDestroyedTiles(int n) {this.destroyedTiles = n;}
-    public int getDestroyedTiles() {
-        return destroyedTiles;
-    }
-    public void addDestroyedTiles(int n) {
-        this.destroyedTiles += n;
-    }
+    public int getDestroyedTiles() {return destroyedTiles;}
+    public void addDestroyedTiles(int n) {this.destroyedTiles += n;}
 
     public boolean checkValidCoordinates(Point coordinates) {
         return grid.containsKey(coordinates);
     }
     public Tile getTile(Point coordinates){
+
         return grid.get(coordinates);
     }
     public void insertTile(Point coordinates, Tile tile){grid.put(coordinates, tile);}
     public Tile removeTile(Point coordinates){
-        return grid.remove(coordinates);
+        if (grid.get(coordinates).isLocked()) return grid.remove(coordinates);
+        else return null;// eccezione
     }
     public void destroyTile(Point coordinates){
         destroyedTiles++;
@@ -107,8 +136,11 @@ public class ShipBoard {
     }
     public void addTokenToTile(Point coordinates, Token  token){
         try{grid.get(coordinates).addToken(token);}
-        catch(IllegalMethodOnThisComponentException | ArrayIndexOutOfBoundsException e){
-            System.out.println("cannot add "+token+" from " + grid.get(coordinates).getComponent()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
+        catch(IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException e){
+            System.out.println("cannot add "+token+" to " + grid.get(coordinates).getComponent().getType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
+        }
+        catch(IllegalMethodOnThisComponentException e){
+            System.out.println("cannot add "+token+" to " + grid.get(coordinates).getComponent().getType()+ " point<"+coordinates.x+","+coordinates.y+"> -->"+e.getMessage());
         }
     }
 
@@ -116,7 +148,7 @@ public class ShipBoard {
     public void removeTokenFromTile(Point coordinates, Token token){
         try{grid.get(coordinates).removeToken(token);}
         catch(IllegalMethodOnThisComponentException | ArrayIndexOutOfBoundsException e){
-            System.out.println("cannot remove "+token+" from " + grid.get(coordinates).getComponent()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
+            System.out.println("cannot remove "+token+" from " + grid.get(coordinates).getComponent().getType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
         }
     }
 
@@ -124,16 +156,16 @@ public class ShipBoard {
     private void consumeComponentToken(Point donator){
         try{grid.get(donator).removeToken();}
         catch(IllegalMethodOnThisComponentException e){
-            System.out.println("cannot donate a BATTERY" + grid.get(donator).getComponent()+ " point<"+donator.x+","+donator.y+">\n"+e);
+            System.out.println("cannot donate a BATTERY" + grid.get(donator).getComponent().getType()+ " point<"+donator.x+","+donator.y+"> --> "+e.getMessage());
         }
         catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("not enough BATTERY in " + grid.get(donator).getComponent()+ " point<"+donator.x+","+donator.y+">\n"+e);
+            System.out.println("not enough BATTERY in " + grid.get(donator).getComponent().getType()+ " point<"+donator.x+","+donator.y+"> --> "+e.getMessage());
         }
     }
     private void turnOnComponent(Point coordinates){
         try{grid.get(coordinates).getComponent().turnOn();}
         catch(IllegalMethodOnThisComponentException e){
-            System.out.println("cannot turn on " + grid.get(coordinates).getComponent()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
+            System.out.println("cannot turn on " + grid.get(coordinates).getComponent().getType()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
         }
     }
     public void turnOnComponent(Point coordinates, Point donator){
@@ -147,7 +179,7 @@ public class ShipBoard {
                     .filter(entry -> entry.getValue().getComponent().getType().equals(type))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toCollection(ArrayList::new));
-        }else return null;//eccezione?
+        }else return null;//eccezione per pezzo sbagliato?
     }
 
     public double getTotalFirePower(){

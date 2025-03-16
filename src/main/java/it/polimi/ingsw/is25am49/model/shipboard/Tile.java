@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
 import java.util.HashMap;
 
@@ -15,6 +16,18 @@ public class Tile {
     private boolean isLocked;
     private boolean isCovered;
 
+    public Tile(){
+        this.idTile = 0;
+        component= new BasicComponent(ComponentType.SKY,0);
+        connectors= new HashMap<>(0);
+        tileRotation= Orientation.NORTH;
+        isLocked= true;
+        isCovered=false;
+        connectors.put(0,ConnectorType.FLAT);
+        connectors.put(1,ConnectorType.FLAT);
+        connectors.put(2,ConnectorType.FLAT);
+        connectors.put(3,ConnectorType.FLAT);
+    }
     public Tile(int idTile, Component component) {
         this.idTile = idTile;
         this.component = component;
@@ -43,7 +56,7 @@ public class Tile {
         return component;
     }
     int getNumberOfaToken(Token token) {return component.getNumberOfaToken(token);}
-    public void addToken(Token token) {
+    public void addToken(Token token) throws IllegalTokenInComponentEcxeption, ArrayIndexOutOfBoundsException{
         component.addToken(token);
     }
     public void removeToken(Token token) {component.removeToken(token);}
