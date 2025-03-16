@@ -22,29 +22,47 @@ class EffectLoseGoodsTest {
     ShipBoard shipBoard;
     Tile tile;
     Component component;
+    Component component2;
+    Component component3;
     Point coordinate = new Point(3, 2);
+    Point coordinate2 = new Point(3, 4);
+    Point coordinate3 = new Point(3, 5);
     CardEffect card;
+    Tile tile2;
+    Tile tile3;
 
     @BeforeEach
     void init(){
         shipBoard = new ShipBoard();
-        player = new Player("io",2,shipBoard,Color.RED);
-
-        component = new ContainerComponent(ComponentType.STORAGE, 4);
+        player = new Player("io",Color.RED,3);
+        component3 = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 2);
+        component2 = new ContainerComponent(ComponentType.BATTERY,4);
+        component = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 5);
         tile = new Tile(3, component );
-        shipBoard.insertTile(coordinate, tile);
-        shipBoard.addTokenToTile(coordinate, Token.YELLOW_GOODS);
-        shipBoard.addTokenToTile(coordinate, Token.BLUE_GOODS);
-        shipBoard.addTokenToTile(coordinate, Token.YELLOW_GOODS);
-        shipBoard.addTokenToTile(coordinate, Token.GREEN_GOODS);
-        card = new EffectLoseGoods("perdi", 2);
+        tile2 = new Tile(2,component2);
+        tile3 = new Tile(4,component3);
+        player.getShipBoard().insertTile(coordinate, tile);
+        player.getShipBoard().insertTile(coordinate2, tile2);
+        player.getShipBoard().insertTile(coordinate3, tile3);
+        player.getShipBoard().addTokenToTile(coordinate3, Token.RED_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate3, Token.RED_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate2,Token.BATTERY_CELLS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.RED_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.RED_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.GREEN_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.YELLOW_GOODS);
+        player.getShipBoard().addTokenToTile(coordinate, Token.GREEN_GOODS);
+        card = new EffectLoseGoods("perdi", 3);
 
     }
     @Test
     void action() {
         card.action(player);
-        assertEquals(0, shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS));
-
+        assertEquals(1, player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS));
+        assertEquals(2, player.getShipBoard().getPositionsOfaToken(Token.GREEN_GOODS).size());
+        assertEquals(3, player.getShipBoard().getPositionsOfaToken(Token.BATTERY_CELLS).size());
     }
 
     @Test

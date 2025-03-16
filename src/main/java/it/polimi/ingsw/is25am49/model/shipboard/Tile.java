@@ -1,10 +1,10 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Tile {
@@ -42,10 +42,14 @@ public class Tile {
     public Component getComponent() {
         return component;
     }
-    boolean checkIfContainsToken(Token token) {return component.checkIfContainsToken(token);}
+    int getNumberOfaToken(Token token) {return component.getNumberOfaToken(token);}
     public void addToken(Token token) {
         component.addToken(token);
     }
+    public void removeToken(Token token) {component.removeToken(token);}
+    public void removeToken(){component.removeToken();}
+    public void turnOn(){component.turnOn();}
+    public void turnOff() {component.turnOff();}
 
     public Orientation getTileRotation() {
         return tileRotation;
@@ -87,7 +91,8 @@ public class Tile {
         setTileRotation(newTileRotation);
     }
     public void rotateTileCounterClockwise(){
-        Orientation newTileRotation= Orientation.values()[(tileRotation.ordinal()-1)%4];
+        int index = ((tileRotation.ordinal()-1 % 4) + 4) % 4; //modulo per numeri negativi
+        Orientation newTileRotation= Orientation.values()[index];
         setTileRotation(newTileRotation);
     }
 
@@ -119,6 +124,8 @@ public class Tile {
     }
 
     public double getFirePower(){
+        if(component.getType().equals(ComponentType.DOUBLE_CANNON)||component.getType().equals(ComponentType.CANNON))
         return tileRotation.equals(Orientation.NORTH)?this.getComponent().level:this.getComponent().level*0.5;
+        else return 0;
     }
 }

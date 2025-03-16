@@ -4,6 +4,7 @@ module it.polimi.ingsw.is25am49 {
 
     requires org.controlsfx.controls;
     requires java.desktop;
+    requires com.fasterxml.jackson.databind;
 
     opens it.polimi.ingsw.is25am49 to javafx.fxml;
     exports it.polimi.ingsw.is25am49;
