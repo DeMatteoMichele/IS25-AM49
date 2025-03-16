@@ -15,10 +15,10 @@ public class BuildState extends State {
     public BuildState(GameSession gameSession){
         super(gameSession);
     }
-    public void adminSelectGameMode(Player admin, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+    public void adminSelectGameMode(Player admin, GameMode gamemode) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {
+    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException {
@@ -50,7 +50,7 @@ public class BuildState extends State {
         gameSession.userDrawTile(player, idTIle);
     }
     public void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException {
-        player.completeShipboard();
+        gameSession.userFinishShipboard(player);
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {
         
@@ -58,8 +58,8 @@ public class BuildState extends State {
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {
 
     }
-    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {
-
+    public void userPlaceTimer() throws IllegalMethodOnThisStateException {
+        gameSession.userPlaceTimer();
     }
 
     public void userThrowDices(Player player) throws IllegalMethodOnThisStateException {

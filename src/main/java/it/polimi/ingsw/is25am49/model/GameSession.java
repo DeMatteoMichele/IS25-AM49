@@ -65,7 +65,7 @@ public class GameSession {
     public void userStopLookSmallAdventureCardDeck(Player player, int index){
     }
 
-    public void userPlaceTimer(Player player){
+    public void userPlaceTimer(){
 
     }
 
@@ -95,5 +95,9 @@ public class GameSession {
     public void calculateScore() { game.calculateScore();}
     public void configurateFlight(){
         game.configurateFlight();
+    }
+    public void finishBuild(Player player){
+        player.completeShipboard();
+        player.getShipBoard().afterBuildCheckShipboard();
     }
 }

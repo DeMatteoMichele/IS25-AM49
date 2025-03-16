@@ -20,8 +20,8 @@ public abstract class State {
         gameSession.setState(nextState);
     }
 
-    public abstract void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException;
-    public abstract void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException;
+    public abstract void adminSelectGameMode(Player player, GameMode gamemode)throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException;
+    public abstract void userSelectColorAndUserName(Color playerColor, String username)throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException;
     public abstract void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException;
     public abstract void adminStartGame(Player player) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException;
     public abstract void adminSelectTypeFlight(Player player, FlightMode flightMode) throws IllegalMethodOnThisStateException,NormalUserCannotModifyGameSettingsException, GameDoesNotExistException;
@@ -33,7 +33,7 @@ public abstract class State {
     public abstract void userFinishShipboard(Player player) throws IllegalMethodOnThisStateException;
     public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException;
     public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException;
-    public abstract void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException;
+    public abstract void userPlaceTimer() throws IllegalMethodOnThisStateException;
     public abstract void userThrowDices(Player player) throws IllegalMethodOnThisStateException;
 
 

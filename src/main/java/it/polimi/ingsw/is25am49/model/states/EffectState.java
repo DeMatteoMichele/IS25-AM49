@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.model.states;
 
-import it.polimi.ingsw.is25am49.model.Game;
 import it.polimi.ingsw.is25am49.model.GameSession;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
@@ -13,7 +12,7 @@ public class EffectState  extends AdventureState{
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException {}
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {}
-    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {}
+    public void userPlaceTimer() throws IllegalMethodOnThisStateException {}
     public void userThrowDices(Player player) throws IllegalMethodOnThisStateException {}
     public void userDrawAdventureCard(Player player) throws IllegalMethodOnThisStateException {}
     public void userPlayAdventureCard(Player player) throws IllegalMethodOnThisStateException {}

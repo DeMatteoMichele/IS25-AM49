@@ -13,19 +13,24 @@ public class Game {
     private final ArrayList<Player> players;
     private int gameId;
     private Player winner;
+    private Timer timer;
 
     public Game(Player admin) {
         board = new GameBoard();
         players = new ArrayList<>();
-        mode = GameMode.LEVEL_1;
+        mode = null;
         gameId = 0;
         players.add(admin);
         winner = null;
+        timer = null;
     }
     public GameBoard getGameboard() {
         return board;
     }
-    public void setGameMode(GameMode mode) { this.mode = mode; }
+    public void setGameMode(GameMode mode) {
+        this.mode = mode;
+        timer = new Timer(mode);
+    }
     public void addPlayer(Player player) { players.add(player); }
     public ArrayList<Player> getListPlayers() { return players; }
     public void calculateScore() {

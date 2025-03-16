@@ -15,10 +15,10 @@ public class FinishScoreState extends State {
     public FinishScoreState(GameSession gameSession){
         super(gameSession);
     }
-    public void adminSelectGameMode(Player player,GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+    public void adminSelectGameMode(Player player,GameMode gamemode) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {
+    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userInsertName(Player player,String playerName) throws IllegalMethodOnThisStateException {
@@ -60,7 +60,7 @@ public class FinishScoreState extends State {
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {
+    public void userPlaceTimer() throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userThrowDices(Player player) throws IllegalMethodOnThisStateException {

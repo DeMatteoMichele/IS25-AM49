@@ -12,14 +12,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameBoard {
-    private final List<Pair<Integer, Player>> leaderBoard = new ArrayList<>();
+    private final List<Pair<Integer, Player>> leaderBoard;
     private AdventureCardDeck mainAdvenureDeck;
-    private final HashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks = new HashMap<>();
+    private final HashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private TileCardDeck tilesDeck;
     private AdventureCard currentCard;
     private int currentPlayer;
     private Timer timer;
     private FlightMode flightMode;
+    public GameBoard() {
+        leaderBoard = new ArrayList<>();
+        mapSmallAdventureDecks = new HashMap<>();
+        tilesDeck = new TileCardDeck();
+        mainAdvenureDeck = new AdventureCardDeck();
+
+    }
     //Bisogna modificare le possibili carte del mazzo, la lunghezza del percorso e l'utilizzo del tempo in base a flightMode e gameMode
     public void configurateFlight(GameMode gameMode){
 
@@ -30,7 +37,7 @@ public class GameBoard {
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
-
+    public void mergeDecks(){}
     public List<Pair<Integer, Player>> getLeaderBoard(){
         return leaderBoard;
     }

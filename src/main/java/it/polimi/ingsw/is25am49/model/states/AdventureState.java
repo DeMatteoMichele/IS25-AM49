@@ -15,10 +15,10 @@ public abstract class AdventureState extends State {
     public AdventureState(GameSession gameSession){
         super(gameSession);
     }
-    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {
+    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void adminCreateGame(Player player) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException {
@@ -54,7 +54,7 @@ public abstract class AdventureState extends State {
 
     public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) throws IllegalMethodOnThisStateException;
     public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException;
-    public abstract void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException;
+    public abstract void userPlaceTimer() throws IllegalMethodOnThisStateException;
     public abstract void userThrowDices(Player player) throws IllegalMethodOnThisStateException;
     public abstract void userDrawAdventureCard(Player player) throws IllegalMethodOnThisStateException;
     public abstract void userPlayAdventureCard(Player player) throws IllegalMethodOnThisStateException;

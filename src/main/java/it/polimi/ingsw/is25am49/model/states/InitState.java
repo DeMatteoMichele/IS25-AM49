@@ -16,7 +16,7 @@ public class InitState extends State {
     }
 
     //Implemented
-    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, NormalUserCannotModifyGameSettingsException, GameDoesNotExistException {
+    public void adminSelectGameMode(Player player, GameMode gamemode) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         if(gameSession.getGame() == null)
             throw new GameDoesNotExistException("The game has not been created");
         if(player.equals(gameSession.getAdmin()))
@@ -24,7 +24,7 @@ public class InitState extends State {
         else
             throw new NormalUserCannotModifyGameSettingsException("You are not the admin of this game");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException {
+    public void userSelectColorAndUserName(Color playerColor, String username) throws IllegalMethodOnThisStateException, GameDoesNotExistException, NormalUserCannotModifyGameSettingsException {
         if(gameSession.getGame() == null)
             throw new GameDoesNotExistException("The game has not been created");
         gameSession.userSelectColorAndUserName(playerColor, username);
@@ -81,7 +81,7 @@ public class InitState extends State {
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userPlaceTimer(Player player) throws IllegalMethodOnThisStateException {
+    public void userPlaceTimer() throws IllegalMethodOnThisStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
     public void userThrowDices(Player player) throws IllegalMethodOnThisStateException {
