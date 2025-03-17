@@ -28,8 +28,15 @@ public class GameBoard {
 
     }
     //Bisogna modificare le possibili carte del mazzo, la lunghezza del percorso e l'utilizzo del tempo in base a flightMode e gameMode
-    public void configurateFlight(GameMode gameMode){
+    //Andrà anche a inizializzare la Shipboard delle dimensione giusta in base alla GameMode, (per questo gli ho passato Game, serva la lista di player)
+    public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
 
+    }
+    public boolean checkStatus(){
+        if(flightMode != null)
+            return true;
+        else
+            return false;
     }
     public void setFlightMode(FlightMode flightMode){
         this.flightMode = flightMode;

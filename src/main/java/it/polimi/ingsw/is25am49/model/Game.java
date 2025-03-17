@@ -1,19 +1,24 @@
 package it.polimi.ingsw.is25am49.model;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.states.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Game {
     private GameMode mode;
     private final GameBoard board;
     private final ArrayList<Player> players;
     private int gameId;
-    private Player winner;
+    private Optional<Player> winner;
     private Timer timer;
+    private int maxPlayers;
+    public boolean isFinished;
 
     public Game(Player admin) {
         board = new GameBoard();
@@ -21,8 +26,16 @@ public class Game {
         mode = null;
         gameId = 0;
         players.add(admin);
-        winner = null;
+        winner = Optional.empty();
         timer = null;
+        maxPlayers = 4;
+        isFinished = false;
+    }
+    public boolean checkStatus(){
+        if(mode != null)
+            return board.checkStatus();
+        else
+            return false;
     }
     public GameBoard getGameboard() {
         return board;
@@ -31,13 +44,29 @@ public class Game {
         this.mode = mode;
         timer = new Timer(mode);
     }
+    public boolean checkPlayers(){ return players.size() < 4; }
     public void addPlayer(Player player) { players.add(player); }
     public ArrayList<Player> getListPlayers() { return players; }
-    public void calculateScore() {
-        players.forEach(Player::calculateFinalScore);
+    public void calculateScore(Player player) {
+        if(winner.isEmpty()){
+            if(player.equals(players.getFirst())) {
+                players.forEach(Player::calculateFinalScore);
+                winner = players.stream().max((p1, p2) -> Integer.compare(p1.getScore(), p2.getScore()));
+            }
+            else
+                throw new GameSettingsException("You are not the admin of this game");
+        }
+        else
+            throw new GameSettingsException("Final score already calculated");
     }
     public void configurateFlight(){
-        board.configurateFlight(mode);
+        board.configurateFlight(mode, players);
     }
-    private void setWinner(Player winner) {}
+    public boolean gameIsFinished(){
+        return isFinished;
+    }
+    public Optional<Player> userShowWinner() {
+            isFinished = true;
+            return winner;
+    }
 }

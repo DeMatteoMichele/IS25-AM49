@@ -3,10 +3,12 @@ package it.polimi.ingsw.is25am49.model;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.model.states.InitState;
 import it.polimi.ingsw.is25am49.model.states.State;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class GameSession {
     private Game game;
@@ -36,6 +38,13 @@ public class GameSession {
             admin = tempPlayer;
         }
         game.addPlayer(tempPlayer);
+    }
+    public boolean checkPlayers(){ return game.checkPlayers(); }
+    public boolean checkStatus(){
+        if(game!= null)
+            return game.checkStatus();
+        else
+            return false;
     }
     public State getState() {
         return currentState;
@@ -92,7 +101,7 @@ public class GameSession {
     public void adminSelectTypeFlight(FlightMode flightMode){
         game.getGameboard().setFlightMode(flightMode);
     }
-    public void calculateScore() { game.calculateScore();}
+    public void calculateScore(Player player) { game.calculateScore(player);}
     public void configurateFlight(){
         game.configurateFlight();
     }
@@ -100,4 +109,13 @@ public class GameSession {
         player.completeShipboard();
         player.getShipBoard().afterBuildCheckShipboard();
     }
+    public void userEndGame() throws GameSettingsException{
+        if(game.gameIsFinished()){
+            game = null;
+            setState(new InitState(this));
+        }
+        else
+            throw new GameSettingsException("The game is not finished yet");
+    }
+    public Optional<Player> userShowWinner() { return game.userShowWinner(); }
 }
