@@ -71,14 +71,14 @@ public class ContainerComponent extends Component {
 
     @Override
     public boolean getIsActive() {
-        throw new IllegalMethodOnThisComponentException("getIsActive non supported su ContainerComponent");
+        throw new IllegalMethodOnThisComponentException("getIsActive is not supported on ContainerComponent");
     }
     @Override
     public void turnOn() {
-        throw new IllegalMethodOnThisComponentException("turnOn non supported su ContainerComponent");
+        throw new IllegalMethodOnThisComponentException("turnOn is not supported on ContainerComponent");
     }
     @Override
     public void turnOff() {
-        throw new IllegalMethodOnThisComponentException("turnOff non supported su ContainerComponent");
+        throw new IllegalMethodOnThisComponentException("turnOff is not supported on ContainerComponent");
     }
 }

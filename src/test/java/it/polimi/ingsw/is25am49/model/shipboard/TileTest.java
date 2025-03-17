@@ -9,6 +9,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -101,6 +103,15 @@ class TileTest {
     @Test
     void testAddToken(){
         assertThrows(IllegalTokenInComponentEcxeption.class, ()->{t21.addToken(Token.BATTERY_CELLS);});
+    }
+
+    @Test
+    void generateTiles(){
+        ArrayList<Tile> tiles= Tile.generateTiles();
+        for (Tile t: tiles){
+            System.out.println("TILE: "+t.getIdTile()+ "\tComponent: "+t.getComponent().getType()+"\tlvl:"+t.getComponent().getLevel());
+            System.out.println("\tconnectors: "+t.getConnector(0)+" "+t.getConnector(1)+" "+t.getConnector(2)+" "+t.getConnector(3)+"\n");
+        }
     }
 
 }

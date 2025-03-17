@@ -14,51 +14,51 @@ public class BasicComponent extends Component {
 
     @Override
     public ArrayList<Token> getTokenList() {
-        throw new IllegalMethodOnThisComponentException("getTokenList non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("getTokenList is not supported on BasicComponent");
     }
     @Override
     public int getNumberOfTokens()  {
-        throw new IllegalMethodOnThisComponentException("getNumberOfToken non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("getNumberOfToken is not supported on BasicComponent");
     }
     @Override
     public int getNumberOfaToken(Token token) {
-        throw new IllegalMethodOnThisComponentException("checkIfContainsToken non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("checkIfContainsToken is not supported on BasicComponent");
     }
     @Override
     public boolean checkIfTokenIsValid(Token token) {
-        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid is not supported on BasicComponent");
     }
     @Override
     public void addToken(Token token) {
-        throw new IllegalMethodOnThisComponentException("addToken non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("addToken is not supported on BasicComponent");
     }
     @Override
     public void removeToken(Token token) {
-        throw new IllegalMethodOnThisComponentException("removeToken non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("removeToken is not supported on BasicComponent");
     }
     @Override
     public void removeToken() {
-        throw new IllegalMethodOnThisComponentException("removeToken non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("removeToken is not supported on BasicComponent");
     }
     @Override
     public void fillComponent(Token token) {
-        throw new IllegalMethodOnThisComponentException("fillComponent non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("fillComponent is not supported on BasicComponent");
     }
     @Override
     public void clearComponent() {
-        throw new IllegalMethodOnThisComponentException("clearComponent non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("clearComponent is not supported on BasicComponent");
     }
 
     @Override
     public boolean getIsActive() {
-        throw new IllegalMethodOnThisComponentException("getIsActive non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("getIsActive is not supported on BasicComponent");
     }
     @Override
     public void turnOn() {
-        throw new IllegalMethodOnThisComponentException("turnOn non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("turnOn is not supported on BasicComponent");
     }
     @Override
     public void turnOff() {
-        throw new IllegalMethodOnThisComponentException("turnOff non supported su BasicComponent");
+        throw new IllegalMethodOnThisComponentException("turnOff is not supported on BasicComponent");
     }
 }

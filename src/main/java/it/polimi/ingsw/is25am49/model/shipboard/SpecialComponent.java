@@ -15,39 +15,39 @@ public class SpecialComponent extends Component {
 
     @Override
     public ArrayList<Token> getTokenList() {
-        throw new IllegalMethodOnThisComponentException("getTokenList non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("getTokenList is not supported on SpecialComponent");
     }
     @Override
     public int getNumberOfTokens() {
-        throw new IllegalMethodOnThisComponentException("getNumberOfToken non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("getNumberOfToken is not supported on SpecialComponent");
     }
     @Override
     public int getNumberOfaToken(Token token) {
-        throw new IllegalMethodOnThisComponentException("checkIfContainsToken non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("checkIfContainsToken is not supported on SpecialComponent");
     }
     @Override
     public boolean checkIfTokenIsValid(Token token) {
-        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid is not supported on SpecialComponent");
     }
     @Override
     public void addToken(Token token) {
-        throw new IllegalMethodOnThisComponentException("addToken non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("addToken is not supported on SpecialComponent");
     }
     @Override
     public void removeToken(Token token) {
-        throw new IllegalMethodOnThisComponentException("removeToken non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("removeToken is not supported on SpecialComponent");
     }
     @Override
     public void removeToken() {
-        throw new IllegalMethodOnThisComponentException("removeToken non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("removeToken is not supported on SpecialComponent");
     }
     @Override
     public void fillComponent(Token token) {
-        throw new IllegalMethodOnThisComponentException("fillComponent non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("fillComponent is not supported on SpecialComponent");
     }
     @Override
     public void clearComponent() {
-        throw new IllegalMethodOnThisComponentException("clearComponent non supported su SpecialComponent");
+        throw new IllegalMethodOnThisComponentException("clearComponent is not supported on SpecialComponent");
     }
 
 

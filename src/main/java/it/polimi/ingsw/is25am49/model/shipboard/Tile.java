@@ -1,12 +1,20 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
-import java.util.HashMap;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 public class Tile {
     private final int idTile;
@@ -56,17 +64,21 @@ public class Tile {
         return component;
     }
     int getNumberOfaToken(Token token) {return component.getNumberOfaToken(token);}
-    public void addToken(Token token) throws IllegalTokenInComponentEcxeption, ArrayIndexOutOfBoundsException{
-        component.addToken(token);
-    }
+    public void addToken(Token token){component.addToken(token);}
     public void removeToken(Token token) {component.removeToken(token);}
     public void removeToken(){component.removeToken();}
     public void turnOn(){component.turnOn();}
     public void turnOff() {component.turnOff();}
-
-    public Orientation getTileRotation() {
-        return tileRotation;
+    public void fillComponent(Token token){
+        try{component.fillComponent(token);}
+        catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e){
+            System.out.println("cannot fill component with token " + token + ": " + e.getMessage());
+        }
     }
+    public void clearComponent(){component.clearComponent();}
+
+    public Orientation getTileRotation() {return tileRotation;}
+
     //this method rotates the map of connector to match the component orientation, using the Juggling algorithm
     public void setTileRotation(Orientation tileRotation) {
         int oldOrientation = this.tileRotation.ordinal();
@@ -141,4 +153,48 @@ public class Tile {
         return tileRotation.equals(Orientation.NORTH)?this.getComponent().level:this.getComponent().level*0.5;
         else return 0;
     }
+
+
+    public static ArrayList<Tile> generateTiles(){
+        try{
+            File file = new File("src/main/resources/it/polimi/ingsw/is25am49/tiles_config.json");
+            if(!file.exists()){throw new FileNotFoundException("File(tiles_config.json) non trovato: " + file.getAbsolutePath());}
+            else{
+                ArrayList<Tile> tiles = new ArrayList<>();
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootArray = objectMapper.readTree(file);
+
+                for (JsonNode node : rootArray) {
+                    int idTile = node.get("idTile").asInt();
+                    ComponentType type= ComponentType.valueOf(node.get("component").asText());
+                    int level = node.get("level").asInt();
+                    ConnectorType c1= ConnectorType.valueOf(node.get("c1").asText());
+                    ConnectorType c2= ConnectorType.valueOf(node.get("c2").asText());
+                    ConnectorType c3= ConnectorType.valueOf(node.get("c3").asText());
+                    ConnectorType c4= ConnectorType.valueOf(node.get("c4").asText());
+                    //System.out.println(idTile + " " + type+ " "+ level+ " "+ c1+ " "+ c2+ " "+ c3+ " "+ c4);
+                    Component component;
+                    switch (type){
+                        case ENGINE,CANNON,FRAME_SECTION,SKY:
+                            component= new BasicComponent(type,level);
+                            break;
+                        case DOUBLE_CANNON,DOUBLE_ENGINE,SHIELD:
+                            component= new SpecialComponent(type,level);
+                        default:
+                            component= new ContainerComponent(type,level);
+                    }
+                    tiles.add(new Tile(idTile,component,c1,c2,c3,c4));
+                }
+                return tiles;
+            }
+        }catch (FileNotFoundException e) {
+            System.err.println("Errore: Il file di configurazione non è stato trovato. -->" + e.getMessage());
+        }catch (IllegalArgumentException e) {
+            System.err.println("Errore nella conversione dell'enum!"+e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 }
