@@ -1,6 +1,8 @@
-[{
+[
+{
   "idTile": 1,
-  "component": {"type": "BATTERY", "level": 2},
+  "component": "BATTERY",
+  "level": 2,
   "c1": "UNIVERSAL",
   "c2": "SINGLE",
   "c3": "DOUBLE",
@@ -152,7 +154,7 @@
 },
 {
 "idTile": 18,
-"component": "CONTAINER",
+"component": "STORAGE",
 "level": 2,
 "c1": "DOUBLE",
 "c2": "SINGLE",
@@ -161,7 +163,7 @@
 },
 {
 "idTile": 19,
-"component": "CONTAINER",
+"component": "STORAGE",
 "level": 2,
 "c1": "DOUBLE",
 "c2": "SINGLE",

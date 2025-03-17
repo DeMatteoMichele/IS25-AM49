@@ -1,10 +1,12 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
+import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -116,5 +118,16 @@ class ShipBoardTest {
         assertFalse(ship1.checkValidCoordinates(new Point(5,6)));
         assertTrue(ship1.checkValidCoordinates(new Point(6,6)));
         assertFalse(ship1.checkValidCoordinates(new Point(13,24)));
+
+        ArrayList<Tile> tiles= Tile.generateTiles();
+        ship1.printShipboardSpecial();
+        ship1.insertTile(new Point(7,6), tiles.get(12));
+        ship1.insertTile(new Point(6,7), tiles.get(11));
+        ship1.insertTile(new Point(5,9), tiles.get(11));
+        ship1.printShipboardSpecial();
+        tiles.get(11).setTileRotation(Orientation.EAST);
+        ship1.insertTile(new Point(6,7), tiles.get(11));
+        ship1.printShipboardSpecial();
+        ship1.printShipboard();
     }
 }
