@@ -3,7 +3,6 @@ import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalComponentTypeException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 
 
@@ -84,14 +83,17 @@ public class ShipBoard {
     public boolean isCompleted() {return isCompleted;}
     public void completeShipBoard() {isCompleted = true;}
 
-    //TODO metodo che restituisce un array di orientation che indica dove la nave è protetta
-
     public void setDestroyedTiles(int n) {this.destroyedTiles = n;}
     public int getDestroyedTiles() {return destroyedTiles;}
     public void addDestroyedTiles(int n) {this.destroyedTiles += n;}
 
     public boolean checkValidCoordinates(Point coordinates) {
         return grid.containsKey(coordinates);
+    }
+    public boolean connectorsMatch(ConnectorType c1, ConnectorType c2){
+        if( c1.equals(ConnectorType.UNIVERSAL) || c2.equals(ConnectorType.UNIVERSAL))return true;
+        if (c1.equals(ConnectorType.FLAT) || c2.equals(ConnectorType.FLAT))return false;
+        return c1.equals(c2);
     }
     public Tile getTile(Point coordinates){
         if(checkValidCoordinates(coordinates)){
@@ -100,11 +102,14 @@ public class ShipBoard {
             throw new InvalidCoordinatesException("there is no tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
         }
     }
+    //TODO non sono sicuro servano
+    public boolean checkTileIsActive(Point coordinates){return false; }
+    public void turnOnTile(Point coordinates){}
+    public void turnOffTile(Point coordinates){}
 
-    //metodo che restituisce la tessera più esterna in una determinata posizione
-    public Optional<Tile> getExternalTile(int position, Orientation orientation){
-        Optional<Point> coordinates= Optional.empty();;
-        coordinates = switch (orientation) {
+    //metodo che restituisce il punto della nave  più esterno in una determinata posizione
+    private Optional<Point> getExternalTilePoint(int position, Orientation orientation){
+        return switch (orientation) {
             case NORTH -> grid.keySet().stream()
                     .filter((Point p) -> p.x == position)
                     .min(Comparator.comparing(p -> p.y));
@@ -118,7 +123,10 @@ public class ShipBoard {
                     .filter((Point p) -> p.y == position)
                     .min(Comparator.comparing(p -> p.x));
         };
-        return coordinates.flatMap(point -> Optional.ofNullable(grid.get(point)));
+    }
+    //metodo che restituisce la tesserao della nave  più esterna in una determinata posizione
+    public Optional<Tile> getExternalTile(int position, Orientation orientation){
+        return getExternalTilePoint(position,orientation).flatMap(point -> Optional.ofNullable(grid.get(point)));
     }
     //se inserisco una Tile nella nave aggiorno lastPlacedPoint
     public void insertTile(Point coordinates, Tile tile) throws InvalidCoordinatesException {
@@ -144,20 +152,58 @@ public class ShipBoard {
         }
     }
     public void destroyTilesCascade(){
-        //algoritmo mistico
+        //TODO algoritmo mistico
     }
     //public void lockTile(Point coordinates){} secondo me non serve
 
-    public void checkTileConnectors(Point point){
-        //algoritmo mega mistico
+    //restituisce il numero di connettori che matchano in una tessera
+    public int checkTileConnectors(Point p){
+        int n=0;
+        Tile t;
+        try{
+            t= this.getTile(new Point(p.x,p.y+1));
+            if(connectorsMatch(grid.get(p).getConnector(0),t.getConnector(2))) n++;
+        }
+        catch (InvalidCoordinatesException _){}
+        try{
+            t= this.getTile(new Point(p.x+1,p.y));
+            if(connectorsMatch(grid.get(p).getConnector(1),t.getConnector(3))) n++;
+        }
+        catch (InvalidCoordinatesException _){}
+        try{
+            t= this.getTile(new Point(p.x,p.y-1));
+            if(connectorsMatch(grid.get(p).getConnector(2),t.getConnector(0))) n++;
+        }
+        catch (InvalidCoordinatesException _){}
+        try{
+            t= this.getTile(new Point(p.x-1,p.y));
+            if(connectorsMatch(grid.get(p).getConnector(3),t.getConnector(1))) n++;
+        }
+        catch (InvalidCoordinatesException _){}
+        return n;
     }
     public void checkTileConnectorsCascade(Point point){
-        //non so se vale la pena implementarla
+        //TODO non so se vale la pena implementarla
     }
+
+    //ricerca connettori esposti
     public int getNumberOfExposedConnectors(){
-        //algoritmo mistico
-        //cerco ogni tessera esterna e controllo i connettori adiacenti
-        return 0;
+        Set<Point> external = new HashSet<>();
+        //TODO sistema non trovo tutte le tessere che mi servono
+        for (int i = 4; i <= 10; i++) {
+            this.getExternalTilePoint(i,Orientation.NORTH).ifPresent(external::add);
+            this.getExternalTilePoint(i,Orientation.SOUTH).ifPresent(external::add);
+        }
+        for (int i = 5; i <=9 ; i++) {
+            this.getExternalTilePoint(i,Orientation.EAST).ifPresent(external::add);
+            this.getExternalTilePoint(i,Orientation.WEST).ifPresent(external::add);
+        }
+
+        int exposedConnectors=0;
+        for (Point p:external){
+            exposedConnectors+=4-checkTileConnectors(p);
+        }
+        return exposedConnectors;
     }
     public void addTokenToTile(Point coordinates, Token  token){
         if(checkValidCoordinates(coordinates)) {
@@ -168,6 +214,14 @@ public class ShipBoard {
                 System.out.println("cannot add " + token + " to " + grid.get(coordinates).getComponent().getType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
             }
         }else throw new InvalidCoordinatesException("cannot add "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+    }
+    public void fillTileComponent(Point coordinates, Token token){
+        if(checkValidCoordinates(coordinates)) {
+            try{grid.get(coordinates).fillComponent(token);}
+            catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e){
+                System.out.println("cannot fill " + grid.get(coordinates).getComponent().getType() + " with token " + token + ": " + e.getMessage());
+            }
+        }else throw new InvalidCoordinatesException("cannot FILL point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
     }
     //method to remove a specific token from a tile
     public void removeTokenFromTile(Point coordinates, Token token){
@@ -243,8 +297,8 @@ public class ShipBoard {
     }
     public ArrayList<Point> getPositionsOfaToken(Token token){
         return grid.entrySet().stream()
-                .filter(entry -> entry.getValue().getComponent().getNumberOfaToken(token)>0)
-                .flatMap(entry -> IntStream.range(0, entry.getValue().getComponent().getNumberOfaToken(token))
+                .filter(entry -> entry.getValue().getNumberOfaToken(token)>0)
+                .flatMap(entry -> IntStream.range(0, entry.getValue().getNumberOfaToken(token))
                         .mapToObj(i -> entry.getKey()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -255,10 +309,39 @@ public class ShipBoard {
         }
     }
 
+    //metodo che restituisce un set di orientation che indica dove la nave è protetta
+    public Set<Orientation> getProtectedSides(){
+        Set<Orientation> sides= new HashSet<>();
+        ArrayList<Point> shields= this.getActivatableComponents(ComponentType.SHIELD);
+        for(Point p: shields){
+            if(sides.size()==4)break;
+            if(grid.get(p).isActive()) {
+                switch (grid.get(p).getTileOrientation()) {
+                    case NORTH -> {
+                        sides.add(Orientation.NORTH);
+                        sides.add(Orientation.EAST);
+                    }
+                    case EAST -> {
+                        sides.add(Orientation.EAST);
+                        sides.add(Orientation.SOUTH);
+                    }
+                    case SOUTH -> {
+                        sides.add(Orientation.SOUTH);
+                        sides.add(Orientation.WEST);
+                    }
+                    case WEST -> {
+                        sides.add(Orientation.WEST);
+                        sides.add(Orientation.NORTH);
+                    }
+                }
+            }
+        }
+        return sides;
+    }
     public void checkRocketTile(Point coordinates){}
     public void checkCannonTile(Point coordinates){}
     public void afterBuildCheckShipboard(){
-        //algoritmo mega mistico
+        //TODO algoritmo mega mistico
     }
 
     public void printShipboard(){
@@ -327,6 +410,9 @@ public class ShipBoard {
         switch (c){
             case CABINE -> System.out.print("\uD83D\uDEDE\t");
             case BATTERY ->  System.out.print("\uD83D\uDD0B\t");
+            case SKY ->  System.out.print("⬛\t");
+            case STORAGE -> System.out.print("\uD83D\uDCE6\t");
+            case SHIELD ->  System.out.print("\uD83D\uDEE1\uFE0F\t");
             default -> System.out.print("\uD83D\uDFE6\t");
         }
     }

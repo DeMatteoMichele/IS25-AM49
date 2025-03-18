@@ -40,6 +40,8 @@ public abstract class State {
     public abstract void userPlayAdventureCard(Player player);
     public abstract void userFinishDecision(Player player);
     public abstract void userActivateComponent(Player player, Point coordinates);
+    public abstract void userLandOnPlanet(Player player);
+    public abstract void userLandOnShip(Player player);
     public abstract void userActivateDaysUpdate();
     public abstract void userQuitGame(Player player);
     public abstract void adminCalculateScore(Player player);

@@ -77,6 +77,17 @@ public class FinishScoreState extends State {
     public void userActivateComponent(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+
+    public void userLandOnPlanet(Player player) {
+
+    }
+
+
+    public void userLandOnShip(Player player) {
+
+    }
+
     public void userActivateDaysUpdate() {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }

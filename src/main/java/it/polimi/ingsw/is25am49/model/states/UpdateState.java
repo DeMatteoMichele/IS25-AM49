@@ -19,6 +19,17 @@ public class UpdateState extends AdventureState {
     public void userPlayAdventureCard(Player player) {}
     public void userFinishDecision(Player player) {}
     public void userActivateComponent(Player player, Point coordinates) {}
+
+    @Override
+    public void userLandOnPlanet(Player player) {
+
+    }
+
+    @Override
+    public void userLandOnShip(Player player) {
+
+    }
+
     public void userActivateDaysUpdate() {}
     public void userQuitGame(Player player) {}
 }

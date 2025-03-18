@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.GameSession;
 import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
 
@@ -17,6 +18,17 @@ public class CheckRequirementsState extends AdventureState{
     public void userPlayAdventureCard(Player player) {}
     public void userFinishDecision(Player player) {}
     public void userActivateComponent(Player player, Point coordinates) {}
+
+
+    public void userLandOnPlanet(Player player) {
+
+    }
+
+
+    public void userLandOnShip(Player player) {
+
+    }
+
     public void userActivateDaysUpdate() {}
     public void userQuitGame(Player player) {}
 }

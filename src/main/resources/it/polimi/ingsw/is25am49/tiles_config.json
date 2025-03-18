@@ -169,5 +169,14 @@
 "c2": "SINGLE",
 "c3": "UNIVERSAL",
 "c4": "SINGLE"
-}
+},
+  {
+    "idTile": 151,
+    "component": "SHIELD",
+    "level": 0,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "DOUBLE",
+    "c4": "SINGLE"
+  }
 ]

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
@@ -10,7 +9,6 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,7 +17,7 @@ import java.util.*;
 public class Tile {
     private final int idTile;
     private final Component component;
-    private Orientation tileRotation;
+    private Orientation tileOrientation;
     HashMap<Integer, ConnectorType> connectors;
     private boolean isLocked;
     private boolean isCovered;
@@ -28,7 +26,7 @@ public class Tile {
         this.idTile = 0;
         component= new BasicComponent(ComponentType.SKY,0);
         connectors= new HashMap<>(0);
-        tileRotation= Orientation.NORTH;
+        tileOrientation = Orientation.NORTH;
         isLocked= true;
         isCovered=false;
         connectors.put(0,ConnectorType.FLAT);
@@ -40,7 +38,7 @@ public class Tile {
         this.idTile = idTile;
         this.component = component;
         this.connectors = new HashMap<>(4);
-        this.tileRotation= Orientation.NORTH;
+        this.tileOrientation = Orientation.NORTH;
         this.isLocked= false;
         this.isCovered= true;
     }
@@ -52,7 +50,7 @@ public class Tile {
         connectors.put(1,c2);
         connectors.put(2,c3);
         connectors.put(3,c4);
-        this.tileRotation= Orientation.NORTH;
+        this.tileOrientation = Orientation.NORTH;
         this.isLocked= false;
         this.isCovered= true;
     }
@@ -63,28 +61,27 @@ public class Tile {
     public Component getComponent() {
         return component;
     }
-    int getNumberOfaToken(Token token) {return component.getNumberOfaToken(token);}
     public void addToken(Token token){component.addToken(token);}
     public void removeToken(Token token) {component.removeToken(token);}
     public void removeToken(){component.removeToken();}
+    public void fillComponent(Token token){component.fillComponent(token);}
+    public void clearComponent(){component.clearComponent();}
+    public Orientation getTileOrientation() {return tileOrientation;}
+    int getNumberOfaToken(Token token) {
+        try{return component.getNumberOfaToken(token);}
+        catch (IllegalMethodOnThisComponentException _){return 0;}
+    }
+    //TODO mancano check exception
     public void turnOn(){component.turnOn();}
     public void turnOff() {component.turnOff();}
-    public void fillComponent(Token token){
-        try{component.fillComponent(token);}
-        catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e){
-            System.out.println("cannot fill component with token " + token + ": " + e.getMessage());
-        }
-    }
-    public void clearComponent(){component.clearComponent();}
-
-    public Orientation getTileRotation() {return tileRotation;}
+    public boolean isActive(){return component.getIsActive();}
 
     //this method rotates the map of connector to match the component orientation, using the Juggling algorithm
-    public void setTileRotation(Orientation tileRotation) {
-        int oldOrientation = this.tileRotation.ordinal();
-        int newOrientation = tileRotation.ordinal();
+    public void setTileOrientation(Orientation tileOrientation) {
+        int oldOrientation = this.tileOrientation.ordinal();
+        int newOrientation = tileOrientation.ordinal();
 
-        this.tileRotation = tileRotation;
+        this.tileOrientation = tileOrientation;
         int diff= Math.abs(newOrientation-oldOrientation);
 
         //calc GCD
@@ -112,13 +109,13 @@ public class Tile {
         }
     }
     public void rotateTileClockwise(){
-        Orientation newTileRotation= Orientation.values()[(tileRotation.ordinal()+1)%4];
-        setTileRotation(newTileRotation);
+        Orientation newTileRotation= Orientation.values()[(tileOrientation.ordinal()+1)%4];
+        setTileOrientation(newTileRotation);
     }
     public void rotateTileCounterClockwise(){
-        int index = ((tileRotation.ordinal()-1 % 4) + 4) % 4; //modulo per numeri negativi
+        int index = ((tileOrientation.ordinal()-1 % 4) + 4) % 4; //modulo per numeri negativi
         Orientation newTileRotation= Orientation.values()[index];
-        setTileRotation(newTileRotation);
+        setTileOrientation(newTileRotation);
     }
 
     public boolean isLocked() {
@@ -148,19 +145,20 @@ public class Tile {
         return connectors.get(index);
     }
 
+    //restituisce la potenza di fuoco di un cannone, non verifica che sia acceso (controllo da fare sopra)
     public double getFirePower(){
         if(component.getType().equals(ComponentType.DOUBLE_CANNON)||component.getType().equals(ComponentType.CANNON))
-        return tileRotation.equals(Orientation.NORTH)?this.getComponent().level:this.getComponent().level*0.5;
+        return tileOrientation.equals(Orientation.NORTH)?this.getComponent().level:this.getComponent().level*0.5;
         else return 0;
     }
 
 
-    public static ArrayList<Tile> generateTiles(){
+    public static Map<Integer,Tile> generateTiles(){
         try{
             File file = new File("src/main/resources/it/polimi/ingsw/is25am49/tiles_config.json");
             if(!file.exists()){throw new FileNotFoundException("File(tiles_config.json) non trovato: " + file.getAbsolutePath());}
             else{
-                ArrayList<Tile> tiles = new ArrayList<>();
+                Map<Integer,Tile> tiles = new HashMap<>();
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootArray = objectMapper.readTree(file);
 
@@ -183,7 +181,7 @@ public class Tile {
                         default:
                             component= new ContainerComponent(type,level);
                     }
-                    tiles.add(new Tile(idTile,component,c1,c2,c3,c4));
+                    tiles.put(idTile,new Tile(idTile,component,c1,c2,c3,c4));
                 }
                 return tiles;
             }

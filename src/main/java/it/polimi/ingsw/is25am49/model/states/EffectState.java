@@ -17,6 +17,17 @@ public class EffectState  extends AdventureState{
     public void userPlayAdventureCard(Player player) {}
     public void userFinishDecision(Player player) {}
     public void userActivateComponent(Player player, Point coordinates) {}
+
+
+    public void userLandOnPlanet(Player player) {
+
+    }
+
+
+    public void userLandOnShip(Player player) {
+
+    }
+
     public void userActivateDaysUpdate() {}
     public void userQuitGame(Player player) {}
 
