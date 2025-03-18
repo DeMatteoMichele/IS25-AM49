@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +33,7 @@ class TileTest {
         t3= new Tile(3, new SpecialComponent(ComponentType.SHIELD,1));
 
         t11.setConnectors(ConnectorType.FLAT, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
-        t11.setTileRotation(Orientation.NORTH);
+        t11.setTileOrientation(Orientation.NORTH);
     }
     @AfterEach
     void tearDown() {
@@ -40,21 +41,21 @@ class TileTest {
 
     @Test
     void testGetTileRotation() {
-        assertEquals(Orientation.NORTH, t11.getTileRotation());
-        assertNotEquals(Orientation.EAST, t12.getTileRotation());
+        assertEquals(Orientation.NORTH, t11.getTileOrientation());
+        assertNotEquals(Orientation.EAST, t12.getTileOrientation());
     }
 
     @Test
     void setTileRotation() {
-        t11.setTileRotation(Orientation.SOUTH);
-        assertEquals(Orientation.SOUTH, t11.getTileRotation());
+        t11.setTileOrientation(Orientation.SOUTH);
+        assertEquals(Orientation.SOUTH, t11.getTileOrientation());
         assertEquals(ConnectorType.UNIVERSAL, t11.getConnector(Orientation.WEST));
         assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.NORTH));
         assertEquals(ConnectorType.SINGLE, t11.getConnector(Orientation.EAST));
         assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.SOUTH));
 
-        t11. setTileRotation(Orientation.WEST);
-        assertEquals(Orientation.WEST, t11.getTileRotation());
+        t11.setTileOrientation(Orientation.WEST);
+        assertEquals(Orientation.WEST, t11.getTileOrientation());
         assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.WEST));
         assertEquals(ConnectorType.UNIVERSAL, t11.getConnector(Orientation.NORTH));
         assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.EAST));
@@ -64,7 +65,7 @@ class TileTest {
     @Test
     void testRotateTileClockwise() {
         t11.rotateTileClockwise();
-        assertEquals(Orientation.EAST, t11.getTileRotation());
+        assertEquals(Orientation.EAST, t11.getTileOrientation());
         assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.WEST));
         assertEquals(ConnectorType.SINGLE, t11.getConnector(Orientation.NORTH));
         assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.EAST));
@@ -73,7 +74,7 @@ class TileTest {
     @Test
     void testTileCounterClockwise() {
         t11.rotateTileCounterClockwise();
-        assertEquals(Orientation.WEST, t11.getTileRotation());
+        assertEquals(Orientation.WEST, t11.getTileOrientation());
         assertEquals(ConnectorType.FLAT, t11.getConnector(Orientation.WEST));
         assertEquals(ConnectorType.UNIVERSAL, t11.getConnector(Orientation.NORTH));
         assertEquals(ConnectorType.DOUBLE, t11.getConnector(Orientation.EAST));
@@ -107,8 +108,8 @@ class TileTest {
 
     @Test
     void generateTiles(){
-        ArrayList<Tile> tiles= Tile.generateTiles();
-        for (Tile t: tiles){
+        Map<Integer,Tile> tiles= Tile.generateTiles();
+        for (Tile t: tiles.values()){
             System.out.println("TILE: "+t.getIdTile()+ "\tComponent: "+t.getComponent().getType()+"\tlvl:"+t.getComponent().getLevel());
             System.out.println("\tconnectors: "+t.getConnector(0)+" "+t.getConnector(1)+" "+t.getConnector(2)+" "+t.getConnector(3)+"\n");
         }
