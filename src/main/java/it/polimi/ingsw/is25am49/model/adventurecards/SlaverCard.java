@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -9,12 +10,23 @@ import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import java.awt.*;
 import java.util.List;
 
-public class SlaverCard extends EnemyCard {
+public class SlaverCard extends AdventureCard {
 
     public SlaverCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int lostAstronauts, List<CardEffect> listEffects) {
-        super(description, daysLost, level, creditsEarned, minimumFirePower, lostAstronauts, listEffects);
+        super(description, daysLost, level, creditsEarned);
+        this.minimumFirePower = minimumFirePower;
+        this.lostAstronauts = lostAstronauts;
+        this.listEffects.addAll(listEffects);
     }
 
-    //ALL IMPLEMENTED IN ENEMYCARD
+    @Override
+    public AdventureStatesTypes checkRequirements(Player player) {
+        return null;
+    }
+
+    @Override
+    public AdventureStatesTypes applyEffect(Player player) {
+        return null;
+    }
 
 }

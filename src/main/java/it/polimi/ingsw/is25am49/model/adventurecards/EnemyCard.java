@@ -1,11 +1,10 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
-
 import java.awt.*;
 import java.util.List;
 
@@ -13,8 +12,8 @@ public abstract class EnemyCard extends AdventureCard {
     protected final int minimumFirePower;
     protected final int lostAstronauts;
 
-    public EnemyCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int lostAstronauts, List<CardEffect> listEffects) {
-        super(description, daysLost, level, creditsEarned, listEffects);
+    public EnemyCard(String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int lostAstronauts) {
+        super(description, daysLost, level, creditsEarned);
         this.minimumFirePower = minimumFirePower;
         this.lostAstronauts = lostAstronauts;
         isFinished=false;
@@ -24,8 +23,17 @@ public abstract class EnemyCard extends AdventureCard {
     // 0 = check requirements
     // 1 = decision
     // 2 = effect
+
+    //****************************************************************************************
+
+    //THIS METHOD IS INHERITED ONLY BY SMUGGLERSCARD AND SLAVERCARD
+
+    //PIRATESCARD OVERRIDE THIS METHOD
+
+    //****************************************************************************************
+
     @Override
-    public int checkRequirements(Player player) {
+    public AdventureStatesTypes checkRequirements(Player player) {
         double standardFirePower =player.getShipBoard().getTotalFirePower();
         ShipBoard shipBoard=player.getShipBoard();
         int numBatteries=shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS);
@@ -35,6 +43,7 @@ public abstract class EnemyCard extends AdventureCard {
                 .sorted()
                 .limit(numBatteries)
                 .sum();
+
         if (standardFirePower > minimumFirePower) {
             System.out.println("You have" + player.getShipBoard().getTotalFirePower() + " fire power, it is enough to defeat"+ getClass().getSimpleName());
             return 2; //we must go to state effect
@@ -72,7 +81,7 @@ public abstract class EnemyCard extends AdventureCard {
 
     //****************************************************************************************
     @Override
-    public boolean applyEffect(Player player) {
+    public AdventureStatesTypes applyEffect(Player player) {
         double totalFirePower=player.getShipBoard().getTotalFirePower();
         if(totalFirePower > minimumFirePower){
             if (creditsEarned == 0) {

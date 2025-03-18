@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class PlanetCard extends AdventureCard {
     }
 
     @Override
-    public int checkRequirements(Player player) {
+    public AdventureStatesTypes checkRequirements(Player player) {
         return 0;
     }
 
@@ -30,7 +31,7 @@ public class PlanetCard extends AdventureCard {
 //    }
 
     @Override
-    public boolean applyEffect(Player player) {
+    public AdventureStatesTypes applyEffect(Player player) {
         return true;
     }
 
