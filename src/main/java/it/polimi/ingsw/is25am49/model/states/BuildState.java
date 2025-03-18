@@ -12,7 +12,9 @@ import java.awt.*;
 public class BuildState extends State {
     public BuildState(GameSession gameSession){
         super(gameSession);
+
     }
+
     public void adminSelectGameMode(Player admin, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
@@ -38,10 +40,10 @@ public class BuildState extends State {
     public void userRotateTileCounterClockwise(Player player, Point coordinates) {
         player.rotateTile(false);
     }
-    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+    public void userPickTile(Player player, Point coordinates){
         player.pickTile(coordinates);
     }
-    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
+    public void userDiscardTile(Player player){
         player.discardTile();
     }
     public void userDrawTile(Player player, int idTIle) {
@@ -59,7 +61,9 @@ public class BuildState extends State {
     public void userPlaceTimer() {
         gameSession.userPlaceTimer();
     }
-    
+    public void timerIsDone(){
+
+    }
     public void userThrowDices(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }

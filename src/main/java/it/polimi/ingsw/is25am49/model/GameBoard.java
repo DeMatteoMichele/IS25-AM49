@@ -15,17 +15,18 @@ public class GameBoard {
     private final List<Pair<Integer, Player>> leaderBoard;
     private AdventureCardDeck mainAdvenureDeck;
     private final HashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
-    private TileCardDeck tilesDeck;
+    private final TileCardDeck tilesDeck;
     private AdventureCard currentCard;
     private int currentPlayer;
-    private Timer timer;
     private FlightMode flightMode;
     public GameBoard() {
         leaderBoard = new ArrayList<>();
         mapSmallAdventureDecks = new HashMap<>();
         tilesDeck = new TileCardDeck();
         mainAdvenureDeck = new AdventureCardDeck();
-
+        flightMode = FlightMode.DEFAULT;
+        currentPlayer = 0;
+        currentCard = null;
     }
     //Bisogna modificare le possibili carte del mazzo, la lunghezza del percorso e l'utilizzo del tempo in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard delle dimensione giusta in base alla GameMode, (per questo gli ho passato Game, serva la lista di player)
@@ -33,10 +34,7 @@ public class GameBoard {
 
     }
     public boolean checkStatus(){
-        if(flightMode != null)
-            return true;
-        else
-            return false;
+        return !flightMode.equals(FlightMode.DEFAULT);
     }
     public void setFlightMode(FlightMode flightMode){
         this.flightMode = flightMode;

@@ -12,7 +12,7 @@ public class Timer {
     private final int lifetime;
     private int usageCounter;
     private boolean isActive;
-    private int level;
+    private final int level;
     public int getLifetime() {
         return lifetime;
     }

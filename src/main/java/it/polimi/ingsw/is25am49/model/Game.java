@@ -20,19 +20,19 @@ public class Game {
     private int maxPlayers;
     public boolean isFinished;
 
-    public Game(Player admin) {
+    public Game(Optional<Player> admin) {
         board = new GameBoard();
         players = new ArrayList<>();
         mode = null;
         gameId = 0;
-        players.add(admin);
+        players.add(admin.orElse(null));
         winner = Optional.empty();
         timer = null;
         maxPlayers = 4;
         isFinished = false;
     }
     public boolean checkStatus(){
-        if(mode != null)
+        if(!mode.equals(GameMode.DEFAULT))
             return board.checkStatus();
         else
             return false;

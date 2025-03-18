@@ -20,9 +20,6 @@ public class FinishScoreState extends State {
     public void userSelectColorAndUserName(Color playerColor, String username) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userInsertName(Player player,String playerName) throws IllegalMethodOnThisStateException {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
     public void adminCreateGame(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
@@ -38,10 +35,10 @@ public class FinishScoreState extends State {
     public void userRotateTileCounterClockwise(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+    public void userPickTile(Player player, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
+    public void userDiscardTile(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userDrawTile(Player player, int idTIle) {
@@ -60,6 +57,9 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userPlaceTimer() {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userThrowDices(Player player) {

@@ -11,38 +11,38 @@ import java.awt.*;
 import java.util.Optional;
 
 public class GameSession {
-    private Game game;
-    private Player admin;
+    private Optional<Game> game;
+    private Optional<Player> admin;
     private State currentState;
     GameSession() {
-        game = null;
-        admin = null;
+        game = Optional.empty();
+        admin = Optional.empty();
         currentState = new InitState(this);
     }
-    public Game getGame() { return game; }
+    public Optional<Game> getGame() { return game; }
     public void setState(State nextState){
         currentState = nextState;
     }
     public void createNewGame(){
-        game = new Game(admin);
+        game = Optional.of(new Game(admin));
     }
-    public Player getAdmin(){
+    public Optional<Player> getAdmin(){
         return admin;
     }
     public void setGameMode(GameMode mode) {
-        game.setGameMode(mode);
+        game.ifPresent(g->g.setGameMode(mode));
     }
     public void userSelectColorAndUserName(Color playerColor, String username) {
-        Player tempPlayer = new Player(username, playerColor, game.getListPlayers().size());
-        if(game.getListPlayers().size() == 0){
-            admin = tempPlayer;
+        Player tempPlayer = new Player(username, playerColor, game.map(g -> g.getListPlayers().size()).orElse(0));
+        if(game.map(Game::getListPlayers).isEmpty()){
+            admin = Optional.of(tempPlayer);
         }
-        game.addPlayer(tempPlayer);
+        game.ifPresent(g -> g.addPlayer(tempPlayer));
     }
-    public boolean checkPlayers(){ return game.checkPlayers(); }
+    public boolean checkPlayers(){ return game.map(Game::checkPlayers).orElse(false); }
     public boolean checkStatus(){
-        if(game!= null)
-            return game.checkStatus();
+        if(game.isPresent())
+            return game.map(Game::checkStatus).orElse(false);
         else
             return false;
     }
@@ -60,7 +60,6 @@ public class GameSession {
     }
 
     public void userDrawTile(Player player, int idTile ){
-        player.setHandTile(game.getGameboard().drawTile(idTile));
     }
 
     public void userFinishShipboard(Player player){
@@ -99,23 +98,26 @@ public class GameSession {
     public void userQuitGame(Player player){
     }
     public void adminSelectTypeFlight(FlightMode flightMode){
-        game.getGameboard().setFlightMode(flightMode);
+        if(game.isPresent())
+            game.get().getGameboard().setFlightMode(flightMode);
+        else
+            throw new GameSettingsException("The game has not been created");
     }
-    public void calculateScore(Player player) { game.calculateScore(player);}
+    public void calculateScore(Player player) { game.ifPresent(g -> g.calculateScore(player));}
     public void configurateFlight(){
-        game.configurateFlight();
+        game.ifPresent(Game::configurateFlight);
     }
     public void finishBuild(Player player){
         player.completeShipboard();
         player.getShipBoard().afterBuildCheckShipboard();
     }
     public void userEndGame() throws GameSettingsException{
-        if(game.gameIsFinished()){
-            game = null;
+        if(game.map(Game::gameIsFinished).orElse(false)){
+            game = Optional.empty();
             setState(new InitState(this));
         }
         else
             throw new GameSettingsException("The game is not finished yet");
     }
-    public Optional<Player> userShowWinner() { return game.userShowWinner(); }
+    public Optional<Player> userShowWinner() { return game.flatMap(Game::userShowWinner); }
 }

@@ -37,10 +37,10 @@ public abstract class AdventureState extends State {
     public void userRotateTileCounterClockwise(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userPickTile(Player player, Point coordinates) throws IllegalMethodOnThisStateException {
+    public void userPickTile(Player player, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userDiscardTile(Player player) throws IllegalMethodOnThisStateException {
+    public void userDiscardTile(Player player){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userDrawTile(Player player, int idTIle) {
@@ -50,9 +50,18 @@ public abstract class AdventureState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
-    public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex);
-    public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex);
-    public abstract void userPlaceTimer();
+    public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userPlaceTimer() {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void timerIsDone(){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
     public abstract void userThrowDices(Player player);
     public abstract void userDrawAdventureCard(Player player);
     public abstract void userPlayAdventureCard(Player player);

@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
 
@@ -25,14 +26,16 @@ public abstract class State {
     public abstract void userPlaceTile(Player player, Point coordinates);
     public abstract void userRotateTileClockwise(Player player, Point coordinates);
     public abstract void userRotateTileCounterClockwise(Player player, Point coordinates) ;
+    public abstract void userPickTile(Player player, Point coordinates);
+    public abstract void userDiscardTile(Player player);
     public abstract void userDrawTile(Player player, int idTIle);
     public abstract void userFinishShipboard(Player player);
     public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex);
     public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex);
     public abstract void userPlaceTimer();
+    public abstract void timerIsDone();
+
     public abstract void userThrowDices(Player player);
-
-
     public abstract void userDrawAdventureCard(Player player);
     public abstract void userPlayAdventureCard(Player player);
     public abstract void userFinishDecision(Player player);
