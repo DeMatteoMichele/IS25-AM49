@@ -9,12 +9,13 @@ import java.util.List;
 public class SpazioAperto extends AdventureCard {
 
     public SpazioAperto(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
-        super(description, daysLost, level, creditsEarned, ListEffects);
+        super(description, daysLost, level, creditsEarned);
+        listEffects.addAll(ListEffects);
     }
 
     @Override
     public AdventureStatesTypes checkRequirements(Player player) {
-        return 0;
+        return null;
     }
 
 //    @Override
@@ -24,7 +25,7 @@ public class SpazioAperto extends AdventureCard {
 
     @Override
     public AdventureStatesTypes applyEffect(Player player) {
-        return true;
+        return null;
 
     }
 }

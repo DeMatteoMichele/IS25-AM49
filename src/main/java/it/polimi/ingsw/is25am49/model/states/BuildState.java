@@ -75,6 +75,18 @@ public class BuildState extends State {
     public void userActivateComponent(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
+
+    public void userLandOnPlanet(Player player) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+    }
+
+
+    public void userLandOnShip(Player player) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+
+    }
+
     public void userActivateDaysUpdate() {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }

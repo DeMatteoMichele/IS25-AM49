@@ -9,13 +9,14 @@ import java.util.List;
 public class WarZoneCard extends AdventureCard {
 
 
-    public WarZoneCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
-        super(description, daysLost, level, creditsEarned, ListEffects);
+    public WarZoneCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
+        super(description, daysLost, level, creditsEarned);
+        listEffects.addAll(listEffects);
     }
 
     @Override
     public AdventureStatesTypes checkRequirements(Player player) {
-        return 0;
+        return null;
     }
 
 //    @Override
@@ -25,7 +26,7 @@ public class WarZoneCard extends AdventureCard {
 
     @Override
     public AdventureStatesTypes applyEffect(Player player) {
-        return true;
+        return null;
 
     }
 

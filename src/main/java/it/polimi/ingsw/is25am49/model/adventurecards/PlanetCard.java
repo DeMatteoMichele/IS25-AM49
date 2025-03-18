@@ -12,7 +12,8 @@ public class PlanetCard extends AdventureCard {
     protected final List<Planet> planets=new ArrayList<Planet>();
 
     public PlanetCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects){
-        super(description, daysLost, level, creditsEarned, ListEffects);
+        super(description, daysLost, level, creditsEarned);
+        listEffects.addAll(ListEffects);
     }
     public void addPlanet(Planet planet){
         planets.add(planet);
@@ -20,7 +21,7 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public AdventureStatesTypes checkRequirements(Player player) {
-        return 0;
+        return null;
     }
 
 
@@ -32,7 +33,7 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public AdventureStatesTypes applyEffect(Player player) {
-        return true;
+        return null;
     }
 
     public List<Planet> getPlanets() {

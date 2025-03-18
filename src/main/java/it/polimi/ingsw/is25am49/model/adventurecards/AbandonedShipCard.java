@@ -29,11 +29,11 @@ public class AbandonedShipCard extends AdventureCard {
         currentEffect = listEffects.getFirst();
         if (totalNumCrewMembers > lostAstronauts) {
             System.out.println("You found an abandoned ship! You can sell it to your crew members for some credits");
-            return 1; //user must decide if he wants to use the card
+            return null; //user must decide if he wants to use the card
         }
         else {
             System.out.println("You don't have enough astronauts. If you sell the ship to them you have to quit the game!");
-            return 1; //we must remain in check requirements and see the next player
+            return null; //we must remain in check requirements and see the next player
         }
     }
 
@@ -58,9 +58,9 @@ public class AbandonedShipCard extends AdventureCard {
                 System.out.println("You have no more astronauts, you have to quit the game");
                 //TODO LOGICA QUIT GAME
             }
-            return false;
+            return null;
         }
-        return false;
+        return null;
     }
 
 

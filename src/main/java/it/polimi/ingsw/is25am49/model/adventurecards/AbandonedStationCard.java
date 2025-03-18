@@ -12,12 +12,13 @@ public class AbandonedStationCard extends AdventureCard {
     protected final ArrayList<Token> Prize = new ArrayList<>();
 
     public AbandonedStationCard(String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
-        super(description, daysLost, level, creditsEarned, ListEffects);
+        super(description, daysLost, level, creditsEarned);
+        listEffects.addAll(ListEffects);
     }
 
     @Override
     public AdventureStatesTypes checkRequirements(Player player) {
-        return 0;
+        return null;
     }
 
 //    @Override
@@ -27,7 +28,7 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public AdventureStatesTypes applyEffect(Player player) {
-        return true;
+        return null;
 
     }
 
