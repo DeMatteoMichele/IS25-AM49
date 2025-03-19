@@ -24,7 +24,7 @@ public class GameSession {
         currentState = nextState;
     }
     public void createNewGame(){
-        game = Optional.of(new Game(admin));
+        game = Optional.of(new Game(admin, this));
     }
     public Optional<Player> getAdmin(){
         return admin;
@@ -74,7 +74,7 @@ public class GameSession {
     }
 
     public void userPlaceTimer(){
-
+        game.ifPresent(Game::userPlaceTimer);
     }
 
     public void userThrowDices(Player player){

@@ -2,6 +2,8 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalTimerMoveException;
+import it.polimi.ingsw.is25am49.model.states.BuildState;
+import it.polimi.ingsw.is25am49.model.states.State;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,6 +15,7 @@ public class Timer {
     private int usageCounter;
     private boolean isActive;
     private final int level;
+    private GameSession gameSession;
     public int getLifetime() {
         return lifetime;
     }
@@ -25,7 +28,7 @@ public class Timer {
         return isActive;
     }
 
-    public Timer(GameMode level) {
+    public Timer(GameMode level, GameSession gameSession) {
         this.lifetime = 30;
         this.usageCounter = 0;
         this.isActive = false;
@@ -33,25 +36,32 @@ public class Timer {
             this.level = 2;
         else
             this.level = 3;
-    }
-    public void checkTimer(){
-
+        this.gameSession = gameSession;
     }
     public void place() {
-        if(!isActive && usageCounter < level) {
+        if(!isActive && usageCounter < level - 1) {
             usageCounter++;
             isActive = true;
             startTimer(lifetime);
+        }
+        else if(!isActive && usageCounter == level - 1){
+            usageCounter++;
+            isActive = true;
+            startFinalTimer(lifetime);
         }
         else {
             throw new IllegalTimerMoveException("Illegal timer move");
         }
     }
-
-    public void startTimer(int seconds) {
+    private void startTimer(int seconds) {
         scheduler.schedule(() -> {
             isActive = false;
-            notifyAll();
+        }, seconds, TimeUnit.SECONDS);
+    }
+    private void startFinalTimer(int seconds) {
+        scheduler.schedule(() -> {
+            isActive = false;
+            gameSession.getState().timerIsDone();
         }, seconds, TimeUnit.SECONDS);
     }
 }

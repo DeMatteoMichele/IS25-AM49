@@ -9,7 +9,7 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateExcepti
 
 import java.awt.*;
 
-public abstract class AdventureState extends State {
+public class AdventureState extends State {
     public AdventureState(GameSession gameSession){
         super(gameSession);
     }
@@ -62,13 +62,17 @@ public abstract class AdventureState extends State {
     public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public abstract void userThrowDices(Player player);
-    public abstract void userDrawAdventureCard(Player player);
-    public abstract void userPlayAdventureCard(Player player);
-    public abstract void userFinishDecision(Player player);
-    public abstract void userActivateComponent(Player player, Point coordinates);
-    public abstract void userActivateDaysUpdate();
-    public abstract void userQuitGame(Player player);
+    public void userThrowDices(Player player){}
+    public void userDrawAdventureCard(Player player){}
+    public void userPlayAdventureCard(Player player){}
+    public void userFinishDecision(Player player){}
+    public void userActivateComponent(Player player, Point coordinates){}
+    public void userActivateDaysUpdate(){}
+    public void userLandOnPlanet(Player player) {
+    }
+    public void userLandOnShip(Player player) {
+    }
+    public void userQuitGame(Player player){}
 
     public void adminCalculateScore(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");

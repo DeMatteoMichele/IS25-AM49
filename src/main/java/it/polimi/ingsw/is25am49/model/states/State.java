@@ -17,6 +17,7 @@ public abstract class State {
     public void transition(State nextState) {
         gameSession.setState(nextState);
     }
+
     public abstract void adminSelectGameMode(Player player, GameMode gamemode);
     public abstract void userSelectColorAndUserName(Color playerColor, String username);
     public abstract void adminCreateGame(Player player);
@@ -35,6 +36,7 @@ public abstract class State {
     public abstract void userPlaceTimer();
     public abstract void timerIsDone();
 
+
     public abstract void userThrowDices(Player player);
     public abstract void userDrawAdventureCard(Player player);
     public abstract void userPlayAdventureCard(Player player);
@@ -43,6 +45,8 @@ public abstract class State {
     public abstract void userLandOnPlanet(Player player);
     public abstract void userLandOnShip(Player player);
     public abstract void userActivateDaysUpdate();
+
+
     public abstract void userQuitGame(Player player);
     public abstract void adminCalculateScore(Player player);
     public abstract Player userShowWinner();

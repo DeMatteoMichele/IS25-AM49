@@ -11,20 +11,20 @@ import java.util.List;
 import java.util.Optional;
 
 public class Game {
+    private GameSession session;
     private GameMode mode;
     private final GameBoard board;
     private final ArrayList<Player> players;
-    private int gameId;
     private Optional<Player> winner;
     private Timer timer;
     private int maxPlayers;
     public boolean isFinished;
 
-    public Game(Optional<Player> admin) {
+    public Game(Optional<Player> admin, GameSession session) {
+        this.session = session;
         board = new GameBoard();
         players = new ArrayList<>();
         mode = null;
-        gameId = 0;
         players.add(admin.orElse(null));
         winner = Optional.empty();
         timer = null;
@@ -42,9 +42,9 @@ public class Game {
     }
     public void setGameMode(GameMode mode) {
         this.mode = mode;
-        timer = new Timer(mode);
+        timer = new Timer(mode, session);
     }
-    public boolean checkPlayers(){ return players.size() < 4; }
+    public boolean checkPlayers(){ return players.size() < maxPlayers; }
     public void addPlayer(Player player) { players.add(player); }
     public ArrayList<Player> getListPlayers() { return players; }
     public void calculateScore(Player player) {
@@ -68,5 +68,8 @@ public class Game {
     public Optional<Player> userShowWinner() {
             isFinished = true;
             return winner;
+    }
+    public void userPlaceTimer(){
+        timer.place();
     }
 }
