@@ -2,26 +2,18 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectMeteoriti;
 
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 
-import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.Mockito.*;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SmugglerCardTest {
     private SmugglerCard smugglerCard;

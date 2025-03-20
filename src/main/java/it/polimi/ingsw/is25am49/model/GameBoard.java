@@ -136,6 +136,10 @@ public class GameBoard {
 
     }
 
+    public void setCurrentPlayer(int currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
     public AdventureCard getNextCard() {
         return mainAdvenureDeck.draw();
     }

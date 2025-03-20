@@ -1,9 +1,10 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
+import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
-import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 public class AbandonedShipCard extends AdventureCard {
@@ -11,19 +12,21 @@ public class AbandonedShipCard extends AdventureCard {
     int lostAstronauts;
     boolean isLanded = false;
 
-    public AbandonedShipCard(String description, int daysLost, int level, int creditsEarned, int lostAstronauts){
-        super(description,daysLost,level,creditsEarned);
+    public AbandonedShipCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int lostAstronauts){
+        super(gameBoard,description,daysLost,level,creditsEarned);
         this.lostAstronauts = lostAstronauts;
         listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
     }
 
-
-    // methods return an int based on what state we must go to
-    // 0 = check requirements
-    // 1 = decision
-    // 2 = effect
     @Override
-    public AdventureStatesTypes checkRequirements(Player player) {
+    public void drawCard() {
+        super.drawCard();
+        System.out.println("You have found an abandoned ship! You can sell it to your crew members for some credits");
+        checkRequirements();
+    }
+
+    @Override
+    public void checkRequirements() {
         ShipBoard shipBoard =player.getShipBoard();
         int totalNumCrewMembers = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT)+shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS)+shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
         currentEffect = listEffects.getFirst();
@@ -38,7 +41,7 @@ public class AbandonedShipCard extends AdventureCard {
     }
 
     @Override
-    public void landingOnStationOrShip() {
+    public void landingOnStationOrShip() throws IllegalMethodOnThisStateException {
         System.out.println("You have sell the abandoned ship to your crew members");
         isLanded = true;
     }
@@ -47,7 +50,7 @@ public class AbandonedShipCard extends AdventureCard {
     //false if we must remain in the same player OR IF THE CARD ISFINISHED
     //isFinished is set to true if the card is finished and a new card has to be drawn
     @Override
-    public AdventureStatesTypes applyEffect(Player player) {
+    public void applyEffect(Player player) {
         if (isLanded) {
             System.out.println("You win " + creditsEarned + " credits");
             player.addCredit( creditsEarned);

@@ -1,9 +1,10 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
+import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,11 @@ public abstract class AdventureCard {
     protected CardEffect currentEffect;
     protected int minimumFirePower;
     protected int lostAstronauts;
+    protected AdventureStatesTypes currentState;
+    protected GameBoard gameBoard;
 
-    public AdventureCard(String description, int daysLost, int level, int creditsEarned) {
+    public AdventureCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
+        this.gameBoard = gameBoard;
         this.description = description;
         this.daysLost = daysLost;
         this.isFinished = false;
@@ -33,42 +37,35 @@ public abstract class AdventureCard {
     public String getDescription() {
         return description;
     }
-//
-//    public void setDaysLost(int daysLost) {
-//        this.daysLost = daysLost;
-//    }
-//
-//    public void setFlagDecision(int flagDecision) {
-//        this.flagDecision = flagDecision;
-//    }
 
-
-    // methods return an int based on what state we must go to
-    // 0 = check requirements
-    // 1 = decision
-    // 2 = effect
-    public abstract AdventureStatesTypes checkRequirements(Player player);
+    public abstract void checkRequirements();
 
     public void drawCard() {
+        currentState= AdventureStatesTypes.DRAW;
         System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
     }
 
-    public void landingOnStationOrShip(){
-        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    public void landingOnStationOrShip() throws IllegalMethodOnThisStateException{
     }
 
-    public void landingOnPlanet(){
-        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    public void landingOnPlanet() throws IllegalMethodOnThisStateException{
     }
+
+    public void turnOnCannon() throws IllegalMethodOnThisStateException{
+    }
+
+    public void turnOnMotor() throws IllegalMethodOnThisStateException{
+    }
+
+    public void turnOnShields() throws IllegalMethodOnThisStateException{
+    }
+
 
     public CardEffect getCurrentEffect(){
         return currentEffect;
     }
 
-
-
-
-    public void rollDices(){
+    public void rollDices() throws IllegalMethodOnThisStateException{
             Random random = new Random();
             int firstDice = random.nextInt(6) + 1;
             int secondDice = random.nextInt(6) + 1;
@@ -77,12 +74,7 @@ public abstract class AdventureCard {
             currentEffect.setPosition(dicesResult);
         }
 
-
-
-
-    //method return true if we must change player
-    //false if we must remain in the same player
-    public abstract AdventureStatesTypes applyEffect(Player player);
+    public abstract void applyEffect(Player player);
 
     public int getLevel() {
         return level;

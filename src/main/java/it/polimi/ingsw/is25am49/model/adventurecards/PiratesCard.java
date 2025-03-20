@@ -3,11 +3,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
-import java.awt.*;
 import java.util.List;
 
 public class PiratesCard extends AdventureCard {
@@ -31,7 +27,7 @@ public class PiratesCard extends AdventureCard {
     }
 
     @Override
-    public AdventureStatesTypes applyEffect(Player player) {
+    public void applyEffect(Player player) {
         return null;
     }
 }
