@@ -75,6 +75,10 @@ public abstract class AdventureCard {
         return currentEffect;
     }
 
+    public AdventureStatesTypes getCurrentState() {
+        return currentState;
+    }
+
     public void rollDices() throws IllegalMethodOnThisStateException{
             if(currentState != AdventureStatesTypes.ROLL_DICES)
                 throw new IllegalMethodOnThisStateException("Wrong state");

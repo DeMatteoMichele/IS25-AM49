@@ -119,7 +119,6 @@ public class Player {
 
     public int getDaysThisTurn() {
         return daysThisTurn;
-
     }
 
 

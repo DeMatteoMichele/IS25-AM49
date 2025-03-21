@@ -4,7 +4,6 @@ import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
     private final List<Pair<Integer, Player>> leaderBoard;
-    private AdventureCardDeck mainAdvenureDeck;
+    private AdventureCardDeck mainAdventureDeck;
     private final HashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private final TileCardDeck tilesDeck;
     private AdventureCard currentCard;
@@ -24,7 +23,7 @@ public class GameBoard {
         leaderBoard = new ArrayList<>();
         mapSmallAdventureDecks = new HashMap<>();
         tilesDeck = new TileCardDeck();
-        mainAdvenureDeck = new AdventureCardDeck();
+        mainAdventureDeck = new AdventureCardDeck();
         flightMode = FlightMode.DEFAULT;
         currentPlayer = null; //TODO (????) va capito come inizializzarlo
         currentCard = null;
@@ -58,7 +57,7 @@ public class GameBoard {
 
     public void drawAdventureCard() {
         //return mainAdvenureDeck.draw();
-        currentCard= mainAdvenureDeck.draw();
+        currentCard= mainAdventureDeck.draw();
     }
 
     public void addPlayerToLeaderboard(Integer days , Player player) {
@@ -130,10 +129,14 @@ public class GameBoard {
         if(currentIndex == -1){
             return null;
         }
-        if(currentIndex< leaderBoard.size()){
-            return leaderBoard.get(currentIndex).getValue();
+        if(currentIndex+1< leaderBoard.size()){
+            return leaderBoard.get(currentIndex+1).getValue();
         }
         throw  new IllegalSetOfNextPlayerException("It's the last player");
+    }
+
+    public void sortLeaderBoard() {
+        leaderBoard.sort((p1, p2) -> p2.getKey().compareTo(p1.getKey()));
     }
 
     public Player getCurrentPlayer() {
@@ -149,10 +152,14 @@ public class GameBoard {
     }
 
     public AdventureCard getNextCard() {
-        return mainAdvenureDeck.draw();
+        return mainAdventureDeck.draw();
     }
 
     public void updateLeaderboard() {
         //con i daysthisturn devo fare update facendo perde i giorni
+    }
+
+    public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
+        this.mainAdventureDeck = mainAdventureDeck;
     }
 }

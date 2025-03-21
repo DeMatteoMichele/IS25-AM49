@@ -36,4 +36,7 @@ public class AdventureCardDeck {
     }
 
 
+    public int size() {
+        return deck.size();
+    }
 }
