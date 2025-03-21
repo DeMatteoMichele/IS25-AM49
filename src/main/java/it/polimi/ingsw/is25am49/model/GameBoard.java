@@ -133,7 +133,6 @@ public class GameBoard {
             return leaderBoard.get(currentIndex).getValue();
         }
         return null;
-
     }
 
     public Player getCurrentPlayer() {

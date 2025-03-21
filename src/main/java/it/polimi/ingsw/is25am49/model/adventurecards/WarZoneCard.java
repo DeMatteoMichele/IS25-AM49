@@ -25,7 +25,7 @@ public class WarZoneCard extends AdventureCard {
 //    }
 
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect() {
         return null;
 
     }
