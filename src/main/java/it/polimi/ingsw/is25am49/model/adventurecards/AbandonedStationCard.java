@@ -22,9 +22,11 @@ public class AbandonedStationCard extends AdventureCard {
         listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
     }
 
+    @Override
     public void drawCard() {
         //chiamo il draw di adventure card
         super.drawCard();
+
         System.out.println("You have found an Abandoned Station! You can land on it for some goods.");
         //passo alla richiesta di requisiti
         checkRequirements();
@@ -53,6 +55,7 @@ public class AbandonedStationCard extends AdventureCard {
             }
             catch(IllegalSetOfNextPlayerException e){
                 //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
+                System.out.println("It goes to update state");
                 currentState = AdventureStatesTypes.UPDATE;
             }
         }
@@ -60,6 +63,7 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public void landingOnStationOrShip() {
+
         //se questo metodo è chiamato il player ha scelto di scendere sulla stazione
         //prendo il primo effetto (l'unico in questa carta)
         //vado nello stato dove decido le merci da caricare e le rispettive posizioni
@@ -98,11 +102,7 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public void applyEffect() {
-        //se non sono nello stato corretto non posso farlo
-        if(currentState != AdventureStatesTypes.EFFECT){
-            throw new IllegalMethodOnThisCardException("Wrong state");
-        }
-
+        super.applyEffect();
         //applico l'effetto, aggiorno il player con i giorni persi
         //vado nello stato update dove verrà aggiornata la leaderboard
         Player player = gameBoard.getCurrentPlayer();

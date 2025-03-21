@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,39 +15,32 @@ class AbandonedStationCardTest {
     GameBoard gameBoard;
     Player player1;
     Player player2;
-    AdventureCardDeck deck;
-    ShipBoard shipboard1;
-    ShipBoard shipboard2;
+    AdventureCardDeck adventureDeck;
+
+
 
 
     @BeforeEach
     void init(){
-        //inizializzo la gameboard e il player,
         gameBoard = new GameBoard();
-        player1 = new Player("Marco", Color.RED,2);
-        player2 = new Player("Juan", Color.BLUE,3);
-        //aggiungo i player alla gameboard e i loro rispettivi giorni di viaggio
-        gameBoard.addPlayerToLeaderboard(10,player1);
-        gameBoard.addPlayerToLeaderboard(9,player2);
-        //ordino la leaderboard
+        player1 = new Player("TestPlayer", Color.RED, 1);
+        player2 = new Player("TestPlayer2", Color.BLUE, 2);
+        gameBoard.addPlayerToLeaderboard(0, player1);
+        gameBoard.addPlayerToLeaderboard(3, player2);
         gameBoard.sortLeaderBoard();
-        //inizializzo il deck e ci aggiungo la carta che devo testare
-        deck = new AdventureCardDeck();
-        deck.add(new AbandonedStationCard(gameBoard,"Abandoned Station",3,1,0,2));
-        deck.add(new AbandonedShipCard(gameBoard,"abandoned ship",2,1,100,2));
-
-        gameBoard.setMainAdventureDeck(deck);
-
-
+        adventureDeck = new AdventureCardDeck();
+        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 100, 3));
+        adventureDeck.add(new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, 1, 100, 3));
+        gameBoard.setMainAdventureDeck(adventureDeck);
     }
 
     @Test
     void drawCard() {
         gameBoard.drawAdventureCard();
-        assertEquals(1,deck.size());
-        assertEquals("Abandoned Station",gameBoard.getCurrentCard().getDescription());
-        assertEquals(player1,gameBoard.getLeader());
-        assertEquals(gameBoard.getLeader(),gameBoard.getCurrentPlayer());
+        assertEquals(1, adventureDeck.size());
+        assertEquals(player1,gameBoard.getCurrentPlayer());
+        assertEquals(player2,gameBoard.getLeader());
+
     }
 
     @Test
@@ -55,6 +49,7 @@ class AbandonedStationCardTest {
 
     @Test
     void landingOnStationOrShip() {
+
     }
 
     @Test
