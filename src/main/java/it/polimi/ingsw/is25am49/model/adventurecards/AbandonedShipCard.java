@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 public class AbandonedShipCard extends AdventureCard {
@@ -69,7 +70,7 @@ public class AbandonedShipCard extends AdventureCard {
 
     @Override
     public void applyEffect() {
-        Player currentPlayer=gameBoard.getCurrentPlayer()
+        Player currentPlayer=gameBoard.getCurrentPlayer();
         System.out.println("You are in applyeffect, you lose astronauts");
         currentEffect.action(currentPlayer);
         currentPlayer.addCredits(creditsEarned);
