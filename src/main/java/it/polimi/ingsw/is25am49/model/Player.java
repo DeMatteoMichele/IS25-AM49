@@ -121,5 +121,9 @@ public class Player {
         return daysThisTurn;
     }
 
+    public void setShipBoard(ShipBoard shipBoard) {
+        this.shipBoard = shipBoard;
+    }
+
 
 }

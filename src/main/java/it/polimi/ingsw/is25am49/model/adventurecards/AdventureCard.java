@@ -90,12 +90,17 @@ public abstract class AdventureCard {
             currentEffect.setPosition(dicesResult);
     }
 
-    public abstract void applyEffect();
+    public void applyEffect(){
+        if(currentState != AdventureStatesTypes.EFFECT)
+            throw new IllegalMethodOnThisStateException("Wrong state");
+    }
 
     public int getLevel() {
         return level;
     }
 
-    public void finishDecision(){}
+    public void finishDecision(){
+
+    }
 
 }

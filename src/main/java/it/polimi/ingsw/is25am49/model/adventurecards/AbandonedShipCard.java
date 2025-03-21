@@ -70,9 +70,10 @@ public class AbandonedShipCard extends AdventureCard {
 
     @Override
     public void applyEffect() {
+        super.applyEffect();
         Player currentPlayer=gameBoard.getCurrentPlayer();
         System.out.println("You are in applyeffect, you lose astronauts");
-        currentEffect.action(currentPlayer);
+        //currentEffect.action(currentPlayer);
         currentPlayer.addCredits(creditsEarned);
         System.out.println("You have earned " + creditsEarned + " credits");
         currentPlayer.setDaysThisTurn(daysLost);

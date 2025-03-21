@@ -123,24 +123,25 @@ public class GameBoard {
 
     }
 
-     private Player getNextPlayer(Player player) {
-         int currentIndex = -1;
-
-        //cerco l'indice che combacia con il pair<Integer, player>
-         for (int i = 0; i < leaderBoard.size(); i++) {
-             if (leaderBoard.get(i).getValue().equals(player)) {
-                 currentIndex = i;
-                 break;
-             }
-         }
-         //se l'indice è minore della lunghezza della leaderboard estraggo il player successivo
-        if(currentIndex+1< leaderBoard.size()){
-            return leaderBoard.get(currentIndex+1).getValue();
+private Player getNextPlayer(Player player) {
+    int currentIndex = -1;
+    //cerco l'indice che combacia con il pair<Integer, player>
+    for (int i = 0; i < leaderBoard.size(); i++) {
+        if (leaderBoard.get(i).getValue().equals(player)) {
+            currentIndex = i;
+            break;
         }
-        //il player di cui voglio il next è l'ultimo e perciò lancio l'eccezione
-         //questa eccezzione verrà propagata verso l'alto e presa (try catch) dai metodi delle card
-        throw  new IllegalSetOfNextPlayerException("It's the last player");
     }
+    if (currentIndex == -1) {
+        throw new IllegalSetOfNextPlayerException("Player not found in leaderBoard");
+    }
+    //se l'indice è minore della lunghezza della leaderboard estraggo il player successivo
+    if (currentIndex + 1 < leaderBoard.size()) {
+        return leaderBoard.get(currentIndex + 1).getValue();
+    }
+    //il player di cui voglio il next è l'ultimo e perciò lancio l'eccezione
+    throw new IllegalSetOfNextPlayerException("It's the last player");
+}
 
     public void sortLeaderBoard() {
         leaderBoard.sort((p1, p2) -> p2.getKey().compareTo(p1.getKey()));
