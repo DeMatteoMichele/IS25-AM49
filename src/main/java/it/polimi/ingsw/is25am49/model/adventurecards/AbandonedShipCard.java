@@ -41,6 +41,7 @@ public class AbandonedShipCard extends AdventureCard {
         super.landingOnStationOrShip();
         System.out.println("You have landed on the ship");
         System.out.println("Now you have to decide where you want to remove your astronauts");
+        currentEffect = listEffects.getFirst();
         currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
     }
 
@@ -50,7 +51,6 @@ public class AbandonedShipCard extends AdventureCard {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
                 System.out.println("You have decided to remove astronauts");
                 currentState = AdventureStatesTypes.EFFECT;
-                currentEffect = listEffects.getFirst();
                 applyEffect();
             }
             case DECISION_LAND_STATION_OR_SHIP -> {
@@ -76,9 +76,7 @@ public class AbandonedShipCard extends AdventureCard {
         currentPlayer.addCredits(creditsEarned);
         System.out.println("You have earned " + creditsEarned + " credits");
         currentPlayer.setDaysThisTurn(daysLost);
+        currentState= AdventureStatesTypes.UPDATE;
     }
-
-
-
 
 }
