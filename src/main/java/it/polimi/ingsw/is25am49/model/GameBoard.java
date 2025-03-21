@@ -17,7 +17,7 @@ public class GameBoard {
     private final HashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private final TileCardDeck tilesDeck;
     private AdventureCard currentCard;
-    private int currentPlayer;
+    private Player currentPlayer;
     private FlightMode flightMode;
     public GameBoard() {
         leaderBoard = new ArrayList<>();
@@ -25,7 +25,7 @@ public class GameBoard {
         tilesDeck = new TileCardDeck();
         mainAdvenureDeck = new AdventureCardDeck();
         flightMode = FlightMode.DEFAULT;
-        currentPlayer = 0;
+        currentPlayer = null; //TODO (????) va capito come inizializzarlo
         currentCard = null;
     }
     //Bisogna modificare le possibili carte del mazzo, la lunghezza del percorso e l'utilizzo del tempo in base a flightMode e gameMode
@@ -123,20 +123,28 @@ public class GameBoard {
 
     }
 
-    public Player getNextPlayer(Player player) {
+     private Player getNextPlayer(Player player) {
         int currentIndex= leaderBoard.indexOf(player);
 
         if(currentIndex == -1){
             return null;
         }
-        if(currentIndex +1 < leaderBoard.size()){
-            return leaderBoard.get(currentIndex+1).getValue();
+        if(currentIndex< leaderBoard.size()){
+            return leaderBoard.get(currentIndex).getValue();
         }
         return null;
 
     }
 
-    public void setCurrentPlayer(int currentPlayer) {
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+    
+    public void nextPlayer() {
+        setCurrentPlayer(getNextPlayer(currentPlayer));
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 

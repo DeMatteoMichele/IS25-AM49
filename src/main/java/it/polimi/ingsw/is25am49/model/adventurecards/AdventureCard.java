@@ -43,6 +43,7 @@ public abstract class AdventureCard {
     public void drawCard() {
         currentState= AdventureStatesTypes.DRAW;
         System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
+        gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 
     public void landingOnStationOrShip() throws IllegalMethodOnThisStateException{
