@@ -1,7 +1,6 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
@@ -47,18 +46,28 @@ public abstract class AdventureCard {
     }
 
     public void landingOnStationOrShip() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
     public void landingOnPlanet() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
     public void turnOnCannon() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_CANNON)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
     public void turnOnMotor() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_MOTOR)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
     public void turnOnShields() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_SHIELDS)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
 
@@ -67,15 +76,17 @@ public abstract class AdventureCard {
     }
 
     public void rollDices() throws IllegalMethodOnThisStateException{
+            if(currentState != AdventureStatesTypes.ROLL_DICES)
+                throw new IllegalMethodOnThisStateException("Wrong state");
             Random random = new Random();
             int firstDice = random.nextInt(6) + 1;
             int secondDice = random.nextInt(6) + 1;
             dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
             currentEffect.setPosition(dicesResult);
-        }
+    }
 
-    public abstract void applyEffect(Player player);
+    public abstract void applyEffect();
 
     public int getLevel() {
         return level;

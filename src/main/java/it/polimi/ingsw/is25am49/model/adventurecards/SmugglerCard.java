@@ -57,7 +57,7 @@ public class SmugglerCard extends AdventureCard {
 
 
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect() {
         double totalFirePower=player.getShipBoard().getTotalFirePower();
         if(totalFirePower > minimumFirePower){
             System.out.println("You won against" + getClass().getSimpleName() + "! You win some goods");

@@ -5,7 +5,6 @@ import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
@@ -87,7 +86,7 @@ public class GameBoard {
         if(minimumExposedComponents().contains(player)) {
             toAdd += 2; //crediti per i componentiesposti
         }
-        player.addCredit(toAdd);
+        player.addCredits(toAdd);
     }
 
     public void calculate_final_score(Player player) {
@@ -133,15 +132,13 @@ public class GameBoard {
         if(currentIndex< leaderBoard.size()){
             return leaderBoard.get(currentIndex).getValue();
         }
-
-        throw new IllegalSetOfNextPlayerException("The next player is null");
-
+        return null;
     }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-
+    
     public void nextPlayer() {
         setCurrentPlayer(getNextPlayer(currentPlayer));
     }

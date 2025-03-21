@@ -21,7 +21,7 @@ public class SlaverCard extends AdventureCard {
     }
 
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect() {
         return null;
     }
 

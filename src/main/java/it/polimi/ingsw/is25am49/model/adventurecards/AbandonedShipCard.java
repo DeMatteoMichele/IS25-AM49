@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
+import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -27,43 +28,53 @@ public class AbandonedShipCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
-        ShipBoard shipBoard =player.getShipBoard();
-        int totalNumCrewMembers = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT)+shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS)+shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
-        currentEffect = listEffects.getFirst();
-        if (totalNumCrewMembers > lostAstronauts) {
-            System.out.println("You found an abandoned ship! You can sell it to your crew members for some credits");
-            return null; //user must decide if he wants to use the card
-        }
-        else {
-            System.out.println("You don't have enough astronauts. If you sell the ship to them you have to quit the game!");
-            return null; //we must remain in check requirements and see the next player
-        }
+        ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        int numAstronauts = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT);
+        System.out.println("You have " + numAstronauts + " astronauts on your ship. If you decide to land on the ship, you win " + creditsEarned + " credits but if your crew is too small you have to quit");
+        System.out.println("Decide if you want to land");
+        currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
     }
 
     @Override
     public void landingOnStationOrShip() throws IllegalMethodOnThisStateException {
-        System.out.println("You have sell the abandoned ship to your crew members");
-        isLanded = true;
+        super.landingOnStationOrShip();
+        System.out.println("You have landed on the ship");
+        System.out.println("Now you have to decide where you want to remove your astronauts");
+        currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
     }
 
-    //this method below returns true if we must change player
-    //false if we must remain in the same player OR IF THE CARD ISFINISHED
-    //isFinished is set to true if the card is finished and a new card has to be drawn
     @Override
-    public void applyEffect(Player player) {
-        if (isLanded) {
-            System.out.println("You win " + creditsEarned + " credits");
-            player.addCredit( creditsEarned);
-            listEffects.getFirst().action(player);
-            isFinished = true;
-            int totalNumAstronauts = player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT);
-            if(totalNumAstronauts==0){
-                System.out.println("You have no more astronauts, you have to quit the game");
-                //TODO LOGICA QUIT GAME
+    public void finishDecision() {
+        switch (currentState) {
+            case DECISION_ASTRONAUTS_OR_ALIENS -> {
+                System.out.println("You have decided to remove astronauts");
+                currentState = AdventureStatesTypes.EFFECT;
+                currentEffect = listEffects.getFirst();
+                applyEffect();
             }
-            return null;
+            case DECISION_LAND_STATION_OR_SHIP -> {
+                System.out.println("You have decided not to land on the ship");
+                try {
+                    gameBoard.nextPlayer();
+                    System.out.println("Now check on next player");
+                    checkRequirements();
+                } catch (IllegalSetOfNextPlayerException e) {
+                    System.out.println("No more players, now to update");
+                    currentState = AdventureStatesTypes.UPDATE;
+                }
+            }
+            default -> throw new IllegalMethodOnThisStateException("Wrong state");
         }
-        return null;
+    }
+
+    @Override
+    public void applyEffect() {
+        Player currentPlayer=gameBoard.getCurrentPlayer()
+        System.out.println("You are in applyeffect, you lose astronauts");
+        currentEffect.action(currentPlayer);
+        currentPlayer.addCredits(creditsEarned);
+        System.out.println("You have earned " + creditsEarned + " credits");
+        currentPlayer.setDaysThisTurn(daysLost);
     }
 
 

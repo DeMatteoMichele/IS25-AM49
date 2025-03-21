@@ -79,7 +79,7 @@ public class Player {
     }
 
 
-    public void addCredit(int amount){
+    public void addCredits(int amount){
         totCredits = totCredits + amount;
     }
 
