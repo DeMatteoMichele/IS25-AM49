@@ -81,4 +81,6 @@ public abstract class AdventureCard {
         return level;
     }
 
+    public void finishDecision(){}
+
 }

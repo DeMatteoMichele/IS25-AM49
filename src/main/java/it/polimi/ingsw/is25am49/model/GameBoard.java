@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
@@ -132,14 +133,15 @@ public class GameBoard {
         if(currentIndex< leaderBoard.size()){
             return leaderBoard.get(currentIndex).getValue();
         }
-        return null;
+
+        throw new IllegalSetOfNextPlayerException("The next player is null");
 
     }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-    
+
     public void nextPlayer() {
         setCurrentPlayer(getNextPlayer(currentPlayer));
     }
