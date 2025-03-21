@@ -124,14 +124,21 @@ public class GameBoard {
     }
 
      private Player getNextPlayer(Player player) {
-        int currentIndex= leaderBoard.indexOf(player);
+         int currentIndex = -1;
 
-        if(currentIndex == -1){
-            return null;
-        }
+        //cerco l'indice che combacia con il pair<Integer, player>
+         for (int i = 0; i < leaderBoard.size(); i++) {
+             if (leaderBoard.get(i).getValue().equals(player)) {
+                 currentIndex = i;
+                 break;
+             }
+         }
+         //se l'indice è minore della lunghezza della leaderboard estraggo il player successivo
         if(currentIndex+1< leaderBoard.size()){
             return leaderBoard.get(currentIndex+1).getValue();
         }
+        //il player di cui voglio il next è l'ultimo e perciò lancio l'eccezione
+         //questa eccezzione verrà propagata verso l'alto e presa (try catch) dai metodi delle card
         throw  new IllegalSetOfNextPlayerException("It's the last player");
     }
 
@@ -144,6 +151,7 @@ public class GameBoard {
     }
     
     public void nextPlayer() {
+        //setto il currentplayer al next player dato il current player
         setCurrentPlayer(getNextPlayer(currentPlayer));
     }
 

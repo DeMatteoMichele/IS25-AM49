@@ -18,8 +18,8 @@ public class AdventureCardDeck {
         if(deck.isEmpty()){
             throw new FinishDeckExceptions("Il deck è vuoto");
         }
-        deck.get(0).drawCard();
-        return deck.remove(0);
+        deck.getFirst().drawCard();
+        return deck.removeFirst();
     }
     public void generateDeck(){
         //crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect
