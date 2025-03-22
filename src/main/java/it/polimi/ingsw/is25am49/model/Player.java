@@ -79,7 +79,7 @@ public class Player {
     }
 
 
-    public void addCredit(int amount){
+    public void addCredits(int amount){
         totCredits = totCredits + amount;
     }
 
@@ -119,7 +119,10 @@ public class Player {
 
     public int getDaysThisTurn() {
         return daysThisTurn;
+    }
 
+    public void setShipBoard(ShipBoard shipBoard) {
+        this.shipBoard = shipBoard;
     }
 
 

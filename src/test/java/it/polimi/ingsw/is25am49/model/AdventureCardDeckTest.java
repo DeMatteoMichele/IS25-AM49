@@ -27,8 +27,8 @@ class AdventureCardDeckTest {
     void init(){
         deck2 = new AdventureCardDeck();
         effects.add(cannonata);
-        card = new PlanetCard("pianeti",3,1,20, effects);
-        card2 = new EpidemyCard("epidemia", 2,3,15,effects);
+//        card = new PlanetCard("pianeti",3,1,20, effects);
+//        card2 = new EpidemyCard("epidemia", 2,3,15,effects);
 
 
     }

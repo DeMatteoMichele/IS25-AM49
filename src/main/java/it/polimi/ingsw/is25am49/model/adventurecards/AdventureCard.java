@@ -1,9 +1,9 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
-import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,11 @@ public abstract class AdventureCard {
     protected CardEffect currentEffect;
     protected int minimumFirePower;
     protected int lostAstronauts;
+    protected AdventureStatesTypes currentState;
+    protected GameBoard gameBoard;
 
-    public AdventureCard(String description, int daysLost, int level, int creditsEarned) {
+    public AdventureCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
+        this.gameBoard = gameBoard;
         this.description = description;
         this.daysLost = daysLost;
         this.isFinished = false;
@@ -33,59 +36,71 @@ public abstract class AdventureCard {
     public String getDescription() {
         return description;
     }
-//
-//    public void setDaysLost(int daysLost) {
-//        this.daysLost = daysLost;
-//    }
-//
-//    public void setFlagDecision(int flagDecision) {
-//        this.flagDecision = flagDecision;
-//    }
 
-
-    // methods return an int based on what state we must go to
-    // 0 = check requirements
-    // 1 = decision
-    // 2 = effect
-    public abstract AdventureStatesTypes checkRequirements(Player player);
+    public abstract void checkRequirements();
 
     public void drawCard() {
+        currentState= AdventureStatesTypes.DRAW;
         System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
+        gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 
-    public void landingOnStationOrShip(){
-        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    public void landingOnStationOrShip() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
-    public void landingOnPlanet(){
-        throw new IllegalMethodOnThisCardException("This card cannot be landed on");
+    public void landingOnPlanet() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
+            throw new IllegalMethodOnThisStateException("Wrong state");
     }
+
+    public void turnOnCannon() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_CANNON)
+            throw new IllegalMethodOnThisStateException("Wrong state");
+    }
+
+    public void turnOnMotor() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_MOTOR)
+            throw new IllegalMethodOnThisStateException("Wrong state");
+    }
+
+    public void turnOnShields() throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_SHIELDS)
+            throw new IllegalMethodOnThisStateException("Wrong state");
+    }
+
 
     public CardEffect getCurrentEffect(){
         return currentEffect;
     }
 
+    public AdventureStatesTypes getCurrentState() {
+        return currentState;
+    }
 
-
-
-    public void rollDices(){
+    public void rollDices() throws IllegalMethodOnThisStateException{
+            if(currentState != AdventureStatesTypes.ROLL_DICES)
+                throw new IllegalMethodOnThisStateException("Wrong state");
             Random random = new Random();
             int firstDice = random.nextInt(6) + 1;
             int secondDice = random.nextInt(6) + 1;
             dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
             currentEffect.setPosition(dicesResult);
-        }
+    }
 
-
-
-
-    //method return true if we must change player
-    //false if we must remain in the same player
-    public abstract AdventureStatesTypes applyEffect(Player player);
+    public void applyEffect(){
+        if(currentState != AdventureStatesTypes.EFFECT)
+            throw new IllegalMethodOnThisStateException("Wrong state");
+    }
 
     public int getLevel() {
         return level;
+    }
+
+    public void finishDecision(){
+
     }
 
 }
