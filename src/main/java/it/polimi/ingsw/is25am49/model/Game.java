@@ -18,7 +18,6 @@ public class Game {
     private Optional<Player> winner;
     private Timer timer;
     private int maxPlayers;
-
     public boolean isFinished;
 
     public Game(Optional<Player> admin, GameSession session) {
@@ -76,4 +75,16 @@ public class Game {
         else
             throw new GameSettingsException("This is a Test Flight");
     }
+    public void discardTile(Player player){
+        board.addDiscardedTile(player);
+    }
+    public void userDrawTile(Player player, int idTile){
+        if(player.getHandTile().isPresent()){
+            board.addDiscardedTile(player);
+        }
+        player.lockLastTile();
+        player.setHandTile(board.drawTile(idTile));
+    }
+    public void userFinishShipboard(Player player){ board.userFinishShipboard(player);}
+    public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}
 }

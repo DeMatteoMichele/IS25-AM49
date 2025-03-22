@@ -50,24 +50,18 @@ public class GameSession {
         return currentState;
     }
 
-    public void userPlaceTile(Player player, Point coordinates) {
-    }
 
-    public void userRotateTile(Player player, Point coordinates) {
-
-    }
     public void userDiscardTile(Player player){
+        game.ifPresent(g  -> g.discardTile(player));
     }
-
     public void userDrawTile(Player player, int idTile ){
+        game.ifPresent(g -> g.userDrawTile(player, idTile));
     }
-
     public void userFinishShipboard(Player player){
-
+        game.ifPresent(g -> g.userFinishShipboard(player));
     }
-
     public void userLookSmallAdventureCardDeck(Player player, int index){
-
+        game.ifPresent(g -> g.userLookSmallAdventureCardDeck(player, index));
     }
 
     public void userStopLookSmallAdventureCardDeck(Player player, int index){

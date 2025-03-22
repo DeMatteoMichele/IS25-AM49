@@ -12,9 +12,7 @@ public class AdventureCardDeck {
     private final List<AdventureCard> deck = new ArrayList<>();
     private boolean isBeingLooked;
 
-
     public AdventureCard draw() {
-
         if(deck.isEmpty()){
             throw new FinishDeckExceptions("Il deck è vuoto");
         }

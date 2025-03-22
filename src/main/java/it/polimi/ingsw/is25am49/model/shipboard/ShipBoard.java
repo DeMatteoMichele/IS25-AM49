@@ -78,7 +78,9 @@ public class ShipBoard {
                 break ;
         }
     }
-
+    public void lockLastTile(){
+        grid.get(lastPlacedPoint).lockTile();
+    }
     public Point getLastPlacedPoint() {return lastPlacedPoint;}
     public boolean isCompleted() {return isCompleted;}
     public void completeShipBoard() {isCompleted = true;}

@@ -44,7 +44,7 @@ public class BuildState extends State {
         player.pickTile(coordinates);
     }
     public void userDiscardTile(Player player){
-        player.discardTile();
+        gameSession.userDiscardTile(player);
     }
     public void userDrawTile(Player player, int idTIle) {
         gameSession.userDrawTile(player, idTIle);
@@ -53,7 +53,7 @@ public class BuildState extends State {
         gameSession.userFinishShipboard(player);
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {
-        
+        gameSession.userLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {
 

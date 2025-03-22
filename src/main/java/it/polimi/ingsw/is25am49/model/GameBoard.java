@@ -19,6 +19,7 @@ public class GameBoard {
     private AdventureCard currentCard;
     private Player currentPlayer;
     private FlightMode flightMode;
+
     public GameBoard() {
         leaderBoard = new ArrayList<>();
         mapSmallAdventureDecks = new HashMap<>();
@@ -43,41 +44,36 @@ public class GameBoard {
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
-    public void mergeDecks(){}
+    public void mergeDecks(){
+        AdventureCardDeck bufferDeck = new AdventureCardDeck();
+
+        setMainAdventureDeck(bufferDeck);
+    }
     public List<Pair<Integer, Player>> getLeaderBoard(){
         return leaderBoard;
     }
-
     public void setCurrentCard(AdventureCard card) {
         currentCard = card;
     }
-
     public AdventureCard getCurrentCard(){
         return currentCard;
     }
-
     public void drawAdventureCard() {
-        //return mainAdvenureDeck.draw();
         currentCard= mainAdventureDeck.draw();
     }
-
     public void addPlayerToLeaderboard(Integer days , Player player) {
         leaderBoard.add(new Pair<>(days, player));
     }
-
     public void addDiscardedTile(Player player) {
         Tile newTile = player.discardTile();
         tilesDeck.addDiscardTile(newTile);
     }
-
     public Tile drawTile(int index) {
         return tilesDeck.draw(index);
     }
-
     public Player getLeader() {
-        return leaderBoard.get(0).getValue();
+        return leaderBoard.getFirst().getValue();
     }
-
     public void calculateFinalCredits(Player player) {
         int toAdd = 0;
         toAdd = 5 - leaderBoard.indexOf(player); //crediti per la posizione
@@ -88,8 +84,7 @@ public class GameBoard {
         }
         player.addCredits(toAdd);
     }
-
-    public void calculate_final_score(Player player) {
+    public void calculateFinalScore(Player player) {
         int toAdd = 0;
         toAdd = 5 - leaderBoard.indexOf(player);
         toAdd = toAdd - player.getLostComponents();
@@ -103,7 +98,6 @@ public class GameBoard {
 
 
     }
-
     public List<Player> minimumExposedComponents() {
 
         int minValue = leaderBoard.
@@ -122,53 +116,52 @@ public class GameBoard {
                 .collect(Collectors.toList());
 
     }
-
-private Player getNextPlayer(Player player) {
-    int currentIndex = -1;
-    //cerco l'indice che combacia con il pair<Integer, player>
-    for (int i = 0; i < leaderBoard.size(); i++) {
-        if (leaderBoard.get(i).getValue().equals(player)) {
-            currentIndex = i;
-            break;
+    private Player getNextPlayer(Player player) {
+        int currentIndex = -1;
+        //cerco l'indice che combacia con il pair<Integer, player>
+        for (int i = 0; i < leaderBoard.size(); i++) {
+            if (leaderBoard.get(i).getValue().equals(player)) {
+                currentIndex = i;
+                break;
+            }
         }
+        if (currentIndex == -1) {
+            throw new IllegalSetOfNextPlayerException("Player not found in leaderBoard");
+        }
+        //se l'indice è minore della lunghezza della leaderboard estraggo il player successivo
+        if (currentIndex + 1 < leaderBoard.size()) {
+            return leaderBoard.get(currentIndex + 1).getValue();
+        }
+        //il player di cui voglio il next è l'ultimo e perciò lancio l'eccezione
+        throw new IllegalSetOfNextPlayerException("It's the last player");
     }
-    if (currentIndex == -1) {
-        throw new IllegalSetOfNextPlayerException("Player not found in leaderBoard");
-    }
-    //se l'indice è minore della lunghezza della leaderboard estraggo il player successivo
-    if (currentIndex + 1 < leaderBoard.size()) {
-        return leaderBoard.get(currentIndex + 1).getValue();
-    }
-    //il player di cui voglio il next è l'ultimo e perciò lancio l'eccezione
-    throw new IllegalSetOfNextPlayerException("It's the last player");
-}
-
     public void sortLeaderBoard() {
         leaderBoard.sort((p1, p2) -> p2.getKey().compareTo(p1.getKey()));
     }
-
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-    
     public void nextPlayer() {
         //setto il currentplayer al next player dato il current player
         setCurrentPlayer(getNextPlayer(currentPlayer));
     }
-
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
-
     public AdventureCard getNextCard() {
         return mainAdventureDeck.draw();
     }
-
     public void updateLeaderboard() {
         //con i daysthisturn devo fare update facendo perde i giorni
     }
-
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
         this.mainAdventureDeck = mainAdventureDeck;
+    }
+    public void userFinishShipboard(Player player){
+        player.completeShipboard();
+        // Aggiungere il player alla leaderboard (secondo me è da rifare)
+    }
+    public void userLookSmallAdventureCardDeck(Player player, int index){
+        player.setSmallDeck(mapSmallAdventureDecks.get(index));
     }
 }

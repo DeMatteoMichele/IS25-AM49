@@ -5,19 +5,21 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.*;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class Player {
     private int daysThisTurn;
     private String username;
     private int playerNumber;
     private ShipBoard shipBoard;
-    private Tile handTile;
+    private Optional<Tile> handTile;
     private int finalScore;
     private int totCredits;
     private int travelDays;
     private Color color;
     private int lostComponents;
     private int idPlayer;
+    private AdventureCardDeck smallAdventureDeckLooked;
 
 
     public Player(String username, Color color, int idPlayer) {
@@ -26,7 +28,7 @@ public class Player {
         daysThisTurn = 0;
         playerNumber = 0;
         shipBoard = new ShipBoard();
-        handTile = null;
+        handTile = Optional.empty();
         finalScore = 0;
         totCredits = 0;
         travelDays = 0;
@@ -37,6 +39,9 @@ public class Player {
     public void calculateFinalScore(){
 
     }
+    public void lockLastTile(){
+        shipBoard.lockLastTile();
+    }
     public int scoreOfGoods(){
         int total= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;
         shipBoard.removeAllTokens();
@@ -46,7 +51,7 @@ public class Player {
         getShipBoard().completeShipBoard();
     }
     public void setHandTile(Tile tile){
-        this.handTile = tile;
+        this.handTile = Optional.of(tile);
     }
 
     public String getUsername() {
@@ -63,7 +68,7 @@ public class Player {
     public void setPlayerNumber(Integer playerNumber) {
         this.playerNumber = playerNumber;
     }
-    public Tile getHandTile(){
+    public Optional<Tile> getHandTile(){
         return handTile;
     }
     public void addLostComponents(Integer numberOfLostComponents) {
@@ -84,20 +89,21 @@ public class Player {
     }
 
     public void pickTile(Point coordinates){
-        handTile = shipBoard.removeTile(coordinates);
+        handTile = Optional.of(shipBoard.removeTile(coordinates));
     }
     public void placeTile(Point coordinates){
-        shipBoard.insertTile(coordinates, handTile);
+        shipBoard.insertTile(coordinates, handTile.orElse(null));
+        handTile = Optional.empty();
     }
     public void rotateTile(boolean isClockwise){
         if(isClockwise)
-            handTile.rotateTileClockwise();
+            handTile.ifPresent(Tile::rotateTileClockwise);
         else
-            handTile.rotateTileCounterClockwise();
+            handTile.ifPresent(Tile::rotateTileCounterClockwise);
     }
     public Tile discardTile(){
-        Tile temp = handTile;
-        handTile = null;
+        Tile temp = handTile.orElse(null);
+        handTile = Optional.empty();
         return temp;
     }
 
@@ -123,6 +129,9 @@ public class Player {
 
     public void setShipBoard(ShipBoard shipBoard) {
         this.shipBoard = shipBoard;
+    }
+    public void setSmallDeck(AdventureCardDeck smallDeck) {
+        this.smallAdventureDeckLooked = smallDeck;
     }
 
 
