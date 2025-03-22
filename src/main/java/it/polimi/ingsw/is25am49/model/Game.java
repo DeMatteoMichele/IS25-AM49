@@ -18,13 +18,14 @@ public class Game {
     private Optional<Player> winner;
     private Timer timer;
     private int maxPlayers;
+
     public boolean isFinished;
 
     public Game(Optional<Player> admin, GameSession session) {
         this.session = session;
         board = new GameBoard();
         players = new ArrayList<>();
-        mode = null;
+        mode = GameMode.DEFAULT;
         players.add(admin.orElse(null));
         winner = Optional.empty();
         timer = null;
@@ -70,6 +71,9 @@ public class Game {
             return winner;
     }
     public void userPlaceTimer(){
-        timer.place();
+        if(!board.isTestFlight())
+            timer.place();
+        else
+            throw new GameSettingsException("This is a Test Flight");
     }
 }

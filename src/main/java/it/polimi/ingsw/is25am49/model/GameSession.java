@@ -14,7 +14,7 @@ public class GameSession {
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
-    GameSession() {
+    public GameSession() {
         game = Optional.empty();
         admin = Optional.empty();
         currentState = new InitState(this);

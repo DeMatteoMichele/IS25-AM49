@@ -28,8 +28,9 @@ public class GameBoard {
         currentPlayer = 0;
         currentCard = null;
     }
-    //Bisogna modificare le possibili carte del mazzo, la lunghezza del percorso e l'utilizzo del tempo in base a flightMode e gameMode
-    //Andrà anche a inizializzare la Shipboard delle dimensione giusta in base alla GameMode, (per questo gli ho passato Game, serva la lista di player)
+    public boolean isTestFlight(){return flightMode == FlightMode.TEST;}
+    //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
+    //Andrà anche a inizializzare la Shipboard delle dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
 
     }
@@ -67,7 +68,6 @@ public class GameBoard {
     public void addDiscardedTile(Player player) {
         Tile newTile = player.discardTile();
         tilesDeck.addDiscardTile(newTile);
-
     }
 
     public Tile drawTile(int index) {
