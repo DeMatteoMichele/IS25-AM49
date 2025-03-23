@@ -9,10 +9,12 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateExcepti
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
+import java.awt.*;
+import java.util.List;
+
 public class AbandonedShipCard extends AdventureCard {
 
     int lostAstronauts;
-    boolean isLanded = false;
 
     public AbandonedShipCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int lostAstronauts){
         super(gameBoard,description,daysLost,level,creditsEarned);
@@ -37,32 +39,36 @@ public class AbandonedShipCard extends AdventureCard {
     }
 
     @Override
-    public void landingOnStationOrShip() throws IllegalMethodOnThisStateException {
-        super.landingOnStationOrShip();
-        System.out.println("You have landed on the ship");
-        System.out.println("Now you have to decide where you want to remove your astronauts");
-        currentEffect = listEffects.getFirst();
-        currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+    public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {
+        super.landingOnStationOrShip(isLanded);
+        if (isLanded) {
+            System.out.println("You have landed on the ship");
+            System.out.println("Now you have to decide where you want to remove your astronauts");
+            currentEffect = listEffects.getFirst();
+            currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+        }
+        else{
+            System.out.println("You have decided not to land on the ship");
+            try {
+                gameBoard.nextPlayer();
+                System.out.println("Now check on next player");
+                checkRequirements();
+            } catch (IllegalSetOfNextPlayerException e) {
+                System.out.println("No more players, now to update");
+                currentState = AdventureStatesTypes.UPDATE;
+            }
+        }
+
     }
 
     @Override
-    public void finishDecision() {
+    public void finishDecision(List<Point> coordinates) {
         switch (currentState) {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
                 System.out.println("You have decided to remove astronauts");
+                currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
-            }
-            case DECISION_LAND_STATION_OR_SHIP -> {
-                System.out.println("You have decided not to land on the ship");
-                try {
-                    gameBoard.nextPlayer();
-                    System.out.println("Now check on next player");
-                    checkRequirements();
-                } catch (IllegalSetOfNextPlayerException e) {
-                    System.out.println("No more players, now to update");
-                    currentState = AdventureStatesTypes.UPDATE;
-                }
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");
         }
@@ -73,7 +79,7 @@ public class AbandonedShipCard extends AdventureCard {
         super.applyEffect();
         Player currentPlayer=gameBoard.getCurrentPlayer();
         System.out.println("You are in applyeffect, you lose astronauts");
-        //currentEffect.action(currentPlayer);
+        currentEffect.action(currentPlayer);
         currentPlayer.addCredits(creditsEarned);
         System.out.println("You have earned " + creditsEarned + " credits");
         currentPlayer.setDaysThisTurn(daysLost);

@@ -5,10 +5,8 @@ import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Component;
-import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
@@ -77,7 +75,7 @@ class AbandonedShipCardTest {
     @Test
     void landingOnStationOrShip() {
         gameBoard.drawAdventureCard();
-        gameBoard.getCurrentCard().landingOnStationOrShip();
+        gameBoard.getCurrentCard().landingOnStationOrShip(true);
         assertEquals(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS, gameBoard.getCurrentCard().getCurrentState());
 
     }
@@ -85,8 +83,10 @@ class AbandonedShipCardTest {
     @Test
     void finishDecision() {
         gameBoard.drawAdventureCard();
+        gameBoard.getCurrentCard().landingOnStationOrShip(false);
+        gameBoard.getCurrentCard().landingOnStationOrShip(true);
         gameBoard.getCurrentCard().finishDecision();
-        assertEquals(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getCurrentCard(),card1);
         assertEquals(gameBoard.getCurrentPlayer(),player1);
@@ -97,7 +97,7 @@ class AbandonedShipCardTest {
         gameBoard.drawAdventureCard();
 //        ArrayList<Pair<Point, Token>> Coordinates = new ArrayList<>();
 //        Coordinates.add(new Pair<>(new Point(2, 2), Token.ASTRONAUT));
-        gameBoard.getCurrentCard().landingOnStationOrShip();
+        gameBoard.getCurrentCard().landingOnStationOrShip(true);
         gameBoard.getCurrentCard().getCurrentEffect().setListOfCoordinates(new ArrayList<Pair<Point, Token>>());
         gameBoard.getCurrentCard().finishDecision();
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());

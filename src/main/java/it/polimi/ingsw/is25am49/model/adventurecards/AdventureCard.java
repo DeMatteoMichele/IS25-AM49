@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -45,7 +46,7 @@ public abstract class AdventureCard {
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 
-    public void landingOnStationOrShip() throws IllegalMethodOnThisStateException{
+    public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException{
         if(currentState != AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
@@ -99,7 +100,7 @@ public abstract class AdventureCard {
         return level;
     }
 
-    public void finishDecision(){
+    public void finishDecision(List<Point> coordinates){
 
     }
 

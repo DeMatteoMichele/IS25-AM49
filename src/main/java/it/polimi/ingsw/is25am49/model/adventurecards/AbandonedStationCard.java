@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Token;
@@ -62,19 +61,19 @@ public class AbandonedStationCard extends AdventureCard {
     }
 
     @Override
-    public void landingOnStationOrShip() {
+    public void landingOnStationOrShip(boolean IsLanded) {
 
         //se questo metodo è chiamato il player ha scelto di scendere sulla stazione
         //prendo il primo effetto (l'unico in questa carta)
         //vado nello stato dove decido le merci da caricare e le rispettive posizioni
-        super.landingOnStationOrShip();
+        super.landingOnStationOrShip(IsLanded);
         System.out.println("You have landed on A station");
         System.out.println("Nw you have to decide where you want to add your win goods and which ones");
         currentState= AdventureStatesTypes.DECISION_GOODS;
         currentEffect = listEffects.getFirst();
     }
     @Override
-    public void finishDecision(){
+    public void finishDecision(List<Point> coordinates){
         switch(currentState){
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
             case DECISION_GOODS -> {
