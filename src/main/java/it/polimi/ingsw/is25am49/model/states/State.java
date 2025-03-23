@@ -4,7 +4,6 @@ import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
 
@@ -33,7 +32,7 @@ public abstract class State {
     public abstract void userFinishShipboard(Player player);
     public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex);
     public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex);
-    public abstract void userPlaceTimer();
+    public abstract void userPlaceTimer(Player player);
     public abstract void timerIsDone();
 
 

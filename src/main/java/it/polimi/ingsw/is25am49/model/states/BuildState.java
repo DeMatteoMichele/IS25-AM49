@@ -58,10 +58,11 @@ public class BuildState extends State {
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {
 
     }
-    public void userPlaceTimer() {
-        gameSession.userPlaceTimer();
+    public void userPlaceTimer(Player player) {
+        gameSession.userPlaceTimer(player);
     }
     public void timerIsDone(){
+        
         transition(new AdventureState(gameSession));
     }
 

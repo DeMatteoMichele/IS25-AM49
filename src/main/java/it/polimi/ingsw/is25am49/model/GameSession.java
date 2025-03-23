@@ -49,8 +49,6 @@ public class GameSession {
     public State getState() {
         return currentState;
     }
-
-
     public void userDiscardTile(Player player){
         game.ifPresent(g  -> g.discardTile(player));
     }
@@ -67,8 +65,8 @@ public class GameSession {
     public void userStopLookSmallAdventureCardDeck(Player player, int index){
     }
 
-    public void userPlaceTimer(){
-        game.ifPresent(Game::userPlaceTimer);
+    public void userPlaceTimer(Player player){
+        game.ifPresent(g -> g.userPlaceTimer(player));
     }
 
     public void userThrowDices(Player player){
@@ -92,19 +90,13 @@ public class GameSession {
     public void userQuitGame(Player player){
     }
     public void adminSelectTypeFlight(FlightMode flightMode){
-        if(game.isPresent())
-            game.get().getGameboard().setFlightMode(flightMode);
-        else
-            throw new GameSettingsException("The game has not been created");
+        game.ifPresent(g -> g.adminSelectTypeFlight(flightMode));
     }
     public void calculateScore(Player player) { game.ifPresent(g -> g.calculateScore(player));}
     public void configurateFlight(){
         game.ifPresent(Game::configurateFlight);
     }
-    public void finishBuild(Player player){
-        player.completeShipboard();
-        player.getShipBoard().afterBuildCheckShipboard();
-    }
+
     public void userEndGame() throws GameSettingsException{
         if(game.map(Game::gameIsFinished).orElse(false)){
             game = Optional.empty();

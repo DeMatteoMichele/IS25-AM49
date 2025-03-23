@@ -18,7 +18,7 @@ public class Player {
     private int travelDays;
     private Color color;
     private int lostComponents;
-    private int idPlayer;
+    private final int idPlayer;
     private AdventureCardDeck smallAdventureDeckLooked;
 
 
@@ -48,7 +48,7 @@ public class Player {
         return total;
     }
     public void completeShipboard(){
-        getShipBoard().completeShipBoard();
+        shipBoard.completeShipBoard();
     }
     public void setHandTile(Tile tile){
         this.handTile = Optional.of(tile);
@@ -65,9 +65,6 @@ public class Player {
         return playerNumber;
     }
 
-    public void setPlayerNumber(Integer playerNumber) {
-        this.playerNumber = playerNumber;
-    }
     public Optional<Tile> getHandTile(){
         return handTile;
     }
@@ -92,7 +89,7 @@ public class Player {
         handTile = Optional.of(shipBoard.removeTile(coordinates));
     }
     public void placeTile(Point coordinates){
-        shipBoard.insertTile(coordinates, handTile.orElse(null));
+        handTile.ifPresent(tile -> shipBoard.insertTile(coordinates, tile));
         handTile = Optional.empty();
     }
     public void rotateTile(boolean isClockwise){
@@ -101,12 +98,11 @@ public class Player {
         else
             handTile.ifPresent(Tile::rotateTileCounterClockwise);
     }
-    public Tile discardTile(){
-        Tile temp = handTile.orElse(null);
+    public Optional<Tile> discardTile(){
+        Optional<Tile> temp = handTile;
         handTile = Optional.empty();
         return temp;
     }
-
     public Integer getLostComponents() {
         return lostComponents;
     }
@@ -117,7 +113,6 @@ public class Player {
     public Color getColor() {
         return color;
     }
-
 
     public void setDaysThisTurn(int daysThisTurn) {
         this.daysThisTurn = daysThisTurn;

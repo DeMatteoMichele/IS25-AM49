@@ -153,6 +153,7 @@ public class ShipBoard {
             throw new InvalidCoordinatesException("cannot DESTROY a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
         }
     }
+
     public void destroyTilesCascade(){
         //TODO algoritmo mistico
     }

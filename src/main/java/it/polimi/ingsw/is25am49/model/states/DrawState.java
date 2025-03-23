@@ -11,7 +11,7 @@ public class DrawState extends AdventureState {
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {}
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {}
-    public void userPlaceTimer() {}
+    public void userPlaceTimer(Player player) {}
     public void userThrowDices(Player player) {}
 
 

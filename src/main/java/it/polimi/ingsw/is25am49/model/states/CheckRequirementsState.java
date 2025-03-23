@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.model.states;
 
 import it.polimi.ingsw.is25am49.model.GameSession;
 import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
 
@@ -12,7 +11,7 @@ public class CheckRequirementsState extends AdventureState{
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {}
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {}
-    public void userPlaceTimer() {}
+    public void userPlaceTimer(Player player) {}
     public void userThrowDices(Player player) {}
     public void userDrawAdventureCard(Player player) {}
     public void userPlayAdventureCard(Player player) {}

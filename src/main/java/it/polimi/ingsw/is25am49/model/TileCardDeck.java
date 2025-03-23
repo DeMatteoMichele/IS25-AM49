@@ -18,7 +18,6 @@ public class TileCardDeck {
     }
 
     public void addDiscardTile(Tile tile){
-
         tileDeck.put(tile.getIdTile(),tile);
     }
 

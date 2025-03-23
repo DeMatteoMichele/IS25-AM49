@@ -56,7 +56,7 @@ public class AdventureState extends State {
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userPlaceTimer() {
+    public void userPlaceTimer(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void timerIsDone(){

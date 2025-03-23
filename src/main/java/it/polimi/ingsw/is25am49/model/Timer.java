@@ -38,13 +38,13 @@ public class Timer {
             this.level = 3;
         this.gameSession = gameSession;
     }
-    public void place() {
+    public void place(Player player) {
         if(!isActive && usageCounter < level - 1) {
             usageCounter++;
             isActive = true;
             startTimer(lifetime);
         }
-        else if(!isActive && usageCounter == level - 1){
+        else if(!isActive && usageCounter == level - 1 && player.getShipBoard().isCompleted()){
             usageCounter++;
             isActive = true;
             startFinalTimer(lifetime);

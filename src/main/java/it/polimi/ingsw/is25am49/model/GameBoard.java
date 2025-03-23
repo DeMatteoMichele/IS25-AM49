@@ -65,8 +65,8 @@ public class GameBoard {
         leaderBoard.add(new Pair<>(days, player));
     }
     public void addDiscardedTile(Player player) {
-        Tile newTile = player.discardTile();
-        tilesDeck.addDiscardTile(newTile);
+        Optional<Tile> newTile = player.discardTile();
+        newTile.ifPresent(tilesDeck::addDiscardTile);
     }
     public Tile drawTile(int index) {
         return tilesDeck.draw(index);
@@ -159,6 +159,7 @@ public class GameBoard {
     }
     public void userFinishShipboard(Player player){
         player.completeShipboard();
+        player.getShipBoard().afterBuildCheckShipboard();
         // Aggiungere il player alla leaderboard (secondo me è da rifare)
     }
     public void userLookSmallAdventureCardDeck(Player player, int index){

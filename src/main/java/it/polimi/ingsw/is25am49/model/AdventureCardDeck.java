@@ -10,7 +10,6 @@ import java.util.List;
 
 public class AdventureCardDeck {
     private final List<AdventureCard> deck = new ArrayList<>();
-    private boolean isBeingLooked;
 
     public AdventureCard draw() {
         if(deck.isEmpty()){
@@ -20,7 +19,7 @@ public class AdventureCardDeck {
         return deck.removeFirst();
     }
     public void generateDeck(){
-        //crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect
+        // crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect.
     }
     public void add(AdventureCard card){
         deck.add(card);
@@ -28,12 +27,9 @@ public class AdventureCardDeck {
     public void shuffle(){
         Collections.shuffle(deck);
     }
-
     public void showCards(Player player){
 
     }
-
-
     public int size() {
         return deck.size();
     }

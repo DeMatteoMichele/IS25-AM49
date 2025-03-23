@@ -1,13 +1,9 @@
 package it.polimi.ingsw.is25am49.model;
-import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.model.states.*;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class Game {
@@ -18,7 +14,7 @@ public class Game {
     private Optional<Player> winner;
     private Timer timer;
     private int maxPlayers;
-    public boolean isFinished;
+    private boolean isFinished;
 
     public Game(Optional<Player> admin, GameSession session) {
         this.session = session;
@@ -69,9 +65,9 @@ public class Game {
             isFinished = true;
             return winner;
     }
-    public void userPlaceTimer(){
+    public void userPlaceTimer(Player player){
         if(!board.isTestFlight())
-            timer.place();
+            timer.place(player);
         else
             throw new GameSettingsException("This is a Test Flight");
     }
@@ -87,4 +83,7 @@ public class Game {
     }
     public void userFinishShipboard(Player player){ board.userFinishShipboard(player);}
     public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}
+    public void adminSelectTypeFlight(FlightMode flightMode){
+        board.setFlightMode(flightMode);
+    }
 }

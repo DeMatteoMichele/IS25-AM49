@@ -90,7 +90,7 @@ public class InitState extends State {
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userPlaceTimer() {
+    public void userPlaceTimer(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
     public void timerIsDone(){
