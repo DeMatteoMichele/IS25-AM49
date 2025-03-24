@@ -5,10 +5,14 @@ import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TileCardDeck {
-    private final Map<Integer, Tile> tileDeck = new HashMap<>();
+    private final ConcurrentHashMap<Integer, Tile> tileDeck;
 
+    public TileCardDeck() {
+        tileDeck = new ConcurrentHashMap<>();
+    }
     public void generateDeck(){
 
     }

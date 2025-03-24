@@ -9,8 +9,15 @@ import java.util.List;
 
 
 public class AdventureCardDeck {
-    private final List<AdventureCard> deck = new ArrayList<>();
-
+    private final List<AdventureCard> deck;
+    private boolean isBeingWatched;
+    public AdventureCardDeck() {
+        deck = new ArrayList<>();
+        isBeingWatched = false;
+    }
+    public boolean isWatched() { return isBeingWatched; }
+    public void watch(){ isBeingWatched = true; }
+    public void stopWatch(){ isBeingWatched = false; }
     public AdventureCard draw() {
         if(deck.isEmpty()){
             throw new FinishDeckExceptions("Il deck è vuoto");

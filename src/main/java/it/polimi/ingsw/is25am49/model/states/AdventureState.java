@@ -8,6 +8,7 @@ import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class AdventureState extends State {
     public AdventureState(GameSession gameSession){

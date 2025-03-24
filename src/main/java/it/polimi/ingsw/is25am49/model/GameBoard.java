@@ -9,20 +9,21 @@ import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class GameBoard {
     private final List<Pair<Integer, Player>> leaderBoard;
     private AdventureCardDeck mainAdventureDeck;
-    private final HashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private final TileCardDeck tilesDeck;
+    private final ConcurrentHashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private AdventureCard currentCard;
     private Player currentPlayer;
     private FlightMode flightMode;
 
     public GameBoard() {
         leaderBoard = new ArrayList<>();
-        mapSmallAdventureDecks = new HashMap<>();
+        mapSmallAdventureDecks = new ConcurrentHashMap<>();
         tilesDeck = new TileCardDeck();
         mainAdventureDeck = new AdventureCardDeck();
         flightMode = FlightMode.DEFAULT;
@@ -163,6 +164,9 @@ public class GameBoard {
         // Aggiungere il player alla leaderboard (secondo me è da rifare)
     }
     public void userLookSmallAdventureCardDeck(Player player, int index){
-        player.setSmallDeck(mapSmallAdventureDecks.get(index));
+        if(!mapSmallAdventureDecks.get(index).isWatched()){
+            mapSmallAdventureDecks.get(index).watch();
+            player.setSmallDeck(mapSmallAdventureDecks.get(index));
+        }
     }
 }
