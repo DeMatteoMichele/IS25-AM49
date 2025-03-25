@@ -20,6 +20,7 @@ public class Player {
     private int lostComponents;
     private final int idPlayer;
     private AdventureCardDeck smallAdventureDeckLooked;
+    private boolean isWatching;
 
 
     public Player(String username, Color color, int idPlayer) {
@@ -34,13 +35,20 @@ public class Player {
         travelDays = 0;
         lostComponents = 0;
         this.idPlayer = idPlayer;
+        isWatching = false;
     }
     //Qua bisogna calcolare lo Score finale
     public void calculateFinalScore(){
 
     }
+    public boolean isWatching(){
+        return isWatching;
+    }
     public void lockLastTile(){
         shipBoard.lockLastTile();
+    }
+    public AdventureCardDeck getSmallAdventureDeck(){
+        return smallAdventureDeckLooked;
     }
     public int scoreOfGoods(){
         int total= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;
@@ -126,8 +134,12 @@ public class Player {
         this.shipBoard = shipBoard;
     }
     public void setSmallDeck(AdventureCardDeck smallDeck) {
-        this.smallAdventureDeckLooked = smallDeck;
+        smallAdventureDeckLooked = smallDeck;
+        isWatching = true;
     }
-
+    public void clearSmallDeck(){
+        smallAdventureDeckLooked = null;
+        isWatching = false;
+    }
 
 }

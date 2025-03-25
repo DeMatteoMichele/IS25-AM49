@@ -50,19 +50,23 @@ public class BuildState extends State {
         gameSession.userDrawTile(player, idTIle);
     }
     public void userFinishShipboard(Player player) {
-        gameSession.userFinishShipboard(player);
+        if(gameSession.userFinishShipboard(player)) {
+            gameSession.mergeSmallDecks();
+            transition(new AdventureState(gameSession));
+        }
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {
         gameSession.userLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {
-
+        gameSession.userStopLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
     public void userPlaceTimer(Player player) {
         gameSession.userPlaceTimer(player);
     }
     public void timerIsDone(){
-        
+        gameSession.addPlayersToLeaderBoard();
+        gameSession.mergeSmallDecks();
         transition(new AdventureState(gameSession));
     }
 

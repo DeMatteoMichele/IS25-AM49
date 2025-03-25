@@ -55,14 +55,15 @@ public class GameSession {
     public void userDrawTile(Player player, int idTile ){
         game.ifPresent(g -> g.userDrawTile(player, idTile));
     }
-    public void userFinishShipboard(Player player){
-        game.ifPresent(g -> g.userFinishShipboard(player));
+    public boolean userFinishShipboard(Player player){
+        return game.map(value -> value.userFinishShipboard(player)).orElse(false);
     }
     public void userLookSmallAdventureCardDeck(Player player, int index){
         game.ifPresent(g -> g.userLookSmallAdventureCardDeck(player, index));
     }
 
     public void userStopLookSmallAdventureCardDeck(Player player, int index){
+        game.ifPresent(g -> g.userStopLookSmallAdventureCardDeck(player, index));
     }
 
     public void userPlaceTimer(Player player){
@@ -106,4 +107,8 @@ public class GameSession {
             throw new GameSettingsException("The game is not finished yet");
     }
     public Optional<Player> userShowWinner() { return game.flatMap(Game::userShowWinner); }
+    public void addPlayersToLeaderBoard(){ game.ifPresent(Game::addPlayersToLeaderBoard) ;}
+    public void mergeSmallDecks(){
+        game.ifPresent(Game::mergeSmallDecks);
+    }
 }

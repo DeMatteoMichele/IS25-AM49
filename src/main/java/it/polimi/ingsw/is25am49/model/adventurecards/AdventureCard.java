@@ -1,5 +1,4 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
-
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;

@@ -4,16 +4,21 @@ import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import javafx.util.Pair;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class GameBoard {
-    private final List<Pair<Integer, Player>> leaderBoard;
+
+    //Da cambiare (è una merda)
+    private final ArrayList<Pair<Integer, Player>> leaderBoard;
+
     private AdventureCardDeck mainAdventureDeck;
     private final TileCardDeck tilesDeck;
     private final ConcurrentHashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
@@ -32,7 +37,7 @@ public class GameBoard {
     }
     public boolean isTestFlight(){return flightMode == FlightMode.TEST;}
     //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
-    //Andrà anche a inizializzare la Shipboard delle dimensione giusta in base alla GameMode, ( serve la lista di player)
+    //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
 
     }
@@ -47,7 +52,8 @@ public class GameBoard {
     }
     public void mergeDecks(){
         AdventureCardDeck bufferDeck = new AdventureCardDeck();
-
+        mapSmallAdventureDecks.forEach((index,smallDeck) -> smallDeck.stream().forEach(bufferDeck::add));
+        mapSmallAdventureDecks.clear();
         setMainAdventureDeck(bufferDeck);
     }
     public List<Pair<Integer, Player>> getLeaderBoard(){
@@ -158,15 +164,27 @@ public class GameBoard {
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
         this.mainAdventureDeck = mainAdventureDeck;
     }
-    public void userFinishShipboard(Player player){
+    public int userFinishShipboard(Player player){
         player.completeShipboard();
         player.getShipBoard().afterBuildCheckShipboard();
-        // Aggiungere il player alla leaderboard (secondo me è da rifare)
+        addPlayerToLeaderboard(0, player);
+        return leaderBoard.size();
     }
     public void userLookSmallAdventureCardDeck(Player player, int index){
-        if(!mapSmallAdventureDecks.get(index).isWatched()){
+        if(!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()){
             mapSmallAdventureDecks.get(index).watch();
+            player.lockLastTile();
             player.setSmallDeck(mapSmallAdventureDecks.get(index));
         }
+        else
+            throw new GameSettingsException("You cannot watch this deck");
+    }
+    public void userStopLookSmallAdventureCardDeck(Player player, int index){
+        if(player.isWatching() && mapSmallAdventureDecks.get(index).equals(player.getSmallAdventureDeck())){
+            player.clearSmallDeck();
+            mapSmallAdventureDecks.get(index).stopWatch();
+        }
+        else
+            throw new GameSettingsException("You are not watching this deck");
     }
 }
