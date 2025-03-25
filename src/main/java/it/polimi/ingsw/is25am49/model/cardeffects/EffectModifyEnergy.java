@@ -1,9 +1,7 @@
 package it.polimi.ingsw.is25am49.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalComponentTypeException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSizeToRemove;
 import javafx.util.Pair;
@@ -41,7 +39,7 @@ public class EffectModifyEnergy extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
-    public void setListOfCoordinates(ArrayList<Pair<Point, Token>> coordinates) {
+    public void setListOfCoordinates(java.awt.List coordinates) {
         this.coordinates = coordinates;
     }
 }

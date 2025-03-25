@@ -8,9 +8,12 @@ import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SmugglerCard extends AdventureCard {
 
@@ -21,8 +24,8 @@ public class SmugglerCard extends AdventureCard {
         this.listEffects.addAll(listEffects);
     }
 
-    private List<Point> coordinatesOfBatteries;
-    private List<Point> coordinatesOfCannons;
+    private List<Pair<Point,Token>> coordinatesOfBatteries;
+    private Set<Point> coordinatesOfCannons;
 
 
     @Override
@@ -96,22 +99,13 @@ public class SmugglerCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(List<Point> coordinates) {
+    public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
             case DECISION_BATTERIES -> {
                 System.out.println("You have decided the coord for the batteries. Now decide which cannons");
                 coordinatesOfBatteries = coordinates;
                 currentState= AdventureStatesTypes.DECISION_CANNON;
-            }
-            case DECISION_CANNON -> {
-                System.out.println("You have decided the coord for the cannons");
-                coordinatesOfCannons = coordinates;
-                for (int i=0; i<coordinatesOfBatteries.size(); i++) {
-                    shipBoard.turnOnComponent(coordinatesOfCannons.get(i), coordinatesOfBatteries.get(i));
-                }
-                currentState = AdventureStatesTypes.EFFECT;
-                applyEffect();
             }
             case DECISION_GOODS -> {
                 System.out.println("you have decided the coord for the goods");
@@ -122,6 +116,24 @@ public class SmugglerCard extends AdventureCard {
             default -> throw new IllegalArgumentException("Invalid state: " + currentState);
         }
     }
+
+    @Override
+    public void finishDecision(Set<Point> coordinates) {
+        ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        List<Point> coordinatesOfCannons = new ArrayList<>(coordinates);
+        switch (currentState) {
+            case DECISION_CANNON -> {
+                System.out.println("You have decided the coord for the cannons");
+                for (int i=0; i<coordinatesOfBatteries.size(); i++) {
+                    shipBoard.turnOnComponent(coordinatesOfCannons.get(i), coordinatesOfBatteries.get(i).getKey());
+                }
+                currentState = AdventureStatesTypes.EFFECT;
+                applyEffect();
+            }
+            default -> throw new IllegalArgumentException("Invalid state: " + currentState);
+        }
+    }
+
 
 
 

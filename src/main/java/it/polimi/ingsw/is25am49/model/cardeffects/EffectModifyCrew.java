@@ -39,7 +39,7 @@ public class EffectModifyCrew extends CardEffect {
     }
 
     @Override
-    public void setListOfCoordinates(ArrayList<Pair<Point, Token>> coordinates) {
+    public void setListOfCoordinates(java.awt.List coordinates) {
         this.coordinates = coordinates;
     }
 }

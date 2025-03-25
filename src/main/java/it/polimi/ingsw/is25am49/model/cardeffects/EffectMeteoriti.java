@@ -2,12 +2,8 @@ package it.polimi.ingsw.is25am49.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import javafx.util.Pair;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EffectMeteoriti extends CardEffect {
     private final int level;
@@ -25,7 +21,7 @@ public class EffectMeteoriti extends CardEffect {
         //serve per i meteoriti per selezionare la riga in cui viene colpito, rollando i dadi aggiorni set position
     }
 
-    public void setListOfCoordinates(ArrayList<Pair<Point, Token>> listOfCoordinates) {
+    public void setListOfCoordinates(List listOfCoordinates) {
 
     }
 

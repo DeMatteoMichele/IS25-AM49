@@ -8,6 +8,7 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.List;
@@ -62,7 +63,7 @@ public class AbandonedShipCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(List<Point> coordinates) {
+    public void finishDecision(List<Pair<Point, Token>> coordinates) {
         switch (currentState) {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
                 System.out.println("You have decided to remove astronauts");

@@ -3,12 +3,15 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public abstract class AdventureCard {
     protected String description;
@@ -100,7 +103,11 @@ public abstract class AdventureCard {
         return level;
     }
 
-    public void finishDecision(List<Point> coordinates){
+    public void finishDecision(List<Pair<Point, Token>> coordinates){
+
+    }
+
+    public void finishDecision(Set<Point> coordinates){
 
     }
 
