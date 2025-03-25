@@ -26,15 +26,15 @@ class EffectModifyCrewTest {
     Component component;
     Component component2;
     Tile tile2;
-    Point coordinate = new Point(1, 0);
-    Point coordinate2 = new Point(0, 1);
+    Point coordinate = new Point(6, 7);
+    Point coordinate2 = new Point(7, 8);
     CardEffect cardEffect;
     ArrayList<Pair<Point,Token>> coordinates;
 
     @BeforeEach
     void init(){
-        shipBoard = new ShipBoard();
         player = new Player("io", Color.RED,2);
+        shipBoard = new ShipBoard(1,2);
         coordinates = new ArrayList<>();
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));

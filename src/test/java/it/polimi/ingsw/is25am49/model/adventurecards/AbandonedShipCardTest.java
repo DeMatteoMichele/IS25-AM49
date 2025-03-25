@@ -85,7 +85,7 @@ class AbandonedShipCardTest {
         gameBoard.drawAdventureCard();
         gameBoard.getCurrentCard().landingOnStationOrShip(false);
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
-        gameBoard.getCurrentCard().finishDecision();
+        gameBoard.getCurrentCard().finishDecision(new ArrayList<Pair<Point, Token>>());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getCurrentCard(),card1);
@@ -98,8 +98,7 @@ class AbandonedShipCardTest {
 //        ArrayList<Pair<Point, Token>> Coordinates = new ArrayList<>();
 //        Coordinates.add(new Pair<>(new Point(2, 2), Token.ASTRONAUT));
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
-        gameBoard.getCurrentCard().getCurrentEffect().setListOfCoordinates(new ArrayList<Pair<Point, Token>>());
-        gameBoard.getCurrentCard().finishDecision();
+        gameBoard.getCurrentCard().finishDecision(new ArrayList<Pair<Point, Token>>());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(100, gameBoard.getCurrentPlayer().getCredits());
         assertEquals(2,gameBoard.getCurrentPlayer().getDaysThisTurn());

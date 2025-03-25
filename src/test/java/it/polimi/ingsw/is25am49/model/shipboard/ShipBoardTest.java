@@ -150,7 +150,7 @@ class ShipBoardTest {
 
     @Test
     void testCheckValidCoordinates() {
-        ship1.printShipboard();
+        ship1.printShipboardSpecial();
         assertTrue(ship1.checkValidCoordinates(new Point(7,7)));
         assertFalse(ship1.checkValidCoordinates(new Point(1,1)));
         assertFalse(ship1.checkValidCoordinates(new Point(5,6)));
