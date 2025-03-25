@@ -1,8 +1,10 @@
 package it.polimi.ingsw.is25am49.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
-
+import javafx.util.Pair;
+import java.util.List;
 import java.awt.*;
 
 public class EffectWinGoods extends CardEffect {
@@ -26,7 +28,7 @@ public class EffectWinGoods extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
-    public void setListOfCoordinates(List positions) {
+    public void setListOfCoordinates(List<Pair<Point, Token>> positions) {
 
     }
 

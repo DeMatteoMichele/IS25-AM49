@@ -39,7 +39,7 @@ public class EffectModifyEnergy extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
-    public void setListOfCoordinates(java.awt.List coordinates) {
+    public void setListOfCoordinates(List<Pair<Point,Token>> coordinates) {
         this.coordinates = coordinates;
     }
 }

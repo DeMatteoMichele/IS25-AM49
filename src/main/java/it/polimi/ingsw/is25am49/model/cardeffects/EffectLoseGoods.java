@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model.cardeffects;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.List;
@@ -55,7 +56,7 @@ public class EffectLoseGoods extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
     }
 
-    public void setListOfCoordinates(java.awt.List coordinates) {
+    public void setListOfCoordinates(List<Pair<Point,Token>> coordinates) {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
     }
 
