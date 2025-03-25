@@ -61,6 +61,7 @@ public class Tile {
     public Component getComponent() {
         return component;
     }
+    public ComponentType getComponentType() {return component.getType();}
     public void addToken(Token token){component.addToken(token);}
     public void removeToken(Token token) {component.removeToken(token);}
     public void removeToken(){component.removeToken();}

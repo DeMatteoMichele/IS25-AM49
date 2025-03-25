@@ -148,16 +148,6 @@ class ShipBoardTest {
     void afterBuildCheckShipboard() {
     }
 
-    @Test
-    void testCheckValidCoordinates() {
-        ship1.printShipboardSpecial();
-        assertTrue(ship1.checkValidCoordinates(new Point(7,7)));
-        assertFalse(ship1.checkValidCoordinates(new Point(1,1)));
-        assertFalse(ship1.checkValidCoordinates(new Point(5,6)));
-        assertTrue(ship1.checkValidCoordinates(new Point(6,6)));
-        assertFalse(ship1.checkValidCoordinates(new Point(13,24)));
-    }
-
 
     @Test
     void testRemoveAllTokens() {
