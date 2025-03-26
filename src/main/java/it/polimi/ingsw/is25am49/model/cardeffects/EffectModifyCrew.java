@@ -20,7 +20,7 @@ public class EffectModifyCrew extends CardEffect {
 
     public void action(Player player) {
         if(coordinates.size()!=lostCrew) {
-            throw new IllegalSizeToRemove("Please select the right amount of crew to remove");
+            throw new IllegalSizeToRemove("Please select the right amount of crew to remove "+ coordinates.size());
         }
         //per tutte le coordinate nella lista rimuovo il rispettivo Token
         for(Pair<Point, Token> coordinate : coordinates) {
@@ -41,5 +41,9 @@ public class EffectModifyCrew extends CardEffect {
     @Override
     public void setListOfCoordinates(List<Pair<Point,Token>> coordinates) {
         this.coordinates = coordinates;
+    }
+    @Override
+    public List<Pair<Point,Token>> getCoordinates() {
+        return coordinates;
     }
 }

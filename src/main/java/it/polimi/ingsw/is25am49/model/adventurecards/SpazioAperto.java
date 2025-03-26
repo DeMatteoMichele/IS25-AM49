@@ -4,25 +4,142 @@ import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import javafx.util.Pair;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SpazioAperto extends AdventureCard {
 
-    public SpazioAperto(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
-        super(gameBoard,description, daysLost, level, creditsEarned);
-        listEffects.addAll(ListEffects);
+    public SpazioAperto(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
+        super(gameBoard,description, daysLost, level, creditsEarned);;
+    }
+
+    private List<Pair<Point, Token>> batteries;
+    private List<Point> cannons;
+
+
+    @Override
+    public void drawCard(){
+        //chiamo il super
+        super.drawCard();
+        System.out.println("You have found an open space! You can choose if you wanna activate your double motors for travel days");
+        //passo alla richiesta di requisiti
+        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
+        checkRequirements();
+
+    }
+    @Override
+    public void checkRequirements() {
+        if(currentState!= AdventureStatesTypes.CHECK_REQUIREMENTS){
+            throw new IllegalArgumentException("wrong state");
+        }
+        ShipBoard ship=gameBoard.getCurrentPlayer().getShipBoard();
+        int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
+        if(totalNumberOfBatteries > 0){
+            System.out.println("you have enough batteries to activate your double motors. One battery activates one motor. " +
+                    "Now choose which batteries you wanna use and how much");
+            currentState = AdventureStatesTypes.DECISION_BATTERIES;
+        }
+        else{
+            //non ho abbastanza batterie per attivare i doppi motori
+            System.out.println("You don't have enough batteries to activate your double motors");
+            int daysEarned = ship.getEnginePower();
+            //imposto i giorni che gudagna il player alla potenza dei motori singoli e aggiorno la leaderboard
+            gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
+            gameBoard.updateLeaderboard();
+            System.out.println("player " + gameBoard.getCurrentPlayer().getClass() + " has earned " + daysEarned + " travel days");
+            System.out.println("now i check if it was the last player");
+            try{
+                //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
+                gameBoard.nextPlayer();
+                System.out.println("It wasn't the last player, go on with the next player");
+                checkRequirements();
+            }
+            catch (IllegalSetOfNextPlayerException e ){
+                System.out.println("It was the last player, end of the turn");
+                System.out.println("it goes to draw state");
+                currentState = AdventureStatesTypes.DRAW;
+
+            }
+        }
+
     }
 
     @Override
-    public void checkRequirements() {
+    public void finishDecision(List <Pair<Point, Token>> coordinates) {
+        ShipBoard ship=gameBoard.getCurrentPlayer().getShipBoard();
+        switch(currentState){
+            case DECISION_BATTERIES -> {
+                if(coordinates.size()>ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)){
+                    throw new IllegalArgumentException("you have chosen more batteries than you have");
+                }
+                //ho deciso quali batterie attivare, setto la lista di coordinate della batterie con quella passata
+                //dall'utente e passo allo stato in cui in base alle batterie decide i cannoni da attivare
+                System.out.println("you have choosen "+ coordinates.size() + " batteries, so you will activate " + coordinates.size() + " motors");
+                batteries = coordinates;
+                System.out.println("now choose which cannons you wanna activate");
+                currentState= AdventureStatesTypes.DECISION_CANNON;
+                           }
 
+        default ->{ throw  new IllegalArgumentException("invalid state");}
+        }
     }
 
+    @Override
+    public void finishDecision(Set<Point> coordinates){
+        ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
+        this.cannons = new ArrayList<>(coordinates);
+        switch(currentState){
+            case DECISION_CANNON -> {
+                System.out.println("you have decided the coordinates of the cannons you wanna activate");
+                //controllo che il numero dei cannoni da attivare corrisponda al numero delle batterie
+                if(batteries.size()!=coordinates.size()){
+                    throw new IllegalArgumentException("you have to activate the same number of cannons as batteries");
+                }
+                //attivo i cannoni e passo allo stato in cui applico l'effetto
+                for(int i=0; i< batteries.size();i++){
+                    ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
+                }
+                currentState = AdventureStatesTypes.EFFECT;
+                applyEffect();
+            }
+
+        default -> {throw new IllegalArgumentException("invalid state");}
+    }}
 
 
     @Override
     public void applyEffect() {
+        super.applyEffect();
+        ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
+        System.out.println("you are in apply effect, now i will calculate the days you have earned");
+        //calcolo i giorni guadagnati in base alla potenza dei motori attivati
+        int daysEarned = ship.getEnginePower();
+        for(int i=0; i< batteries.size();i++){
+            ship.turnOff(cannons.get(i));
+        }
+        gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
+        //aggiorno la leaderboard
+        gameBoard.updateLeaderboard();
+        //controllo se era l'ultimo giocatore
+        System.out.println("now i check if it was the last player");
+        try{
+            gameBoard.nextPlayer();
+            System.out.println("It wasn't the last player, go on with the next player");
+            checkRequirements();
+            currentState= AdventureStatesTypes.CHECK_REQUIREMENTS;
+        }
+        catch(IllegalSetOfNextPlayerException e ){
+            System.out.println("It was the last player, end of the turn");
+            System.out.println("it goes to draw state");
+            currentState = AdventureStatesTypes.DRAW;
+        }
 
 
     }

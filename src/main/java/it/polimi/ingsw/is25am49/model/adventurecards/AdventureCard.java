@@ -54,7 +54,7 @@ public abstract class AdventureCard {
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
-    public void landingOnPlanet() throws IllegalMethodOnThisStateException{
+    public void landingOnPlanet(boolean isLanded) throws IllegalMethodOnThisStateException{
         if(currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }

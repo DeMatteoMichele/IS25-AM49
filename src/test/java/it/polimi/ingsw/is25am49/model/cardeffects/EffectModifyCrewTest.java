@@ -29,7 +29,7 @@ class EffectModifyCrewTest {
     Point coordinate = new Point(6, 7);
     Point coordinate2 = new Point(7, 8);
     CardEffect cardEffect;
-    ArrayList<Pair<Point,Token>> coordinates;
+    List<Pair<Point,Token>> coordinates;
 
     @BeforeEach
     void init(){
@@ -40,12 +40,12 @@ class EffectModifyCrewTest {
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate2,Token.BROWN_ALIENS));
-
+        player.setShipBoard(shipBoard);
         component = new ContainerComponent(ComponentType.CABINE, 5);
         component2 = new ContainerComponent(ComponentType.BROWN_ALIEN_MODULE, 2);
         tile = new Tile(3, component );
         tile2 = new Tile(3, component2);
-        player.getShipBoard().insertTile(coordinate, tile);
+        shipBoard.insertTile(coordinate, tile);
         player.getShipBoard().insertTile(coordinate2, tile2);
         player.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);

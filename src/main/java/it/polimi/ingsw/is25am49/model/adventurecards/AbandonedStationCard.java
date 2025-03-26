@@ -3,6 +3,8 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
+import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyEnergy;
+import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
@@ -19,10 +21,11 @@ import java.util.Set;
 public class AbandonedStationCard extends AdventureCard {
     protected final ArrayList<Token> Prize = new ArrayList<>();
 
-    public AbandonedStationCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int lostAstronauts){
+
+    public AbandonedStationCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int minimumAstronauts, int redGoods,int yellowGoods,int greenGoods, int blueGoods ){
         super(gameBoard,description,daysLost,level,creditsEarned);
-        this.lostAstronauts = lostAstronauts;
-        listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
+        this.lostAstronauts = minimumAstronauts;
+        listEffects.add(new EffectWinGoods("Win goods", redGoods, yellowGoods, greenGoods, blueGoods));
     }
 
     @Override
@@ -73,9 +76,10 @@ public class AbandonedStationCard extends AdventureCard {
         super.landingOnStationOrShip(IsLanded);
         if(IsLanded){
             System.out.println("You have landed on A station");
-            System.out.println("Nw you have to decide where you want to add your win goods and which ones");
+            System.out.println("Now you have to decide where you want to add your win goods and which ones");
             currentState= AdventureStatesTypes.DECISION_GOODS;
             currentEffect = listEffects.getFirst();
+
         }
         else{
             System.out.println("You have decided not to land on the station ");
@@ -105,8 +109,9 @@ public class AbandonedStationCard extends AdventureCard {
             case DECISION_GOODS -> {
                 System.out.println("You have decided your goods to add ");
                 currentEffect.setListOfCoordinates(coordinates);
-                applyEffect();
                 currentState = AdventureStatesTypes.EFFECT;
+                applyEffect();
+
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");
         }
@@ -118,9 +123,9 @@ public class AbandonedStationCard extends AdventureCard {
         //applico l'effetto, aggiorno il player con i giorni persi
         //vado nello stato update dove verrà aggiornata la leaderboard
         Player player = gameBoard.getCurrentPlayer();
-        System.out.println("You are winning goods but you lost" + daysLost + "travel days");
+        System.out.println("You are winning goods but you lost " + daysLost + " travel days");
         currentEffect.action(player);
-        player.setDaysThisTurn(daysLost);
+        player.setDaysThisTurn(-daysLost);
         currentState = AdventureStatesTypes.UPDATE;
 
     }

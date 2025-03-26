@@ -19,6 +19,9 @@ public abstract class CardEffect {
     //public abstract void setListOfCoordinates(List<Point> coordinates);
     public abstract void setListOfCoordinates(List<Pair<Point, Token>> coordinates);
     public abstract void setCoordinate(Point coordinate);
+    public List<Pair<Point,Token>> getCoordinates(){
+        return null;
+    };
 
 
 }
