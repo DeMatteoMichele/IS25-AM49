@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 
 
 public class ShipBoard {
-    private final HashMap<Point,Tile> grid;
+    private final HashMap<Point,Optional<Tile>> grid;
     private Point lastPlacedPoint;
     private boolean isCompleted;
     private int destroyedTiles;
@@ -50,8 +50,8 @@ public class ShipBoard {
                         ObjectMapper objectMapper = new ObjectMapper();
                         Set<Point> points= objectMapper.readValue(file, new TypeReference<Set<Point>>(){});
 
-                        for(Point p:points){grid.put(p,new Tile());}
-                        grid.put(new Point(7,7),centerCabinTile);
+                        for(Point p:points){grid.put(p,Optional.empty());}
+                        grid.put(new Point(7,7),Optional.of(centerCabinTile));
                         //this.printShipboard();
                     }
                 }catch (FileNotFoundException e) {
@@ -66,8 +66,8 @@ public class ShipBoard {
                     File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_two_config.json");
                     Set<Point> points= objectMapper.readValue(file,new TypeReference<Set<Point>>(){});
 
-                    for(Point p:points){grid.put(p,new Tile());}
-                    grid.put(new Point(7,7),centerCabinTile);
+                    for(Point p:points){grid.put(p,Optional.empty());}
+                    grid.put(new Point(7,7),Optional.of(centerCabinTile));
                     //this.printShipboard();
 
                 }catch (FileNotFoundException e) {
@@ -79,7 +79,7 @@ public class ShipBoard {
         }
     }
     public void lockLastTile(){
-        grid.get(lastPlacedPoint).lockTile();
+        grid.get(lastPlacedPoint).ifPresent(Tile::lockTile);
     }
     public Point getLastPlacedPoint() {return lastPlacedPoint;}
     public boolean isCompleted() {return isCompleted;}
@@ -89,28 +89,29 @@ public class ShipBoard {
     public int getDestroyedTiles() {return destroyedTiles;}
     public void addDestroyedTiles(int n) {this.destroyedTiles += n;}
 
-    public boolean checkValidCoordinates(Point coordinates) {
-        return grid.containsKey(coordinates);
-    }
     public boolean connectorsMatch(ConnectorType c1, ConnectorType c2){
         if( c1.equals(ConnectorType.UNIVERSAL) || c2.equals(ConnectorType.UNIVERSAL))return true;
         if (c1.equals(ConnectorType.FLAT) || c2.equals(ConnectorType.FLAT))return false;
         return c1.equals(c2);
     }
+
+    /**
+     * returns the Tile at given coordinates if present
+     * @param coordinates of the desired Tile
+     * @return Tile
+     */
     public Tile getTile(Point coordinates){
-        if(checkValidCoordinates(coordinates)){
-            return grid.get(coordinates);
-        } else {
-            throw new InvalidCoordinatesException("there is no tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
-        }
+        if(grid.containsKey(coordinates)) {
+            return grid.get(coordinates).orElseThrow(()-> new InvalidCoordinatesException("tile is empty"));
+        }else throw new InvalidCoordinatesException("out of shipboard");
     }
     //TODO non sono sicuro servano
     public boolean checkTileIsActive(Point coordinates){return false; }
     public void turnOnTile(Point coordinates){}
     public void turnOffTile(Point coordinates){}
 
-    //metodo che restituisce il punto della nave  più esterno in una determinata posizione
-    private Optional<Point> getExternalTilePoint(int position, Orientation orientation){
+    //metodo che restituisce il punto della nave più esterno in una determinata posizione
+    private Optional<Point> getExternalPoint(int position, Orientation orientation){
         return switch (orientation) {
             case NORTH -> grid.keySet().stream()
                     .filter((Point p) -> p.x == position)
@@ -126,28 +127,51 @@ public class ShipBoard {
                     .min(Comparator.comparing(p -> p.x));
         };
     }
-    //metodo che restituisce la tesserao della nave  più esterna in una determinata posizione
+    //metodo che restituisce la tessera della nave più esterna in una determinata posizione
     public Optional<Tile> getExternalTile(int position, Orientation orientation){
-        return getExternalTilePoint(position,orientation).flatMap(point -> Optional.ofNullable(grid.get(point)));
+        return getExternalPoint(position,orientation).flatMap(grid::get);
     }
-    //se inserisco una Tile nella nave aggiorno lastPlacedPoint
-    public void insertTile(Point coordinates, Tile tile) throws InvalidCoordinatesException {
-        if(checkValidCoordinates(coordinates)){
-            grid.put(coordinates, tile);
-            lastPlacedPoint=coordinates;
-        } else {
-            throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+
+    /**
+     * inserts a tile in the ShipBoard if the coordinates are free
+     * @param coordinates indicating where to place the Tile
+     * @param tile to place in the SipBoard
+     */
+    public void insertTile(Point coordinates, Tile tile) {
+        if(grid.containsKey(coordinates)){
+            if(grid.get(coordinates).isEmpty()){
+                grid.put(coordinates, Optional.of(tile));
+                lastPlacedPoint=coordinates;
+            }else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> tile already present");
+        } else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+    }
+
+    /**
+     * removes the tile at given coordinates from the SipBoard if present
+     * @param coordinates of the Tile to remove
+     * @return the removed Tile
+     */
+    public Tile removeTile(Point coordinates){
+        try{
+            Tile t = getTile(coordinates);
+            if (!t.isLocked()){
+                grid.remove(coordinates);
+                return t;
+            }
+            else throw new InvalidCoordinatesException("cannot REMOVE a tile i<" + coordinates.x + "," + coordinates.y + "> --> tile is locked");
+        } catch (InvalidCoordinatesException e) {
+            throw new InvalidCoordinatesException("cannot REMOVE a tile in point<" + coordinates.x + "," + coordinates.y + "> --> "+e.getMessage());
         }
     }
-    public Tile removeTile(Point coordinates){
-        if(checkValidCoordinates(coordinates)){
-            if (grid.get(coordinates).isLocked()) return grid.remove(coordinates);
-            else throw new InvalidCoordinatesException("cannot REMOVE a tile i<" + coordinates.x + "," + coordinates.y + "> --> tile is LOKED");
-        }throw new InvalidCoordinatesException("cannot REMOVE a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
-    }
+
+    /**
+     * Destroy a Tile in the ShipBoard
+     * removes the tile at given coordinates from the map and increase destroyedTiles attribute
+     * @param coordinates of the Tile to Destroy
+     */
     public void destroyTile(Point coordinates){
-        if(checkValidCoordinates(coordinates)){
-            destroyedTiles++;
+        if(grid.containsKey(coordinates)){
+            if(grid.get(coordinates).isPresent()) destroyedTiles++;
             grid.remove(coordinates);
         } else {
             throw new InvalidCoordinatesException("cannot DESTROY a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
@@ -159,31 +183,38 @@ public class ShipBoard {
     }
     //public void lockTile(Point coordinates){} secondo me non serve
 
-    //restituisce il numero di connettori che matchano in una tessera
-    public int checkTileConnectors(Point p){
-        int n=0;
-        Tile t;
-        try{
-            t= this.getTile(new Point(p.x,p.y+1));
-            if(connectorsMatch(grid.get(p).getConnector(0),t.getConnector(2))) n++;
-        }
-        catch (InvalidCoordinatesException _){}
-        try{
-            t= this.getTile(new Point(p.x+1,p.y));
-            if(connectorsMatch(grid.get(p).getConnector(1),t.getConnector(3))) n++;
-        }
-        catch (InvalidCoordinatesException _){}
-        try{
-            t= this.getTile(new Point(p.x,p.y-1));
-            if(connectorsMatch(grid.get(p).getConnector(2),t.getConnector(0))) n++;
-        }
-        catch (InvalidCoordinatesException _){}
-        try{
-            t= this.getTile(new Point(p.x-1,p.y));
-            if(connectorsMatch(grid.get(p).getConnector(3),t.getConnector(1))) n++;
-        }
-        catch (InvalidCoordinatesException _){}
-        return n;
+    /**
+     * check all four sides of the Tile and returns the number of matching connectors,
+     * @param point of the Tile in the ShipBoard
+     * @return Integer indicating the number of Tiles correctly connected to the one in given point
+     */
+    public int checkTileConnectors(Point point){
+        try {
+            Tile centerTile = getTile(point);
+            Tile sideTile;
+            int n = 0;
+            try {
+                sideTile = this.getTile(new Point(point.x, point.y + 1));
+                if (connectorsMatch(centerTile.getConnector(0), sideTile.getConnector(2))) n++;
+            } catch (InvalidCoordinatesException _) {
+            }
+            try {
+                sideTile = this.getTile(new Point(point.x + 1, point.y));
+                if (connectorsMatch(centerTile.getConnector(1), sideTile.getConnector(3))) n++;
+            } catch (InvalidCoordinatesException _) {
+            }
+            try {
+                sideTile = this.getTile(new Point(point.x, point.y - 1));
+                if (connectorsMatch(centerTile.getConnector(2), sideTile.getConnector(0))) n++;
+            } catch (InvalidCoordinatesException _) {
+            }
+            try {
+                sideTile = this.getTile(new Point(point.x - 1, point.y));
+                if (connectorsMatch(centerTile.getConnector(3), sideTile.getConnector(1))) n++;
+            } catch (InvalidCoordinatesException _) {
+            }
+            return n;
+        }catch (InvalidCoordinatesException _) {return 0;}
     }
     public void checkTileConnectorsCascade(Point point){
         //TODO non so se vale la pena implementarla
@@ -194,12 +225,12 @@ public class ShipBoard {
         Set<Point> external = new HashSet<>();
         //TODO sistema non trovo tutte le tessere che mi servono
         for (int i = 4; i <= 10; i++) {
-            this.getExternalTilePoint(i,Orientation.NORTH).ifPresent(external::add);
-            this.getExternalTilePoint(i,Orientation.SOUTH).ifPresent(external::add);
+            this.getExternalPoint(i,Orientation.NORTH).ifPresent(external::add);
+            this.getExternalPoint(i,Orientation.SOUTH).ifPresent(external::add);
         }
         for (int i = 5; i <=9 ; i++) {
-            this.getExternalTilePoint(i,Orientation.EAST).ifPresent(external::add);
-            this.getExternalTilePoint(i,Orientation.WEST).ifPresent(external::add);
+            this.getExternalPoint(i,Orientation.EAST).ifPresent(external::add);
+            this.getExternalPoint(i,Orientation.WEST).ifPresent(external::add);
         }
 
         int exposedConnectors=0;
@@ -208,89 +239,163 @@ public class ShipBoard {
         }
         return exposedConnectors;
     }
+
+    /**
+     * adds the given token to the container in the Tile
+     * @param coordinates of the container
+     * @param token to add
+     */
     public void addTokenToTile(Point coordinates, Token  token){
-        if(checkValidCoordinates(coordinates)) {
+        try{
+            Tile t= getTile(coordinates);
             try {
-                grid.get(coordinates).addToken(token);
+                t.addToken(token);
             } catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
                      IllegalMethodOnThisComponentException e) {
-                System.out.println("cannot add " + token + " to " + grid.get(coordinates).getComponent().getType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
+                System.out.println("cannot add " + token + " to " + t.getComponentType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
             }
-        }else throw new InvalidCoordinatesException("cannot add "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot add "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+ e.getMessage());
+        }
+
     }
+
+    /**
+     * fills container in the Tile with the given token
+     * @param coordinates of the container
+     * @param token to fill the container with
+     */
     public void fillTileComponent(Point coordinates, Token token){
-        if(checkValidCoordinates(coordinates)) {
-            try{grid.get(coordinates).fillComponent(token);}
-            catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e){
-                System.out.println("cannot fill " + grid.get(coordinates).getComponent().getType() + " with token " + token + ": " + e.getMessage());
+        try {
+            Tile t=getTile(coordinates);
+            try {
+                t.fillComponent(token);
+            } catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e) {
+                System.out.println("cannot fill " + t.getComponentType() + " with token " + token + ": " + e.getMessage());
             }
-        }else throw new InvalidCoordinatesException("cannot FILL point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+        }catch (InvalidCoordinatesException e) {
+            throw new InvalidCoordinatesException("cannot FILL point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
+        }
     }
-    //method to remove a specific token from a tile
+    /**
+     * removes the given token from the container in the Tile
+     * @param coordinates of the container
+     * @param token to remove
+     */
     public void removeTokenFromTile(Point coordinates, Token token){
-        if(checkValidCoordinates(coordinates)) {
-            try{grid.get(coordinates).removeToken(token);}
+        try{
+            Tile t=getTile(coordinates);
+            try{t.removeToken(token);}
             catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
                    IllegalMethodOnThisComponentException e) {
-                System.out.println("cannot remove "+token+" from " + grid.get(coordinates).getComponent().getType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
+                System.out.println("cannot remove "+token+" from " + t.getComponentType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
             }
-        }else throw new InvalidCoordinatesException("cannot ADD "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot ADD "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+e.getMessage());
+        }
     }
 
-    //method to consume a token of a tile (BATTERY)
+
+
+    /**
+     * //method to consume a token of a tile (BATTERY)
+     * @param donator point of the battery
+     */
     private void consumeComponentToken(Point donator){
-        if(checkValidCoordinates(donator)) {
-            if(grid.get(donator).getComponent().getType().equals(ComponentType.BATTERY)) {
+        try{
+            Tile t=getTile(donator);
+            if(t.getComponentType().equals(ComponentType.BATTERY)) {
                 try {
-                    grid.get(donator).removeToken();
+                    t.removeToken();
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("not enough BATTERY in " + grid.get(donator).getComponent().getType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
+                    System.out.println("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
                 }
-            }else throw new IllegalMethodOnThisComponentException("cannot donate a BATTERY" + grid.get(donator).getComponent().getType() + " point<" + donator.x + "," + donator.y+">");
-        }else throw new InvalidCoordinatesException("cannot use a Battery from point<" + donator.x + "," + donator.y + "> --> out of shipboard");
+            }else throw new IllegalMethodOnThisComponentException("cannot donate a BATTERY from" + t.getComponentType() + " point<" + donator.x + "," + donator.y+">");
 
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot use a Battery from point<" + donator.x + "," + donator.y + "> --> "+e.getMessage());
+        }
     }
+    /**
+     * //method to turn on the component of a Tile
+     * @param coordinates of the Tile
+     */
     private void turnOnComponent(Point coordinates){
-        if(checkValidCoordinates(coordinates)) {
-            try{grid.get(coordinates).turnOn();}
+        try{
+            Tile t=getTile(coordinates);
+            try{t.turnOn();}
             catch(IllegalMethodOnThisComponentException e){
-                System.out.println("cannot turn on " + grid.get(coordinates).getComponent().getType()+ " point<"+coordinates.x+","+coordinates.y+">\n"+e);
+                System.out.println("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
             }
-        }else throw new InvalidCoordinatesException("cannot turn ON " + grid.get(coordinates).getComponent().getType()+ " point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot turn ON point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
+        }
     }
-    //metodo che rimuove una batteria dal donator e attiva coordinates
+
+    /**
+     * activate the component in the Tile (coordinates) using a battery from Tile(donator)
+     * @param coordinates of the container
+     * @param donator point of the battery
+     */
     public void turnOnComponent(Point coordinates, Point donator){
         turnOnComponent(coordinates);
         consumeComponentToken(donator);
     }
+    /**
+     * //method to turn off the component of a Tile
+     * @param coordinates of the Tile
+     */
     public void turnOff(Point coordinates){
-        if(checkValidCoordinates(coordinates)) {
-            grid.get(coordinates).turnOff();
-        }else throw new InvalidCoordinatesException("cannot turn OFF " + grid.get(coordinates).getComponent().getType()+ " point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+        try{
+            Tile t=getTile(coordinates);
+            try{t.turnOff();}
+            catch(IllegalMethodOnThisComponentException e){
+                System.out.println("cannot turn off " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+            }
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot turn OFF point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
+        }
     }
+
+    /**
+     * get the position of the components to activate
+     * @param type to activate
+     * @return a list of points of activatable components with the given type
+     */
     public ArrayList<Point> getActivatableComponents(ComponentType type){
         if(type.equals(ComponentType.DOUBLE_CANNON) || type.equals(ComponentType.DOUBLE_ENGINE) || type.equals(ComponentType.SHIELD)){
             return grid.entrySet()
                     .stream()
-                    .filter(entry -> entry.getValue().getComponent().getType().equals(type))
+                    .filter(entry -> entry.getValue().isPresent())
+                    .filter(entry -> entry.getValue().get().getComponentType().equals(type))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toCollection(ArrayList::new));
         }else throw new IllegalMethodOnThisComponentException("cannot get activatable components of type " + type);
     }
 
+    /**
+     * get the total firepower of the ShipBoard
+     * @return a double that represent the firepower of the shipboard
+     */
     public double getTotalFirePower(){
         return grid.values()
                 .stream()
-                .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.CANNON)
-                        || (t.getComponent().getType().equals(ComponentType.DOUBLE_CANNON) && t.getComponent().getIsActive()))
+                .flatMap(Optional::stream)
+                .filter((Tile t) -> t.getComponentType().equals(ComponentType.CANNON)
+                        || (t.getComponentType().equals(ComponentType.DOUBLE_CANNON) && t.getComponent().getIsActive()))
                 .mapToDouble(Tile::getFirePower)
                 .sum();
     }
+    /**
+     * get the total engine power of the ShipBoard
+     * @return a double that represent the engine power of the shipboard
+     */
     public int getEnginePower(){
         return grid.values()
                 .stream()
-                .filter((Tile t) -> t.getComponent().getType().equals(ComponentType.ENGINE)
-                        || (t.getComponent().getType().equals(ComponentType.DOUBLE_ENGINE) && t.getComponent().getIsActive()))
+                .flatMap(Optional::stream)
+                .filter((Tile t) -> t.getComponentType().equals(ComponentType.ENGINE)
+                        || (t.getComponentType().equals(ComponentType.DOUBLE_ENGINE) && t.getComponent().getIsActive()))
                 .mapToInt(t->t.getComponent().getLevel())
                 .sum();
     }
@@ -300,14 +405,15 @@ public class ShipBoard {
     }
     public ArrayList<Point> getPositionsOfaToken(Token token){
         return grid.entrySet().stream()
-                .filter(entry -> entry.getValue().getNumberOfaToken(token)>0)
-                .flatMap(entry -> IntStream.range(0, entry.getValue().getNumberOfaToken(token))
+                .filter(entry -> entry.getValue().isPresent())
+                .filter(entry -> entry.getValue().get().getNumberOfaToken(token)>0)
+                .flatMap(entry -> IntStream.range(0, entry.getValue().get().getNumberOfaToken(token))
                         .mapToObj(i -> entry.getKey()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
     public void removeAllTokens(){
-        for (Tile t: grid.values()){
-            try{t.clearComponent();}
+        for (Optional<Tile> t: grid.values()){
+            try{t.ifPresent(Tile::clearComponent);}
             catch (IllegalMethodOnThisComponentException _){}
         }
     }
@@ -317,9 +423,10 @@ public class ShipBoard {
         Set<Orientation> sides= new HashSet<>();
         ArrayList<Point> shields= this.getActivatableComponents(ComponentType.SHIELD);
         for(Point p: shields){
+            Tile t= getTile(p);
             if(sides.size()==4)break;
-            if(grid.get(p).isActive()) {
-                switch (grid.get(p).getTileOrientation()) {
+            if(t.isActive()) {
+                switch (t.getTileOrientation()) {
                     case NORTH -> {
                         sides.add(Orientation.NORTH);
                         sides.add(Orientation.EAST);
@@ -353,7 +460,7 @@ public class ShipBoard {
             for (int j = 4; j <=10 ; j++) {
                 if(j==4) System.out.print(i+"\t");
                 var p= new Point(j,i);
-                if(grid.containsKey(p)) System.out.print(grid.get(p).getIdTile()+"\t");
+                if(grid.containsKey(p) && grid.get(p).isPresent()) System.out.print(grid.get(p).get().getIdTile()+"\t");
                 else System.out.print("•\t");
             }
             System.out.print(i+"\n");
@@ -371,8 +478,8 @@ public class ShipBoard {
                     else if (j==4) System.out.print("\t");
 
                     var p = new Point(j, i);
-                    if (grid.containsKey(p)){
-                        var t= grid.get(p);
+                    if (grid.containsKey(p) && grid.get(p).isPresent()){
+                        var t= grid.get(p).get();
                         if(row==0) {
                             System.out.print("\uD83D\uDFE6\t");
                             printConnector(t.getConnector(Orientation.NORTH));
@@ -388,7 +495,12 @@ public class ShipBoard {
                             printConnector(t.getConnector(Orientation.SOUTH));
                             System.out.print("\uD83D\uDFE6\t");
                         }
-                    } else {
+                    } else if(grid.containsKey(p) && row==1){
+                        System.out.print("\uD83D\uDFE6\t");
+                        System.out.print("⬛\t");
+                        System.out.print("\uD83D\uDFE6\t");
+                    }
+                    else {
                         System.out.print("\uD83D\uDFE6\t");
                         System.out.print("\uD83D\uDFE6\t");
                         System.out.print("\uD83D\uDFE6\t");

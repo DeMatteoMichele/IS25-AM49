@@ -6,12 +6,14 @@ import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalNumOfCannonsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -38,49 +40,59 @@ public class SmugglerCard extends AdventureCard {
     @Override
     public void checkRequirements() {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
-        if (checkFirePower(shipBoard)) {
+        if (checkWinFirePower(shipBoard)) {
             System.out.println("You have enough fire power to defeat the smugglers! Choose where you want to put your new goods");
             currentEffect = listEffects.getFirst(); //the curreffect is wingoods
             currentState = AdventureStatesTypes.DECISION_GOODS;
         } else {
-            if(canDefeatUsingBatteries(shipBoard)){
-                System.out.println("You have enough batteries to defeat the smugglers! Choose what batteries do you want to use");
+            if(canDefeatOrDrawOnlyUsingBatteries(shipBoard)){
+                System.out.println("You have enough batteries to defeat/draw with the smugglers! Choose what batteries do you want to use");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
             }
             else {
-                System.out.println("You don't have enough fire power nor batteries to defeat the smugglers! You have to decide where you want to remove them");
-                currentEffect = listEffects.get(1); //lose goods effect
-                currentState = AdventureStatesTypes.DECISION_GOODS;
-
+                if(checkDrawFirePower(shipBoard)){
+                    secondCheck(shipBoard);
+                }
+                else {
+                    System.out.println("You don't have enough fire power (standard + additional) to defeat the smugglers! You have to decide where you want to remove the goods");
+                    currentEffect = listEffects.get(1); //lose goods effect
+                    currentState = AdventureStatesTypes.DECISION_GOODS;
+                }
             }
         }
-
     }
 
-    private boolean canDefeatUsingBatteries(ShipBoard shipBoard) {
-        int numBatteries = shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS);
-        List<Point> activatableCannons = shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON);
-        double firePowerUserCanActivateWithBatteries = activatableCannons.stream()
-                .mapToDouble(point -> shipBoard.getTile(point).getFirePower())
-                .sorted()
-                .limit(numBatteries)
+    private boolean canDefeatOrDrawOnlyUsingBatteries(ShipBoard shipBoard) {
+        double firePowerUserCanActivateWithBatteries = shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON)
+                .stream()
+                .map(point -> shipBoard.getTile(point).getFirePower())
+                .sorted(Comparator.reverseOrder())
+                .limit(shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS))
+                .mapToDouble(Double::doubleValue)
                 .sum();
-        return ((shipBoard.getTotalFirePower() + firePowerUserCanActivateWithBatteries) > minimumFirePower);
+        return (((shipBoard.getTotalFirePower() + firePowerUserCanActivateWithBatteries) >= minimumFirePower)
+                &&
+                ((shipBoard.getTotalFirePower() < minimumFirePower)));
     }
 
-    private boolean checkFirePower(ShipBoard shipBoard) {
+    private boolean checkWinFirePower(ShipBoard shipBoard) {
         double totalFirePower = shipBoard.getTotalFirePower();
         return totalFirePower > minimumFirePower;
     }
 
+    private boolean checkDrawFirePower(ShipBoard shipBoard) {
+        double totalFirePower = shipBoard.getTotalFirePower();
+        return totalFirePower == minimumFirePower;
+    }
+
     private void secondCheck(ShipBoard shipBoard){
         double totalFirePower = shipBoard.getTotalFirePower();
-        if (totalFirePower > minimumFirePower) {
+        if (checkWinFirePower(shipBoard)) {
             System.out.println("You have now more firepower to defeat the smugglers! Choose where you want to put your new goods");
             currentEffect = listEffects.getFirst(); //the curreffect is wingoods
             currentState = AdventureStatesTypes.DECISION_GOODS;
-        } else if(totalFirePower == minimumFirePower) {
-            System.out.println("Now you have drawn with the smugglers!");
+        } else if(checkDrawFirePower(shipBoard)) {
+            System.out.println("You have drawn with the smugglers!");
             try {
                 gameBoard.nextPlayer();
                 System.out.println("Now check on next player");
@@ -103,12 +115,17 @@ public class SmugglerCard extends AdventureCard {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
             case DECISION_BATTERIES -> {
-                System.out.println("You have decided the coord for the batteries. Now decide which cannons");
                 coordinatesOfBatteries = coordinates;
+                if(coordinatesOfBatteries.isEmpty()){
+                    System.out.println("You have decided not to use batteries");
+                    secondCheck(shipBoard);
+                    return;
+                }
+                System.out.println("You have decided the coord for the batteries. Now decide which cannons");
                 currentState= AdventureStatesTypes.DECISION_CANNON;
             }
             case DECISION_GOODS -> {
-                System.out.println("you have decided the coord for the goods");
+                System.out.println("You have decided the coord for the goods");
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
@@ -118,17 +135,19 @@ public class SmugglerCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(Set<Point> coordinates) {
+    public void finishDecision(Set<Point> coordinates) throws IllegalNumOfCannonsException {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         List<Point> coordinatesOfCannons = new ArrayList<>(coordinates);
         switch (currentState) {
             case DECISION_CANNON -> {
+                if (coordinatesOfCannons.size() > coordinatesOfBatteries.size()) {
+                    throw new IllegalNumOfCannonsException("You have to choose at max the same number of cannons as batteries");
+                }
                 System.out.println("You have decided the coord for the cannons");
                 for (int i=0; i<coordinatesOfBatteries.size(); i++) {
                     shipBoard.turnOnComponent(coordinatesOfCannons.get(i), coordinatesOfBatteries.get(i).getKey());
                 }
-                currentState = AdventureStatesTypes.EFFECT;
-                applyEffect();
+                secondCheck(shipBoard);
             }
             default -> throw new IllegalArgumentException("Invalid state: " + currentState);
         }

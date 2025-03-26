@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.model.exceptions.FinishDeckExceptions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 public class AdventureCardDeck {
@@ -39,5 +40,8 @@ public class AdventureCardDeck {
     }
     public int size() {
         return deck.size();
+    }
+    public Stream<AdventureCard> stream() {
+        return deck.stream();
     }
 }

@@ -81,9 +81,16 @@ public class Game {
         player.lockLastTile();
         player.setHandTile(board.drawTile(idTile));
     }
-    public void userFinishShipboard(Player player){ board.userFinishShipboard(player);}
+    public boolean userFinishShipboard(Player player){ return board.userFinishShipboard(player) == players.size();}
     public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}
     public void adminSelectTypeFlight(FlightMode flightMode){
         board.setFlightMode(flightMode);
+    }
+    public void userStopLookSmallAdventureCardDeck(Player player, Integer index){ board.userStopLookSmallAdventureCardDeck(player, index);}
+    public void addPlayersToLeaderBoard(){
+        players.forEach(p -> board.addPlayerToLeaderboard(0, p));
+    }
+    public void mergeSmallDecks(){
+        board.mergeDecks();
     }
 }
