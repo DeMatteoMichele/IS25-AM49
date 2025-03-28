@@ -7,7 +7,6 @@ import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,7 +53,6 @@ public class Tile {
         this.isLocked= false;
         this.isCovered= true;
     }
-
     public int getIdTile() {
         return idTile;
     }
@@ -62,6 +60,7 @@ public class Tile {
         return component;
     }
     public ComponentType getComponentType() {return component.getType();}
+
     public void addToken(Token token){component.addToken(token);}
     public void removeToken(Token token) {component.removeToken(token);}
     public void removeToken(){component.removeToken();}
@@ -72,10 +71,29 @@ public class Tile {
         try{return component.getNumberOfaToken(token);}
         catch (IllegalMethodOnThisComponentException _){return 0;}
     }
-    //TODO mancano check exception
-    public void turnOn(){component.turnOn();}
-    public void turnOff() {component.turnOff();}
-    public boolean isActive(){return component.getIsActive();}
+
+    public void turnOn(){
+        try {
+            component.turnOn();
+        }catch (IllegalMethodOnThisComponentException e){
+            System.out.println("cannot turn on "+component.type+" --> "+e.getMessage());
+        }
+    }
+    public void turnOff() {
+        try {
+            component.turnOff();
+        }catch (IllegalMethodOnThisComponentException e){
+            System.out.println("cannot turn off "+component.type+" --> "+e.getMessage());
+        }
+    }
+    public boolean isActive(){
+        try {
+            return component.getIsActive();
+        }catch (IllegalMethodOnThisComponentException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 
     //this method rotates the map of connector to match the component orientation, using the Juggling algorithm
     public void setTileOrientation(Orientation tileOrientation) {
@@ -138,7 +156,6 @@ public class Tile {
         connectors.put(2,c3);
         connectors.put(3,c4);
     }
-
     public ConnectorType getConnector(Orientation orientation){
         return connectors.get(orientation.ordinal());
     }
@@ -146,13 +163,9 @@ public class Tile {
         return connectors.get(index);
     }
 
-    //restituisce la potenza di fuoco di un cannone, non verifica che sia acceso (controllo da fare sopra)
-    public double getFirePower(){
-        if(component.getType().equals(ComponentType.DOUBLE_CANNON)||component.getType().equals(ComponentType.CANNON))
-        return tileOrientation.equals(Orientation.NORTH)?this.getComponent().level:this.getComponent().level*0.5;
-        else return 0;
-    }
-
+    //restituisce la potenza di fuoco di un cannone, verifica che sia acceso
+    public double getFirePower(){return component.getFirePower()*(tileOrientation.equals(Orientation.NORTH)?1:0.5);}
+    public int getEnginePower(){return component.getEnginePower();}
 
     public static Map<Integer,Tile> generateTiles(){
         try{
@@ -179,6 +192,7 @@ public class Tile {
                             break;
                         case DOUBLE_CANNON,DOUBLE_ENGINE,SHIELD:
                             component= new SpecialComponent(type,level);
+                            break;
                         default:
                             component= new ContainerComponent(type,level);
                     }

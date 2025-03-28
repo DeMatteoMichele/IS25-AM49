@@ -6,7 +6,7 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentExc
 
 import java.util.ArrayList;
 
-public class BasicComponent extends Component {
+public final class BasicComponent extends Component {
 
     public BasicComponent(ComponentType type, int level) {
         super(type, level);
