@@ -18,10 +18,7 @@ public class WarZoneCard extends AdventureCard {
     public void checkRequirements() {
     }
 
-//    @Override
-//    public void askForDecision(Player player) {
-//
-//    }
+
 
     @Override
     public void applyEffect() {

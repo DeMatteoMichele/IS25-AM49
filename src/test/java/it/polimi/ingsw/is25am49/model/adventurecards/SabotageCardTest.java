@@ -1,13 +1,73 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
+import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.model.GameBoard;
+import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SabotageCardTest {
 
+    Player player1, player2, player3;
+    GameBoard gameBoard;
+    ShipBoard ship1,ship2,ship3;
+    AdventureCardDeck deck;
+    Component component1,component3;
+    Tile tile1,tile3;
+    Point coordinate1 = new Point(7,8);
+    Point coordinate3 = new Point(7,6);
+
+
+    @BeforeEach
+    public void init(){
+        gameBoard = new GameBoard();
+        player1 = new Player("pippo", Color.RED,2);
+        player2 = new Player("marco", Color.BLUE,3);
+        player3 = new Player("luca", Color.GREEN,4);
+        ship1 = new ShipBoard(1,2);
+        ship2 = new ShipBoard(1,3);
+        ship3 = new ShipBoard(1,4);
+        player1.setShipBoard(ship1);
+        player2.setShipBoard(ship2);
+        player3.setShipBoard(ship3);
+        component1 = new ContainerComponent(ComponentType.CABINE,6);
+        component3 = new ContainerComponent(ComponentType.CABINE,7);
+        tile1 = new Tile(2,component1);
+        tile3 = new Tile(3,component3);
+        player1.getShipBoard().insertTile(coordinate1,tile1);
+        player3.getShipBoard().insertTile(coordinate3,tile3);
+        player3.getShipBoard().addTokenToTile(coordinate3,Token.ASTRONAUT);
+        player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
+        gameBoard.addPlayerToLeaderboard(13,player1);
+        gameBoard.addPlayerToLeaderboard(15,player2);
+        gameBoard.addPlayerToLeaderboard(16,player3);
+        gameBoard.sortLeaderBoard();
+        deck = new AdventureCardDeck();
+        deck.add(new SabotageCard(gameBoard,"Sabotage Card",0,1,0));
+        gameBoard.setMainAdventureDeck(deck);
+
+    }
+
+
     @Test
     void drawCard() {
+        gameBoard.drawAdventureCard();
+        assertEquals("Sabotage Card",gameBoard.getCurrentCard().getDescription());
+        assertEquals(0,deck.size());
+        assertEquals(AdventureStatesTypes.DRAW,gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(player2,gameBoard.getCurrentPlayer());
     }
 
     @Test

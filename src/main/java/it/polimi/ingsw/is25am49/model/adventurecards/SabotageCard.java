@@ -33,24 +33,34 @@ public class SabotageCard extends AdventureCard {
         checkRequirements();
     }
 
+//    method to calculate the total crew of a player
+    private int getTotalCrew(Player p){
+        return p.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT)+
+                p.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS)+
+                p.getShipBoard().getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+    }
+
     @Override
     public void checkRequirements() {
-        //check which player has the lowest crew
-        int min = 0;
-        Player playerWithMinimumCrew = null;
-        for(Pair<Integer,Player> p : gameBoard.getLeaderBoard()){
-            int totalNumberOfCrew = p.getValue().getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT)+
-                    p.getValue().getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS)+
-                    p.getValue().getShipBoard().getTotalNumberOfaToken(Token.PURPLE_ALIENS);
-            if(totalNumberOfCrew< min){
-                min = totalNumberOfCrew;
-                playerWithMinimumCrew= p.getValue();
-            }
+        //con uno stream trovo il giocatore che ha meno equipaggio
+        Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
+                .map(Pair::getValue)
+                .min((p1, p2) -> Integer.compare(
+                        getTotalCrew(p1),
+                        getTotalCrew(p2)))
+                .orElse(gameBoard.getCurrentPlayer());
 
-        }
+        //debug per stampare per ogni giocatore il totale dell'equipaggio
+
+        gameBoard.getLeaderBoard().forEach(p ->
+        System.out.println(p.getValue().getUsername() + " " + getTotalCrew(p.getValue())));
+
+        //setto a current player del gameboard il giocatore con meno equipaggio
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
-        System.out.println("Player with the lowest crew is: " + gameBoard.getCurrentPlayer().toString() +"one of your components it will be destroyed");
+        System.out.println("Player with the lowest crew is: " + gameBoard.getCurrentPlayer().getUsername()+" one of your components it will be destroyed");
         System.out.println("you have to roll dices: ");
+
+        //passo a roll dices
         currentState=AdventureStatesTypes.ROLL_DICES;
         rollDices();
 
@@ -60,6 +70,7 @@ public class SabotageCard extends AdventureCard {
         if(currentState != AdventureStatesTypes.ROLL_DICES)
             throw new IllegalMethodOnThisStateException("Wrong state");
 
+        //se è pari lancio i dadi e setto la colonna da cui rimuovere il componente e poi rilancio i dadi
         if(diceRollCount%2==0){
             System.out.println("Roll the dices to determine the column of the component to be removed");
             diceRollCount++;
@@ -67,19 +78,20 @@ public class SabotageCard extends AdventureCard {
             int firstDice = random.nextInt(6) + 1;
             int secondDice = random.nextInt(6) + 1;
             dicesResult = firstDice + secondDice;
-            System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
+            System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
             column = dicesResult;
             rollDices();
 
         }
         else{
+            //se è dispari lancio i dadi e setto la riga da cui rimuovere il componente e passo a apply effect
             System.out.println("Roll the dices to determine the row of the component to be removed");
             diceRollCount++;
             Random random = new Random();
             int firstDice = random.nextInt(6) + 1;
             int secondDice = random.nextInt(6) + 1;
             dicesResult = firstDice + secondDice;
-            System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Result: " + dicesResult);
+            System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Row: " + dicesResult);
             row = dicesResult;
             currentState= AdventureStatesTypes.EFFECT;
             applyEffect();
@@ -90,8 +102,10 @@ public class SabotageCard extends AdventureCard {
 
     @Override
     public void applyEffect() {
+        //imposto le coordinate
         Point coordinate = new Point(row, column);
         try{
+            //rimuovo il componente, se non lancia eccezioni lo ho rimosso altrimenti catturo l'eccezione
             gameBoard.getCurrentPlayer().getShipBoard().destroyTile(coordinate);
             gameBoard.getCurrentPlayer().addLostComponents(1);
             System.out.println("The component at row: " + row + " and column: " + column + " has been destroyed");
@@ -101,11 +115,13 @@ public class SabotageCard extends AdventureCard {
         }
         catch (InvalidCoordinatesException e){
             System.out.println(e.getMessage());
-            if(diceRollCount == 5){
-                System.out.println("you hve rolled the dices 5 times, you have to stop");
+            //se ho lanciato i dadi 6 volte allora ho finito
+            if(diceRollCount == 6){
+                System.out.println("you have rolled the dices 6 times, you have to stop");
                 System.out.println("you've been lucky, neither one of your component has been destroyed");
                 currentState = AdventureStatesTypes.DRAW;
             }
+            //rilancio i dadi
             else {
                 System.out.println("You have to roll the dices again");
                 currentState=AdventureStatesTypes.ROLL_DICES;
