@@ -6,9 +6,11 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentExc
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
-public class ContainerComponent extends Component {
+public final class ContainerComponent extends Component {
     private final ArrayList<Token> tokens;
     public ContainerComponent(ComponentType type, int level) {
         super(type, level);
@@ -28,32 +30,37 @@ public class ContainerComponent extends Component {
 
     @Override
     public boolean checkIfTokenIsValid(Token token) {
-        switch (token){
-            case BATTERY_CELLS : return type.equals(ComponentType.BATTERY);
-            case ASTRONAUT: return type.equals(ComponentType.CABINE);
-            case PURPLE_ALIENS: return type.equals(ComponentType.PURPLE_ALIEN_MODULE);
-            case BROWN_ALIENS: return type.equals(ComponentType.BROWN_ALIEN_MODULE);
-            case RED_GOODS: return type.equals(ComponentType.SPECIAL_STORAGE);
-            default: return (type.equals(ComponentType.STORAGE) || (type.equals(ComponentType.SPECIAL_STORAGE)));
-        }
+        return switch (token) {
+            case BATTERY_CELLS -> type.equals(ComponentType.BATTERY);
+            case ASTRONAUT -> type.equals(ComponentType.CABINE);
+            case PURPLE_ALIENS -> type.equals(ComponentType.PURPLE_ALIEN_MODULE);
+            case BROWN_ALIENS -> type.equals(ComponentType.BROWN_ALIEN_MODULE);
+            case RED_GOODS -> type.equals(ComponentType.SPECIAL_STORAGE);
+            default -> (type.equals(ComponentType.STORAGE) || (type.equals(ComponentType.SPECIAL_STORAGE)));
+        };
     }
 
     @Override
     public void addToken(Token token) {
         if(!checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a " + type);
-        if (Objects.equals(level, tokens.size())) throw new ArrayIndexOutOfBoundsException("Cannot add tokens to "+type+", container is full! level: " +level + " elements: "+tokens.size());
+        else if (Objects.equals(level, tokens.size())){
+            if(type.equals(ComponentType.STORAGE)||type.equals(ComponentType.SPECIAL_STORAGE)) {
+                tokens.remove(Collections.max(tokens));
+                tokens.add(token);
+            }else throw new ArrayIndexOutOfBoundsException("Cannot add tokens to "+type+", container is full! level: " +level + " elements: "+tokens.size());
+        }
         else tokens.add(token);
     }
     @Override
     public void removeToken(Token token){
         if(!checkIfTokenIsValid(token))throw new IllegalTokenInComponentEcxeption("Cannot have a " + token + " in a " + type);
-        if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("ContainerComponent is empty!");
+        if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("container is empty!");
         if (tokens.contains(token)) tokens.remove(token);
         else throw new IllegalTokenInComponentEcxeption("Token: " + token + " is not in the container!");
     }
     @Override
     public void removeToken() {
-        if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("ContainerComponent is empty!");
+        if(tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("container is empty!");
         else tokens.removeLast();
     }
     @Override

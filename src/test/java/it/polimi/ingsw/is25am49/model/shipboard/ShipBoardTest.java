@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
@@ -30,6 +31,25 @@ class ShipBoardTest {
     }
 
     @Test
+   void testConnectorMatch(){
+        assertFalse(ship1.connectorsMatch(ConnectorType.FLAT,ConnectorType.FLAT));
+        assertFalse(ship1.connectorsMatch(ConnectorType.FLAT,ConnectorType.UNIVERSAL));
+        assertFalse(ship1.connectorsMatch(ConnectorType.SINGLE,ConnectorType.FLAT));
+        assertFalse(ship1.connectorsMatch(ConnectorType.DOUBLE,ConnectorType.SINGLE));
+        assertTrue(ship1.connectorsMatch(ConnectorType.DOUBLE,ConnectorType.DOUBLE));
+        assertTrue(ship1.connectorsMatch(ConnectorType.SINGLE,ConnectorType.SINGLE));
+        assertTrue(ship1.connectorsMatch(ConnectorType.UNIVERSAL,ConnectorType.DOUBLE));
+        assertTrue(ship1.connectorsMatch(ConnectorType.SINGLE,ConnectorType.UNIVERSAL));
+    }
+    @Test
+    void testGetTile() {
+        ship1.printShipboard();
+        assertEquals(11, ship1.getTile(new Point(5,9)).getIdTile());
+        assertEquals(151, ship1.getTile(new Point(7,6)).getIdTile());
+        assertThrows(InvalidCoordinatesException.class, ()->ship1.getTile(new Point(9,5)));
+        assertThrows(InvalidCoordinatesException.class, ()->ship1.getTile(new Point(6,6)));
+    }
+    @Test
     void insertTile() {
     }
 
@@ -50,7 +70,9 @@ class ShipBoardTest {
     }
 
     @Test
-    void checkTileConnectorsCascade() {
+    void testCheckTileConnectorsCascade() {
+        ship1.printShipboardSpecial();
+        System.out.println(ship1.getTilesConnectedTo(new Point(7,7)));
     }
 
     @Test
@@ -63,26 +85,23 @@ class ShipBoardTest {
         ship1.fillTileComponent(new Point(7,7), Token.RED_GOODS);
         ship1.fillTileComponent(new Point(7,7), Token.ASTRONAUT);
         ship1.addTokenToTile(new Point(7,7), Token.ASTRONAUT);
-        ship1.addTokenToTile(new Point(5,7), Token.ASTRONAUT);
-        ship1.fillTileComponent(new Point(5,7), Token.ASTRONAUT);
+
+        assertThrows(InvalidCoordinatesException.class, ()-> ship1.addTokenToTile(new Point(5,7), Token.ASTRONAUT));
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.addTokenToTile(new Point(4,5), Token.ASTRONAUT));
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.fillTileComponent(new Point(4,4), Token.ASTRONAUT));
-
+        assertThrows(InvalidCoordinatesException.class, ()-> ship1.fillTileComponent(new Point(5,7), Token.ASTRONAUT));
     }
 
     @Test
     void testRemoveTokenFromTile() {
         //ship1.printShipboardSpecial();
         ship1.removeTokenFromTile(new Point(7,7), Token.ASTRONAUT);
-        ship1.removeTokenFromTile(new Point(7,7), Token.BLUE_GOODS);
-        ship1.removeTokenFromTile(new Point(5,7), Token.ASTRONAUT);
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.removeTokenFromTile(new Point(4,5), Token.ASTRONAUT));
-        ship1.fillTileComponent(new Point(7,8),Token.YELLOW_GOODS);
-        ship1.addTokenToTile(new Point(7,8), Token.BLUE_GOODS);
-        ship1.removeTokenFromTile(new Point(7,8), Token.YELLOW_GOODS);
-        ship1.addTokenToTile(new Point(7,8), Token.BLUE_GOODS);
-        assertEquals(1, ship1.getTotalNumberOfaToken(Token.YELLOW_GOODS));
-        assertEquals(1, ship1.getTotalNumberOfaToken(Token.BLUE_GOODS));
+        assertThrows(InvalidCoordinatesException.class, ()-> ship1.removeTokenFromTile(new Point(5,7), Token.ASTRONAUT));
+        ship1.fillTileComponent(new Point(7,8),Token.BATTERY_CELLS);
+        ship1.removeTokenFromTile(new Point(7,8), Token.BLUE_GOODS);
+        ship1.removeTokenFromTile(new Point(7,8), Token.BATTERY_CELLS);
+        assertEquals(2, ship1.getTotalNumberOfaToken(Token.BATTERY_CELLS));
     }
 
     @Test
@@ -112,8 +131,14 @@ class ShipBoardTest {
     @Test
     void testGetProtectedSides() {
         Set<Orientation> sides = ship1.getProtectedSides();
-        System.out.println(sides);
         assertEquals(0,sides.size());
+        ship1.turnOnComponent(new Point(7,6), new Point(7,8));
+        assertEquals(0,sides.size());
+        ship1.fillTileComponent(new Point(7,8), Token.BATTERY_CELLS);
+        ship1.turnOnComponent(new Point(7,6), new Point(7,8));
+        sides = ship1.getProtectedSides();
+        System.out.println(sides);
+        assertEquals(2,sides.size());
     }
 
     @Test
@@ -158,6 +183,28 @@ class ShipBoardTest {
         ship1.afterBuildCheckShipboard();
         ship1.printShipboardSpecial();
         //System.out.println(ship1.getNumberOfExposedConnectors());
+    }
+
+    @Test
+    void testGetExternalPoints() {
+        ship1.printShipboardSpecial();
+        var externalPoints= ship1.getExternalPoints();
+        assertEquals(5,externalPoints.size());
+        System.out.println(externalPoints);
+
+        ship1.insertTile(new Point(8,7),ship1.removeTile(new Point(5,9)));
+        ship1.completeShipBoard();
+        ship1.printShipboardSpecial();
+        externalPoints= ship1.getExternalPoints();
+        assertEquals(4,externalPoints.size());
+        System.out.println(externalPoints);
+    }
+    @Test
+    void testConnectorsMatch() {
+    }
+
+    @Test
+    void testGetExposedPoint() {
     }
 
 

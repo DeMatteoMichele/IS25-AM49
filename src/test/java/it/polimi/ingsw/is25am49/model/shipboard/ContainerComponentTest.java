@@ -52,12 +52,12 @@ class ContainerComponentTest {
     void testInsertCorrectTokenToComponent(){
         cabin.addToken(Token.ASTRONAUT);
         assertEquals(Token.ASTRONAUT, cabin.getTokenList().getFirst());
-        int sNum= storage.getNumberOfTokens();
+        storage.fillComponent(Token.BLUE_GOODS);
         storage.addToken(Token.GREEN_GOODS);
         storage.addToken(Token.YELLOW_GOODS);
-        assertEquals(Token.GREEN_GOODS,storage.getTokenList().get(0));
-        assertEquals(Token.YELLOW_GOODS,storage.getTokenList().get(1));
-        assertEquals(sNum+2,storage.getNumberOfTokens());
+        assertEquals(Token.BLUE_GOODS,storage.getTokenList().get(0));
+        assertEquals(Token.YELLOW_GOODS,storage.getTokenList().get(2));
+        assertEquals(3,storage.getNumberOfTokens());
         specialStorage.addToken(Token.RED_GOODS);
         specialStorage.addToken(Token.GREEN_GOODS);
         assertEquals(Token.RED_GOODS, specialStorage.getTokenList().getFirst());
@@ -89,7 +89,7 @@ class ContainerComponentTest {
         assertThrows(IllegalTokenInComponentEcxeption.class, ()-> battery.removeToken(Token.ASTRONAUT));
         assertThrows(IndexOutOfBoundsException.class, ()-> alienModule.removeToken());
         assertThrows(IndexOutOfBoundsException.class, ()-> alienModule.removeToken(Token.BROWN_ALIENS));
-        assertThrows(IndexOutOfBoundsException.class, ()-> alienModule.removeToken(Token.BLUE_GOODS));
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> alienModule.removeToken(Token.BLUE_GOODS));
     }
     @Test
     void testRemoveToken() {
@@ -100,7 +100,7 @@ class ContainerComponentTest {
     @Test
     void testGetNumberOfToken() {
         assertEquals(battery.getNumberOfTokens(),battery.getTokenList().size());
-        assertEquals(cabin.getNumberOfTokens(),cabin.getNumberOfTokens());
+        assertEquals(cabin.getNumberOfTokens(),cabin.getTokenList().size());
     }
 
     @Test

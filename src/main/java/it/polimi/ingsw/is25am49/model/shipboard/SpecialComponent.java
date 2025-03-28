@@ -6,7 +6,7 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentExc
 
 import java.util.ArrayList;
 
-public class SpecialComponent extends Component {
+public final class SpecialComponent extends Component {
     private boolean isActive;
     public SpecialComponent(ComponentType type, int level) {
         super(type, level);
@@ -63,4 +63,9 @@ public class SpecialComponent extends Component {
     public void turnOff() {
         isActive = false;
     }
+
+    @Override
+    public int getFirePower() {return isActive? super.getFirePower():0;}
+    @Override
+    public int getEnginePower() {return isActive? super.getEnginePower():0;}
 }

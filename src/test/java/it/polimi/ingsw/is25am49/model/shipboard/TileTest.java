@@ -35,9 +35,6 @@ class TileTest {
         t11.setConnectors(ConnectorType.FLAT, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
         t11.setTileOrientation(Orientation.NORTH);
     }
-    @AfterEach
-    void tearDown() {
-    }
 
     @Test
     void testGetTileRotation() {

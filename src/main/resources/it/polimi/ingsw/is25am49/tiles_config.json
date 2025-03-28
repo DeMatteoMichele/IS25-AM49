@@ -171,6 +171,51 @@
 "c4": "SINGLE"
 },
   {
+    "idTile": 30,
+    "component": "STORAGE",
+    "level": 3,
+    "c1": "DOUBLE",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 87,
+    "component": "ENGINE",
+    "level": 1,
+    "c1": "UNIVERSAL",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 98,
+    "component": "DOUBLE_ENGINE",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 107,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "UNIVERSAL",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 134,
+    "component": "DOUBLE_CANNON",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "SINGLE",
+    "c4": "DOUBLE"
+  },
+  {
     "idTile": 151,
     "component": "SHIELD",
     "level": 0,
