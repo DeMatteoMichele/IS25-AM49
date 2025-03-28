@@ -4,7 +4,13 @@ import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalPlanetToLand;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
+import javafx.util.Pair;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,24 +18,106 @@ public class PlanetCard extends AdventureCard {
 
     protected final List<Planet> planets=new ArrayList<Planet>();
 
-    public PlanetCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects){
+    public PlanetCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned,List<Planet> planets) {
         super(gameBoard,description, daysLost, level, creditsEarned);
-        listEffects.addAll(ListEffects);
+        this.planets.addAll(planets);
     }
-    public void addPlanet(Planet planet){
-        planets.add(planet);
+
+
+    @Override
+    public void drawCard(){
+        //chiamo il super draw
+        super.drawCard();
+        System.out.println("You have found a planet! You can land on it for some goods.");
+        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
+        checkRequirements();
     }
+
 
     @Override
     public void checkRequirements() {
+        if(currentState != AdventureStatesTypes.CHECK_REQUIREMENTS){
+            throw new IllegalMethodOnThisStateException("Wrong state");
+        }
+        System.out.println("Do you wanna land on the planet for some goods?");
+        currentState=AdventureStatesTypes.DECISION_LAND_PLANET;
+    }
 
+    @Override
+    public void landingOnPlanet(boolean isLanded, Planet planet){
+        super.landingOnPlanet(isLanded, planet);
+        if(!planets.contains(planet)){
+            throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
+        }
+        if(isLanded && !planet.isOccupied()){
+            System.out.println("You have landed on the planet!");
+            planet.setOccupied(true);
+            planets.remove(planet);
+            planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
+            System.out.println("You have to choose the position of the goods you won:");
+            currentState = AdventureStatesTypes.DECISION_GOODS;
+            currentEffect = planet.getEffect();
+            //System.out.println("Effect is: " + currentEffect.getClass().getName());
+        } else {
+            System.out.println("you have decided not to land on the planet");
+            System.out.println("Now check on next player");
+            try{
+                gameBoard.nextPlayer();
+                System.out.println("it wasn't the last player, go on");
+                currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
+                checkRequirements();
+            }
+            catch (IllegalSetOfNextPlayerException e) {
+                System.out.println("It was the last player, end of the turn");
+                System.out.println("it goes to update state");
+                currentState = AdventureStatesTypes.UPDATE;
+            }
+
+        }
+
+    }
+
+    @Override
+    public void finishDecision(List<Pair<Point, Token>> coordinates){
+        switch (currentState) {
+            //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
+            case DECISION_GOODS -> {
+                System.out.println("You have decided the position of the goods");
+                currentEffect.setListOfCoordinates(coordinates);
+                currentState = AdventureStatesTypes.EFFECT;
+                applyEffect();
+
+            }
+            default -> throw new IllegalMethodOnThisStateException("Wrong state");
+        }
     }
 
 
 
     @Override
     public void applyEffect() {
-
+        super.applyEffect();
+        System.out.println("You are in apply effect of planet card");
+        //applico l'effetto, aggiorno il player con i giorni persi
+        currentEffect.action(gameBoard.getCurrentPlayer());
+        gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
+        System.out.println("You have lost " + daysLost + " travel days");
+        if(planets.isEmpty()){
+            System.out.println("You have no more planets to land on, you have to go on with the game");
+            currentState = AdventureStatesTypes.UPDATE;
+            return;
+        }
+        try{
+            gameBoard.nextPlayer();
+            System.out.println("it wasn't the last player, go on");
+            currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
+            checkRequirements();
+        }
+        catch (IllegalSetOfNextPlayerException e) {
+            System.out.println("It was the last player, end of the turn");
+            System.out.println("it goes to update state");
+            currentState = AdventureStatesTypes.UPDATE;
+        }
 
     }
 

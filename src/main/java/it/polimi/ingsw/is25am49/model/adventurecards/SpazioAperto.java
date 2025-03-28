@@ -52,7 +52,7 @@ public class SpazioAperto extends AdventureCard {
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
 
-        ShipBoard ship=currentPlayer.getShipBoard();
+        ShipBoard ship=gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
         if(totalNumberOfBatteries > 0){
             System.out.println("you have enough batteries to activate your double motors. One battery activates one motor. " +
@@ -64,7 +64,7 @@ public class SpazioAperto extends AdventureCard {
             System.out.println("You don't have enough batteries to activate your double motors");
             int daysEarned = ship.getEnginePower();
             //imposto i giorni che gudagna il player alla potenza dei motori singoli e aggiorno la leaderboard
-            currentPlayer.setDaysThisTurn(daysEarned);
+            gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
             gameBoard.updateLeaderboard();
             System.out.println("player " + currentPlayer.getClass() + " has earned " + daysEarned + " travel days");
             System.out.println("now i check if it was the last player");
@@ -90,7 +90,7 @@ public class SpazioAperto extends AdventureCard {
     public void finishDecision(List <Pair<Point, Token>> coordinates) {
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
-        ShipBoard ship=currentPlayer.getShipBoard();
+        ShipBoard ship=gameBoard.getCurrentPlayer().getShipBoard();
         switch(currentState){
             case DECISION_BATTERIES -> {
                 if(coordinates.size()>ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)){
@@ -112,7 +112,7 @@ public class SpazioAperto extends AdventureCard {
     public void finishDecision(Set<Point> coordinates){
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
-        ShipBoard ship = currentPlayer.getShipBoard();
+        ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         this.cannons = new ArrayList<>(coordinates);
         switch(currentState){
             case DECISION_CANNON -> {
@@ -140,7 +140,7 @@ public class SpazioAperto extends AdventureCard {
         super.applyEffect();
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
-        ShipBoard ship = currentPlayer.getShipBoard();
+        ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         System.out.println("you are in apply effect, now i will calculate the days you have earned");
         //calcolo i giorni guadagnati in base alla potenza dei motori attivati
         int daysEarned = ship.getEnginePower();
@@ -150,7 +150,7 @@ public class SpazioAperto extends AdventureCard {
             System.out.println("turning off the motor at " + cannons.get(i).x + " " + cannons.get(i).y);
             ship.turnOff(cannons.get(i));
         }
-        currentPlayer.setDaysThisTurn(daysEarned);
+        gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
         //aggiorno la leaderboard
         gameBoard.updateLeaderboard();
         //controllo se era l'ultimo giocatore
