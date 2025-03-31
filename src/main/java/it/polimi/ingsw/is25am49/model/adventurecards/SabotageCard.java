@@ -52,8 +52,8 @@ public class SabotageCard extends AdventureCard {
 
         //debug per stampare per ogni giocatore il totale dell'equipaggio
 
-        gameBoard.getLeaderBoard().forEach(p ->
-        System.out.println(p.getValue().getUsername() + " " + getTotalCrew(p.getValue())));
+//        gameBoard.getLeaderBoard().forEach(p ->
+//        System.out.println(p.getValue().getUsername() + " " + getTotalCrew(p.getValue())));
 
         //setto a current player del gameboard il giocatore con meno equipaggio
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
@@ -114,7 +114,7 @@ public class SabotageCard extends AdventureCard {
             currentState = AdventureStatesTypes.DRAW;
         }
         catch (InvalidCoordinatesException e){
-            System.out.println(e.getMessage());
+            System.out.println("The component at row: " + row + " and column: " + column + " doesn't exist otìr it's out of the ship");
             //se ho lanciato i dadi 6 volte allora ho finito
             if(diceRollCount == 6){
                 System.out.println("you have rolled the dices 6 times, you have to stop");

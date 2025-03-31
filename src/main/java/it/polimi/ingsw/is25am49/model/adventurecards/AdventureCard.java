@@ -1,5 +1,4 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
-
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
@@ -55,8 +54,8 @@ public abstract class AdventureCard {
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
-    public void landingOnPlanet(boolean isLanded) throws IllegalMethodOnThisStateException {
-        if (currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
+    public void landingOnPlanet(boolean isLanded, Planet planet) throws IllegalMethodOnThisStateException{
+        if(currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 

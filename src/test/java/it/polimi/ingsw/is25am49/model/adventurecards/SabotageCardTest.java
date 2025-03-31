@@ -57,6 +57,9 @@ class SabotageCardTest {
         deck = new AdventureCardDeck();
         deck.add(new SabotageCard(gameBoard,"Sabotage Card",0,1,0));
         gameBoard.setMainAdventureDeck(deck);
+        ship1.completeShipBoard();
+        ship2.completeShipBoard();
+        ship3.completeShipBoard();
 
     }
 
