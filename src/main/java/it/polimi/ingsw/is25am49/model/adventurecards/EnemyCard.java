@@ -74,7 +74,7 @@ public abstract class EnemyCard extends AdventureCard {
     }
 
     private void activateComponentWithBatteries(List<Point> coordinatesOfActivable, ShipBoard shipBoard) {
-        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
+        if (coordinatesOfActivable.size() != coordinatesOfBatteries.size()) {
             throw new IllegalNumOfCannonsException("You have to choose at max the same number of cannons as batteries");
         }
         System.out.println("You have decided the coord for the components");
@@ -135,22 +135,27 @@ public abstract class EnemyCard extends AdventureCard {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
             case DECISION_CANNON -> {
-                List<Point> coordinatesOfCannons = new ArrayList<>(coordinates);
-                activateComponentWithBatteries(coordinatesOfCannons, shipBoard);
-                evaluateBattleOutcome(shipBoard);
+                try {
+                    List<Point> coordinatesOfCannons = new ArrayList<>(coordinates);
+                    activateComponentWithBatteries(coordinatesOfCannons, shipBoard);
+                    evaluateBattleOutcome(shipBoard);
+                }
+                catch (IllegalNumOfCannonsException e){
+                    System.out.println("Rechoose correctly the number of cannons as the same as batteries");
+                }
             }
             case DECISION_SHIELDS -> {
-                List<Point> coordinatesOfShield = new ArrayList<>(coordinates);
-                activateComponentWithBatteries(coordinatesOfShield, shipBoard);
-                applyEffect();
+                try {
+                    List<Point> coordinatesOfShield = new ArrayList<>(coordinates);
+                    activateComponentWithBatteries(coordinatesOfShield, shipBoard);
+                    applyEffect();
+                }
+                catch(IllegalNumOfCannonsException e){
+                    System.out.println("Rechoose correctly the number of shields as the same as batteries");
+                }
             }
             default -> throw new IllegalArgumentException("Invalid state: " + currentState);
         }
-    }
-
-    @Override
-    public List<Player> getDefeatedPlayers() {
-        return null;
     }
 
 

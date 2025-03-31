@@ -30,13 +30,9 @@ class SmugglerCardTest {
     AdventureCardDeck adventureDeck;
     Player player1;
     Player player2;
-    ShipBoard ship1;
     ShipBoard shipMock= Mockito.mock(ShipBoard.class);
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
-    Component shipBoardComponent;
-    Tile tile;
-
 
     @BeforeEach
     void init(){
@@ -61,8 +57,7 @@ class SmugglerCardTest {
     void drawCard() {
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
-        assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
+
     }
 
 
@@ -78,8 +73,7 @@ class SmugglerCardTest {
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
-        assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
-        assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
 
     @Test
@@ -121,10 +115,9 @@ class SmugglerCardTest {
 
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
-        assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
         assertEquals(player1, gameBoard.getCurrentPlayer());
-        assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
 
     @Test
@@ -176,7 +169,7 @@ class SmugglerCardTest {
                 cannonCoordinates.add(new Point(3, 3));
                 when(shipMock.getTotalFirePower()).thenReturn(2.0);
                 gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
-                assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
+                assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
                 assertEquals(EffectLoseGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
 
     }

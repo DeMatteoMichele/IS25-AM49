@@ -34,9 +34,10 @@ public class SmugglerCard extends EnemyCard {
             tryNextPlayer();
         } else {
             System.out.println("You have been defeated by the smugglers! You lose some goods");
-            System.out.println("You have to decide where to remove your goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
-            currentState = AdventureStatesTypes.DECISION_GOODS;
+            currentState = AdventureStatesTypes.EFFECT;
+            applyEffect();
+            //currentState = AdventureStatesTypes.DECISION_GOODS; we dont go anymore in decision goods cause losing is automatic
         }
     }
 
