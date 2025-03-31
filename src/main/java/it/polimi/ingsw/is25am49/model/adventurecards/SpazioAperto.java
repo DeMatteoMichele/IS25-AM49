@@ -12,6 +12,7 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SpazioAperto extends AdventureCard {
@@ -36,10 +37,11 @@ public class SpazioAperto extends AdventureCard {
         //passo alla richiesta di requisiti
         currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
 
-        playersProcess = new ArrayList<>();
+        /*playersProcess = new ArrayList<>();
         for(Pair<Integer,Player> e : gameBoard.getLeaderBoard()){
             playersProcess.add(e.getValue());
-        }
+        }*/
+        playersProcess = gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).toList();
         currentPlayerIndex =0;
         checkRequirements();
 

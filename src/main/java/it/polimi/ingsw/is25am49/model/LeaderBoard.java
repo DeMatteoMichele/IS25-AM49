@@ -1,13 +1,13 @@
-package it.polimi.ingsw.is25am49.model.states;
+package it.polimi.ingsw.is25am49.model;
 
-import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
-
 
 public class LeaderBoard {
     private final HashMap<Player, Integer> mapLeaderboard;
@@ -136,4 +136,11 @@ public class LeaderBoard {
         else
             throw new IllegalSetOfNextPlayerException("Error, the given position does not exist");
     }
+    public boolean isEmpty(){
+        if(arrayLeaderboard.size() == mapLeaderboard.size())
+            return arrayLeaderboard.isEmpty();
+        else
+            throw new GameSettingsException("Something went wrong while adding or removing the players");
+    }
 }
+
