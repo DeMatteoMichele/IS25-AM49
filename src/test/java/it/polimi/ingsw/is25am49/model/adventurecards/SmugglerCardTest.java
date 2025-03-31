@@ -44,14 +44,14 @@ class SmugglerCardTest {
         gameBoard = new GameBoard();
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
-//        player1.setShipBoard(shipMock);
+//        player1.setShipBoard(shipMock1);
         gameBoard.addPlayerToLeaderboard(0, player1);
         gameBoard.addPlayerToLeaderboard(3, player2);
         gameBoard.sortLeaderBoard();
         adventureDeck = new AdventureCardDeck();
-        listEffects.add(new EffectWinGoods("TestEffect", 3,2,1,1));
-        listEffects.add(new EffectLoseGoods("TestEffect2", 3));
-        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 2, 1, 100, 3, 0, listEffects);
+        listEffects.add(new EffectWinGoods("WinGoods", 50,2,1,1));
+        listEffects.add(new EffectLoseGoods("LoseGoods", 3));
+        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 2, 1, 100, 3, 50,2,1,1,3 );
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 
@@ -177,7 +177,7 @@ class SmugglerCardTest {
                 when(shipMock.getTotalFirePower()).thenReturn(2.0);
                 gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
                 assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
-                assertEquals(gameBoard.getCurrentCard().getCurrentEffect(), listEffects.get(1));
+                assertEquals(EffectLoseGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
 
     }
 
@@ -190,7 +190,8 @@ class SmugglerCardTest {
         gameBoard.drawAdventureCard();
 
         assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(listEffects.get(0), gameBoard.getCurrentCard().getCurrentEffect()); // EffectWinGoods
+        assertEquals(EffectWinGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
+
 
         List<Pair<Point, Token>> goodsCoordinates = new ArrayList<>();
         goodsCoordinates.add(new Pair<>(new Point(1, 1), Token.RED_GOODS));
@@ -198,7 +199,7 @@ class SmugglerCardTest {
 
         gameBoard.getCurrentCard().finishDecision(goodsCoordinates);
 
-        assertEquals(2, gameBoard.getCurrentPlayer().getDaysThisTurn()); // verifica che i giorni persi siano impostati
+        assertEquals(-2, gameBoard.getCurrentPlayer().getDaysThisTurn()); // verifica che i giorni persi siano impostati
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState()); // verifica lo stato finale
     }
 

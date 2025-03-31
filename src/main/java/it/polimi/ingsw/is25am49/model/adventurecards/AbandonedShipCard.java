@@ -83,7 +83,7 @@ public class AbandonedShipCard extends AdventureCard {
         currentEffect.action(currentPlayer);
         currentPlayer.addCredits(creditsEarned);
         System.out.println("You have earned " + creditsEarned + " credits");
-        currentPlayer.setDaysThisTurn(daysLost);
+        currentPlayer.setDaysThisTurn(-daysLost);
         currentState= AdventureStatesTypes.UPDATE;
     }
 
