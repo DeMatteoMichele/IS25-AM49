@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.model.states.LeaderBoard;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -15,9 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class GameBoard {
-
-    //Da cambiare (è una merda)
-    private final ArrayList<Pair<Integer, Player>> leaderBoard;
+    private LeaderBoard leaderBoard;
 
     private AdventureCardDeck mainAdventureDeck;
     private final TileCardDeck tilesDeck;
@@ -27,7 +26,7 @@ public class GameBoard {
     private FlightMode flightMode;
 
     public GameBoard() {
-        leaderBoard = new ArrayList<>();
+        leaderBoard = null;
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         tilesDeck = new TileCardDeck();
         mainAdventureDeck = new AdventureCardDeck();
@@ -39,7 +38,10 @@ public class GameBoard {
     //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
-
+        setLeaderBoard(gameMode);
+    }
+    private void setLeaderBoard(GameMode gameMode) {
+        leaderBoard = new LeaderBoard(gameMode);
     }
     public boolean checkStatus(){
         return !flightMode.equals(FlightMode.DEFAULT);
@@ -56,7 +58,7 @@ public class GameBoard {
         mapSmallAdventureDecks.clear();
         setMainAdventureDeck(bufferDeck);
     }
-    public List<Pair<Integer, Player>> getLeaderBoard(){
+    public LeaderBoard getLeaderBoard(){
         return leaderBoard;
     }
     public void setCurrentCard(AdventureCard card) {
@@ -68,8 +70,11 @@ public class GameBoard {
     public void drawAdventureCard() {
         currentCard= mainAdventureDeck.draw();
     }
-    public void addPlayerToLeaderboard(Integer days , Player player) {
-        leaderBoard.add(new Pair<>(days, player));
+    public void addPlayerToLeaderboard(Player player) {
+        leaderBoard.add(player);
+    }
+    public void addPlayerToLeaderboard(int days, Player player) {
+        leaderBoard.add(player);
     }
     public void addDiscardedTile(Player player) {
         Optional<Tile> newTile = player.discardTile();
@@ -79,11 +84,11 @@ public class GameBoard {
         return tilesDeck.draw(index);
     }
     public Player getLeader() {
-        return leaderBoard.getFirst().getValue();
+        return leaderBoard.getFirst();
     }
     public void calculateFinalCredits(Player player) {
         int toAdd = 0;
-        toAdd = 5 - leaderBoard.indexOf(player); //crediti per la posizione
+        toAdd = 5 - leaderBoard.getPos(player); //crediti per la posizione
         toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
         toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
         if(minimumExposedComponents().contains(player)) {
@@ -93,7 +98,7 @@ public class GameBoard {
     }
     public void calculateFinalScore(Player player) {
         int toAdd = 0;
-        toAdd = 5 - leaderBoard.indexOf(player);
+        toAdd = 5 - leaderBoard.getPos(player);
         toAdd = toAdd - player.getLostComponents();
 
         int redToken= player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
@@ -109,7 +114,7 @@ public class GameBoard {
 
         int minValue = leaderBoard.
                 stream()
-                .map(Pair :: getValue)//ritorno il player
+                .map(Map.Entry:: getKey)//ritorno il player
                 //ritorno solo il numero di connettori esposti dato il player
                 .mapToInt(p-> p.getShipBoard().getNumberOfExposedConnectors())
                 .min()
@@ -117,40 +122,25 @@ public class GameBoard {
 
         return leaderBoard
                 .stream()
-                .map(Pair:: getValue) //ritorna il player
+                .map(Map.Entry:: getKey) //ritorna il player
                 //cerco se il player ha il minimo valore di conncetors, se si lo filtro
-                .filter(p-> p.getShipBoard().getNumberOfExposedConnectors()==minValue)
+                .filter(p-> p.getShipBoard().getNumberOfExposedConnectors() == minValue)
                 .collect(Collectors.toList());
 
     }
-    private Player getNextPlayer(Player player) {
-        int currentIndex = -1;
-        //cerco l'indice che combacia con il pair<Integer, player>
-        for (int i = 0; i < leaderBoard.size(); i++) {
-            if (leaderBoard.get(i).getValue().equals(player)) {
-                currentIndex = i;
-                break;
-            }
-        }
-        if (currentIndex == -1) {
-            throw new IllegalSetOfNextPlayerException("Player not found in leaderBoard");
-        }
-        //se l'indice è minore della lunghezza della leaderboard estraggo il player successivo
-        if (currentIndex + 1 < leaderBoard.size()) {
-            return leaderBoard.get(currentIndex + 1).getValue();
-        }
-        //il player di cui voglio il next è l'ultimo e perciò lancio l'eccezione
-        throw new IllegalSetOfNextPlayerException("It's the last player");
-    }
-    public void sortLeaderBoard() {
-        leaderBoard.sort((p1, p2) -> p2.getKey().compareTo(p1.getKey()));
+    private Player getNextPlayer() {
+        int currentPos = leaderBoard.getPos(currentPlayer);
+        if(currentPos == leaderBoard.size())
+            throw new IllegalSetOfNextPlayerException("This is the last player");
+        else
+            return leaderBoard.getPlayerInPosition(currentPos-1);
     }
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
     public void nextPlayer() {
         //setto il currentplayer al next player dato il current player
-        setCurrentPlayer(getNextPlayer(currentPlayer));
+        setCurrentPlayer(getNextPlayer());
     }
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
@@ -167,7 +157,7 @@ public class GameBoard {
     public int userFinishShipboard(Player player){
         player.completeShipboard();
         player.getShipBoard().afterBuildCheckShipboard();
-        addPlayerToLeaderboard(0, player);
+        addPlayerToLeaderboard(player);
         return leaderBoard.size();
     }
     public void userLookSmallAdventureCardDeck(Player player, int index){
