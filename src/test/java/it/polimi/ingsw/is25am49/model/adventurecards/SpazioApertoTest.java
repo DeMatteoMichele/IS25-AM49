@@ -3,10 +3,8 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.*;
 import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import javafx.util.Pair;
@@ -67,12 +65,13 @@ class SpazioApertoTest {
         tile4 = new Tile(5,component4);
         tile5 = new Tile(6,component5);
         tile7 = new Tile(10,component7);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
 
         player1 = new Player("TestPlayer1", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.GREEN, 2);
         gameBoard = new GameBoard();
         deck = new AdventureCardDeck();
-        deck.add(new SpazioAperto(gameBoard,"spazio aperto",0,1,0));
+        deck.add(new SpazioAperto(gameBoard,"spazio aperto",1));
         ship1 = new ShipBoard(1, 1);
         ship2 = new ShipBoard(1, 2);
         player1.setShipBoard(ship1);

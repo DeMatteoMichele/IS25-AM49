@@ -5,13 +5,15 @@ import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EpidemyCard extends AdventureCard {
-
+    private final List<CardEffect> effects;
     public EpidemyCard(GameBoard gameBoard, String description, int daysLost, int level, List<CardEffect> ListEffects) {
-        super(gameBoard,description, daysLost, level);
-        listEffects.addAll(ListEffects);
+        super(gameBoard,description, level);
+        effects = new ArrayList<>();
+        effects.addAll(ListEffects);
     }
 
     @Override

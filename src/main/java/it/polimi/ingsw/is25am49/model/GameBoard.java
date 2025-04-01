@@ -62,7 +62,7 @@ public class GameBoard {
     public void generateSmallDecks(GameMode gameMode){
 
     }
-    private void setLeaderBoard(GameMode gameMode) {
+    public void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
 
@@ -181,7 +181,7 @@ public class GameBoard {
         if (currentPos == leaderBoard.size())
             throw new IllegalSetOfNextPlayerException("This is the last player");
         else
-            return leaderBoard.getPlayerInPosition(currentPos - 1);
+            return leaderBoard.getPlayerInPosition(currentPos + 1);
     }
 
     public Player getCurrentPlayer() {
@@ -197,9 +197,7 @@ public class GameBoard {
         this.currentPlayer = currentPlayer;
     }
 
-    public AdventureCard getNextCard() {
-        return mainAdventureDeck.draw();
-    }
+
 
     public void updateLeaderboard() {
         //con i daysthisturn devo fare update facendo perde i giorni

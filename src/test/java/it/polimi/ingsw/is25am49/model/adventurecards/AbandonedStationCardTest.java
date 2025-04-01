@@ -2,15 +2,14 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
+import it.polimi.ingsw.is25am49.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyEnergy;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
-import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -36,10 +35,12 @@ class AbandonedStationCardTest {
     Tile tile;
     Component component;
     Point coordinate = new Point(7, 8);
+    LeaderBoard leaderBoard;
 
 
     @BeforeEach
     void init(){
+
 
         coordinates = new ArrayList<>();
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
@@ -57,11 +58,11 @@ class AbandonedStationCardTest {
         player1.getShipBoard().addTokenToTile(coordinate,Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate,Token.ASTRONAUT);
-
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
-        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
-        gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -1);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, +1);
 
         adventureDeck = new AdventureCardDeck();
         adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 100, 3,2,3,1));

@@ -11,7 +11,7 @@ public class WarZoneCard extends AdventureCard {
 
     public WarZoneCard(GameBoard gameBoard,String description, int level) {
         super(gameBoard,description, level);
-        listEffects.addAll(listEffects);
+
     }
 
     @Override
