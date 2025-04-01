@@ -140,7 +140,7 @@ public class LeaderBoard {
     }
     // 1 <= pos <= 4
     public Player getPlayerInPosition(int pos){
-        if(pos <= arrayLeaderboard.size() && pos >= 0)
+        if(pos <= arrayLeaderboard.size() && pos > 0)
             return arrayLeaderboard.get(pos-1).getKey();
         else
             throw new IndexOutOfBoundsException("Error, the given position does not exist");
