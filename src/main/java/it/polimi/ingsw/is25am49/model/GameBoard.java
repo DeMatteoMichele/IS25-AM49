@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 
 import java.util.*;
@@ -40,9 +41,27 @@ public class GameBoard {
     //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
+        int level;
+        if(gameMode == GameMode.LEVEL_1)
+            level = 1;
+        else if(gameMode == GameMode.LEVEL_2)
+            level = 2;
+        else
+            throw new GameSettingsException("Illegal gameMode");
+        players.stream().forEach(player -> {player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()));});
         setLeaderBoard(gameMode);
     }
+    public void initialize(GameMode gameMode) {
+        tilesDeck.generateDeck();
+        tilesDeck.shuffle();
+        mainAdventureDeck.generateDeck(gameMode);
+        mainAdventureDeck.shuffle();
+        generateSmallDecks(gameMode);
 
+    }
+    public void generateSmallDecks(GameMode gameMode){
+
+    }
     private void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
@@ -77,13 +96,17 @@ public class GameBoard {
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
-
+    //TODO
     public void drawAdventureCard() {
         currentCard = mainAdventureDeck.draw();
     }
 
     public void addPlayerToLeaderboard(Player player) {
-        if (leaderBoard.isEmpty())
+        if(leaderBoard.isEmpty()){
+            leaderBoard.add(player);
+            currentPlayer = player;
+        }
+        else
             leaderBoard.add(player);
     }
 
@@ -129,7 +152,6 @@ public class GameBoard {
     }
 
     public List<Player> minimumExposedComponents() {
-
         int minValue = leaderBoard.
                 stream()
                 .map(Map.Entry::getKey)//ritorno il player
@@ -182,7 +204,6 @@ public class GameBoard {
 
     public int userFinishShipboard(Player player) {
         player.completeShipboard();
-        player.getShipBoard().afterBuildCheckShipboard();
         addPlayerToLeaderboard(player);
         return leaderBoard.size();
     }

@@ -57,6 +57,7 @@ public class Game {
     }
     public void configurateFlight(){
         board.configurateFlight(mode, players);
+        board.initialize(mode);
     }
     public boolean gameIsFinished(){
         return isFinished;
