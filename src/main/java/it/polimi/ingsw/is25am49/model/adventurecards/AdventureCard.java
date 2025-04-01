@@ -13,6 +13,8 @@ import java.util.Random;
 import java.util.Set;
 
 public abstract class AdventureCard {
+
+    //TODO da togliere
     protected String description;
     protected int daysLost;
     protected boolean isFinished;
@@ -108,6 +110,10 @@ public abstract class AdventureCard {
 
     public void finishDecision(Set<Point> coordinates){
 
+    }
+
+    public boolean getIsFinished() {
+        return isFinished;
     }
 
 }

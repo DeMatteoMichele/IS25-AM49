@@ -95,10 +95,12 @@ class SpazioApertoTest {
         player2.getShipBoard().insertTile(coordinate5, tile5);
         player2.getShipBoard().insertTile(coordinate7, tile7);
 
-        gameBoard.addPlayerToLeaderboard(2,player1);
-        gameBoard.addPlayerToLeaderboard(8,player2);
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
         gameBoard.setMainAdventureDeck(deck);
-        gameBoard.sortLeaderBoard();
+
     }
 
     @Test

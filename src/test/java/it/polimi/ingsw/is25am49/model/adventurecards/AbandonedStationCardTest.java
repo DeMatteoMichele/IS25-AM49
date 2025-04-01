@@ -58,11 +58,13 @@ class AbandonedStationCardTest {
         player1.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate,Token.ASTRONAUT);
 
-        gameBoard.addPlayerToLeaderboard(0, player1);
-        gameBoard.addPlayerToLeaderboard(3, player2);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
+
         adventureDeck = new AdventureCardDeck();
-        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 100, 3,2,3,1,0));
+        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 100, 3,2,3,1));
         adventureDeck.add(new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, 1, 100, 3));
         gameBoard.setMainAdventureDeck(adventureDeck);
 

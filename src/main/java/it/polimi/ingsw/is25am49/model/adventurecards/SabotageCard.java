@@ -12,12 +12,13 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class SabotageCard extends AdventureCard {
 
-    public SabotageCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
-        super(gameBoard,description, daysLost, level, creditsEarned);
+    public SabotageCard(GameBoard gameBoard, String description, int level) {
+        super(gameBoard,description, level);
     }
 
     //declare the row and column of the component to be removed and the counter of the dice roll
@@ -43,11 +44,17 @@ public class SabotageCard extends AdventureCard {
     @Override
     public void checkRequirements() {
         //con uno stream trovo il giocatore che ha meno equipaggio
+//        Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
+//                .map(Pair::getValue)
+//                .min((p1, p2) -> Integer.compare(
+//                        getTotalCrew(p1),
+//                        getTotalCrew(p2)))
+//                .orElse(gameBoard.getCurrentPlayer());
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
-                .map(Pair::getValue)
-                .min((p1, p2) -> Integer.compare(
-                        getTotalCrew(p1),
-                        getTotalCrew(p2)))
+                .min((entry1, entry2) -> Integer.compare(
+                        getTotalCrew(entry1.getKey()),
+                        getTotalCrew(entry2.getKey())))
+                .map(Map.Entry::getKey)
                 .orElse(gameBoard.getCurrentPlayer());
 
         //debug per stampare per ogni giocatore il totale dell'equipaggio
@@ -114,11 +121,12 @@ public class SabotageCard extends AdventureCard {
             currentState = AdventureStatesTypes.DRAW;
         }
         catch (InvalidCoordinatesException e){
-            System.out.println("The component at row: " + row + " and column: " + column + " doesn't exist otìr it's out of the ship");
+            System.out.println("The component at row: " + row + " and column: " + column + " doesn't exist or it's out of the ship");
             //se ho lanciato i dadi 6 volte allora ho finito
             if(diceRollCount == 6){
                 System.out.println("you have rolled the dices 6 times, you have to stop");
                 System.out.println("you've been lucky, neither one of your component has been destroyed");
+                isFinished=true;
                 currentState = AdventureStatesTypes.DRAW;
             }
             //rilancio i dadi

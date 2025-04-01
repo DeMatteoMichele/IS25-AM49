@@ -16,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdventureCardDeckTest {
+    private GameBoard gameBoard;
     private AdventureCardDeck deck2;
     private AdventureCard card;
     private AdventureCard card2;
@@ -25,6 +26,7 @@ class AdventureCardDeckTest {
 
     @BeforeEach
     void init(){
+        gameBoard = new GameBoard();
         deck2 = new AdventureCardDeck();
         effects.add(cannonata);
 //        card = new PlanetCard("pianeti",3,1,20, effects);
@@ -45,10 +47,12 @@ class AdventureCardDeckTest {
         deck2.add(card);
         deck2.add(card2);
         //il resto per testare se rimuove la prima adventure card inserita
-        cardDrawn = deck2.draw();
+        gameBoard.drawAdventureCard();
+        cardDrawn = gameBoard.getCurrentCard();
         assertEquals("pianeti",cardDrawn.getDescription() );
         assertEquals(card.getLevel(),cardDrawn.getLevel());
-        cardDrawn = deck2.draw();
+        gameBoard.drawAdventureCard();
+        cardDrawn = gameBoard.getCurrentCard();
         assertEquals(card2.getDescription(),cardDrawn.getDescription());
     }
 

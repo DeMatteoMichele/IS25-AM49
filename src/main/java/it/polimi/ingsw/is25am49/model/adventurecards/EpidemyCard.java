@@ -9,8 +9,8 @@ import java.util.List;
 
 public class EpidemyCard extends AdventureCard {
 
-    public EpidemyCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, List<CardEffect> ListEffects) {
-        super(gameBoard,description, daysLost, level, creditsEarned);
+    public EpidemyCard(GameBoard gameBoard, String description, int daysLost, int level, List<CardEffect> ListEffects) {
+        super(gameBoard,description, daysLost, level);
         listEffects.addAll(ListEffects);
     }
 

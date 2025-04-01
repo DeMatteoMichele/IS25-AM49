@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 
@@ -22,21 +23,21 @@ public class GameBoard {
     private AdventureCard currentCard;
     private Player currentPlayer;
     private FlightMode flightMode;
-
+    private boolean isFirstCard;
+//TODO da mettere a optional
     public GameBoard() {
-        leaderBoard = null;
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         tilesDeck = new TileCardDeck();
         mainAdventureDeck = new AdventureCardDeck();
         flightMode = FlightMode.DEFAULT;
-        currentPlayer = null;
-        currentCard = null;
+        isFirstCard = true;
     }
 
     public boolean isTestFlight() {
         return flightMode == FlightMode.TEST;
     }
 
+    //TODO da fare
     //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
@@ -79,7 +80,16 @@ public class GameBoard {
     }
 
     public void drawAdventureCard() {
-        currentCard = mainAdventureDeck.draw();
+        if(isFirstCard || currentCard.getIsFinished()) {
+            currentCard = mainAdventureDeck.getFirstCard();
+            mainAdventureDeck.draw();
+            isFirstCard = false;
+        }
+        else{
+            throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
+        }
+
+
     }
 
     public void addPlayerToLeaderboard(Player player) {
@@ -87,9 +97,7 @@ public class GameBoard {
             leaderBoard.add(player);
     }
 
-    public void addPlayerToLeaderboard(int days, Player player) {
-        leaderBoard.add(player);
-    }
+
 
     public void addDiscardedTile(Player player) {
         Optional<Tile> newTile = player.discardTile();
