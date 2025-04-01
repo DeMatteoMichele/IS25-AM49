@@ -30,14 +30,10 @@ class GameBoardTest {
         player5 = new Player("rojo", Color.RED,8);
         player6 = new Player("verde", Color.BLUE,6);
         player7 = new Player("azul", Color.BLUE,9);
-        gameBoard.addPlayerToLeaderboard(5,player1);
-        gameBoard.addPlayerToLeaderboard(9,player2);
-        gameBoard.addPlayerToLeaderboard(1,player3);
-        gameBoard.addPlayerToLeaderboard(11,player4);
-        gameBoard.addPlayerToLeaderboard(3,player5);
-        gameBoard.addPlayerToLeaderboard(10,player6);
-        gameBoard.addPlayerToLeaderboard(7,player7);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.addPlayerToLeaderboard(player3);
+        gameBoard.addPlayerToLeaderboard(player4);
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 
@@ -103,17 +99,6 @@ class GameBoardTest {
 
     @Test
     void minimumExposedComponents() {
-    }
-
-    @Test
-    void sortLeaderBoard() {
-        assertEquals(player4,gameBoard.getLeaderBoard().get(0).getValue());
-        assertEquals(player6,gameBoard.getLeaderBoard().get(1).getValue());
-        assertEquals(player2,gameBoard.getLeaderBoard().get(2).getValue());
-        assertEquals(player7,gameBoard.getLeaderBoard().get(3).getValue());
-        assertEquals(player1,gameBoard.getLeaderBoard().get(4).getValue());
-        assertEquals(player5,gameBoard.getLeaderBoard().get(5).getValue());
-        assertEquals(player3,gameBoard.getLeaderBoard().get(6).getValue());
     }
 
     @Test

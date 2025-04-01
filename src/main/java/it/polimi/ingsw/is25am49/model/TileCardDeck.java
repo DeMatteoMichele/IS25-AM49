@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +27,10 @@ public class TileCardDeck {
     }
 
     public Tile draw(int index){
-        return tileDeck.get(index);
+        Tile tmp =  tileDeck.get(index);
+        tileDeck.remove(index);
+        tmp.uncoverTile();
+        return tmp;
     }
 
 }

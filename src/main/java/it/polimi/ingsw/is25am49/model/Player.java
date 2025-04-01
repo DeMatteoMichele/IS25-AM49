@@ -10,7 +10,6 @@ import java.util.Optional;
 public class Player {
     private int daysThisTurn;
     private String username;
-    private int playerNumber;
     private ShipBoard shipBoard;
     private Optional<Tile> handTile;
     private int finalScore;
@@ -27,7 +26,6 @@ public class Player {
         this.username = username;
         this.color = color;
         daysThisTurn = 0;
-        playerNumber = 0;
         shipBoard = new ShipBoard();
         handTile = Optional.empty();
         finalScore = 0;
@@ -70,7 +68,7 @@ public class Player {
     }
 
     public Integer getPlayerNumber() {
-        return playerNumber;
+        return idPlayer;
     }
 
     public Optional<Tile> getHandTile(){

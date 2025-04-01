@@ -66,13 +66,27 @@ class ShipBoardTest {
     }
 
     @Test
-    void checkTileConnectors() {
+    void testIfTileIsConnected() {
+        Map<Integer,Tile> tiles= Tile.generateTiles();
+        ship2.insertTile(new Point(6,5), tiles.get(2));
+        ship2.insertTile(new Point(6,6), tiles.get(4));
+        ship2.insertTile(new Point(7,6), tiles.get(6));
+        ship2.getTile(new Point(7,6)).setTileOrientation(Orientation.WEST);
+        ship2.insertTile(new Point(8,6), tiles.get(6));
+        ship2.getTile(new Point(8,6)).setTileOrientation(Orientation.EAST);
+        ship2.printShipboardSpecial();
+        ship2.completeShipBoard();
+        ship2.printShipboardSpecial();
     }
 
     @Test
-    void testCheckTileConnectorsCascade() {
-        ship1.printShipboardSpecial();
-        System.out.println(ship1.getTilesConnectedTo(new Point(7,7)));
+    void testGetTilesConnectedTo() {
+        ship2=ShipBoard.generateShipboard(2,30);
+        ship2.printShipboard();
+        ship2.printShipboardSpecial();
+        System.out.println(ship2.getTilesConnectedTo(new Point(7,7)));
+        ship2.completeShipBoard();
+        ship2.printShipboardSpecial();
     }
 
     @Test
@@ -180,9 +194,10 @@ class ShipBoardTest {
 
     @Test
     void testGetNumberOfExposedConnectors() {
-        ship1.afterBuildCheckShipboard();
+        ship1.completeShipBoard();
         ship1.printShipboardSpecial();
-        //System.out.println(ship1.getNumberOfExposedConnectors());
+
+        System.out.println(ship1.getNumberOfExposedConnectors());
     }
 
     @Test

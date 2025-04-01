@@ -12,6 +12,7 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class SabotageCard extends AdventureCard {
@@ -44,7 +45,7 @@ public class SabotageCard extends AdventureCard {
     public void checkRequirements() {
         //con uno stream trovo il giocatore che ha meno equipaggio
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
-                .map(Pair::getValue)
+                .map(Map.Entry::getKey)
                 .min((p1, p2) -> Integer.compare(
                         getTotalCrew(p1),
                         getTotalCrew(p2)))

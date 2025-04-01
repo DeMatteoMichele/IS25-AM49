@@ -57,6 +57,7 @@ public class Game {
     }
     public void configurateFlight(){
         board.configurateFlight(mode, players);
+        board.initialize(mode);
     }
     public boolean gameIsFinished(){
         return isFinished;
@@ -88,7 +89,7 @@ public class Game {
     }
     public void userStopLookSmallAdventureCardDeck(Player player, Integer index){ board.userStopLookSmallAdventureCardDeck(player, index);}
     public void addPlayersToLeaderBoard(){
-        players.forEach(p -> board.addPlayerToLeaderboard(0, p));
+        players.forEach(p -> board.addPlayerToLeaderboard(p));
     }
     public void mergeSmallDecks(){
         board.mergeDecks();
