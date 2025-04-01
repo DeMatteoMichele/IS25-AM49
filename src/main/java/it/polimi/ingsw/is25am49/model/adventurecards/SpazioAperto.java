@@ -65,7 +65,7 @@ public class SpazioAperto extends AdventureCard {
         else{
             //non ho abbastanza batterie per attivare i doppi motori
             System.out.println("You don't have enough batteries to activate your double motors");
-            int daysEarned = ship.getEnginePower();
+            int daysEarned = ship.getTotalEnginePower();
             //imposto i giorni che gudagna il player alla potenza dei motori singoli e aggiorno la leaderboard
             gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
             gameBoard.updateLeaderboard();
@@ -146,7 +146,7 @@ public class SpazioAperto extends AdventureCard {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         System.out.println("you are in apply effect, now i will calculate the days you have earned");
         //calcolo i giorni guadagnati in base alla potenza dei motori attivati
-        int daysEarned = ship.getEnginePower();
+        int daysEarned = ship.getTotalEnginePower();
         System.out.println("you have earned " + daysEarned + " travel days");
         //spengo i motori
         for(int i=0; i< batteries.size();i++){

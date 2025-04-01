@@ -7,12 +7,12 @@ import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
@@ -41,9 +41,27 @@ public class GameBoard {
     //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
+        int level;
+        if(gameMode == GameMode.LEVEL_1)
+            level = 1;
+        else if(gameMode == GameMode.LEVEL_2)
+            level = 2;
+        else
+            throw new GameSettingsException("Illegal gameMode");
+        players.stream().forEach(player -> {player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()));});
         setLeaderBoard(gameMode);
     }
+    public void initialize(GameMode gameMode) {
+        tilesDeck.generateDeck();
+        tilesDeck.shuffle();
+        mainAdventureDeck.generateDeck(gameMode);
+        mainAdventureDeck.shuffle();
+        generateSmallDecks(gameMode);
 
+    }
+    public void generateSmallDecks(GameMode gameMode){
+
+    }
     private void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
@@ -78,7 +96,7 @@ public class GameBoard {
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
-
+    //TODO
     public void drawAdventureCard() {
         if(isFirstCard || currentCard.getIsFinished()) {
             currentCard = mainAdventureDeck.getFirstCard();
@@ -93,7 +111,11 @@ public class GameBoard {
     }
 
     public void addPlayerToLeaderboard(Player player) {
-        if (leaderBoard.isEmpty())
+        if(leaderBoard.isEmpty()){
+            leaderBoard.add(player);
+            currentPlayer = player;
+        }
+        else
             leaderBoard.add(player);
     }
 
@@ -109,7 +131,7 @@ public class GameBoard {
     }
 
     public Player getLeader() {
-        return leaderBoard.getFirst();
+        return leaderBoard.getLeader();
     }
 
     public void calculateFinalCredits(Player player) {
@@ -134,12 +156,9 @@ public class GameBoard {
         int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
         toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
         player.getShipBoard().removeAllTokens();
-
-
     }
 
     public List<Player> minimumExposedComponents() {
-
         int minValue = leaderBoard.
                 stream()
                 .map(Map.Entry::getKey)//ritorno il player
@@ -192,7 +211,6 @@ public class GameBoard {
 
     public int userFinishShipboard(Player player) {
         player.completeShipboard();
-        player.getShipBoard().afterBuildCheckShipboard();
         addPlayerToLeaderboard(player);
         return leaderBoard.size();
     }

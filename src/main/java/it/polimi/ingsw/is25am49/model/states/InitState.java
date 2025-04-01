@@ -14,7 +14,7 @@ public class InitState extends State {
         super(gameSession);
     }
 
-    //Implemented
+    //To change
     public void adminSelectGameMode(Player player, GameMode gamemode) {
         if(player.equals(gameSession.getAdmin().orElse(null))){
             if(gameSession.getGame().isPresent())

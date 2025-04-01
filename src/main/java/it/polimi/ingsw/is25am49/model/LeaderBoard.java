@@ -86,7 +86,15 @@ public class LeaderBoard {
     // days può essere maggiore o minore di zero
     public void modifyFlightDays(Player player, int daysModified){
         if(mapLeaderboard.containsKey(player)){
-            mapLeaderboard.put(player, mapLeaderboard.get(player) + daysModified);
+            int tmpDays = mapLeaderboard.get(player);
+            if(daysModified >= 0) {
+                int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() <= tmpDays + daysModified && entry.getValue() > tmpDays).count();
+                mapLeaderboard.put(player, tmpDays + daysModified + numPlayersToSkip);
+            }
+            else{
+                int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() >= tmpDays + daysModified && entry.getValue() < tmpDays).count();
+                mapLeaderboard.put(player, tmpDays + daysModified - numPlayersToSkip);
+            }
             sort();
         }
         else
@@ -97,6 +105,7 @@ public class LeaderBoard {
             int tmpDays = mapLeaderboard.get(player);
             mapLeaderboard.remove(player);
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
+            sort();
         }
         else
             throw new GameSettingsException("This player is not in the leaderboard");
@@ -107,7 +116,7 @@ public class LeaderBoard {
     public int getNumberOfCells() {
         return numberOfCells;
     }
-    public Player getFirst() {
+    public Player getLeader() {
         if(mapLeaderboard.isEmpty())
             throw new IllegalSetOfNextPlayerException("The leader board is empty");
         else
@@ -134,7 +143,7 @@ public class LeaderBoard {
         if(pos <= arrayLeaderboard.size() && pos >= 0)
             return arrayLeaderboard.get(pos-1).getKey();
         else
-            throw new IllegalSetOfNextPlayerException("Error, the given position does not exist");
+            throw new IndexOutOfBoundsException("Error, the given position does not exist");
     }
     public boolean isEmpty(){
         if(arrayLeaderboard.size() == mapLeaderboard.size())

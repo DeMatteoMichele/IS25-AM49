@@ -44,17 +44,11 @@ public class SabotageCard extends AdventureCard {
     @Override
     public void checkRequirements() {
         //con uno stream trovo il giocatore che ha meno equipaggio
-//        Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
-//                .map(Pair::getValue)
-//                .min((p1, p2) -> Integer.compare(
-//                        getTotalCrew(p1),
-//                        getTotalCrew(p2)))
-//                .orElse(gameBoard.getCurrentPlayer());
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
-                .min((entry1, entry2) -> Integer.compare(
-                        getTotalCrew(entry1.getKey()),
-                        getTotalCrew(entry2.getKey())))
                 .map(Map.Entry::getKey)
+                .min((p1, p2) -> Integer.compare(
+                        getTotalCrew(p1),
+                        getTotalCrew(p2)))
                 .orElse(gameBoard.getCurrentPlayer());
 
         //debug per stampare per ogni giocatore il totale dell'equipaggio

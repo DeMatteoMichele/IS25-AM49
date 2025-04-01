@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.FinishDeckExceptions;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class AdventureCardDeck {
         deck.removeFirst();
         //return deck.removeFirst();
     }
-    public void generateDeck(){
+    public void generateDeck(GameMode gameMode){
         // crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect.
     }
     public void add(AdventureCard card){

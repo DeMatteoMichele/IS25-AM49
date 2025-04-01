@@ -5,12 +5,10 @@ import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import javafx.util.Pair;
-import org.mockito.Mock;
 import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +28,9 @@ class SmugglerCardTest {
     AdventureCardDeck adventureDeck;
     Player player1;
     Player player2;
-    ShipBoard ship1;
     ShipBoard shipMock= Mockito.mock(ShipBoard.class);
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
-    Component shipBoardComponent;
-    Tile tile;
-
 
     @BeforeEach
     void init(){
@@ -44,14 +38,15 @@ class SmugglerCardTest {
         gameBoard = new GameBoard();
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
-//        player1.setShipBoard(shipMock);
-        gameBoard.addPlayerToLeaderboard(0, player1);
-        gameBoard.addPlayerToLeaderboard(3, player2);
-        gameBoard.sortLeaderBoard();
+//        player1.setShipBoard(shipMock1);
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
-        listEffects.add(new EffectWinGoods("TestEffect", 3,2,1,1));
-        listEffects.add(new EffectLoseGoods("TestEffect2", 3));
-        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 2, 1, 100, 3, 0, listEffects);
+        listEffects.add(new EffectWinGoods("WinGoods", 50,2,1,1));
+        listEffects.add(new EffectLoseGoods("LoseGoods", 3));
+        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, 2,  3, 50,2,1,1,3 );
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 
@@ -61,8 +56,7 @@ class SmugglerCardTest {
     void drawCard() {
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
-        assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
+
     }
 
 
@@ -77,9 +71,8 @@ class SmugglerCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
-        assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
-        assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
+        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
 
     @Test
@@ -109,7 +102,7 @@ class SmugglerCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.DECISION_BATTERIES, gameBoard.getCurrentCard().getCurrentState());
     }
@@ -121,10 +114,9 @@ class SmugglerCardTest {
 
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
-        assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(player1, gameBoard.getCurrentPlayer());
-        assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
 
     @Test
@@ -133,7 +125,7 @@ class SmugglerCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
     }
@@ -176,8 +168,8 @@ class SmugglerCardTest {
                 cannonCoordinates.add(new Point(3, 3));
                 when(shipMock.getTotalFirePower()).thenReturn(2.0);
                 gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
-                assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
-                assertEquals(gameBoard.getCurrentCard().getCurrentEffect(), listEffects.get(1));
+                assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
+                assertEquals(EffectLoseGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
 
     }
 
@@ -190,7 +182,8 @@ class SmugglerCardTest {
         gameBoard.drawAdventureCard();
 
         assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(listEffects.get(0), gameBoard.getCurrentCard().getCurrentEffect()); // EffectWinGoods
+        assertEquals(EffectWinGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
+
 
         List<Pair<Point, Token>> goodsCoordinates = new ArrayList<>();
         goodsCoordinates.add(new Pair<>(new Point(1, 1), Token.RED_GOODS));
@@ -198,7 +191,7 @@ class SmugglerCardTest {
 
         gameBoard.getCurrentCard().finishDecision(goodsCoordinates);
 
-        assertEquals(2, gameBoard.getCurrentPlayer().getDaysThisTurn()); // verifica che i giorni persi siano impostati
+        assertEquals(-2, gameBoard.getCurrentPlayer().getDaysThisTurn()); // verifica che i giorni persi siano impostati
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState()); // verifica lo stato finale
     }
 

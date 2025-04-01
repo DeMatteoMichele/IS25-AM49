@@ -22,6 +22,12 @@ public abstract class CardEffect {
     public List<Pair<Point,Token>> getCoordinates(){
         return null;
     };
+    public int getLevel(){
+        return 0;
+    }
+    public String getDescription(){
+        return name_effect;
+    }
 
 
 }

@@ -63,7 +63,9 @@ public class AdventureState extends State {
     public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userThrowDices(Player player){}
+    public void userThrowDices(Player player){
+
+    }
     public void userDrawAdventureCard(Player player){}
     public void userPlayAdventureCard(Player player){}
     public void userFinishDecision(Player player){}
