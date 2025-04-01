@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyEnergy;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
@@ -11,6 +12,7 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardExceptio
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import javafx.scene.effect.Effect;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -21,11 +23,15 @@ import java.util.Set;
 public class AbandonedStationCard extends AdventureCard {
     protected final ArrayList<Token> Prize = new ArrayList<>();
 
-
-    public AbandonedStationCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int minimumAstronauts, int redGoods,int yellowGoods,int greenGoods, int blueGoods ){
-        super(gameBoard,description,daysLost,level,creditsEarned);
+    private final List<CardEffect> listEffects;
+    private final int daysLost;
+    private final int lostAstronauts;
+    public AbandonedStationCard(GameBoard gameBoard, String description, int daysLost,int level, int minimumAstronauts, int redGoods,int yellowGoods,int greenGoods, int blueGoods ){
+        super(gameBoard,description,level);
+        this.daysLost = daysLost;
         this.lostAstronauts = minimumAstronauts;
-        listEffects.add(new EffectWinGoods("Win goods", redGoods, yellowGoods, greenGoods, blueGoods));
+        listEffects = new ArrayList<>();
+        listEffects.add(new EffectWinGoods("Win Goods", redGoods,yellowGoods,greenGoods,blueGoods));
     }
 
     @Override
@@ -90,6 +96,7 @@ public class AbandonedStationCard extends AdventureCard {
             }
             catch(IllegalSetOfNextPlayerException e){
                 System.out.println("No more players, now to update");
+                isFinished=true;
                 currentState = AdventureStatesTypes.UPDATE;
             }
         }
@@ -126,6 +133,7 @@ public class AbandonedStationCard extends AdventureCard {
         System.out.println("You are winning goods but you lost " + daysLost + " travel days");
         currentEffect.action(player);
         player.setDaysThisTurn(-daysLost);
+        isFinished = true;
         currentState = AdventureStatesTypes.UPDATE;
 
     }

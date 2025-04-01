@@ -17,8 +17,8 @@ import java.util.Random;
 
 public class SabotageCard extends AdventureCard {
 
-    public SabotageCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
-        super(gameBoard,description, daysLost, level, creditsEarned);
+    public SabotageCard(GameBoard gameBoard, String description, int level) {
+        super(gameBoard,description, level);
     }
 
     //declare the row and column of the component to be removed and the counter of the dice roll
@@ -115,11 +115,12 @@ public class SabotageCard extends AdventureCard {
             currentState = AdventureStatesTypes.DRAW;
         }
         catch (InvalidCoordinatesException e){
-            System.out.println("The component at row: " + row + " and column: " + column + " doesn't exist otìr it's out of the ship");
+            System.out.println("The component at row: " + row + " and column: " + column + " doesn't exist or it's out of the ship");
             //se ho lanciato i dadi 6 volte allora ho finito
             if(diceRollCount == 6){
                 System.out.println("you have rolled the dices 6 times, you have to stop");
                 System.out.println("you've been lucky, neither one of your component has been destroyed");
+                isFinished=true;
                 currentState = AdventureStatesTypes.DRAW;
             }
             //rilancio i dadi

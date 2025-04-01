@@ -17,9 +17,10 @@ import java.util.List;
 public class PlanetCard extends AdventureCard {
 
     protected final List<Planet> planets=new ArrayList<Planet>();
-
-    public PlanetCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned,List<Planet> planets) {
-        super(gameBoard,description, daysLost, level, creditsEarned);
+    private final int daysLost;
+    public PlanetCard(GameBoard gameBoard, String description, int daysLost, int level,List<Planet> planets) {
+        super(gameBoard,description, level);
+        this.daysLost = daysLost;
         this.planets.addAll(planets);
     }
 
@@ -70,6 +71,7 @@ public class PlanetCard extends AdventureCard {
             catch (IllegalSetOfNextPlayerException e) {
                 System.out.println("It was the last player, end of the turn");
                 System.out.println("it goes to update state");
+                isFinished=true;
                 currentState = AdventureStatesTypes.UPDATE;
             }
 
@@ -104,6 +106,7 @@ public class PlanetCard extends AdventureCard {
         System.out.println("You have lost " + daysLost + " travel days");
         if(planets.isEmpty()){
             System.out.println("You have no more planets to land on, you have to go on with the game");
+            isFinished=true;
             currentState = AdventureStatesTypes.UPDATE;
             return;
         }
@@ -116,6 +119,7 @@ public class PlanetCard extends AdventureCard {
         catch (IllegalSetOfNextPlayerException e) {
             System.out.println("It was the last player, end of the turn");
             System.out.println("it goes to update state");
+            isFinished = true;
             currentState = AdventureStatesTypes.UPDATE;
         }
 

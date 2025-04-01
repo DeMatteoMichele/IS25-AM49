@@ -14,9 +14,7 @@ public class Planet {
     private CardEffect effect;
     public Planet(int redGoods, int yellowGoods, int greenGoods, int blueGoods) {
         this.isOccupied = false;
-
         this.effect = new EffectWinGoods("Win goods", redGoods, yellowGoods, greenGoods, blueGoods);
-
     }
 
     public boolean isOccupied() {

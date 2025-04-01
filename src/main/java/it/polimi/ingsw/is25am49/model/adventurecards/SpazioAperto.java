@@ -17,8 +17,9 @@ import java.util.Set;
 
 public class SpazioAperto extends AdventureCard {
 
-    public SpazioAperto(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
-        super(gameBoard,description, daysLost, level, creditsEarned);;
+    public SpazioAperto(GameBoard gameBoard, String description, int level) {
+        super(gameBoard,description, level);
+
     }
 
     private List<Pair<Point, Token>> batteries;
@@ -161,6 +162,7 @@ public class SpazioAperto extends AdventureCard {
         if(currentPlayerIndex>=playersProcess.size()){
             System.out.println("it was the last player, end of the turn");
             System.out.println("it goes to draw state");
+            isFinished = true;
             currentState = AdventureStatesTypes.DRAW;
         }
         else{

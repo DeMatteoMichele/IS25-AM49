@@ -35,4 +35,9 @@ public class EffectCannonata extends CardEffect {
     public void setCoordinate(Point coordinate) {
         throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
+
+    @Override
+    public int getLevel() {
+        return level;
+    }
 }

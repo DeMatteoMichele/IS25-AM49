@@ -33,7 +33,8 @@ class PlanetCardTest {
     Point coordinate1 = new Point(7,8);
 
 
-
+    //TODO cambiare addplayer (prende solo player) e per modificare giorni di viaggio usare modifyfligydays
+    //TODO cambiare carta dove c'era leaderboard
     @BeforeEach
     public void init() {
         gameBoard = new GameBoard();
@@ -43,9 +44,10 @@ class PlanetCardTest {
         ship2 = new ShipBoard(1,1);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
-        gameBoard.addPlayerToLeaderboard(9,player1);
-        gameBoard.addPlayerToLeaderboard(10,player2);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
         planet1 = new Planet(1,0,0,0);
         planet2 = new Planet(0,1,0,0);
         planet3 = new Planet(0,0,1,0);
@@ -58,11 +60,11 @@ class PlanetCardTest {
         planets.add(planet1);
         coordinates = new ArrayList<>();
 
-        //TODO nel win goods mi bastano le coordinate senza i token
+
         coordinates.add(new Pair<>(coordinate1, Token.RED_GOODS));
 
-        deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,0,planets));
-        deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,0,planets2));
+        deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,planets));
+        deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,planets2));
         gameBoard.setMainAdventureDeck(deck);
 
 
@@ -88,6 +90,7 @@ class PlanetCardTest {
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         assertEquals(AdventureStatesTypes.DECISION_GOODS,gameBoard.getCurrentCard().getCurrentState());
         assertEquals(player2,gameBoard.getCurrentPlayer());
+        assertEquals(player2.getPlayerNumber(),planet1.getPlayernumber());
 
     }
 

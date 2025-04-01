@@ -9,9 +9,9 @@ import java.util.List;
 public class WarZoneCard extends AdventureCard {
 
 
-    public WarZoneCard(GameBoard gameBoard,String description, int daysLost, int level, int creditsEarned, List<CardEffect> listEffects) {
-        super(gameBoard,description, daysLost, level, creditsEarned);
-        listEffects.addAll(listEffects);
+    public WarZoneCard(GameBoard gameBoard,String description, int level) {
+        super(gameBoard,description, level);
+
     }
 
     @Override

@@ -2,11 +2,10 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
+import it.polimi.ingsw.is25am49.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -28,11 +27,14 @@ class SabotageCardTest {
     Tile tile1,tile3;
     Point coordinate1 = new Point(7,8);
     Point coordinate3 = new Point(7,6);
+    LeaderBoard leaderBoard;
 
 
     @BeforeEach
     public void init(){
         gameBoard = new GameBoard();
+        leaderBoard = new LeaderBoard(GameMode.LEVEL_1);
+
         player1 = new Player("pippo", Color.RED,2);
         player2 = new Player("marco", Color.BLUE,3);
         player3 = new Player("luca", Color.GREEN,4);
@@ -50,12 +52,14 @@ class SabotageCardTest {
         player3.getShipBoard().insertTile(coordinate3,tile3);
         player3.getShipBoard().addTokenToTile(coordinate3,Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
-        gameBoard.addPlayerToLeaderboard(13,player1);
-        gameBoard.addPlayerToLeaderboard(15,player2);
-        gameBoard.addPlayerToLeaderboard(16,player3);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.addPlayerToLeaderboard(player3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player3, +7);
         deck = new AdventureCardDeck();
-        deck.add(new SabotageCard(gameBoard,"Sabotage Card",0,1,0));
+        deck.add(new SabotageCard(gameBoard,"Sabotage Card",1));
         gameBoard.setMainAdventureDeck(deck);
         ship1.completeShipBoard();
         ship2.completeShipBoard();

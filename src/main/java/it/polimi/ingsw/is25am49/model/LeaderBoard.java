@@ -116,7 +116,7 @@ public class LeaderBoard {
     public int getNumberOfCells() {
         return numberOfCells;
     }
-    public Player getFirst() {
+    public Player getLeader() {
         if(mapLeaderboard.isEmpty())
             throw new IllegalSetOfNextPlayerException("The leader board is empty");
         else

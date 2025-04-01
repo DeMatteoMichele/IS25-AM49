@@ -20,12 +20,13 @@ public class AdventureCardDeck {
     public boolean isWatched() { return isBeingWatched; }
     public void watch(){ isBeingWatched = true; }
     public void stopWatch(){ isBeingWatched = false; }
-    public AdventureCard draw() {
+    public void draw() {
         if(deck.isEmpty()){
             throw new FinishDeckExceptions("Il deck è vuoto");
         }
         deck.getFirst().drawCard();
-        return deck.removeFirst();
+        deck.removeFirst();
+        //return deck.removeFirst();
     }
     public void generateDeck(GameMode gameMode){
         // crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect.
@@ -44,5 +45,9 @@ public class AdventureCardDeck {
     }
     public Stream<AdventureCard> stream() {
         return deck.stream();
+    }
+
+    public AdventureCard getFirstCard() {
+        return deck.getFirst();
     }
 }
