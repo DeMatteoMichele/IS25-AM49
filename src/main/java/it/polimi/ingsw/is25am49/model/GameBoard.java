@@ -126,8 +126,6 @@ public class GameBoard {
         int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
         toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
         player.getShipBoard().removeAllTokens();
-
-
     }
 
     public List<Player> minimumExposedComponents() {
