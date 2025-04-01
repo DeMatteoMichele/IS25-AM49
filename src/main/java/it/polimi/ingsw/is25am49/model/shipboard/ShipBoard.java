@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 
@@ -47,7 +48,7 @@ public class ShipBoard {
                     if(!file.exists()){throw new FileNotFoundException("File(shipboard_two_config.json) non trovato: " + file.getAbsolutePath());}
                     else{
                         ObjectMapper objectMapper = new ObjectMapper();
-                        Set<Point> points= objectMapper.readValue(file, new TypeReference<Set<Point>>(){});
+                        Set<Point> points= objectMapper.readValue(file, new TypeReference<>(){});
 
                         for(Point p:points){grid.put(p,Optional.empty());}
                         grid.put(new Point(7,7),Optional.of(centerCabinTile));
@@ -63,7 +64,7 @@ public class ShipBoard {
                 try{
                     ObjectMapper objectMapper = new ObjectMapper();
                     File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_two_config.json");
-                    Set<Point> points= objectMapper.readValue(file,new TypeReference<Set<Point>>(){});
+                    Set<Point> points= objectMapper.readValue(file,new TypeReference<>(){});
 
                     for(Point p:points){grid.put(p,Optional.empty());}
                     grid.put(new Point(7,7),Optional.of(centerCabinTile));
@@ -88,12 +89,7 @@ public class ShipBoard {
     public boolean isCompleted() {return isCompleted;}
     public void completeShipBoard() {
         isCompleted = true;
-        Set<Point> elimina = grid.entrySet().stream().filter(entry -> entry.getValue().isEmpty() )
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
-        for(Point p: elimina){
-            destroyTile(p);
-        }
+        afterBuildCheckShipboard();
         for(Point p: grid.keySet()){
             //TODO LOKKA TUTTE LE TESSERE PER SICUREZZA
         }
@@ -216,7 +212,7 @@ public class ShipBoard {
         }
     }
     /**
-     *
+     * recursive algorithm that checks all the direction of a Tile
      */
     private void checkIfTileIsConnected(Point point, Orientation direction, Set<Point> connectedTiles){
         try {
@@ -483,7 +479,7 @@ public class ShipBoard {
      * get the total engine power of the ShipBoard
      * @return a double that represent the engine power of the shipboard
      */
-    public int getEnginePower(){
+    public int getTotalEnginePower(){
         return grid.values()
                 .stream()
                 .flatMap(Optional::stream)
@@ -539,16 +535,100 @@ public class ShipBoard {
         }
         return sides;
     }
-    public void checkRocketTile(Point coordinates){}
-    public void checkCannonTile(Point coordinates){}
+
     public void afterBuildCheckShipboard(){
-        //TODO questo primo pezzo va spostato in complete shipboard
-       Set<Point> elimina = grid.entrySet().stream().filter(entry -> entry.getValue().isEmpty() )
-               .map(Map.Entry::getKey)
-               .collect(Collectors.toSet());
-       for(Point p: elimina){
-           destroyTile(p);
-       }
+        //distruggo le tessere prenotate
+        destroyTile(new Point(9,5));
+        destroyTile(new Point(10,5));
+
+        //elimino tutte le tessere vuote e quelle disconnesse
+        Set<Point> elimina = new HashSet<>(grid.keySet());
+        elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
+        for(Point p: elimina){
+            destroyTile(p);
+        }
+
+        //elimino tutte le tessere davanti ai cannoni
+        Set<Point> checkCannon = new HashSet<>(getComponentsPositions(ComponentType.CANNON));
+        checkCannon.addAll(getComponentsPositions(ComponentType.DOUBLE_CANNON));
+        for(Point p: checkCannon){
+            Tile t= getTile(p);
+            //TODO controlla che il cannone/razzo non sia connesso unicamente dal lato dove punta
+            switch (t.getTileOrientation()){
+                case NORTH -> {
+                    p.translate(0,1);
+                    while (grid.containsKey(p)){
+                        p.translate(0,1);
+                        try{destroyTile(p);}
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("ERRORE SOPRA CANNONE");
+                        }
+                    }
+                }
+                case EAST -> {
+                    p.translate(1,0);
+                    while (grid.containsKey(p)){
+                        p.translate(1,0);
+                        try{destroyTile(p);}
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("ERRORE RIMOZIONE DESTRA CANNONE");
+                        }
+                    }
+                }
+                case SOUTH -> {
+                    p.translate(0,-1);
+                    while (grid.containsKey(p)){
+                        p.translate(0,-1);
+                        try{destroyTile(p);}
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("ERRORE SOTTO CANNONE");
+                        }
+                    }
+                }
+                case WEST -> {
+                    p.translate(-1,0);
+                    while (grid.containsKey(p)){
+                        p.translate(-1,0);
+                        try{destroyTile(p);}
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("ERRORE RIMOZIONE A SINISTRA CANNONE");
+                        }
+                    }
+                }
+            }
+        }
+        //elimino tutti i razzi male orientati o le tessere sotto di essi
+        Set<Point> checkEngine = new HashSet<>(getComponentsPositions(ComponentType.ENGINE));
+        checkEngine.addAll(getComponentsPositions(ComponentType.DOUBLE_ENGINE));
+        for(Point p: checkEngine){
+            Tile t= getTile(p);
+            if(!t.getTileOrientation().equals(Orientation.NORTH)){
+                try{destroyTile(p);}
+                catch (InvalidCoordinatesException e){
+                    System.out.println("ERRORE RIMOZIONE MOTORE");
+                }
+            }
+            else{
+                p.translate(0,-1);
+                while (grid.containsKey(p)){
+                    p.translate(0,-1);
+                    try{destroyTile(p);}
+                    catch (InvalidCoordinatesException e){
+                        System.out.println("ERRORE RIMOZIONE SOTTO AL MOTORE");
+                    }
+                }
+            }
+        }
+        //elimino tessere disconnesse dopo la rimozione sopra
+        elimina.clear();
+        elimina.addAll(grid.keySet());
+        elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
+        for(Point p: elimina){
+            try{destroyTile(p);}
+            catch (InvalidCoordinatesException e){
+                System.out.println("ERRORE RIMOZIONE TESSERE SCONNESSE"+e.getMessage());
+            }
+        }
     }
 
     public void printShipboard(){
@@ -625,7 +705,38 @@ public class ShipBoard {
             case SKY ->  System.out.print("⬛\t");
             case STORAGE -> System.out.print("\uD83D\uDCE6\t");
             case SHIELD ->  System.out.print("\uD83D\uDEE1️\t");
+            case CANNON -> System.out.print("\uD83D\uDD95\t");
+            case DOUBLE_CANNON -> System.out.print("\uD83E\uDD18\t");
+            case ENGINE -> System.out.print("\t");
             default -> System.out.print("\uD83D\uDFE6\t");
         }
     }
+
+    public static ShipBoard generateShipboard(int level, int nTiles){
+        int n=level==1?20:28;
+        if(nTiles>n)nTiles=n;
+
+        ShipBoard ship=new ShipBoard(level,999);
+        ArrayList<Tile> tiles=new ArrayList<>(Objects.requireNonNull(Tile.generateTiles()).values());
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        Orientation o;
+
+        while (nTiles>0 && !tiles.isEmpty()) {
+            int i=rand.nextInt(tiles.size());
+            Tile t = tiles.get(i);
+            o= Orientation.values()[rand.nextInt(Orientation.values().length)];
+            t.setTileOrientation(o);
+            var p= new Point(rand.nextInt(7)+4,rand.nextInt(5)+5);
+            try {
+                ship.insertTile(p,t);
+                tiles.remove(i);
+                nTiles--;
+            }catch (Exception _){}
+        }
+        return ship;
+    }
+
+
 }
+
+

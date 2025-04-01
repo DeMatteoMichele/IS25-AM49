@@ -143,9 +143,6 @@ public class Tile {
     public void lockTile() {
         isLocked = true;
     }
-    public boolean isCovered() {
-        return isCovered;
-    }
     public void uncoverTile() {
         isCovered = false;
     }
@@ -185,17 +182,11 @@ public class Tile {
                     ConnectorType c3= ConnectorType.valueOf(node.get("c3").asText());
                     ConnectorType c4= ConnectorType.valueOf(node.get("c4").asText());
                     //System.out.println(idTile + " " + type+ " "+ level+ " "+ c1+ " "+ c2+ " "+ c3+ " "+ c4);
-                    Component component;
-                    switch (type){
-                        case ENGINE,CANNON,FRAME_SECTION,SKY:
-                            component= new BasicComponent(type,level);
-                            break;
-                        case DOUBLE_CANNON,DOUBLE_ENGINE,SHIELD:
-                            component= new SpecialComponent(type,level);
-                            break;
-                        default:
-                            component= new ContainerComponent(type,level);
-                    }
+                    Component component = switch (type) {
+                        case ENGINE, CANNON, FRAME_SECTION, SKY -> new BasicComponent(type, level);
+                        case DOUBLE_CANNON, DOUBLE_ENGINE, SHIELD -> new SpecialComponent(type, level);
+                        default -> new ContainerComponent(type, level);
+                    };
                     tiles.put(idTile,new Tile(idTile,component,c1,c2,c3,c4));
                 }
                 return tiles;
