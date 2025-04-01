@@ -50,12 +50,14 @@ class StarDustCardTest {
         player1.setShipBoard(shipMock1);
         player2.setShipBoard(shipMock2);
         player3.setShipBoard(shipMock3);
-        gameBoard.addPlayerToLeaderboard(0, player1);
-        gameBoard.addPlayerToLeaderboard(3, player2);
-        gameBoard.addPlayerToLeaderboard(2, player3);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard( player1);
+        gameBoard.addPlayerToLeaderboard( player2);
+        gameBoard.addPlayerToLeaderboard( player3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, 3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, 0);
+        gameBoard.getLeaderBoard().modifyFlightDays(player3, 2);
         adventureDeck = new AdventureCardDeck();
-        card1 = new StarDustCard(gameBoard, "StardDust", 0, 1, 100);
+        card1 = new StarDustCard(gameBoard, "StardDust", 1);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 

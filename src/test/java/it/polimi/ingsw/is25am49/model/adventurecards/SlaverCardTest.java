@@ -4,8 +4,6 @@ import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectLoseGoods;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
@@ -48,9 +46,10 @@ class SlaverCardTest {
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
 //        player1.setShipBoard(shipMock1);
-        gameBoard.addPlayerToLeaderboard(0, player1);
-        gameBoard.addPlayerToLeaderboard(3, player2);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
         card1 = new SlaverCard(gameBoard, "SlaverCardTest", 2, 1, 100, 3, 3);
         adventureDeck.add(card1);
@@ -62,7 +61,7 @@ class SlaverCardTest {
     void drawCard() {
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(), player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(), player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
     }
 
@@ -72,7 +71,7 @@ class SlaverCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(), player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(), player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(100, player2.getCredits());

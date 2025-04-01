@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Token;
@@ -11,15 +12,20 @@ import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AbandonedShipCard extends AdventureCard {
 
-    int lostAstronauts;
-
-    public AbandonedShipCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int lostAstronauts){
-        super(gameBoard,description,daysLost,level,creditsEarned);
+    protected int lostAstronauts;
+    protected int creditsEarned;
+    protected int daysLost;
+    List<CardEffect> listEffects = new ArrayList<>();
+    public AbandonedShipCard(GameBoard gameBoard, String description, int level, int dayslost, int creditsEarned, int lostAstronauts){
+        super(gameBoard,description,level);
         this.lostAstronauts = lostAstronauts;
+        this.creditsEarned = creditsEarned;
+        this.daysLost = dayslost;
         listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
     }
 
@@ -85,6 +91,7 @@ public class AbandonedShipCard extends AdventureCard {
         System.out.println("You have earned " + creditsEarned + " credits");
         currentPlayer.setDaysThisTurn(-daysLost);
         currentState= AdventureStatesTypes.UPDATE;
+        isFinished=true;
     }
 
 }

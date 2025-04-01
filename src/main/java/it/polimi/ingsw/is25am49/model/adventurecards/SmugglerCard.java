@@ -11,9 +11,8 @@ import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 public class SmugglerCard extends EnemyCard {
 
-    public SmugglerCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
-        super(gameBoard, description, daysLost, level, creditsEarned);
-        this.minimumFirePower = minimumFirePower;
+    public SmugglerCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
+        super(gameBoard, description, level, dayslost, minimumFirePower);
         listEffects.add(new EffectWinGoods("WinGoods", redGoods, yellowGoods, greenGoods, blueGoods));
         listEffects.add(new EffectLoseGoods("LoseGoods", lostGoods));
     }
@@ -48,8 +47,11 @@ public class SmugglerCard extends EnemyCard {
         System.out.println("You are in applyeffect, yur goods will be modified");
         currentEffect.action(currentPlayer);
         currentPlayer.setDaysThisTurn(-daysLost);
-        if (isDefeated)
+        if (isDefeated) {
             currentState = AdventureStatesTypes.UPDATE;
+            isFinished = true;
+        }
+
         else {
             tryNextPlayer();
         }

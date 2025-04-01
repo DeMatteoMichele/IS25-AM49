@@ -15,26 +15,18 @@ import java.util.Set;
 
 public abstract class AdventureCard {
     protected String description;
-    protected int daysLost;
     protected boolean isFinished;
-    protected int creditsEarned;
-    protected final List<CardEffect> listEffects;
     protected int level;
     protected int dicesResult;
     protected CardEffect currentEffect;
-    protected int minimumFirePower;
-    protected int lostAstronauts;
     protected AdventureStatesTypes currentState;
     protected GameBoard gameBoard;
 
-    public AdventureCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
+    public AdventureCard(GameBoard gameBoard, String description, int level) {
         this.gameBoard = gameBoard;
         this.description = description;
-        this.daysLost = daysLost;
         this.isFinished = false;
-        this.creditsEarned = creditsEarned;
         this.level = level;
-        this.listEffects = new ArrayList<>();
     }
 
     public String getDescription() {

@@ -14,10 +14,11 @@ import java.util.List;
 
 public class PiratesCard extends EnemyCard {
 
-    public PiratesCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int minimumFirePower, List<CardEffect> listEffects) {
-        super(gameBoard, description, daysLost, level, creditsEarned);
-        this.minimumFirePower = minimumFirePower;
+    protected int creditsEarned;
+    public PiratesCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
+        super(gameBoard, description, level, dayslost, minimumFirePower);
         this.listEffects.addAll(listEffects);
+        this.creditsEarned = creditsEarned;
     }
 
 
@@ -67,6 +68,7 @@ public class PiratesCard extends EnemyCard {
             if (defeatedPlayers.isEmpty()) {
                 System.out.println("No defeated players, now to update");
                 currentState = AdventureStatesTypes.UPDATE;
+                isFinished = true;
             } else {
                 System.out.println("No more players, now the first defeated must roll the dices!");
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
@@ -90,6 +92,7 @@ public class PiratesCard extends EnemyCard {
             if (listEffects.isEmpty()) {  //effects are terminated, card is finished
                 System.out.println("All the effects are finished, now to update");
                 currentState = AdventureStatesTypes.UPDATE;
+                isFinished = true;
             } else {      //effects are not finished, first player has to roll the dices on the next effect
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
                 currentEffect = listEffects.removeFirst();

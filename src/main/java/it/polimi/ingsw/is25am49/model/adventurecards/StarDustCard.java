@@ -11,8 +11,8 @@ import java.util.List;
 
 public class StarDustCard extends AdventureCard {
 
-    public StarDustCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
-        super(gameBoard, description, daysLost, level, creditsEarned);
+    public StarDustCard(GameBoard gameBoard, String description, int level) {
+        super(gameBoard, description, level);
     }
 
 
@@ -32,8 +32,8 @@ public class StarDustCard extends AdventureCard {
     @Override
     public void applyEffect() {
         super.applyEffect();
-        for (int i = 0; i < gameBoard.getLeaderBoard().size(); i++) {
-            Player player = gameBoard.getLeaderBoard().get(i).getValue();
+        for (int i = 1; i <= gameBoard.getLeaderBoard().size(); i++) {
+            Player player = gameBoard.getLeaderBoard().getPlayerInPosition(i);
             gameBoard.setCurrentPlayer(player);
             int numExposedConnectors = player.getShipBoard().getNumberOfExposedConnectors();
             if (numExposedConnectors > 0) {
@@ -41,6 +41,7 @@ public class StarDustCard extends AdventureCard {
             }
         }
         currentState = AdventureStatesTypes.UPDATE;
+        isFinished = true;
     }
 
 

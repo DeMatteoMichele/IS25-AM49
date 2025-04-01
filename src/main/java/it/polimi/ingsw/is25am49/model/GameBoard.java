@@ -12,7 +12,6 @@ import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
@@ -124,7 +123,7 @@ public class GameBoard {
     }
 
     public Player getLeader() {
-        return leaderBoard.getFirst();
+        return leaderBoard.getLeader();
     }
 
     public void calculateFinalCredits(Player player) {

@@ -9,10 +9,12 @@ import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 public class SlaverCard extends EnemyCard {
 
-    public SlaverCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned, int minimumFirePower, int lostAstronauts) {
-        super(gameBoard, description, daysLost, level, creditsEarned);
-        this.minimumFirePower = minimumFirePower;
+    protected int lostAstronauts;
+    protected int creditsEarned;
+    public SlaverCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
+        super(gameBoard, description, level, dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
+        this.creditsEarned = creditsEarned;
         listEffects.add(new EffectModifyCrew("LoseAstronauts", lostAstronauts));
     }
 
@@ -27,6 +29,7 @@ public class SlaverCard extends EnemyCard {
         if (isDefeated) {
             currentPlayer.addCredits(creditsEarned);
             currentState = AdventureStatesTypes.UPDATE;
+            isFinished = true;
         } else {
             currentEffect.action(currentPlayer);
             tryNextPlayer();

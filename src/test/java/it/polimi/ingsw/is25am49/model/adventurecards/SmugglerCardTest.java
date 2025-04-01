@@ -5,12 +5,10 @@ import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.*;
 import it.polimi.ingsw.is25am49.model.enums.Color;
 import javafx.util.Pair;
-import org.mockito.Mock;
 import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,13 +39,14 @@ class SmugglerCardTest {
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
 //        player1.setShipBoard(shipMock1);
-        gameBoard.addPlayerToLeaderboard(0, player1);
-        gameBoard.addPlayerToLeaderboard(3, player2);
-        gameBoard.sortLeaderBoard();
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
         listEffects.add(new EffectWinGoods("WinGoods", 50,2,1,1));
         listEffects.add(new EffectLoseGoods("LoseGoods", 3));
-        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 2, 1, 100, 3, 50,2,1,1,3 );
+        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, 2,  3, 50,2,1,1,3 );
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 
@@ -72,7 +71,7 @@ class SmugglerCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
 
@@ -103,7 +102,7 @@ class SmugglerCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.DECISION_BATTERIES, gameBoard.getCurrentCard().getCurrentState());
     }
@@ -115,7 +114,7 @@ class SmugglerCardTest {
 
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(player1, gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
@@ -126,7 +125,7 @@ class SmugglerCardTest {
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard();
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getFirst().getValue(),player2);
+        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.DECISION_GOODS, gameBoard.getCurrentCard().getCurrentState());
     }

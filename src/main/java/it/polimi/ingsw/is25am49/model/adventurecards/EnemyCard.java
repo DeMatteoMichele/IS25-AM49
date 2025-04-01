@@ -1,7 +1,7 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.Player;
+import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
@@ -9,7 +9,6 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalNumOfCannonsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import javafx.util.Pair;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,8 +16,15 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class EnemyCard extends AdventureCard {
-    public EnemyCard(GameBoard gameBoard, String description, int daysLost, int level, int creditsEarned) {
-        super(gameBoard, description, daysLost, level, creditsEarned);
+    protected final int minimumFirePower;
+    protected final int daysLost;
+    protected final List<CardEffect> listEffects;
+
+    public EnemyCard(GameBoard gameBoard, String description,int level,  int daysLost, int minimumFirePower) {
+        super(gameBoard, description, level);
+        this.minimumFirePower = minimumFirePower;
+        this.daysLost = daysLost;
+        listEffects = new ArrayList<>();
     }
 
     protected boolean isDefeated = false;
