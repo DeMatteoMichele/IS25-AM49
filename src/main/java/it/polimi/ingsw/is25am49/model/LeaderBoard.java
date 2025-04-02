@@ -7,11 +7,13 @@ import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class LeaderBoard {
     private final HashMap<Player, Integer> mapLeaderboard;
     private final ArrayList<Map.Entry<Player, Integer>> arrayLeaderboard;
+    private final ArrayList<Optional<Player>> showableLeaderBoard;
     private final int level;
     private final int numberOfCells;
 
@@ -33,6 +35,11 @@ public class LeaderBoard {
                 throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
             }
         }
+        int i;
+        showableLeaderBoard = new ArrayList<>(numberOfCells);
+        for(i=0;i<numberOfCells;i++) {
+            showableLeaderBoard.add(Optional.empty());
+        }
     }
     //per implementarlo devo prima capire come verrano implementate le posizioni nel configurateflight
     public void add(Player player){
@@ -40,20 +47,24 @@ public class LeaderBoard {
             case 3 -> {
                 mapLeaderboard.put(player, 0);
                 arrayLeaderboard.add(Map.entry(player, 0));
+                showableLeaderBoard.set(0, Optional.of(player));
                 break;}
             case 2 -> {
                 mapLeaderboard.put(player, 1);
                 arrayLeaderboard.add(Map.entry(player, 1));
+                showableLeaderBoard.set(1, Optional.of(player));
                 break;
             }
             case 1 -> {
                 if(level == 1){
                     mapLeaderboard.put(player, 2);
                     arrayLeaderboard.add(Map.entry(player, 2));
+                    showableLeaderBoard.set(2, Optional.of(player));
                 }
                 else if(level == 2){
                     mapLeaderboard.put(player, 3);
                     arrayLeaderboard.add(Map.entry(player, 3));
+                    showableLeaderBoard.set(3, Optional.of(player));
                 }
                 else
                     throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
@@ -63,10 +74,12 @@ public class LeaderBoard {
                 if(level == 1){
                     mapLeaderboard.put(player, 4);
                     arrayLeaderboard.add(Map.entry(player, 4));
+                    showableLeaderBoard.set(4, Optional.of(player));
                 }
                 else if(level == 2){
                     mapLeaderboard.put(player, 6);
                     arrayLeaderboard.add(Map.entry(player, 6));
+                    showableLeaderBoard.set(6, Optional.of(player));
                 }
                 else
                     throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
@@ -83,21 +96,39 @@ public class LeaderBoard {
         else
             throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
     }
+    private int findIndexOfPlayerInShowableLeaderBoard(Player player){
+        int indexOfPlayer = showableLeaderBoard.indexOf(Optional.of(player));
+        if(indexOfPlayer == -1)
+            throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
+        else
+            return indexOfPlayer;
+    }
+    private int decreaseDaysFromShowableLeaderBoard(Player player, int daysModified){
+        int positionChanged = 0;
+        int index = findIndexOfPlayerInShowableLeaderBoard(player);
+        int sign = Integer.signum(daysModified);
+        Optional<Player> temp = showableLeaderBoard.get(index);
+        showableLeaderBoard.set(index, Optional.empty());
+        while(daysModified != 0){
+            if(showableLeaderBoard.get(moduleNumberOfCells(index+sign)).isEmpty()){
+                daysModified = daysModified - sign;
+                positionChanged = positionChanged + sign;
+            }
+            else if(showableLeaderBoard.get(moduleNumberOfCells(index+sign)).isPresent()){
+               positionChanged = positionChanged + sign;
+            }
+            index = index + sign;
+        }
+        showableLeaderBoard.set(moduleNumberOfCells(index), temp);
+        return positionChanged;
+    }
     // days può essere maggiore o minore di zero
     public void modifyFlightDays(Player player, int daysModified){
         if(mapLeaderboard.containsKey(player)){
             int tmpDays = mapLeaderboard.get(player);
-            if(daysModified >= 0) {
-                int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() <= tmpDays + daysModified && entry.getValue() > tmpDays).count();
-                mapLeaderboard.put(player, tmpDays + daysModified + numPlayersToSkip);
-                arrayLeaderboard.set(getPos(player), Map.entry(player, tmpDays + daysModified + numPlayersToSkip));
-
-            }
-            else{
-                int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() >= tmpDays + daysModified && entry.getValue() < tmpDays).count();
-                mapLeaderboard.put(player, tmpDays + daysModified - numPlayersToSkip);
-                arrayLeaderboard.set(getPos(player), Map.entry(player, tmpDays + daysModified - numPlayersToSkip));
-            }
+            int daysToChange = decreaseDaysFromShowableLeaderBoard(player, daysModified);
+            Map.Entry<Player, Integer> entryBefore = arrayLeaderboard.set(getPos(player)-1, Map.entry(player, tmpDays + daysToChange));
+            mapLeaderboard.put(player, tmpDays + daysToChange);
             sort();
         }
         else
@@ -108,6 +139,7 @@ public class LeaderBoard {
             int tmpDays = mapLeaderboard.get(player);
             mapLeaderboard.remove(player);
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
+            showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
         }
         else
@@ -153,6 +185,25 @@ public class LeaderBoard {
             return arrayLeaderboard.isEmpty();
         else
             throw new GameSettingsException("Something went wrong while adding or removing the players");
+    }
+    public ArrayList<Optional<Player>> getShowableLeaderBoard(){return showableLeaderBoard;}
+    public int moduleNumberOfCells(int num){
+        if(num<0){
+            num = num *(-1);
+            if(num%numberOfCells == 0)
+                return 0;
+            else
+                return numberOfCells - (num % numberOfCells);
+        }
+        else
+            return num % numberOfCells;
+    }
+    public boolean isSorted(){
+        for(int i = 0; i < arrayLeaderboard.size()-1; i++){
+            if(arrayLeaderboard.get(i).getValue() < arrayLeaderboard.get(i+1).getValue())
+                return false;
+        }
+        return true;
     }
 }
 
