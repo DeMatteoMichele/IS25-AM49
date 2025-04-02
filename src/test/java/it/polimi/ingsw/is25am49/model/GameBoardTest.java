@@ -3,6 +3,8 @@ package it.polimi.ingsw.is25am49.model;
 import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
+import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import it.polimi.ingsw.is25am49.model.enums.Color;
@@ -20,6 +22,9 @@ class GameBoardTest {
     Player player5;
     Player player6;
     Player player7;
+    ShipBoard ship1, ship2, ship3, ship4;
+    Tile tile1, tile2, tile3, tile4;
+    Component component1, component2, component3, component4;
 
     @BeforeEach
     void init(){
@@ -93,6 +98,10 @@ class GameBoardTest {
 
     @Test
     void calculateFinalCredits() {
+        gameBoard.calculateFinalCredits(player1);
+        assertEquals(6,player1.getCredits());
+        gameBoard.calculateFinalCredits(player2);
+        assertEquals(5,player2.getCredits());
     }
 
     @Test
@@ -129,10 +138,25 @@ class GameBoardTest {
 
     @Test
     void updateLeaderboard() {
+        assertEquals(4,gameBoard.getLeaderBoard().getDays(player1));
+        assertEquals(2,gameBoard.getLeaderBoard().getDays(player2));
+        assertEquals(1,gameBoard.getLeaderBoard().getDays(player3));
+        assertEquals(0,gameBoard.getLeaderBoard().getDays(player4));
         player1.setDaysThisTurn(-1);
         player2.setDaysThisTurn(-2);
         player3.setDaysThisTurn(+1);
-        player4.setDaysThisTurn(+3);
+        player4.setDaysThisTurn(0);
         gameBoard.updateLeaderboard();
+        assertEquals(player3.getUsername(), gameBoard.getLeaderBoard().getPlayerInPosition(1).getUsername());
+        assertEquals(player1.getUsername(),gameBoard.getLeaderBoard().getPlayerInPosition(2).getUsername());
+        assertEquals(player4.getUsername(),gameBoard.getLeaderBoard().getPlayerInPosition(3).getUsername());
+        assertEquals(0,gameBoard.getLeaderBoard().getDays(player4));
+        assertEquals(3,gameBoard.getLeaderBoard().getDays(player3));
+        assertEquals(-1,gameBoard.getLeaderBoard().getDays(player2));
+        assertEquals(2,gameBoard.getLeaderBoard().getDays(player1));
+        assertEquals(0,player1.getDaysThisTurn());
+        assertEquals(0,player2.getDaysThisTurn());
+        assertEquals(0,player3.getDaysThisTurn());
+        assertEquals(0,player4.getDaysThisTurn());
     }
 }

@@ -24,7 +24,7 @@ public class GameBoard {
     private Player currentPlayer;
     private FlightMode flightMode;
     private boolean isFirstCard;
-//TODO da mettere a optional
+
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         tilesDeck = new TileCardDeck();
@@ -137,7 +137,7 @@ public class GameBoard {
 
     public void calculateFinalCredits(Player player) {
         int toAdd = 0;
-        toAdd = 5 - leaderBoard.getPos(player); //crediti per la posizione
+        toAdd = 5 - leaderBoard.getPos(player);//crediti per la posizione
         toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
         toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
         if (minimumExposedComponents().contains(player)) {
@@ -158,7 +158,10 @@ public class GameBoard {
 //        toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
 //        player.getShipBoard().removeAllTokens();
 //    }
-
+    public void setFlightModeToDefault() {
+        flightMode = FlightMode.DEFAULT;
+    }
+    //TODO VA TESTATO
     private List<Player> minimumExposedComponents() {
         int minValue = leaderBoard.
                 stream()
@@ -201,24 +204,23 @@ public class GameBoard {
 
 
     public void updateLeaderboard() {
-        //con i daysthisturn devo fare update facendo perde i giorni
-        //TODO devo usare il metodo in leaderboard e rimettere tutti i flighdays dei player a 0
-//        leaderBoard.stream()
-//                .map(Map.Entry::getKey)
-//                .forEach(player -> {
-//                    leaderBoard.modifyFlightDays(player, player.getCredits());
-//                });
+        //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
                 .sorted(Comparator.comparing(player -> -leaderBoard.getPos(player))) // Ordine decrescente per posizione
                 .forEach(player -> {
-                    leaderBoard.modifyFlightDays(player, player.getCredits());
+                    leaderBoard.modifyFlightDays(player, player.getDaysThisTurn());
                 });
+        //alla fine setto tutti i days this turn a 0
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
                 .forEach(player -> {
                     player.setDaysThisTurn(0);
                 });
+    }
+    private void checkIfIsLapped(){
+        //TODO devo controllare se qualche player è stato doppiato
+        //usare getdays
     }
 
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
