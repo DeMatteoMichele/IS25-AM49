@@ -90,10 +90,13 @@ public class LeaderBoard {
             if(daysModified >= 0) {
                 int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() <= tmpDays + daysModified && entry.getValue() > tmpDays).count();
                 mapLeaderboard.put(player, tmpDays + daysModified + numPlayersToSkip);
+                arrayLeaderboard.set(getPos(player), Map.entry(player, tmpDays + daysModified + numPlayersToSkip));
+
             }
             else{
                 int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() >= tmpDays + daysModified && entry.getValue() < tmpDays).count();
                 mapLeaderboard.put(player, tmpDays + daysModified - numPlayersToSkip);
+                arrayLeaderboard.set(getPos(player), Map.entry(player, tmpDays + daysModified - numPlayersToSkip));
             }
             sort();
         }
