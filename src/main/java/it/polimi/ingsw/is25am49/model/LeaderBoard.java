@@ -90,10 +90,13 @@ public class LeaderBoard {
             if(daysModified >= 0) {
                 int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() <= tmpDays + daysModified && entry.getValue() > tmpDays).count();
                 mapLeaderboard.put(player, tmpDays + daysModified + numPlayersToSkip);
+                arrayLeaderboard.set(getPos(player), Map.entry(player, tmpDays + daysModified + numPlayersToSkip));
+
             }
             else{
                 int numPlayersToSkip = (int) arrayLeaderboard.stream().filter(entry -> entry.getValue() >= tmpDays + daysModified && entry.getValue() < tmpDays).count();
                 mapLeaderboard.put(player, tmpDays + daysModified - numPlayersToSkip);
+                arrayLeaderboard.set(getPos(player), Map.entry(player, tmpDays + daysModified - numPlayersToSkip));
             }
             sort();
         }
@@ -140,7 +143,7 @@ public class LeaderBoard {
     }
     // 1 <= pos <= 4
     public Player getPlayerInPosition(int pos){
-        if(pos <= arrayLeaderboard.size() && pos >= 0)
+        if(pos <= arrayLeaderboard.size() && pos > 0)
             return arrayLeaderboard.get(pos-1).getKey();
         else
             throw new IndexOutOfBoundsException("Error, the given position does not exist");
