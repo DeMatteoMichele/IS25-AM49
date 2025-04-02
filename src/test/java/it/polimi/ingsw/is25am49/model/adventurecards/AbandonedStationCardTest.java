@@ -47,8 +47,8 @@ class AbandonedStationCardTest {
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         gameBoard = new GameBoard();
-        player1 = new Player("TestPlayer", Color.RED, 1);
-        player2 = new Player("TestPlayer2", Color.BLUE, 2);
+        player1 = new Player("pippo", Color.RED, 1);
+        player2 = new Player("pluto", Color.BLUE, 2);
         shipBoard = new ShipBoard(1,2);
         player1.setShipBoard(shipBoard);
         component = new ContainerComponent(ComponentType.CABINE, 5);
@@ -61,11 +61,11 @@ class AbandonedStationCardTest {
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
-        gameBoard.getLeaderBoard().modifyFlightDays(player1, -1);
-        gameBoard.getLeaderBoard().modifyFlightDays(player2, +1);
+//        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
+//        gameBoard.getLeaderBoard().modifyFlightDays(player2, +10);
 
         adventureDeck = new AdventureCardDeck();
-        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 100, 3,2,3,1));
+        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 2, 3,2,3,1));
         adventureDeck.add(new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, 1, 100, 3));
         gameBoard.setMainAdventureDeck(adventureDeck);
 
@@ -74,10 +74,11 @@ class AbandonedStationCardTest {
 
     @Test
     void drawCard() {
+        assertEquals(player1.getUsername(),gameBoard.getLeader().getUsername());
         gameBoard.drawAdventureCard();
         assertEquals(1, adventureDeck.size());
         assertEquals(player1,gameBoard.getCurrentPlayer());
-        assertEquals(player2,gameBoard.getLeader());
+
         assertEquals(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP, gameBoard.getCurrentCard().getCurrentState());
 
     }

@@ -50,6 +50,7 @@ public class AbandonedStationCard extends AdventureCard {
 
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT)+ship.getTotalNumberOfaToken(Token.BROWN_ALIENS)+ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+        System.out.println("player "+ gameBoard.getCurrentPlayer().getUsername() + " has " + totalNumCrewMembers + " crew members");
        //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
         if(totalNumCrewMembers >= lostAstronauts) {
             System.out.println("Do you wanna land on the station for some goods?");
@@ -68,6 +69,7 @@ public class AbandonedStationCard extends AdventureCard {
             catch(IllegalSetOfNextPlayerException e){
                 //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                 System.out.println("It goes to update state");
+                isFinished = true;
                 currentState = AdventureStatesTypes.UPDATE;
             }
         }

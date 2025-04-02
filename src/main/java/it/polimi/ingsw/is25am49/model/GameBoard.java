@@ -98,6 +98,7 @@ public class GameBoard {
     }
     //TODO
     public void drawAdventureCard() {
+
         if(isFirstCard || currentCard.getIsFinished()) {
             currentCard = mainAdventureDeck.getFirstCard();
             mainAdventureDeck.draw();
