@@ -62,36 +62,40 @@ public class PlanetCard extends AdventureCard {
         } else {
             System.out.println("you have decided not to land on the planet");
             System.out.println("Now check on next player");
-            try{
-                gameBoard.nextPlayer();
-                System.out.println("it wasn't the last player, go on");
-                currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
-                checkRequirements();
-            }
-            catch (IllegalSetOfNextPlayerException e) {
-                System.out.println("It was the last player, end of the turn");
-                System.out.println("it goes to update state");
-                isFinished=true;
-                currentState = AdventureStatesTypes.UPDATE;
-            }
+            checkNextPlayer();
 
         }
 
     }
 
+    private void checkNextPlayer() {
+        try{
+            gameBoard.nextPlayer();
+            System.out.println("it wasn't the last player, go on");
+            currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
+            checkRequirements();
+        }
+        catch (IllegalSetOfNextPlayerException e) {
+            System.out.println("It was the last player, end of the turn");
+            System.out.println("it goes to update state");
+            isFinished=true;
+            currentState = AdventureStatesTypes.UPDATE;
+        }
+    }
+
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates){
-        switch (currentState) {
+        if(currentState==AdventureStatesTypes.DECISION_GOODS){
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
-            case DECISION_GOODS -> {
-                System.out.println("You have decided the position of the goods");
-                currentEffect.setListOfCoordinates(coordinates);
-                currentState = AdventureStatesTypes.EFFECT;
-                applyEffect();
+            System.out.println("You have decided the position of the goods");
+            currentEffect.setListOfCoordinates(coordinates);
+            currentState = AdventureStatesTypes.EFFECT;
+            applyEffect();
 
             }
-            default -> throw new IllegalMethodOnThisStateException("Wrong state");
-        }
+        //se non sono in decizion goods allora non posso chiamare finishdecision
+
+        else{throw new IllegalMethodOnThisStateException("Wrong state");}
     }
 
 
@@ -110,20 +114,11 @@ public class PlanetCard extends AdventureCard {
             currentState = AdventureStatesTypes.UPDATE;
             return;
         }
-        try{
-            gameBoard.nextPlayer();
-            System.out.println("it wasn't the last player, go on");
-            currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
-            checkRequirements();
-        }
-        catch (IllegalSetOfNextPlayerException e) {
-            System.out.println("It was the last player, end of the turn");
-            System.out.println("it goes to update state");
-            isFinished = true;
-            currentState = AdventureStatesTypes.UPDATE;
-        }
+        checkNextPlayer();
 
     }
+
+
 
 
 

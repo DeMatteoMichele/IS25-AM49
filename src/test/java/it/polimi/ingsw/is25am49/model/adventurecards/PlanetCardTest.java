@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import javafx.util.Pair;
@@ -38,6 +39,7 @@ class PlanetCardTest {
     @BeforeEach
     public void init() {
         gameBoard = new GameBoard();
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         player1 = new Player("pippo", Color.RED,2);
         player2 = new Player("marco", Color.BLUE,1);
         ship1 = new ShipBoard(1,2);
@@ -64,7 +66,7 @@ class PlanetCardTest {
         coordinates.add(new Pair<>(coordinate1, Token.RED_GOODS));
 
         deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,planets));
-        deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,planets2));
+        deck.add(new PlanetCard(gameBoard,"Planet Card",9,1,planets2));
         gameBoard.setMainAdventureDeck(deck);
 
 
@@ -108,6 +110,7 @@ class PlanetCardTest {
     @Test
     void finishDecision2() {
         gameBoard.drawAdventureCard();
+        gameBoard.getCurrentCard().setFinished(true);
         gameBoard.drawAdventureCard();
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
@@ -115,7 +118,7 @@ class PlanetCardTest {
         gameBoard.getCurrentCard().finishDecision(coordinates);
         assertEquals(player1,gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(-3,gameBoard.getCurrentPlayer().getDaysThisTurn());
+        assertEquals(-9,gameBoard.getCurrentPlayer().getDaysThisTurn());
         assertEquals(0,deck.size());
         assertEquals("Planet Card",gameBoard.getCurrentCard().getDescription());
 

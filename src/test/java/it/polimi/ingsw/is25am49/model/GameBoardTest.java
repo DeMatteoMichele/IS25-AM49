@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.model;
 
+import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ class GameBoardTest {
     @BeforeEach
     void init(){
         gameBoard = new GameBoard();
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         player1 = new Player("pippo", Color.RED,3);
         player2 = new Player("pluto", Color.BLUE,2);
         player3 = new Player("marco", Color.GREEN,1);
@@ -103,13 +105,13 @@ class GameBoardTest {
 
     @Test
     void getCurrentPlayer() {
-        assertEquals(player2.getColor(),gameBoard.getCurrentPlayer().getColor());
+        assertEquals(player1.getColor(),gameBoard.getCurrentPlayer().getColor());
     }
 
     @Test
     void nextPlayer() {
         gameBoard.nextPlayer();
-        assertEquals(player1.getUsername(),gameBoard.getCurrentPlayer().getUsername());
+        assertEquals(player2.getUsername(),gameBoard.getCurrentPlayer().getUsername());
         gameBoard.nextPlayer();
         assertEquals(player3.getColor(), gameBoard.getCurrentPlayer().getColor());
     }
@@ -117,7 +119,7 @@ class GameBoardTest {
     @Test
     void setCurrentPlayer() {
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
-        assertEquals(player2.getUsername(),gameBoard.getCurrentPlayer().getUsername());
+        assertEquals(player1.getUsername(),gameBoard.getCurrentPlayer().getUsername());
     }
 
     @Test
@@ -127,5 +129,10 @@ class GameBoardTest {
 
     @Test
     void updateLeaderboard() {
+        player1.setDaysThisTurn(-1);
+        player2.setDaysThisTurn(-2);
+        player3.setDaysThisTurn(+1);
+        player4.setDaysThisTurn(+3);
+        gameBoard.updateLeaderboard();
     }
 }

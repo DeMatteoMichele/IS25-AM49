@@ -27,13 +27,12 @@ class SabotageCardTest {
     Tile tile1,tile3;
     Point coordinate1 = new Point(7,8);
     Point coordinate3 = new Point(7,6);
-    LeaderBoard leaderBoard;
 
 
     @BeforeEach
     public void init(){
         gameBoard = new GameBoard();
-        leaderBoard = new LeaderBoard(GameMode.LEVEL_1);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
 
         player1 = new Player("pippo", Color.RED,2);
         player2 = new Player("marco", Color.BLUE,3);
@@ -48,6 +47,14 @@ class SabotageCardTest {
         component3 = new ContainerComponent(ComponentType.CABINE,7);
         tile1 = new Tile(2,component1);
         tile3 = new Tile(3,component3);
+        tile1.setConnectors(ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL);
+        tile3.setConnectors(ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL);
         player1.getShipBoard().insertTile(coordinate1,tile1);
         player3.getShipBoard().insertTile(coordinate3,tile3);
         player3.getShipBoard().addTokenToTile(coordinate3,Token.ASTRONAUT);
@@ -55,7 +62,7 @@ class SabotageCardTest {
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player3);
-        gameBoard.getLeaderBoard().modifyFlightDays(player1, -3);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -1);
         gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
         gameBoard.getLeaderBoard().modifyFlightDays(player3, +7);
         deck = new AdventureCardDeck();
@@ -64,6 +71,7 @@ class SabotageCardTest {
         ship1.completeShipBoard();
         ship2.completeShipBoard();
         ship3.completeShipBoard();
+
 
     }
 

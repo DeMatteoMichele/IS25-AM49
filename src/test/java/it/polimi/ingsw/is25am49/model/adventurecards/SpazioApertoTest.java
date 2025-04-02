@@ -65,11 +65,12 @@ class SpazioApertoTest {
         tile4 = new Tile(5,component4);
         tile5 = new Tile(6,component5);
         tile7 = new Tile(10,component7);
-        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
+
 
         player1 = new Player("TestPlayer1", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.GREEN, 2);
         gameBoard = new GameBoard();
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         deck = new AdventureCardDeck();
         deck.add(new SpazioAperto(gameBoard,"spazio aperto",1));
         ship1 = new ShipBoard(1, 1);
@@ -120,7 +121,7 @@ class SpazioApertoTest {
         gameBoard.getCurrentCard().finishDecision(batteries2);
 
         assertEquals(player2, gameBoard.getCurrentPlayer());
-        assertEquals(AdventureStatesTypes.DECISION_CANNON,gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(AdventureStatesTypes.DECISION_MOTOR,gameBoard.getCurrentCard().getCurrentState());
     }
 
     @Test

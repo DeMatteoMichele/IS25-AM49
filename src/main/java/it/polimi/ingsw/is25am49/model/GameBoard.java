@@ -96,7 +96,7 @@ public class GameBoard {
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
-    //TODO
+
     public void drawAdventureCard() {
 
         if(isFirstCard || currentCard.getIsFinished()) {
@@ -146,20 +146,20 @@ public class GameBoard {
         player.addCredits(toAdd);
     }
 
-    public void calculateFinalScore(Player player) {
-        int toAdd = 0;
-        toAdd = 5 - leaderBoard.getPos(player);
-        toAdd = toAdd - player.getLostComponents();
+//    public void calculateFinalScore(Player player) {
+//        int toAdd = 0;
+//        toAdd = 5 - leaderBoard.getPos(player);
+//        toAdd = toAdd - player.getLostComponents();
+//
+//        int redToken = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
+//        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
+//        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
+//        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
+//        toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
+//        player.getShipBoard().removeAllTokens();
+//    }
 
-        int redToken = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
-        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
-        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
-        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
-        toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
-        player.getShipBoard().removeAllTokens();
-    }
-
-    public List<Player> minimumExposedComponents() {
+    private List<Player> minimumExposedComponents() {
         int minValue = leaderBoard.
                 stream()
                 .map(Map.Entry::getKey)//ritorno il player
@@ -202,6 +202,23 @@ public class GameBoard {
 
     public void updateLeaderboard() {
         //con i daysthisturn devo fare update facendo perde i giorni
+        //TODO devo usare il metodo in leaderboard e rimettere tutti i flighdays dei player a 0
+//        leaderBoard.stream()
+//                .map(Map.Entry::getKey)
+//                .forEach(player -> {
+//                    leaderBoard.modifyFlightDays(player, player.getCredits());
+//                });
+        leaderBoard.stream()
+                .map(Map.Entry::getKey)
+                .sorted(Comparator.comparing(player -> -leaderBoard.getPos(player))) // Ordine decrescente per posizione
+                .forEach(player -> {
+                    leaderBoard.modifyFlightDays(player, player.getCredits());
+                });
+        leaderBoard.stream()
+                .map(Map.Entry::getKey)
+                .forEach(player -> {
+                    player.setDaysThisTurn(0);
+                });
     }
 
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {

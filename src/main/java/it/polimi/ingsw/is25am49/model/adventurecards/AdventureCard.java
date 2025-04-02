@@ -110,5 +110,9 @@ public abstract class AdventureCard {
     public boolean getIsFinished() {
         return isFinished;
     }
+    public void setFinished(boolean finished) {
+        isFinished = finished;
+    }
+
 
 }
