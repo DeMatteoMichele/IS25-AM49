@@ -10,9 +10,10 @@ import java.util.List;
 
 public class MeteorRainCard extends AdventureCard {
 
-    List<CardEffect> listEffects=new ArrayList<>();
+    List<CardEffect> listEffects = new ArrayList<>();
+
     public MeteorRainCard(GameBoard gameBoard, String description, int level, List<CardEffect> ListEffects) {
-        super(gameBoard,description, level);
+        super(gameBoard, description, level);
         listEffects.addAll(ListEffects);
     }
 
@@ -29,7 +30,6 @@ public class MeteorRainCard extends AdventureCard {
     public void checkRequirements() {
 
     }
-
 
 
     @Override

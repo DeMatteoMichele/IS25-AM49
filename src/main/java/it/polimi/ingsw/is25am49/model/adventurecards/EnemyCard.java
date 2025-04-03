@@ -5,6 +5,8 @@ import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
+import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalNumOfCannonsException;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -132,7 +134,7 @@ public abstract class EnemyCard extends AdventureCard {
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
-            default -> throw new IllegalArgumentException("Invalid state: " + currentState);
+            default -> throw new IllegalMethodOnThisCardException("Invalid state: " + currentState);
         }
     }
 
@@ -160,9 +162,28 @@ public abstract class EnemyCard extends AdventureCard {
                     System.out.println("Rechoose correctly the number of shields as the same as batteries");
                 }
             }
-            default -> throw new IllegalArgumentException("Invalid state: " + currentState);
+            default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
         }
     }
+
+    @Override
+    public void acceptPrizes(boolean wantsRewards){
+        if(currentState!=AdventureStatesTypes.DECISION_REWARDS)
+            throw new IllegalStateException("Wrong State");
+        else if(wantsRewards){
+            System.out.println("You have accepted the rewards. You lose " + daysLost + " days");
+            handleRewards();
+        }
+        else{
+            System.out.println("You have refused the rewards");
+            handleRefuseOfRewards();
+        }
+    }
+
+    protected abstract void handleRewards();
+    protected abstract void handleRefuseOfRewards();
+
+
 
 
 }

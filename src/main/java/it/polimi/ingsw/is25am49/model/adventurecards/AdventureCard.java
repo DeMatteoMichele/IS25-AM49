@@ -15,7 +15,6 @@ import java.util.Set;
 
 public abstract class AdventureCard {
 
-    //TODO da togliere
     protected String description;
     protected boolean isFinished;
     protected int level;
@@ -101,6 +100,9 @@ public abstract class AdventureCard {
     }
 
     public void finishDecision(Set<Point> coordinates) {
+    }
+
+    public void acceptPrizes(boolean wantsRewards){
     }
 
     public List<Player> getDefeatedPlayers() {

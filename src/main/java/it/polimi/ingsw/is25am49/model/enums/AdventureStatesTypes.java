@@ -5,6 +5,7 @@ public enum AdventureStatesTypes {
     DRAW,
     EFFECT,
     UPDATE,
+    DECISION_REWARDS,
     DECISION_ASTRONAUTS_OR_ALIENS,
     DECISION_BATTERIES,
     DECISION_CANNON,

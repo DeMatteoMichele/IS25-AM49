@@ -39,14 +39,15 @@ class SmugglerCardTest {
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
 //        player1.setShipBoard(shipMock1);
-        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player2);
-        gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
-        gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
+        gameBoard.addPlayerToLeaderboard(player1);
+//        gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
+//        gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
-        listEffects.add(new EffectWinGoods("WinGoods", 50,2,1,1));
+        listEffects.add(new EffectWinGoods("WinGoods", 3,2,1,1));
         listEffects.add(new EffectLoseGoods("LoseGoods", 3));
-        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, 2,  3, 50,2,1,1,3 );
+        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, 2,  3, 3,2,1,1,3 );
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 

@@ -20,6 +20,24 @@ public class SlaverCard extends EnemyCard {
 
     private static final int LOSE_CREW_INDEX = 0;
 
+    @Override
+    protected void evaluateBattleOutcome(ShipBoard shipBoard) {
+        if (checkWinFirePower(shipBoard)) {
+            System.out.println("You have more firepower to defeat the Slavers! You win some credits!");
+            System.out.println("Now decide if you want to accept the rewards ");
+            isDefeated = true;
+            System.out.println("Now decide if you want to accept the rewards ");
+            currentState= AdventureStatesTypes.DECISION_REWARDS;
+
+        } else if (checkDrawFirePower(shipBoard)) {
+            System.out.println("You have drawn with the Slavers!");
+            tryNextPlayer();
+        } else {
+            System.out.println("You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
+            currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
+            currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+        }
+    }
 
     @Override
     public void applyEffect() {
@@ -37,23 +55,6 @@ public class SlaverCard extends EnemyCard {
     }
 
     @Override
-    protected void evaluateBattleOutcome(ShipBoard shipBoard) {
-        if (checkWinFirePower(shipBoard)) {
-            System.out.println("You have more firepower to defeat the Slavers! You win some credits!");
-            isDefeated = true;
-            currentState=AdventureStatesTypes.EFFECT;
-            applyEffect();
-        } else if (checkDrawFirePower(shipBoard)) {
-            System.out.println("You have drawn with the Slavers!");
-            tryNextPlayer();
-        } else {
-            System.out.println("You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
-            currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
-            currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
-        }
-    }
-
-    @Override
     protected AdventureStatesTypes determineStateAfterBatteries() {
         return AdventureStatesTypes.DECISION_CANNON;
     }
@@ -62,4 +63,18 @@ public class SlaverCard extends EnemyCard {
     protected void handleEmptyBatteryDecision(ShipBoard shipBoard) {
         evaluateBattleOutcome(shipBoard);
     }
+
+    @Override
+    protected void handleRewards() {
+        currentState=AdventureStatesTypes.EFFECT;
+        applyEffect();
+    }
+
+    @Override
+    protected void handleRefuseOfRewards() {
+        System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
+        currentState = AdventureStatesTypes.UPDATE;
+        isFinished = true;
+    }
+
 }

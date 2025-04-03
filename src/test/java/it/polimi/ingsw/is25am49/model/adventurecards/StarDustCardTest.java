@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectLoseGoods;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.Color;
+import it.polimi.ingsw.is25am49.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
@@ -36,8 +37,7 @@ class StarDustCardTest {
 
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
-    Component shipBoardComponent;
-    Tile tile;
+
 
 
     @BeforeEach
@@ -50,9 +50,10 @@ class StarDustCardTest {
         player1.setShipBoard(shipMock1);
         player2.setShipBoard(shipMock2);
         player3.setShipBoard(shipMock3);
-        gameBoard.addPlayerToLeaderboard( player1);
-        gameBoard.addPlayerToLeaderboard( player2);
-        gameBoard.addPlayerToLeaderboard( player3);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_2);
+        gameBoard.addPlayerToLeaderboard(player1);
+        gameBoard.addPlayerToLeaderboard(player2);
+        gameBoard.addPlayerToLeaderboard(player3);
         gameBoard.getLeaderBoard().modifyFlightDays(player2, 3);
         gameBoard.getLeaderBoard().modifyFlightDays(player1, 0);
         gameBoard.getLeaderBoard().modifyFlightDays(player3, 2);
@@ -65,7 +66,7 @@ class StarDustCardTest {
 
     @Test
     void drawCard() {
-        assertEquals(gameBoard.getLeader(), player2);
+        assertEquals(player2, gameBoard.getLeader());
         when(shipMock1.getNumberOfExposedConnectors()).thenReturn(1);
         when(shipMock2.getNumberOfExposedConnectors()).thenReturn(2);
         when(shipMock3.getNumberOfExposedConnectors()).thenReturn(3);
