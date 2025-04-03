@@ -102,9 +102,9 @@ public class SpazioAperto extends AdventureCard {
                 //ho deciso quali batterie attivare, setto la lista di coordinate della batterie con quella passata
                 //dall'utente e passo allo stato in cui in base alle batterie decide i cannoni da attivare
                 System.out.println("you have choosen "+ coordinates.size() + " batteries, so you will activate " + coordinates.size() + " motors");
-                batteries = coordinates;
+                this.batteries = new ArrayList<>(coordinates);
                 System.out.println("now choose which motors you wanna activate");
-                currentState= AdventureStatesTypes.DECISION_CANNON;
+                currentState= AdventureStatesTypes.DECISION_MOTOR;
                            }
 
         default ->{ throw  new IllegalArgumentException("invalid state");}
@@ -118,7 +118,7 @@ public class SpazioAperto extends AdventureCard {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         this.cannons = new ArrayList<>(coordinates);
         switch(currentState){
-            case DECISION_CANNON -> {
+            case DECISION_MOTOR -> {
                 System.out.println("you have decided the coordinates of the motors you wanna activate");
 
                 //controllo che il numero dei cannoni da attivare corrisponda al numero delle batterie

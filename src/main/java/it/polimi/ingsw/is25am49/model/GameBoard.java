@@ -24,7 +24,7 @@ public class GameBoard {
     private Player currentPlayer;
     private FlightMode flightMode;
     private boolean isFirstCard;
-//TODO da mettere a optional
+
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         tilesDeck = new TileCardDeck();
@@ -96,7 +96,7 @@ public class GameBoard {
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
-    //TODO
+
     public void drawAdventureCard() {
 
         if(isFirstCard || currentCard.getIsFinished()) {
@@ -137,7 +137,7 @@ public class GameBoard {
 
     public void calculateFinalCredits(Player player) {
         int toAdd = 0;
-        toAdd = 5 - leaderBoard.getPos(player); //crediti per la posizione
+        toAdd = 5 - leaderBoard.getPos(player);//crediti per la posizione
         toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
         toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
         if (minimumExposedComponents().contains(player)) {
@@ -146,20 +146,23 @@ public class GameBoard {
         player.addCredits(toAdd);
     }
 
-    public void calculateFinalScore(Player player) {
-        int toAdd = 0;
-        toAdd = 5 - leaderBoard.getPos(player);
-        toAdd = toAdd - player.getLostComponents();
-
-        int redToken = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
-        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
-        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
-        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
-        toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
-        player.getShipBoard().removeAllTokens();
+//    public void calculateFinalScore(Player player) {
+//        int toAdd = 0;
+//        toAdd = 5 - leaderBoard.getPos(player);
+//        toAdd = toAdd - player.getLostComponents();
+//
+//        int redToken = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
+//        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
+//        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
+//        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
+//        toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
+//        player.getShipBoard().removeAllTokens();
+//    }
+    public void setFlightModeToDefault() {
+        flightMode = FlightMode.DEFAULT;
     }
-
-    public List<Player> minimumExposedComponents() {
+    //TODO VA TESTATO
+    private List<Player> minimumExposedComponents() {
         int minValue = leaderBoard.
                 stream()
                 .map(Map.Entry::getKey)//ritorno il player
@@ -201,7 +204,23 @@ public class GameBoard {
 
 
     public void updateLeaderboard() {
-        //con i daysthisturn devo fare update facendo perde i giorni
+        //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
+        leaderBoard.stream()
+                .map(Map.Entry::getKey)
+                .sorted(Comparator.comparing(player -> -leaderBoard.getPos(player))) // Ordine decrescente per posizione
+                .forEach(player -> {
+                    leaderBoard.modifyFlightDays(player, player.getDaysThisTurn());
+                });
+        //alla fine setto tutti i days this turn a 0
+        leaderBoard.stream()
+                .map(Map.Entry::getKey)
+                .forEach(player -> {
+                    player.setDaysThisTurn(0);
+                });
+    }
+    private void checkIfIsLapped(){
+        //TODO devo controllare se qualche player è stato doppiato
+        //usare getdays
     }
 
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {

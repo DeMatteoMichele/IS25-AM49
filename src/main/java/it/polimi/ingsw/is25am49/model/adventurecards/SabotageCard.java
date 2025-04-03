@@ -53,8 +53,8 @@ public class SabotageCard extends AdventureCard {
 
         //debug per stampare per ogni giocatore il totale dell'equipaggio
 
-//        gameBoard.getLeaderBoard().forEach(p ->
-//        System.out.println(p.getValue().getUsername() + " " + getTotalCrew(p.getValue())));
+//        gameBoard.getLeaderBoard().stream().forEach(p ->
+//        System.out.println(p.getKey().getUsername() + " " + getTotalCrew(p.getKey())));
 
         //setto a current player del gameboard il giocatore con meno equipaggio
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);

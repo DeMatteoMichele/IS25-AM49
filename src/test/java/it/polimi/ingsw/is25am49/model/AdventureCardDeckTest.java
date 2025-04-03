@@ -56,9 +56,10 @@ class AdventureCardDeckTest {
         cardDrawn = gameBoard.getCurrentCard();
         assertEquals("pianeti",cardDrawn.getDescription() );
         assertEquals(card.getLevel(),cardDrawn.getLevel());
-//        gameBoard.drawAdventureCard();
-//        cardDrawn = gameBoard.getCurrentCard();
-//        assertEquals(card2.getDescription(),cardDrawn.getDescription());
+        gameBoard.getCurrentCard().setFinished(true);
+        gameBoard.drawAdventureCard();
+        cardDrawn = gameBoard.getCurrentCard();
+        assertEquals(card2.getDescription(),cardDrawn.getDescription());
     }
 
 

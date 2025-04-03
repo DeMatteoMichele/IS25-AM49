@@ -49,7 +49,10 @@ public class Player {
         return smallAdventureDeckLooked;
     }
     public int scoreOfGoods(){
-        int total= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS)+shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2;
+        int total= shipBoard.getTotalNumberOfaToken(Token.RED_GOODS)*4+
+                shipBoard.getTotalNumberOfaToken(Token.YELLOW_GOODS)*3+
+                shipBoard.getTotalNumberOfaToken(Token.GREEN_GOODS)*2+
+                shipBoard.getTotalNumberOfaToken(Token.BLUE_GOODS);
         shipBoard.removeAllTokens();
         return total;
     }

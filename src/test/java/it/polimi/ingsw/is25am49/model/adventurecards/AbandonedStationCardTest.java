@@ -61,8 +61,8 @@ class AbandonedStationCardTest {
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
-//        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
-//        gameBoard.getLeaderBoard().modifyFlightDays(player2, +10);
+        gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
+        gameBoard.getLeaderBoard().modifyFlightDays(player2, 8);
 
         adventureDeck = new AdventureCardDeck();
         adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 2, 3,2,3,1));
@@ -74,7 +74,7 @@ class AbandonedStationCardTest {
 
     @Test
     void drawCard() {
-        assertEquals(player1.getUsername(),gameBoard.getLeader().getUsername());
+        assertEquals(player2.getUsername(),gameBoard.getLeader().getUsername());
         gameBoard.drawAdventureCard();
         assertEquals(1, adventureDeck.size());
         assertEquals(player1,gameBoard.getCurrentPlayer());
