@@ -127,7 +127,6 @@ public class PiratesCard extends EnemyCard {
 
     private void checkForBatteriesToUseForShields() {
         boolean hasBatteries = gameBoard.getCurrentPlayer().getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS) > 0;
-
         if (hasBatteries) {  // player has batteries for shields
             checkDimensionOfCannonade();
         } else {  // player has no batteries for shields
@@ -153,6 +152,15 @@ public class PiratesCard extends EnemyCard {
             System.out.println("Non hai scudi da attivare. Subisci l'effetto della cannonata.");
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
+        }
+    }
+
+    @Override
+    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
+        if (cannonadesPhase) { //we are in the effect phase, when players are already defeated
+            return (int) shipBoard.getActivatableComponents(ComponentType.SHIELD).stream().count();
+        } else {
+            return (int) shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).stream().count();
         }
     }
 

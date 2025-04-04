@@ -83,7 +83,7 @@ public abstract class EnemyCard extends AdventureCard {
 
     private void activateComponentWithBatteries(List<Point> coordinatesOfActivable, ShipBoard shipBoard) {
         if (coordinatesOfActivable.size() != coordinatesOfBatteries.size()) {
-            throw new IllegalNumOfCannonsException("You have to choose at max the same number of cannons as batteries");
+            throw new IllegalNumOfCannonsException("You have to choose at max the same number of components as batteries");
         }
         System.out.println("You have decided the coord for the components");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
@@ -108,11 +108,18 @@ public abstract class EnemyCard extends AdventureCard {
 
     protected abstract void handleEmptyBatteryDecision(ShipBoard shipBoard);
 
+    protected abstract int getMaxActivatableComponents(ShipBoard shipBoard);
+
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
             case DECISION_BATTERIES -> {
+                int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
+                if (coordinates.size() > maxActivatableComponents) {
+                    System.out.println("Hai selezionato troppe batterie! Puoi attivare al massimo " + maxActivatableComponents + " componenti.");
+                    return; // Mantiene lo stato corrente
+                }
                 coordinatesOfBatteries = coordinates;
                 if (coordinatesOfBatteries.isEmpty()) {
                     System.out.println("You have decided not to use batteries");
@@ -134,7 +141,7 @@ public abstract class EnemyCard extends AdventureCard {
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
-            default -> throw new IllegalMethodOnThisCardException("Invalid state: " + currentState);
+            default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
         }
     }
 

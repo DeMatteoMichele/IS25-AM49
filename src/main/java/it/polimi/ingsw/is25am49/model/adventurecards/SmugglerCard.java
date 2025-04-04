@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.model.cardeffects.EffectLoseGoods;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
 
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 
@@ -78,6 +79,11 @@ public class SmugglerCard extends EnemyCard {
         System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
         currentState = AdventureStatesTypes.UPDATE;
         isFinished = true;
+    }
+
+    @Override
+    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
+        return (int) shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).stream().count();
     }
 
 }

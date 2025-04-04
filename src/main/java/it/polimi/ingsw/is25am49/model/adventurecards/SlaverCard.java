@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectLoseGoods;
 import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
 
 public class SlaverCard extends EnemyCard {
@@ -75,6 +76,11 @@ public class SlaverCard extends EnemyCard {
         System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
         currentState = AdventureStatesTypes.UPDATE;
         isFinished = true;
+    }
+
+    @Override
+    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
+        return (int) shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).stream().count();
     }
 
 }
