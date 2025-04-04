@@ -1,15 +1,17 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
-import it.polimi.ingsw.is25am49.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
-import org.junit.jupiter.api.AfterEach;
+import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.server.model.enums.ConnectorType;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokenInComponentEcxeption;
+import it.polimi.ingsw.is25am49.server.model.shipboard.BasicComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.SpecialComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;

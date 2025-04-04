@@ -1,0 +1,35 @@
+package it.polimi.ingsw.is25am49.server;
+
+import it.polimi.ingsw.is25am49.server.model.GameSession;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ServerController {
+    private final GameSession gameSession;
+    private final Serializer serializer;
+    //Ci serve averle nel controller per filtrare le possibili selezioni di Token/Tessere dell'utente
+    private final ArrayList<ShipBoard> shipBoards;
+    private AdventureCard currentAdventureCard;
+    private Player currentPlayer;
+    //Bisogna decidere se implementare la funzionalità per i game multipli, per ora faccio come se non ci sia
+    public ServerController(Serializer serializer, GameSession gameSession) {
+        this.gameSession = gameSession;
+        this.serializer = serializer;
+        shipBoards = new ArrayList<>();
+        currentAdventureCard = null;
+    }
+    public void addFinalShipBoardToArray(Player player){
+        if(player.getShipBoard().isCompleted())
+            shipBoards.add(player.getShipBoard());
+    }
+    public void passInformationToNetworkLevel(String method, List<Object> parameters) {
+        serializer.SerializeObjectFromServer(method, parameters);
+    }
+
+
+}

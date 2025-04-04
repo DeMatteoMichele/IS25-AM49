@@ -1,15 +1,16 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
-import it.polimi.ingsw.is25am49.model.enums.*;
-import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
-import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
-import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.PiratesCard;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

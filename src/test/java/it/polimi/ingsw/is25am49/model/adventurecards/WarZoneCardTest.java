@@ -1,17 +1,17 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
-import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
-import it.polimi.ingsw.is25am49.model.Game;
-import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectModifyCrew;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.shipboard.*;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.WarZoneCard;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectModifyCrew;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.shipboard.*;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,6 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.awt.*;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class WarZoneCardTest {
 

@@ -1,18 +1,19 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
-import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
-import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.enums.*;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.shipboard.*;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.SpazioAperto;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.shipboard.*;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import net.bytebuddy.agent.ByteBuddyAgent;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,7 @@ class SpazioApertoTest {
     Point coordinate6 = new Point(8,9);
     Point coordinate7 = new Point(6,6);
     Component component1, component2, component3, component4,component5,component6,component7;
-    List <Pair<Point,Token>> batteries,batteries2;
+    List <Pair<Point, Token>> batteries,batteries2;
     Set<Point> cannons,cannons2;
 
     @BeforeEach

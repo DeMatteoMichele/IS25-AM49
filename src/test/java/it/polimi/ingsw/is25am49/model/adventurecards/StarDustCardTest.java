@@ -1,18 +1,16 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
-import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
-import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectLoseGoods;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectWinGoods;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
-import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.model.shipboard.Tile;
-import javafx.util.Pair;
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.StarDustCard;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,7 +37,6 @@ class StarDustCardTest {
     AdventureCard card1;
 
 
-
     @BeforeEach
     void init() {
         // Initialize the game board and player1
@@ -50,10 +47,9 @@ class StarDustCardTest {
         player1.setShipBoard(shipMock1);
         player2.setShipBoard(shipMock2);
         player3.setShipBoard(shipMock3);
-        gameBoard.setLeaderBoard(GameMode.LEVEL_2);
-        gameBoard.addPlayerToLeaderboard(player1);
-        gameBoard.addPlayerToLeaderboard(player2);
-        gameBoard.addPlayerToLeaderboard(player3);
+        gameBoard.addPlayerToLeaderboard( player1);
+        gameBoard.addPlayerToLeaderboard( player2);
+        gameBoard.addPlayerToLeaderboard( player3);
         gameBoard.getLeaderBoard().modifyFlightDays(player2, 3);
         gameBoard.getLeaderBoard().modifyFlightDays(player1, 0);
         gameBoard.getLeaderBoard().modifyFlightDays(player3, 2);
