@@ -5,9 +5,11 @@ import java.util.List;
 
 public class Serializer {
     private final ServerController serverController;
-    private final NetworkLevel networkLevel;
-    public Serializer(ServerController serverController, NetworkLevel networkLevel) {
+    private NetworkLevel networkLevel;
+    public Serializer(ServerController serverController) {
         this.serverController = serverController;
+    }
+    public void setNetworkLevel(NetworkLevel networkLevel) {
         this.networkLevel = networkLevel;
     }
     public void deSerializeStringFromClient(File fileJson) {

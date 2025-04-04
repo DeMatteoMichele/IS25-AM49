@@ -13,15 +13,17 @@ import java.awt.*;
 import java.util.Optional;
 
 public class GameSession {
-    private final ServerController serverController;
+    private ServerController serverController;
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
-    public GameSession(ServerController serverController) {
-        this.serverController = serverController;
+    public GameSession() {
         game = Optional.empty();
         admin = Optional.empty();
         currentState = new InitState(this);
+    }
+    public void setServerController(ServerController serverController) {
+        this.serverController = serverController;
     }
     public Optional<Game> getGame() { return game; }
     private void checkIsAdmin(Player player){
