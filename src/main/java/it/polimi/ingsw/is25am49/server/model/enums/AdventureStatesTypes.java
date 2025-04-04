@@ -1,0 +1,17 @@
+package it.polimi.ingsw.is25am49.server.model.enums;
+
+public enum AdventureStatesTypes {
+    CHECK_REQUIREMENTS,
+    DRAW,
+    EFFECT,
+    UPDATE,
+    DECISION_ASTRONAUTS_OR_ALIENS,
+    DECISION_BATTERIES,
+    DECISION_CANNON,
+    DECISION_MOTOR,
+    DECISION_GOODS,
+    DECISION_LAND_PLANET,
+    DECISION_LAND_STATION_OR_SHIP,
+    DECISION_SHIELDS,
+    ROLL_DICES
+}

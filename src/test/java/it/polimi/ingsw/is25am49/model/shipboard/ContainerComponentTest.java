@@ -1,8 +1,9 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalTokenInComponentEcxeption;
+import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokenInComponentEcxeption;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

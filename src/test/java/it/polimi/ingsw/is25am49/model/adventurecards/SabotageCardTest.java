@@ -1,15 +1,15 @@
 package it.polimi.ingsw.is25am49.model.adventurecards;
 
-import it.polimi.ingsw.is25am49.model.AdventureCardDeck;
-import it.polimi.ingsw.is25am49.model.GameBoard;
-import it.polimi.ingsw.is25am49.model.LeaderBoard;
-import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.enums.*;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
-import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
-import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.SabotageCard;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +57,7 @@ class SabotageCardTest {
                 ConnectorType.UNIVERSAL);
         player1.getShipBoard().insertTile(coordinate1,tile1);
         player3.getShipBoard().insertTile(coordinate3,tile3);
-        player3.getShipBoard().addTokenToTile(coordinate3,Token.ASTRONAUT);
+        player3.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
