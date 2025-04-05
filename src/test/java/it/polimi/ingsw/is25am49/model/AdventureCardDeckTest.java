@@ -58,12 +58,12 @@ class AdventureCardDeckTest {
         deck2.add(card);
         deck2.add(card2);
         //il resto per testare se rimuove la prima adventure card inserita
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeaderBoard().getLeader());
         cardDrawn = gameBoard.getCurrentCard();
         assertEquals("pianeti",cardDrawn.getDescription() );
         assertEquals(card.getLevel(),cardDrawn.getLevel());
         gameBoard.getCurrentCard().setFinished(true);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeaderBoard().getLeader());
         cardDrawn = gameBoard.getCurrentCard();
         assertEquals(card2.getDescription(),cardDrawn.getDescription());
     }

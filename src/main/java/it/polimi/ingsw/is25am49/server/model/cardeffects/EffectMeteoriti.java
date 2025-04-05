@@ -1,6 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model.cardeffects;
 
-import it.polimi.ingsw.is25am49.model.*;
+import it.polimi.ingsw.is25am49.server.model.*;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;

@@ -73,7 +73,7 @@ class AbandonedStationCardTest {
     @Test
     void drawCard() {
         assertEquals(player2.getUsername(),gameBoard.getLeader().getUsername());
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeaderBoard().getLeader());
         assertEquals(1, adventureDeck.size());
         assertEquals(player1,gameBoard.getCurrentPlayer());
 

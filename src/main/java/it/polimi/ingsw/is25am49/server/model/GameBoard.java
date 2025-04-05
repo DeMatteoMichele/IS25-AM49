@@ -162,7 +162,7 @@ public class GameBoard {
     public Player getLeader() {
         return leaderBoard.getLeader();
     }
-//todo modifico con player atterrati acnhe
+
     public void calculateFinalCredits() {
 
         leaderBoard.stream().forEach(entry -> {
@@ -177,7 +177,18 @@ public class GameBoard {
             p.addCredits(credits);
 
         });
+        landedPlayers.forEach(player -> {
+                    int credits =0;
 
+                    credits = 5 - leaderBoard.getPos(player);
+                    credits -= player.getLostComponents();
+                    credits += player.scoreOfGoods();
+                    if(minimumExposedComponents().contains(player)) {
+                        credits += 2;
+                    }
+                    player.addCredits(credits);
+                });
+    }
 //        int toAdd = 0;
 //        toAdd = 5 - leaderBoard.getPos(player);//crediti per la posizione
 //        toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
@@ -186,7 +197,7 @@ public class GameBoard {
 //            toAdd += 2; //crediti per i componentiesposti
 //        }
 //        player.addCredits(toAdd);
-    }
+
 
 //    public void calculateFinalScore(Player player) {
 //        int toAdd = 0;
@@ -249,7 +260,7 @@ public class GameBoard {
         checkIfIsLapped();
     }
     public void updateLeaderboard() {
-        //todo se è doppiato lo aggiungo alla lista degli atterrati
+
         //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
@@ -264,8 +275,8 @@ public class GameBoard {
                     player.setDaysThisTurn(0);
                 });
     }
-    private void checkIfIsLapped() {
-//        if(playerledarboard.hetdays() > player2leaderboard.getdays + leaderBoard.getNumberOfCells())
+    public void checkIfIsLapped() {
+//
         //in this case the player is lapped, i call the method in leaderboard dani me lo ha messo
         //TODO devo controllare se qualche player è stato doppiato
         //usare getdays di leaderboard
@@ -273,7 +284,7 @@ public class GameBoard {
                 .map(Map.Entry::getKey)
                 .forEach(player -> {
                     if(leaderBoard.getDays(player)< leaderBoard.getDays(leaderBoard.getLeader())+leaderBoard.getNumberOfCells()){
-                        //chiamo il metodo
+                        playerNoMoreInFlight(player);
                     }
                 });
     }

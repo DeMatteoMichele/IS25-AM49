@@ -159,4 +159,14 @@ class GameBoardTest {
         assertEquals(0,player3.getDaysThisTurn());
         assertEquals(0,player4.getDaysThisTurn());
     }
+
+    @Test
+    void checkIfIsLapped(){
+        player1.setDaysThisTurn(15);
+        player4.setDaysThisTurn(1);
+        player2.setDaysThisTurn(5);
+        player3.setDaysThisTurn(5);
+        assertEquals(player1.getUsername(),gameBoard.getLeaderBoard().getPlayerInPosition(1).getUsername());
+
+    }
 }
