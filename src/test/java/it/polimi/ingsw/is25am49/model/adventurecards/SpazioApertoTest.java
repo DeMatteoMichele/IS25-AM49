@@ -106,7 +106,7 @@ class SpazioApertoTest {
 
     @Test
     void drawCard() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, deck.size());
         assertEquals(player2, gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.DECISION_BATTERIES,gameBoard.getCurrentCard().getCurrentState());
@@ -118,7 +118,7 @@ class SpazioApertoTest {
 
     @Test
     void finishDecision() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().finishDecision(batteries2);
 
         assertEquals(player2, gameBoard.getCurrentPlayer());
@@ -127,7 +127,7 @@ class SpazioApertoTest {
 
     @Test
     void testFinishDecision() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().finishDecision(batteries2);
         gameBoard.getCurrentCard().finishDecision(cannons2);
         gameBoard.getCurrentCard().finishDecision(batteries);

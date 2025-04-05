@@ -12,6 +12,7 @@ import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
+import static org.junit.jupiter.api.Assertions.*;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +97,7 @@ class WarZoneCardTest {
     @Test
     void drawCard() {
         assertEquals(player1,gameBoard.getCurrentPlayer());
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(player2.getUsername(),gameBoard.getLeader().getUsername());
         gameBoard.getCurrentCard().finishDecision(batteries);
         gameBoard.getCurrentCard().finishDecision(motors);

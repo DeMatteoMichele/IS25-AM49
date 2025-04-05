@@ -78,7 +78,7 @@ class SabotageCardTest {
 
     @Test
     void drawCard() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals("Sabotage Card",gameBoard.getCurrentCard().getDescription());
         assertEquals(0,deck.size());
         assertEquals(AdventureStatesTypes.DRAW,gameBoard.getCurrentCard().getCurrentState());

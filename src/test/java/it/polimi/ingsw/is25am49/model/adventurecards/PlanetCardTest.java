@@ -74,7 +74,7 @@ class PlanetCardTest {
 
     @Test
     void drawCard() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(AdventureStatesTypes.DECISION_LAND_PLANET,gameBoard.getCurrentCard().getCurrentState());
         assertEquals(1,deck.size());
         assertEquals("Planet Card",gameBoard.getCurrentCard().getDescription());
@@ -88,7 +88,7 @@ class PlanetCardTest {
     @Test
     void landingOnPlanet() {
 
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         assertEquals(AdventureStatesTypes.DECISION_GOODS,gameBoard.getCurrentCard().getCurrentState());
         assertEquals(player2,gameBoard.getCurrentPlayer());
@@ -98,7 +98,7 @@ class PlanetCardTest {
 
     @Test
     void finishDecision() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
@@ -109,9 +109,9 @@ class PlanetCardTest {
 
     @Test
     void finishDecision2() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().setFinished(true);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
         gameBoard.getCurrentCard().landingOnPlanet(true, planet2);

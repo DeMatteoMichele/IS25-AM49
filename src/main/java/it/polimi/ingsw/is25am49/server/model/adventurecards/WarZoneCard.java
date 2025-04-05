@@ -20,7 +20,6 @@ public class WarZoneCard extends AdventureCard {
 
 
      //TODO da aggiungere contatore e fare checkrequirements3
-    //TODO devo modficare il check sulla dimensione delle batterie e metterlo in decisionbatteries controllando il numero di componenti effettivamente attivabili (getactivatablecomponent)
     Player playerWithMinimumEnginePower;
     private int minimumEnginePower;
     private final List<CardEffect> listEffects;
@@ -56,6 +55,11 @@ public class WarZoneCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
+        if(gameBoard.getLeaderBoard().size()==1){
+            currentState=AdventureStatesTypes.UPDATE;
+            System.out.println("you are the only player, you skip this card");
+            //chiamo il metodo update
+        }
         //check the player with minimum equipment starting from the leader
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
                 .map(Map.Entry :: getKey)
@@ -78,8 +82,6 @@ public class WarZoneCard extends AdventureCard {
     }
 
     public void checkRequirements2(){
-
-
 
         //check the player with less engine power
         System.out.println("you are in phase 2 of the war zone, now we will check the player with less engine power");

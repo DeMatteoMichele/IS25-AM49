@@ -73,7 +73,7 @@ class AbandonedStationCardTest {
     @Test
     void drawCard() {
         assertEquals(player2.getUsername(),gameBoard.getLeader().getUsername());
-        gameBoard.drawAdventureCard(gameBoard.getLeaderBoard().getLeader());
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(1, adventureDeck.size());
         assertEquals(player1,gameBoard.getCurrentPlayer());
 
@@ -88,14 +88,14 @@ class AbandonedStationCardTest {
 
     @Test
     void landingOnStationOrShip() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
         assertEquals(AdventureStatesTypes.DECISION_GOODS,gameBoard.getCurrentCard().getCurrentState());
 
     }
     @Test
     void landingOnStationOrShip2() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(false);
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
 
@@ -106,7 +106,7 @@ class AbandonedStationCardTest {
 
     @Test
     void finishDecision() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
         gameBoard.getCurrentCard().finishDecision(coordinates);
 
@@ -119,7 +119,7 @@ class AbandonedStationCardTest {
 
     @Test
     void applyEffect() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
         gameBoard.getCurrentCard().finishDecision(coordinates);
 

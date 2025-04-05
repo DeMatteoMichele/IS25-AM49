@@ -3,6 +3,7 @@ import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;

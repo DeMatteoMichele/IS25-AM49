@@ -1,6 +1,11 @@
 package it.polimi.ingsw.is25am49.server.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.SabotageCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.SpazioAperto;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.StarDustCard;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
@@ -11,6 +16,9 @@ import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +35,7 @@ public class GameBoard {
     private FlightMode flightMode;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
+
 
 
     public GameBoard() {
@@ -62,11 +71,65 @@ public class GameBoard {
     public void initialize(GameMode gameMode) {
         tilesDeck.generateDeck();
         tilesDeck.shuffle();
-        mainAdventureDeck.generateDeck(gameMode);
+        generateDeck(gameMode).forEach(mainAdventureDeck::add);
         mainAdventureDeck.shuffle();
         generateSmallDecks(gameMode);
 
     }
+    public AdventureCardDeck getMainAdventureDeck() {
+        return mainAdventureDeck;
+    }
+    public  List<AdventureCard> generateDeck(GameMode gameMode){
+        // crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect.
+        //TODO creare i file JSON  e guardare tutorial di come si si accede
+        //in base alla gamemode devo decidere che carte aggiungere e poi in base al nome della carta chiamo il costruttore equivalente
+        //per quelli che hanno la lista di effetti prima, per quelle specifiche carte, ne creo una, successivamente
+        //aggiungo i relativi effetti (facendo costruttore) e infine passo la lista come parametro al costruttore della carta
+        //altrimenti, conoscendo la carta, so direttamente gli effetti che ha e li posso settare in automatico
+
+        try{
+            File file = new File("src/main/resources/it/polimi/ingsw/is25am49/adventure_card_deck_config.json");
+            if(!file.exists()){throw new FileNotFoundException("File non trovato");
+            }
+            else{
+                List<AdventureCard> adventureCards = new ArrayList<>();
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = mapper.readTree(file);
+
+                for(JsonNode node : rootNode){
+                    if(gameMode == GameMode.FLIGHT_MODE){
+                        JsonNode level = node.get("level");
+                        JsonNode description = node.get("description");
+                        if (level == null || description == null) {
+                            System.err.println("Attenzione: Nodo JSON mancante di campi obbligatori: " + node.toString());
+                            continue;
+                        }
+
+                        int id = level.asInt();
+                        String name = description.asText();
+                        AdventureCard card = switch (name){
+                            case "SpazioAperto" -> new SpazioAperto(this, name, id);
+                            case "StarDust"-> new StarDustCard(this, name, id);
+                            default -> null;
+                        };
+                        if(card!= null) {
+                            adventureCards.add(card);
+                        }}}
+                    return adventureCards;
+            }
+        }
+
+        catch (FileNotFoundException e){
+            System.err.println("Errore: Il file di configurazione non è stato trovato");
+        }
+        catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
+
     public void generateSmallDecks(GameMode gameMode){
 
     }
@@ -103,6 +166,10 @@ public class GameBoard {
 
     public AdventureCard getCurrentCard() {
         return currentCard;
+    }
+    //todo serve solo per i test poi si può rimuovere
+    public ArrayList<Player> getLandedPlayers() {
+        return landedPlayers;
     }
 
     public void drawAdventureCard(Player player) {
@@ -174,48 +241,29 @@ public class GameBoard {
             if(minimumExposedComponents().contains(p)) {
                 credits += 2;
             }
+
             p.addCredits(credits);
 
         });
+
         landedPlayers.forEach(player -> {
-                    int credits =0;
+            int credits =0;
 
-                    credits = 5 - leaderBoard.getPos(player);
-                    credits -= player.getLostComponents();
-                    credits += player.scoreOfGoods();
-                    if(minimumExposedComponents().contains(player)) {
-                        credits += 2;
-                    }
-                    player.addCredits(credits);
-                });
+            credits = 5 - leaderBoard.getPos(player);
+            credits -= player.getLostComponents();
+            credits += player.scoreOfGoods();
+            if(minimumExposedComponents().contains(player)) {
+                credits += 2;
+            }
+            player.addCredits(credits);
+        });
     }
-//        int toAdd = 0;
-//        toAdd = 5 - leaderBoard.getPos(player);//crediti per la posizione
-//        toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
-//        toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
-//        if (minimumExposedComponents().contains(player)) {
-//            toAdd += 2; //crediti per i componentiesposti
-//        }
-//        player.addCredits(toAdd);
 
-
-//    public void calculateFinalScore(Player player) {
-//        int toAdd = 0;
-//        toAdd = 5 - leaderBoard.getPos(player);
-//        toAdd = toAdd - player.getLostComponents();
-//
-//        int redToken = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
-//        int blueToken = player.getShipBoard().getTotalNumberOfaToken(Token.BLUE_GOODS);
-//        int yellowToken = player.getShipBoard().getTotalNumberOfaToken(Token.YELLOW_GOODS);
-//        int greenToken = player.getShipBoard().getTotalNumberOfaToken(Token.GREEN_GOODS);
-//        toAdd = toAdd + redToken * 4 + blueToken + yellowToken * 3 + greenToken * 2;
-//        player.getShipBoard().removeAllTokens();
-//    }
     public void setFlightModeToDefault() {
         flightMode = FlightMode.DEFAULT;
     }
-    //TODO VA TESTATO
-    private List<Player> minimumExposedComponents() {
+
+    public List<Player> minimumExposedComponents() {
         int minValue = leaderBoard.
                 stream()
                 .map(Map.Entry::getKey)//ritorno il player
@@ -223,13 +271,14 @@ public class GameBoard {
                 .mapToInt(p -> p.getShipBoard().getNumberOfExposedConnectors())
                 .min()
                 .orElse(0);
-
+        //System.out.println("the minimum value of exposed compopnents is " + minValue);
         return leaderBoard
                 .stream()
                 .map(Map.Entry::getKey) //ritorna il player
                 //cerco se il player ha il minimo valore di conncetors, se si lo filtro
                 .filter(p -> p.getShipBoard().getNumberOfExposedConnectors() == minValue)
                 .collect(Collectors.toList());
+
 
     }
 
@@ -275,18 +324,22 @@ public class GameBoard {
                     player.setDaysThisTurn(0);
                 });
     }
+
+
     public void checkIfIsLapped() {
-//
-        //in this case the player is lapped, i call the method in leaderboard dani me lo ha messo
-        //TODO devo controllare se qualche player è stato doppiato
-        //usare getdays di leaderboard
+        List<Player> lappedPlayers = new ArrayList<>();
+        //per ogni player controllo se è stato doppiato, se si lo aggiungo alla lista
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
                 .forEach(player -> {
-                    if(leaderBoard.getDays(player)< leaderBoard.getDays(leaderBoard.getLeader())+leaderBoard.getNumberOfCells()){
-                        playerNoMoreInFlight(player);
+                    //System.out.println("Player " + player.getUsername() + " has " + leaderBoard.getDays(player) + " days");
+                    if(leaderBoard.getDays(player) + leaderBoard.getNumberOfCells()< leaderBoard.getDays(leaderBoard.getLeader())){
+                        // System.out.println("Player " + player.getUsername() + " is lapped");
+                        lappedPlayers.add(player);
                     }
                 });
+        //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
+        lappedPlayers.forEach(this::playerNoMoreInFlight);
     }
 
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {

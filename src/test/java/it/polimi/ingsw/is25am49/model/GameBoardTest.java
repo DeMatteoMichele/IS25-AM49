@@ -2,14 +2,18 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
 
 import java.awt.*;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +29,10 @@ class GameBoardTest {
     ShipBoard ship1, ship2, ship3, ship4;
     Tile tile1, tile2, tile3, tile4;
     Component component1, component2, component3, component4;
-
+    Point coordinate1 = new Point(7, 8);
+    Point coordinate2 = new Point(8, 7);
+    Point coordinate3 = new Point(7, 6);
+    Point coordinate4 = new Point(6, 7);
     @BeforeEach
     void init(){
         gameBoard = new GameBoard();
@@ -37,11 +44,59 @@ class GameBoardTest {
         player5 = new Player("rojo", Color.RED,8);
         player6 = new Player("verde", Color.BLUE,6);
         player7 = new Player("azul", Color.BLUE,9);
+        ship1 = new ShipBoard(1,3);
+        ship2 = new ShipBoard(1,2);
+        ship3 = new ShipBoard(1,1);
+        ship4 = new ShipBoard(1,12);
+        player1.setShipBoard(ship1);
+        player2.setShipBoard(ship2);
+        player3.setShipBoard(ship3);
+        player4.setShipBoard(ship4);
+        component1 = new ContainerComponent(ComponentType.CABINE, 5);
+        tile1 = new Tile(1,component1);
+        tile1.setConnectors(
+                ConnectorType.UNIVERSAL,
+                ConnectorType.FLAT,
+                ConnectorType.FLAT,
+                ConnectorType.FLAT
+        );
+        player1.getShipBoard().insertTile(coordinate1,tile1);
+        player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
+
+        component2 = new ContainerComponent(ComponentType.CABINE, 5);
+        tile2 = new Tile(2,component2);
+        tile2.setConnectors(
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL
+        );
+        player2.getShipBoard().insertTile(coordinate2,tile2);
+        component3 = new ContainerComponent(ComponentType.CABINE, 5);
+        tile3 = new Tile(1,component3);
+        tile3.setConnectors(
+                ConnectorType.FLAT,
+                ConnectorType.FLAT,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.FLAT
+        );
+        player3.getShipBoard().insertTile(coordinate3,tile3);
+        component4 = new ContainerComponent(ComponentType.CABINE, 5);
+        tile4 = new Tile(1,component4);
+        tile4.setConnectors(
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.FLAT
+        );
+        player4.getShipBoard().insertTile(coordinate4,tile4);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player3);
         gameBoard.addPlayerToLeaderboard(player4);
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
+
+
     }
 
     @Test
@@ -100,8 +155,8 @@ class GameBoardTest {
     void calculateFinalCredits() {
         gameBoard.calculateFinalCredits();
         assertEquals(6,player1.getCredits());
-        assertEquals(5,player2.getCredits());
-        assertEquals(3,player4.getCredits());
+        assertEquals(3,player2.getCredits());
+        assertEquals(1,player4.getCredits());
     }
 
     @Test
@@ -110,6 +165,8 @@ class GameBoardTest {
 
     @Test
     void minimumExposedComponents() {
+
+        assertEquals(2,gameBoard.minimumExposedComponents().size());
     }
 
     @Test
@@ -134,6 +191,22 @@ class GameBoardTest {
     @Test
     void getNextCard() {
 
+    }
+    @Test
+    void initialize(){
+        gameBoard.generateDeck(GameMode.FLIGHT_MODE);
+        gameBoard.initialize(GameMode.FLIGHT_MODE);
+        assertEquals(2,gameBoard.getMainAdventureDeck().size());
+
+
+    }
+    @Test
+    void generateDeck() {
+        List<AdventureCard> deck = gameBoard.generateDeck(GameMode.FLIGHT_MODE);
+        assertEquals(2,deck.size());
+        for(AdventureCard card : deck){
+            System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+        };
     }
 
     @Test
@@ -166,7 +239,27 @@ class GameBoardTest {
         player4.setDaysThisTurn(1);
         player2.setDaysThisTurn(5);
         player3.setDaysThisTurn(5);
+        gameBoard.updateLeaderboard();
+        gameBoard.checkIfIsLapped();
         assertEquals(player1.getUsername(),gameBoard.getLeaderBoard().getPlayerInPosition(1).getUsername());
+        assertEquals(player4,gameBoard.getLandedPlayers().getFirst());
+        assertEquals(3,gameBoard.getLeaderBoard().size());
+        //assertEquals(player4.getUsername(), gameBoard.getLandedPlayers().getFirst().getUsername());
 
+    }
+
+    @Test
+    void finishUpdateLeaderboard(){
+        player1.setDaysThisTurn(16);
+        player4.setDaysThisTurn(1);
+        player2.setDaysThisTurn(1);
+        player3.setDaysThisTurn(1);
+        gameBoard.updateLeaderboard();
+        gameBoard.finishUpdateLeaderboard();
+        assertTrue(gameBoard.getLandedPlayers().contains(player4));
+        assertTrue(gameBoard.getLandedPlayers().contains(player2));
+        assertTrue(gameBoard.getLandedPlayers().contains(player3));
+        assertEquals(1,gameBoard.getLeaderBoard().size());
+        assertFalse(gameBoard.getLandedPlayers().isEmpty());
     }
 }

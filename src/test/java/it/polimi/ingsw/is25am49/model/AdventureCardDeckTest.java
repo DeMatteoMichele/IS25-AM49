@@ -3,20 +3,19 @@ package it.polimi.ingsw.is25am49.model;
 import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.EpidemyCard;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.PlanetCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.FinishDeckExceptions;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,22 +57,30 @@ class AdventureCardDeckTest {
         deck2.add(card);
         deck2.add(card2);
         //il resto per testare se rimuove la prima adventure card inserita
-        gameBoard.drawAdventureCard(gameBoard.getLeaderBoard().getLeader());
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         cardDrawn = gameBoard.getCurrentCard();
         assertEquals("pianeti",cardDrawn.getDescription() );
         assertEquals(card.getLevel(),cardDrawn.getLevel());
         gameBoard.getCurrentCard().setFinished(true);
-        gameBoard.drawAdventureCard(gameBoard.getLeaderBoard().getLeader());
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         cardDrawn = gameBoard.getCurrentCard();
         assertEquals(card2.getDescription(),cardDrawn.getDescription());
     }
 
 
 
-    @Test
-    void generateDeck() {
-
-    }
+//    @Test
+//    void generateDeck() {
+//        List<AdventureCard> deck= AdventureCardDeck.generateDeck(GameMode.LEVEL_1);
+//
+//        deck.forEach(AdventureCard->{
+//            System.out.println(AdventureCard.getDescription());
+//            System.out.println(AdventureCard.getLevel());
+//        });
+//        assertEquals(1,deck.size());
+//        assertEquals(0,deck.get(0).getLevel());
+//
+//    }
 
     @Test
     void shuffle() {

@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.server.model.adventurecards;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException;
@@ -39,6 +40,11 @@ public class SabotageCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
+        if(gameBoard.getLeaderBoard().size()==1){
+            currentState=AdventureStatesTypes.UPDATE;
+            System.out.println("you are the only player, you skip this card");
+            //chiamo il metodo update
+        }
         //con uno stream trovo il giocatore che ha meno equipaggio
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
                 .map(Map.Entry::getKey)
