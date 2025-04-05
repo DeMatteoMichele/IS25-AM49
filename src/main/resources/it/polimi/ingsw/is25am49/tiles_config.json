@@ -171,6 +171,96 @@
 "c4": "SINGLE"
 },
   {
+    "idTile": 20,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "DOUBLE",
+    "c2": "UNIVERSAL",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 21,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 22,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 23,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 24,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 25,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "DOUBLE",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 26,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 27,
+    "component": "STORAGE",
+    "level": 3,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 28,
+    "component": "STORAGE",
+    "level": 3,
+    "c1": "SINGLE",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 29,
+    "component": "STORAGE",
+    "level": 3,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },
+  {
     "idTile": 30,
     "component": "STORAGE",
     "level": 3,
@@ -178,6 +268,24 @@
     "c2": "FLAT",
     "c3": "DOUBLE",
     "c4": "FLAT"
+  },
+  {
+    "idTile": 31,
+    "component": "STORAGE",
+    "level": 3,
+    "c1": "SINGLE",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 32,
+    "component": "STORAGE",
+    "level": 3,
+    "c1": "DOUBLE",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "DOUBLE"
   },
   {
     "idTile": 87,
@@ -198,6 +306,78 @@
     "c4": "DOUBLE"
   },
   {
+    "idTile": 99,
+    "component": "DOUBLE_ENGINE",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "UNIVERSAL",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 100,
+    "component": "DOUBLE_ENGINE",
+    "level": 2,
+    "c1": "DOUBLE",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 101,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 102,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 103,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 104,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 105,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 106,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
     "idTile": 107,
     "component": "CANNON",
     "level": 1,
@@ -205,6 +385,168 @@
     "c2": "SINGLE",
     "c3": "UNIVERSAL",
     "c4": "FLAT"
+  },
+  {
+    "idTile": 108,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 109,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 110,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "UNIVERSAL",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 111,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "UNIVERSAL",
+    "c3": "SINGLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 112,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 113,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 114,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "UNIVERSAL",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 115,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "SINGLE",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 116,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "UNIVERSAL",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 117,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "UNIVERSAL",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 118,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 119,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 120,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "UNIVERSAL",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 121,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 122,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "UNIVERSAL",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 123,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "DOUBLE",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 124,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 125,
+    "component": "CANNON",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
   },
   {
     "idTile": 134,

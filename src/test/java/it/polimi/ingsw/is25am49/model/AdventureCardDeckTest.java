@@ -1,11 +1,17 @@
 package it.polimi.ingsw.is25am49.model;
 
-import it.polimi.ingsw.is25am49.model.adventurecards.*;
-import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.model.cardeffects.EffectCannonata;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.model.exceptions.FinishDeckExceptions;
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
+import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.EpidemyCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.PlanetCard;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.exceptions.FinishDeckExceptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

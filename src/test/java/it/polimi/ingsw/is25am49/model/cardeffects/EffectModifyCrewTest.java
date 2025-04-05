@@ -1,14 +1,16 @@
 package it.polimi.ingsw.is25am49.model.cardeffects;
 
-import it.polimi.ingsw.is25am49.model.Player;
-import it.polimi.ingsw.is25am49.model.enums.Color;
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisCardException;
-import it.polimi.ingsw.is25am49.model.shipboard.Component;
-import it.polimi.ingsw.is25am49.model.shipboard.ContainerComponent;
-import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectModifyCrew;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

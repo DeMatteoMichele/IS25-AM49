@@ -1,11 +1,13 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
-import it.polimi.ingsw.is25am49.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.model.enums.ConnectorType;
-import it.polimi.ingsw.is25am49.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.model.enums.Token;
-import it.polimi.ingsw.is25am49.model.exceptions.IllegalMethodOnThisComponentException;
-import it.polimi.ingsw.is25am49.model.exceptions.InvalidCoordinatesException;
+import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.server.model.enums.ConnectorType;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
+import it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,7 @@ class ShipBoardTest {
         ship1 = new ShipBoard(1,501);
         ship2 = new ShipBoard(2,502);
 
-        Map<Integer,Tile> tiles= Tile.generateTiles();
+        Map<Integer, Tile> tiles= Tile.generateTiles();
         ship1.insertTile(new Point(7,6), tiles.get(151));
         ship1.insertTile(new Point(6,7), tiles.get(11));
         ship1.getTile(new Point(6,7)).setTileOrientation(Orientation.EAST);
@@ -81,12 +83,15 @@ class ShipBoardTest {
 
     @Test
     void testGetTilesConnectedTo() {
-        ship2=ShipBoard.generateShipboard(2,30);
-        ship2.printShipboard();
-        ship2.printShipboardSpecial();
-        System.out.println(ship2.getTilesConnectedTo(new Point(7,7)));
-        ship2.completeShipBoard();
-        ship2.printShipboardSpecial();
+        for (int i = 0; i <10 ; i++) {
+            System.out.println(i+1 +") Generazione");
+            ship2=ShipBoard.generateShipboard(2,30);
+            ship2.printShipboard();
+            ship2.printShipboardSpecial();
+            ship2.completeShipBoard();
+            ship2.printShipboardSpecial();
+        }
+
     }
 
     @Test
