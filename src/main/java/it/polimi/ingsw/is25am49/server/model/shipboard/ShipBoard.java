@@ -221,7 +221,7 @@ public class ShipBoard {
             switch (direction) {
                 case NORTH:
                     try {
-                        Point p= new Point(point.x,point.y+1);
+                        Point p= new Point(point.x,point.y-1);
                         if(connectedTiles.contains(p)) return;
                         sideTile=getTile(p);
                         if(connectorsMatch(centerTile.getConnector(Orientation.NORTH),sideTile.getConnector(Orientation.SOUTH))){
@@ -245,7 +245,7 @@ public class ShipBoard {
                     }catch (InvalidCoordinatesException _){return;}
                 case SOUTH:
                     try {
-                        Point p= new Point(point.x,point.y-1);
+                        Point p= new Point(point.x,point.y+1);
                         if(connectedTiles.contains(p)) return;
                         sideTile=getTile(p);
                         if(connectorsMatch(centerTile.getConnector(Orientation.SOUTH),sideTile.getConnector(Orientation.NORTH))){
@@ -292,7 +292,7 @@ public class ShipBoard {
                 Tile centerTile = getTile(point);
                 Tile sideTile;
                 try {
-                    sideTile = this.getTile(new Point(point.x, point.y + 1));
+                    sideTile = this.getTile(new Point(point.x, point.y - 1));
                     if (connectorsMatch(centerTile.getConnector(0), sideTile.getConnector(2)))n--;
                 } catch (InvalidCoordinatesException _) {
                     if(centerTile.getConnector(0).equals(ConnectorType.FLAT))n--;
@@ -304,7 +304,7 @@ public class ShipBoard {
                     if(centerTile.getConnector(1).equals(ConnectorType.FLAT))n--;
                 }
                 try {
-                    sideTile = this.getTile(new Point(point.x, point.y - 1));
+                    sideTile = this.getTile(new Point(point.x, point.y + 1));
                     if (connectorsMatch(centerTile.getConnector(2), sideTile.getConnector(0))) n--;
                 } catch (InvalidCoordinatesException _) {
                     if(centerTile.getConnector(2).equals(ConnectorType.FLAT))n--;
@@ -541,84 +541,103 @@ public class ShipBoard {
         destroyTile(new Point(9,5));
         destroyTile(new Point(10,5));
 
-        //elimino tutte le tessere vuote e quelle disconnesse
+        System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
         Set<Point> elimina = new HashSet<>(grid.keySet());
         elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
         for(Point p: elimina){
             destroyTile(p);
         }
+        printShipboardSpecial();
 
-        //elimino tutte le tessere davanti ai cannoni
+        System.out.println("RIMUOVO TUTTE LE TESSERE DAVANTI AI CANNONI");
         Set<Point> checkCannon = new HashSet<>(getComponentsPositions(ComponentType.CANNON));
         checkCannon.addAll(getComponentsPositions(ComponentType.DOUBLE_CANNON));
-        for(Point p: checkCannon){
+        for(Point pCannon: checkCannon){
+            Point p = new Point(pCannon.x,pCannon.y);
             Tile t= getTile(p);
-            //TODO controlla che il cannone/razzo non sia connesso unicamente dal lato dove punta
+            //TODO
             switch (t.getTileOrientation()){
                 case NORTH -> {
-                    p.translate(0,1);
-                    while (grid.containsKey(p)){
-                        p.translate(0,1);
-                        try{destroyTile(p);}
-                        catch (InvalidCoordinatesException e){
-                            System.out.println("ERRORE SOPRA CANNONE");
+                    if (grid.containsKey(p)) p.y--;
+                    else break;
+                    while (p.y>=5){
+                        try{
+                            destroyTile(p);
                         }
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("RIMOZIONE SOPRA CANNONE");
+                        }
+                        p.y--;
                     }
                 }
                 case EAST -> {
-                    p.translate(1,0);
-                    while (grid.containsKey(p)){
-                        p.translate(1,0);
-                        try{destroyTile(p);}
-                        catch (InvalidCoordinatesException e){
-                            System.out.println("ERRORE RIMOZIONE DESTRA CANNONE");
+                    if (grid.containsKey(p)) p.x++;
+                    else break;
+                    while (p.x<=10){
+                        try{
+                            destroyTile(p);
                         }
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("RIMOZIONE DESTRA CANNONE");
+                        }
+                        p.x++;
                     }
                 }
                 case SOUTH -> {
-                    p.translate(0,-1);
-                    while (grid.containsKey(p)){
-                        p.translate(0,-1);
-                        try{destroyTile(p);}
-                        catch (InvalidCoordinatesException e){
-                            System.out.println("ERRORE SOTTO CANNONE");
+                    if (grid.containsKey(p)) p.y++;
+                    else break;
+                    while (p.y<=9){
+                        try{
+                            destroyTile(p);
                         }
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("RIMOZIONE SOTTO CANNONE");
+                        }
+                        p.y++;
                     }
                 }
                 case WEST -> {
-                    p.translate(-1,0);
-                    while (grid.containsKey(p)){
-                        p.translate(-1,0);
-                        try{destroyTile(p);}
-                        catch (InvalidCoordinatesException e){
-                            System.out.println("ERRORE RIMOZIONE A SINISTRA CANNONE");
+                    if (grid.containsKey(p)) p.x--;
+                    else break;
+                    while (p.x>=4){
+                        try{
+                            destroyTile(p);
                         }
+                        catch (InvalidCoordinatesException e){
+                            System.out.println("RIMOZIONE A SINISTRA CANNONE");
+                        }
+                        p.x--;
                     }
                 }
             }
         }
-        //elimino tutti i razzi male orientati o le tessere sotto di essi
+        if(!checkCannon.isEmpty())printShipboardSpecial();
+
+        System.out.println("RIMUOVO MOTORI/SOTTO I MOTORI");
         Set<Point> checkEngine = new HashSet<>(getComponentsPositions(ComponentType.ENGINE));
         checkEngine.addAll(getComponentsPositions(ComponentType.DOUBLE_ENGINE));
-        for(Point p: checkEngine){
+        for(Point pEngine: checkEngine){
+            Point p = new Point(pEngine.x,pEngine.y);
             Tile t= getTile(p);
             if(!t.getTileOrientation().equals(Orientation.NORTH)){
                 try{destroyTile(p);}
                 catch (InvalidCoordinatesException e){
-                    System.out.println("ERRORE RIMOZIONE MOTORE");
+                    System.out.println("RIMOZIONE MOTORE");
                 }
             }
             else{
-                p.translate(0,-1);
-                while (grid.containsKey(p)){
-                    p.translate(0,-1);
+                p.y++;
+                while (p.y<=9){
                     try{destroyTile(p);}
                     catch (InvalidCoordinatesException e){
                         System.out.println("ERRORE RIMOZIONE SOTTO AL MOTORE");
                     }
+                    p.y++;
                 }
             }
         }
+        if(!checkEngine.isEmpty())printShipboardSpecial();
+
         //elimino tessere disconnesse dopo la rimozione sopra
         elimina.clear();
         elimina.addAll(grid.keySet());
@@ -707,7 +726,8 @@ public class ShipBoard {
             case SHIELD ->  System.out.print("\uD83D\uDEE1️\t");
             case CANNON -> System.out.print("\uD83D\uDD95\t");
             case DOUBLE_CANNON -> System.out.print("\uD83E\uDD18\t");
-            case ENGINE -> System.out.print("\t");
+            case ENGINE -> System.out.print("E\t");
+            case DOUBLE_ENGINE -> System.out.print("DE\t");
             default -> System.out.print("\uD83D\uDFE6\t");
         }
     }
@@ -725,10 +745,10 @@ public class ShipBoard {
             int i=rand.nextInt(tiles.size());
             Tile t = tiles.get(i);
             o= Orientation.values()[rand.nextInt(Orientation.values().length)];
-            t.setTileOrientation(o);
-            var p= new Point(rand.nextInt(7)+4,rand.nextInt(5)+5);
+            Point p= new Point(rand.nextInt(7)+4,rand.nextInt(5)+5);
             try {
                 ship.insertTile(p,t);
+                ship.getTile(p).setTileOrientation(o);
                 tiles.remove(i);
                 nTiles--;
             }catch (Exception _){}

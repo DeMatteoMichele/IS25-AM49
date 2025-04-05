@@ -11,17 +11,19 @@ import java.util.List;
 
 public class ServerController {
     private final GameSession gameSession;
-    private final Serializer serializer;
+    private Serializer serializer;
     //Ci serve averle nel controller per filtrare le possibili selezioni di Token/Tessere dell'utente
     private final ArrayList<ShipBoard> shipBoards;
     private AdventureCard currentAdventureCard;
     private Player currentPlayer;
     //Bisogna decidere se implementare la funzionalità per i game multipli, per ora faccio come se non ci sia
-    public ServerController(Serializer serializer, GameSession gameSession) {
+    public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
-        this.serializer = serializer;
         shipBoards = new ArrayList<>();
         currentAdventureCard = null;
+    }
+    public void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
     }
     public void addFinalShipBoardToArray(Player player){
         if(player.getShipBoard().isCompleted())

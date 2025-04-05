@@ -83,12 +83,15 @@ class ShipBoardTest {
 
     @Test
     void testGetTilesConnectedTo() {
-        ship2=ShipBoard.generateShipboard(2,30);
-        ship2.printShipboard();
-        ship2.printShipboardSpecial();
-        System.out.println(ship2.getTilesConnectedTo(new Point(7,7)));
-        ship2.completeShipBoard();
-        ship2.printShipboardSpecial();
+        for (int i = 0; i <10 ; i++) {
+            System.out.println(i+1 +") Generazione");
+            ship2=ShipBoard.generateShipboard(2,30);
+            ship2.printShipboard();
+            ship2.printShipboardSpecial();
+            ship2.completeShipBoard();
+            ship2.printShipboardSpecial();
+        }
+
     }
 
     @Test

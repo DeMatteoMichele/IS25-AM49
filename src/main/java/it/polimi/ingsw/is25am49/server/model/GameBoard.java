@@ -26,6 +26,8 @@ public class GameBoard {
     private Player currentPlayer;
     private FlightMode flightMode;
     private boolean isFirstCard;
+    private final ArrayList<Player> landedPlayers;
+
 
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
@@ -33,6 +35,7 @@ public class GameBoard {
         mainAdventureDeck = new AdventureCardDeck();
         flightMode = FlightMode.DEFAULT;
         isFirstCard = true;
+        landedPlayers = new ArrayList<>();
     }
     private void isYourTurn(Player player) {
         if (!player.equals(currentPlayer))
@@ -43,7 +46,7 @@ public class GameBoard {
     }
 
     //TODO da fare
-    //Bisogna modificare le possibili carte del mazzo e la lunghezza del percorso, in base a flightMode e gameMode
+    //Bisogna modificare la lunghezza del percorso, in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
         int level;
@@ -114,6 +117,14 @@ public class GameBoard {
         }
         else
             throw new GameSettingsException("You are not the leader of this turn");
+    }
+    public void playerNoMoreInFlight(Player player) {
+        if (landedPlayers.contains(player))
+            throw new GameSettingsException("This player is already landed");
+        else {
+            landedPlayers.add(player);
+            leaderBoard.remove(player);
+        }
     }
     public void userThrowDices(Player player){
         isYourTurn(player);
