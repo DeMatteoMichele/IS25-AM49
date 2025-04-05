@@ -134,16 +134,30 @@ public class GameBoard {
     public Player getLeader() {
         return leaderBoard.getLeader();
     }
+//todo modifico con player atterrati acnhe
+    public void calculateFinalCredits() {
 
-    public void calculateFinalCredits(Player player) {
-        int toAdd = 0;
-        toAdd = 5 - leaderBoard.getPos(player);//crediti per la posizione
-        toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
-        toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
-        if (minimumExposedComponents().contains(player)) {
-            toAdd += 2; //crediti per i componentiesposti
-        }
-        player.addCredits(toAdd);
+        leaderBoard.stream().forEach(entry -> {
+            int credits =0;
+            Player p = entry.getKey();
+            credits = 5 - leaderBoard.getPos(p);
+            credits -= p.getLostComponents();
+            credits += p.scoreOfGoods();
+            if(minimumExposedComponents().contains(p)) {
+                credits += 2;
+            }
+            p.addCredits(credits);
+
+        });
+
+//        int toAdd = 0;
+//        toAdd = 5 - leaderBoard.getPos(player);//crediti per la posizione
+//        toAdd = toAdd - player.getLostComponents(); //crediti persi per i lost components
+//        toAdd = toAdd + player.scoreOfGoods(); //crediti per le merci
+//        if (minimumExposedComponents().contains(player)) {
+//            toAdd += 2; //crediti per i componentiesposti
+//        }
+//        player.addCredits(toAdd);
     }
 
 //    public void calculateFinalScore(Player player) {
@@ -202,12 +216,16 @@ public class GameBoard {
     }
 
 
-
+    public void finishUpdateLeaderboard(){
+        updateLeaderboard();
+        checkIfIsLapped();
+    }
     public void updateLeaderboard() {
+        //todo se è doppiato lo aggiungo alla lista degli atterrati
         //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
-                .sorted(Comparator.comparing(player -> -leaderBoard.getPos(player))) // Ordine decrescente per posizione
+                .sorted(Comparator.comparing(player -> -leaderBoard.getPos(player))) // ordine decrescente per posizione
                 .forEach(player -> {
                     leaderBoard.modifyFlightDays(player, player.getDaysThisTurn());
                 });
@@ -218,10 +236,20 @@ public class GameBoard {
                     player.setDaysThisTurn(0);
                 });
     }
-    private void checkIfIsLapped(){
+    private void checkIfIsLapped() {
+//        if(playerledarboard.hetdays() > player2leaderboard.getdays + leaderBoard.getNumberOfCells())
+        //in this case the player is lapped, i call the method in leaderboard dani me lo ha messo
         //TODO devo controllare se qualche player è stato doppiato
-        //usare getdays
+        //usare getdays di leaderboard
+        leaderBoard.stream()
+                .map(Map.Entry::getKey)
+                .forEach(player -> {
+                    if(leaderBoard.getDays(player)< leaderBoard.getDays(leaderBoard.getLeader())+leaderBoard.getNumberOfCells()){
+                        //chiamo il metodo
+                    }
+                });
     }
+
 
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
         this.mainAdventureDeck = mainAdventureDeck;

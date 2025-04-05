@@ -51,8 +51,8 @@ class WarZoneCardTest {
         batteries.add(new Pair<>(coordinate3, Token.BATTERY_CELLS));
         batteries.add(new Pair<>(coordinate3, Token.BATTERY_CELLS));
         astronauts = new ArrayList<>();
-        astronauts.add(new Pair<>(coordinate5, Token.ASTRONAUT));
-        astronauts.add(new Pair<>(coordinate5, Token.ASTRONAUT));
+        astronauts.add(new Pair<>(coordinate4, Token.ASTRONAUT));
+        astronauts.add(new Pair<>(coordinate4, Token.ASTRONAUT));
 
 
         component1 = new SpecialComponent(ComponentType.DOUBLE_ENGINE,2);
@@ -97,7 +97,9 @@ class WarZoneCardTest {
     }
     @Test
     void drawCard() {
+        assertEquals(player1,gameBoard.getCurrentPlayer());
         gameBoard.drawAdventureCard();
+        assertEquals(player2.getUsername(),gameBoard.getLeader().getUsername());
         gameBoard.getCurrentCard().finishDecision(batteries);
         gameBoard.getCurrentCard().finishDecision(motors);
         gameBoard.getCurrentCard().finishDecision(astronauts);

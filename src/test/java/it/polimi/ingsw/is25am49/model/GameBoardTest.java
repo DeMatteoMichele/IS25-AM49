@@ -98,10 +98,10 @@ class GameBoardTest {
 
     @Test
     void calculateFinalCredits() {
-        gameBoard.calculateFinalCredits(player1);
+        gameBoard.calculateFinalCredits();
         assertEquals(6,player1.getCredits());
-        gameBoard.calculateFinalCredits(player2);
         assertEquals(5,player2.getCredits());
+        assertEquals(3,player4.getCredits());
     }
 
     @Test

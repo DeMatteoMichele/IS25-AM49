@@ -31,6 +31,10 @@ public class AdventureCardDeck {
     public void generateDeck(GameMode gameMode){
         // crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect.
         //TODO creare i file JSON  e guardare tutorial di come si si accede
+        //in base alla gamemode devo decidere che carte aggiungere e poi in base al nome della carta chiamo il costruttore equivalente
+        //per quelli che hanno la lista di effetti prima, per quelle specifiche carte, ne creo una, successivamente
+        //aggiungo i relativi effetti (facendo costruttore) e infine passo la lista come parametro al costruttore della carta
+        //altrimenti, conoscendo la carta, so direttamente gli effetti che ha e li posso settare in automatico
     }
     public void add(AdventureCard card){
         deck.add(card);

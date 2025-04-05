@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.model.GameBoard;
 import it.polimi.ingsw.is25am49.model.Player;
 import it.polimi.ingsw.is25am49.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.model.enums.Token;
 import it.polimi.ingsw.is25am49.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.model.shipboard.ShipBoard;
@@ -17,16 +18,21 @@ import java.util.Set;
 
 public class WarZoneCard extends AdventureCard {
 
+
+     //TODO da aggiungere contatore e fare checkrequirements3
+    //TODO devo modficare il check sulla dimensione delle batterie e metterlo in decisionbatteries controllando il numero di componenti effettivamente attivabili (getactivatablecomponent)
     Player playerWithMinimumEnginePower;
     private int minimumEnginePower;
     private final List<CardEffect> listEffects;
     private List<Pair<Point,Token>> batteries;
     private List<Point> cannons;
+    private int number;
+
     public WarZoneCard(GameBoard gameBoard,String description, int level, List<CardEffect>effects) {
         super(gameBoard,description, level);
         listEffects = new ArrayList<>();
         this.listEffects.addAll(effects);
-        minimumEnginePower = 1;
+        minimumEnginePower = 0;
 
 
     }
@@ -63,6 +69,7 @@ public class WarZoneCard extends AdventureCard {
         System.out.println("You lost 3 travel days");
         gameBoard.getCurrentPlayer().setDaysThisTurn(-3);
         gameBoard.updateLeaderboard();
+        System.out.println("leader updated! now is : " + gameBoard.getLeader().getUsername());
 
         //now current player is the leader again
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
@@ -89,12 +96,12 @@ public class WarZoneCard extends AdventureCard {
             //non ho abbastanza batterie
             System.out.println("You don't have enough batteries to activate your double motors");
             int enginePower = ship.getTotalEnginePower();
-            System.out.println(enginePower);
+            //System.out.println(enginePower);
             if(enginePower<minimumEnginePower){
-                System.out.println("aggiornamento minimum power" + enginePower);
+                //System.out.println("aggiornamento minimum power" + enginePower);
                 minimumEnginePower = enginePower;
                 playerWithMinimumEnginePower = gameBoard.getCurrentPlayer();
-                System.out.println(playerWithMinimumEnginePower.getUsername());
+                //System.out.println(playerWithMinimumEnginePower.getUsername());
             }
             System.out.println("Now i check if it was the last player");
             try{
@@ -125,6 +132,9 @@ public class WarZoneCard extends AdventureCard {
                 if(coordinates.size()>ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)){
                     throw new IllegalArgumentException("you have chosen more batteries than you have");
                 }
+               else if(coordinates.size() > ship.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size()){
+                    throw new IllegalArgumentException("you have chosen" + coordinates.size() + "but you have less engine ");
+                }
                 System.out.println("you have chosen "+ coordinates.size() + " batteries");
                 this.batteries = new ArrayList<>(coordinates);
                 System.out.println("Now you have to choose which motors you wanna activate");
@@ -153,10 +163,10 @@ public class WarZoneCard extends AdventureCard {
 
             case DECISION_MOTOR -> {
                 System.out.println("You have decided the coordinates of the motors you wanna activate");
-                if(batteries.size()!=coordinates.size()){
-                    throw new IllegalArgumentException("you have chosen a different number of batteries and motors");
-                }
-                this.cannons= new ArrayList<>(coordinates);
+//                if(batteries.size()!=coordinates.size()){
+//                    throw new IllegalArgumentException("you have chosen a different number of batteries and motors");
+//                }
+                cannons = new ArrayList<>(coordinates);
                 //i activte all the cannons
                 for(int i=0; i< coordinates.size();i++){
                     ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
