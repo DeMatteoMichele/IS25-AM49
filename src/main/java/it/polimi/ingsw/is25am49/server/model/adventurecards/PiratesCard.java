@@ -15,6 +15,7 @@ import java.util.List;
 public class PiratesCard extends EnemyCard {
 
     protected int creditsEarned;
+
     public PiratesCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
         super(gameBoard, description, level, dayslost, minimumFirePower);
         this.listEffects.addAll(listEffects);
@@ -30,17 +31,19 @@ public class PiratesCard extends EnemyCard {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
-            System.out.println("You have defeated the pirates! You win some credits");
-            gameBoard.getCurrentPlayer().addCredits(creditsEarned);
-            gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
-            tryNextPlayerOrRollDices();
+            deactivateComponents(shipBoard);
+            System.out.println("You have defeated the pirates!");
+            System.out.println("Now decide if you want to win or stay as you are");
+            currentState = AdventureStatesTypes.DECISION_REWARDS;
         } else if (checkDrawFirePower(shipBoard)) {
+            deactivateComponents(shipBoard);
             System.out.println("You have drawn with the pirates!");
-            tryNextPlayerOrRollDices();
+            tryNextPlayerOrHandleDefeatedPlayers();
         } else {
+            deactivateComponents(shipBoard);
             System.out.println("You have lost against the pirates!");
             defeatedPlayers.add(gameBoard.getCurrentPlayer());
-            tryNextPlayerOrRollDices();
+            tryNextPlayerOrHandleDefeatedPlayers();
         }
     }
 
@@ -59,26 +62,42 @@ public class PiratesCard extends EnemyCard {
         }
     }
 
-    protected void tryNextPlayerOrRollDices() {
+    @Override
+    protected void handleRewards() {
+        gameBoard.getCurrentPlayer().addCredits(creditsEarned);
+        gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
+        handleDefeatedPlayers();
+    }
+
+    @Override
+    protected void handleRefuseOfRewards() {
+        handleDefeatedPlayers();
+    }
+
+    protected void tryNextPlayerOrHandleDefeatedPlayers() {
         try {
             gameBoard.nextPlayer();
             System.out.println("Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
-            if (defeatedPlayers.isEmpty()) {
-                System.out.println("No defeated players, now to update");
-                currentState = AdventureStatesTypes.UPDATE;
-                isFinished = true;
-            } else {
-                System.out.println("No more players, now the first defeated must roll the dices!");
-                gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
-                for (Player player : defeatedPlayers) {
-                    player.setDaysThisTurn(-daysLost);
-                }
-                currentEffect = listEffects.removeFirst();
-                currentState = AdventureStatesTypes.ROLL_DICES;
-                cannonadesPhase = true;
+            handleDefeatedPlayers();
+        }
+    }
+
+    private void handleDefeatedPlayers() {
+        if (defeatedPlayers.isEmpty()) {
+            System.out.println("No defeated players, now to update");
+            currentState = AdventureStatesTypes.UPDATE;
+            isFinished = true;
+        } else {
+            System.out.println("No more players, now the first defeated must roll the dices!");
+            gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
+            for (Player player : defeatedPlayers) {
+                player.setDaysThisTurn(-daysLost);
             }
+            currentEffect = listEffects.removeFirst();
+            currentState = AdventureStatesTypes.ROLL_DICES;
+            cannonadesPhase = true;
         }
     }
 
@@ -111,7 +130,6 @@ public class PiratesCard extends EnemyCard {
 
     private void checkForBatteriesToUseForShields() {
         boolean hasBatteries = gameBoard.getCurrentPlayer().getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS) > 0;
-
         if (hasBatteries) {  // player has batteries for shields
             checkDimensionOfCannonade();
         } else {  // player has no batteries for shields
@@ -141,8 +159,18 @@ public class PiratesCard extends EnemyCard {
     }
 
     @Override
+    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
+        if (cannonadesPhase) { //we are in the effect phase, when players are already defeated
+            return shipBoard.getActivatableComponents(ComponentType.SHIELD).size();
+        } else {
+            return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
+        }
+    }
+
+    @Override
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
+        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
         tryNextPlayerDefeated();
     }
 

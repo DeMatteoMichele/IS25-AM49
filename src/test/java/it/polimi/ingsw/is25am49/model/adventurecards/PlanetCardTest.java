@@ -45,6 +45,7 @@ class PlanetCardTest {
         ship2 = new ShipBoard(1,1);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);

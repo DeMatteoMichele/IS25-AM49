@@ -35,8 +35,6 @@ class StarDustCardTest {
 
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
-    Component shipBoardComponent;
-    Tile tile;
 
 
     @BeforeEach
@@ -64,11 +62,11 @@ class StarDustCardTest {
 
     @Test
     void drawCard() {
-        assertEquals(gameBoard.getLeader(), player2);
+        assertEquals(player2, gameBoard.getLeader());
         when(shipMock1.getNumberOfExposedConnectors()).thenReturn(1);
         when(shipMock2.getNumberOfExposedConnectors()).thenReturn(2);
         when(shipMock3.getNumberOfExposedConnectors()).thenReturn(3);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(-1,player1.getDaysThisTurn());
         assertEquals(-2,player2.getDaysThisTurn());

@@ -19,11 +19,6 @@ public class StarDustCard extends AdventureCard {
         applyEffect();
     }
 
-
-    @Override
-    public void checkRequirements() {
-    }
-
     @Override
     public void applyEffect() {
         super.applyEffect();

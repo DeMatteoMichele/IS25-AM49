@@ -64,7 +64,7 @@ class AbandonedShipCardTest {
 
     @Test
     void drawCard() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
@@ -77,7 +77,7 @@ class AbandonedShipCardTest {
 
     @Test
     void landingOnStationOrShip() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
         assertEquals(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS, gameBoard.getCurrentCard().getCurrentState());
 
@@ -85,7 +85,7 @@ class AbandonedShipCardTest {
 
     @Test
     void finishDecision() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(false);
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
         gameBoard.getCurrentCard().finishDecision(new ArrayList<Pair<Point, Token>>());
@@ -97,7 +97,7 @@ class AbandonedShipCardTest {
 
     @Test
     void applyEffect() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
 //        ArrayList<Pair<Point, Token>> Coordinates = new ArrayList<>();
 //        Coordinates.add(new Pair<>(new Point(2, 2), Token.ASTRONAUT));
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
