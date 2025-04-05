@@ -61,7 +61,7 @@ class SlaverCardTest {
 
     @Test
     void drawCard() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getLeaderBoard().getLeader(), player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
@@ -71,7 +71,7 @@ class SlaverCardTest {
     void CheckEnoughFire() {
         when(shipMock.getTotalFirePower()).thenReturn(10.0);
         player2.setShipBoard(shipMock);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getLeaderBoard().getLeader(), player2);
         assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
@@ -104,7 +104,7 @@ class SlaverCardTest {
         when(tileMock3.getFirePower()).thenReturn(1.0);
 
         player2.setShipBoard(shipMock);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(gameBoard.getCurrentCard().getCurrentState(), AdventureStatesTypes.DECISION_BATTERIES);
         List<Pair<Point, Token>> batteryCoordinates = new ArrayList<>();
         batteryCoordinates.add(new Pair<>(new Point(1, 1), Token.BATTERY_CELLS));

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.server.model.states;
 
-import it.polimi.ingsw.is25am49.model.*;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;

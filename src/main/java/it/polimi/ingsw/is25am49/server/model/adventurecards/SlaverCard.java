@@ -12,6 +12,7 @@ public class SlaverCard extends EnemyCard {
 
     protected int lostAstronauts;
     protected int creditsEarned;
+
     public SlaverCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
         super(gameBoard, description, level, dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
@@ -24,16 +25,19 @@ public class SlaverCard extends EnemyCard {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
+            deactivateComponents(shipBoard);
             System.out.println("You have more firepower to defeat the Slavers! You win some credits!");
             System.out.println("Now decide if you want to accept the rewards ");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
-            currentState= AdventureStatesTypes.DECISION_REWARDS;
+            currentState = AdventureStatesTypes.DECISION_REWARDS;
 
         } else if (checkDrawFirePower(shipBoard)) {
+            deactivateComponents(shipBoard);
             System.out.println("You have drawn with the Slavers!");
             tryNextPlayer();
         } else {
+            deactivateComponents(shipBoard);
             System.out.println("You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
             currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
@@ -67,7 +71,7 @@ public class SlaverCard extends EnemyCard {
 
     @Override
     protected void handleRewards() {
-        currentState=AdventureStatesTypes.EFFECT;
+        currentState = AdventureStatesTypes.EFFECT;
         applyEffect();
     }
 
@@ -80,7 +84,7 @@ public class SlaverCard extends EnemyCard {
 
     @Override
     protected int getMaxActivatableComponents(ShipBoard shipBoard) {
-        return (int) shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).stream().count();
+        return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
     }
 
 }

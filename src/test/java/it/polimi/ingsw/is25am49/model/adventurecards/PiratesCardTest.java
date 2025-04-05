@@ -70,7 +70,7 @@ class PiratesCardTest {
 
     @Test
     void drawCard() {
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getCurrentCard().getCurrentState(), AdventureStatesTypes.ROLL_DICES);
     }
@@ -109,7 +109,7 @@ class PiratesCardTest {
 
         player2.setShipBoard(shipMock2);
         player1.setShipBoard(shipMock1);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         List<Pair<Point, Token>> batteryCoordinates = new ArrayList<>();
         batteryCoordinates.add(new Pair<>(new Point(1, 1), Token.BATTERY_CELLS));
         batteryCoordinates.add(new Pair<>(new Point(2, 2), Token.BATTERY_CELLS));
@@ -157,7 +157,7 @@ class PiratesCardTest {
         when(shipMock4.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(0);
         when(shipMock3.getTotalFirePower()).thenReturn(4.0);
         when(shipMock3.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(1);
-        gameBoard.drawAdventureCard();
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(gameBoard.getCurrentCard().getDefeatedPlayers().getFirst(), player2);
         assertEquals(1, gameBoard.getCurrentCard().getDefeatedPlayers().size());
     }

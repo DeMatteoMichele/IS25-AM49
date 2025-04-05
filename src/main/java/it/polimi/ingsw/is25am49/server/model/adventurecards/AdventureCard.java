@@ -33,7 +33,7 @@ public abstract class AdventureCard {
         return description;
     }
 
-    public abstract void checkRequirements();
+    public void checkRequirements(){}
 
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
@@ -50,22 +50,6 @@ public abstract class AdventureCard {
         if(currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
-
-    public void turnOnCannon() throws IllegalMethodOnThisStateException {
-        if (currentState != AdventureStatesTypes.DECISION_CANNON)
-            throw new IllegalMethodOnThisStateException("Wrong state");
-    }
-
-    public void turnOnMotor() throws IllegalMethodOnThisStateException {
-        if (currentState != AdventureStatesTypes.DECISION_MOTOR)
-            throw new IllegalMethodOnThisStateException("Wrong state");
-    }
-
-    public void turnOnShields() throws IllegalMethodOnThisStateException {
-        if (currentState != AdventureStatesTypes.DECISION_SHIELDS)
-            throw new IllegalMethodOnThisStateException("Wrong state");
-    }
-
 
     public CardEffect getCurrentEffect() {
         return currentEffect;
