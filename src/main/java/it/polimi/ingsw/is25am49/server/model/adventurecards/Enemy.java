@@ -6,7 +6,7 @@ import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfCannonsException;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import javafx.util.Pair;
@@ -17,12 +17,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public abstract class EnemyCard extends AdventureCard {
+public abstract class Enemy extends AdventureCard {
     protected final int minimumFirePower;
     protected final int daysLost;
     protected final List<CardEffect> listEffects;
 
-    public EnemyCard(GameBoard gameBoard, String description, int level, int daysLost, int minimumFirePower) {
+    public Enemy(GameBoard gameBoard, String description, int level, int daysLost, int minimumFirePower) {
         super(gameBoard, description, level);
         this.minimumFirePower = minimumFirePower;
         this.daysLost = daysLost;
@@ -84,7 +84,7 @@ public abstract class EnemyCard extends AdventureCard {
 
     private void activateComponentsWithBatteries(ShipBoard shipBoard) {
         if (coordinatesOfActivable.size() != coordinatesOfBatteries.size()) {
-            throw new IllegalNumOfCannonsException("You have to choose at max the same number of components as batteries");
+            throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
         }
         System.out.println("You have decided the coord for the components");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
@@ -151,7 +151,7 @@ public abstract class EnemyCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(Set<Point> coordinates) throws IllegalNumOfCannonsException {
+    public void finishDecision(Set<Point> coordinates) throws IllegalNumOfActivableException {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
             case DECISION_CANNON -> {
@@ -159,7 +159,7 @@ public abstract class EnemyCard extends AdventureCard {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
                     activateComponentsWithBatteries(shipBoard);
                     evaluateBattleOutcome(shipBoard);
-                } catch (IllegalNumOfCannonsException e) {
+                } catch (IllegalNumOfActivableException e) {
                     System.out.println("Rechoose correctly the number of cannons as the same as batteries");
                 }
             }
@@ -167,8 +167,9 @@ public abstract class EnemyCard extends AdventureCard {
                 try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
                     activateComponentsWithBatteries(shipBoard);
+                    currentState = AdventureStatesTypes.EFFECT;
                     applyEffect();
-                } catch (IllegalNumOfCannonsException e) {
+                } catch (IllegalNumOfActivableException e) {
                     System.out.println("Rechoose correctly the number of shields as the same as batteries");
                 }
             }

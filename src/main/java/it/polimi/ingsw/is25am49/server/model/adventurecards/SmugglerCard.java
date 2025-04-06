@@ -9,8 +9,10 @@ import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
 
+import java.util.ArrayList;
 
-public class SmugglerCard extends EnemyCard {
+
+public class SmugglerCard extends Enemy {
 
     public SmugglerCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
         super(gameBoard, description, level, dayslost, minimumFirePower);
@@ -26,21 +28,23 @@ public class SmugglerCard extends EnemyCard {
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable= new ArrayList<>();
             System.out.println("You have more firepower to defeat the smugglers! Choose where you want to put your new goods");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable= new ArrayList<>();
             System.out.println("You have drawn with the smugglers!");
             tryNextPlayer();
         } else {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable= new ArrayList<>();
             System.out.println("You have been defeated by the smugglers! You lose some goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
-            //currentState = AdventureStatesTypes.DECISION_GOODS; we dont go anymore in decision goods cause losing is automatic
         }
 
     }

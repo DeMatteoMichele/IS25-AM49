@@ -29,6 +29,10 @@ public class EffectMeteoriti extends CardEffect {
     }
 
     public void setCoordinate(Point coordinate) {
+    }
 
+    @Override
+    public int getLevel() {
+        return level;
     }
 }

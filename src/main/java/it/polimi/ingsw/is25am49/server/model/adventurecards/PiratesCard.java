@@ -12,7 +12,7 @@ import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PiratesCard extends EnemyCard {
+public class PiratesCard extends Enemy {
 
     protected int creditsEarned;
 
@@ -32,15 +32,18 @@ public class PiratesCard extends EnemyCard {
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have defeated the pirates!");
             System.out.println("Now decide if you want to win or stay as you are");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have drawn with the pirates!");
             tryNextPlayerOrHandleDefeatedPlayers();
         } else {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have lost against the pirates!");
             defeatedPlayers.add(gameBoard.getCurrentPlayer());
             tryNextPlayerOrHandleDefeatedPlayers();
@@ -171,6 +174,7 @@ public class PiratesCard extends EnemyCard {
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
         deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
+        coordinatesOfActivable = new ArrayList<>();
         tryNextPlayerDefeated();
     }
 

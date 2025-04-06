@@ -135,7 +135,10 @@ class PiratesCardTest {
         cannonCoordinates2.add(new Point(3, 3));
         when(shipMock1.getTotalFirePower()).thenReturn(4.0);
         gameBoard.getCurrentCard().finishDecision(cannonCoordinates2);
+        assertEquals(AdventureStatesTypes.DECISION_REWARDS, gameBoard.getCurrentCard().getCurrentState());
+        gameBoard.getCurrentCard().acceptPrizes(true);
         assertEquals(AdventureStatesTypes.ROLL_DICES, gameBoard.getCurrentCard().getCurrentState());
+
 
 
         assertEquals(gameBoard.getCurrentCard().getDefeatedPlayers().getFirst(), player2);

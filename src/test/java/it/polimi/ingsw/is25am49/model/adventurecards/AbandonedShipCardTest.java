@@ -7,28 +7,29 @@ import it.polimi.ingsw.is25am49.server.model.adventurecards.AbandonedShipCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 class AbandonedShipCardTest {
     GameBoard gameBoard;
     AdventureCardDeck adventureDeck;
+    ShipBoard shipMock2 = Mockito.mock(ShipBoard.class);
+    ShipBoard shipMock1 = Mockito.mock(ShipBoard.class);
     Player player1;
     Player player2;
-    ShipBoard shipBoard1;
     AdventureCard card1;
-    Component shipBoardComponent;
-    Tile tile;
+
 
 
     @BeforeEach
@@ -36,7 +37,10 @@ class AbandonedShipCardTest {
         // Initialize the game board and player1
         gameBoard = new GameBoard();
         player1 = new Player("TestPlayer", Color.RED, 1);
+        player1.setShipBoard(shipMock1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
+        player2.setShipBoard(shipMock2);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
@@ -67,28 +71,25 @@ class AbandonedShipCardTest {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
-        assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
-        assertEquals(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(player1, gameBoard.getCurrentPlayer());
     }
 
-    @Test
-    void checkRequirements() {
-    }
 
     @Test
-    void landingOnStationOrShip() {
+    void landingOnShip() {
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
         assertEquals(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS, gameBoard.getCurrentCard().getCurrentState());
-
     }
 
     @Test
     void finishDecision() {
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
+        when(shipMock1.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(false);
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
-        gameBoard.getCurrentCard().finishDecision(new ArrayList<Pair<Point, Token>>());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getCurrentCard(),card1);
@@ -97,6 +98,7 @@ class AbandonedShipCardTest {
 
     @Test
     void applyEffect() {
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
 //        ArrayList<Pair<Point, Token>> Coordinates = new ArrayList<>();
 //        Coordinates.add(new Pair<>(new Point(2, 2), Token.ASTRONAUT));

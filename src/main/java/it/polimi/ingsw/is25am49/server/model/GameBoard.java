@@ -37,7 +37,6 @@ public class GameBoard {
     private final ArrayList<Player> landedPlayers;
 
 
-
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         tilesDeck = new TileCardDeck();
@@ -46,10 +45,12 @@ public class GameBoard {
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
     }
+
     private void isYourTurn(Player player) {
         if (!player.equals(currentPlayer))
             throw new IllegalMethodOnThisStateException("It's not your turn");
     }
+
     public boolean isTestFlight() {
         return flightMode == FlightMode.TEST;
     }
@@ -59,15 +60,18 @@ public class GameBoard {
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
         int level;
-        if(gameMode == GameMode.LEVEL_1)
+        if (gameMode == GameMode.LEVEL_1)
             level = 1;
-        else if(gameMode == GameMode.LEVEL_2)
+        else if (gameMode == GameMode.LEVEL_2)
             level = 2;
         else
             throw new GameSettingsException("Illegal gameMode");
-        players.stream().forEach(player -> {player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()));});
+        players.stream().forEach(player -> {
+            player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()));
+        });
         setLeaderBoard(gameMode);
     }
+
     public void initialize(GameMode gameMode) {
         tilesDeck.generateDeck();
         tilesDeck.shuffle();
@@ -76,10 +80,12 @@ public class GameBoard {
         generateSmallDecks(gameMode);
 
     }
+
     public AdventureCardDeck getMainAdventureDeck() {
         return mainAdventureDeck;
     }
-    public  List<AdventureCard> generateDeck(GameMode gameMode){
+
+    public List<AdventureCard> generateDeck(GameMode gameMode) {
         // crea il deck di carte dove ogni carta avrà anche il costruttore di ogni effect.
         //TODO creare i file JSON  e guardare tutorial di come si si accede
         //in base alla gamemode devo decidere che carte aggiungere e poi in base al nome della carta chiamo il costruttore equivalente
@@ -87,17 +93,17 @@ public class GameBoard {
         //aggiungo i relativi effetti (facendo costruttore) e infine passo la lista come parametro al costruttore della carta
         //altrimenti, conoscendo la carta, so direttamente gli effetti che ha e li posso settare in automatico
 
-        try{
+        try {
             File file = new File("src/main/resources/it/polimi/ingsw/is25am49/adventure_card_deck_config.json");
-            if(!file.exists()){throw new FileNotFoundException("File non trovato");
-            }
-            else{
+            if (!file.exists()) {
+                throw new FileNotFoundException("File non trovato");
+            } else {
                 List<AdventureCard> adventureCards = new ArrayList<>();
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode rootNode = mapper.readTree(file);
 
-                for(JsonNode node : rootNode){
-                    if(gameMode == GameMode.FLIGHT_MODE){
+                for (JsonNode node : rootNode) {
+                    if (gameMode == GameMode.FLIGHT_MODE) {
                         JsonNode level = node.get("level");
                         JsonNode description = node.get("description");
                         if (level == null || description == null) {
@@ -107,32 +113,31 @@ public class GameBoard {
 
                         int id = level.asInt();
                         String name = description.asText();
-                        AdventureCard card = switch (name){
+                        AdventureCard card = switch (name) {
                             case "SpazioAperto" -> new SpazioAperto(this, name, id);
-                            case "StarDust"-> new StarDustCard(this, name, id);
+                            case "StarDust" -> new StarDustCard(this, name, id);
                             default -> null;
                         };
-                        if(card!= null) {
+                        if (card != null) {
                             adventureCards.add(card);
-                        }}}
-                    return adventureCards;
+                        }
+                    }
+                }
+                return adventureCards;
             }
-        }
-
-        catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.err.println("Errore: Il file di configurazione non è stato trovato");
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return null;
     }
 
 
-
-    public void generateSmallDecks(GameMode gameMode){
+    public void generateSmallDecks(GameMode gameMode) {
 
     }
+
     public void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
@@ -167,13 +172,14 @@ public class GameBoard {
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
+
     //todo serve solo per i test poi si può rimuovere
     public ArrayList<Player> getLandedPlayers() {
         return landedPlayers;
     }
 
     public void drawAdventureCard(Player player) {
-        if(player.equals(leaderBoard.getLeader())) {
+        if (player.equals(leaderBoard.getLeader())) {
             if (isFirstCard || currentCard.getIsFinished()) {
                 currentCard = mainAdventureDeck.getFirstCard();
                 mainAdventureDeck.draw();
@@ -181,10 +187,10 @@ public class GameBoard {
             } else {
                 throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
             }
-        }
-        else
+        } else
             throw new GameSettingsException("You are not the leader of this turn");
     }
+
     public void playerNoMoreInFlight(Player player) {
         if (landedPlayers.contains(player))
             throw new GameSettingsException("This player is already landed");
@@ -193,28 +199,40 @@ public class GameBoard {
             leaderBoard.remove(player);
         }
     }
-    public void userThrowDices(Player player){
+
+    public void userThrowDices(Player player) {
         isYourTurn(player);
         currentCard.rollDices();
     }
-    public void userPlayAdventureCard(Player player){}
-    public void userFinishDecision(Player player){}
-    public void userActivateComponent(Player player, Point coordinates){}
-    public void userActivateDaysUpdate(){}
-    public void userLandOnPlanet(Player player) {
-    }
-    public void userLandOnShip(Player player) {
-    }
-    public void userQuitGame(Player player){}
-    public void addPlayerToLeaderboard(Player player) {
-        if(leaderBoard.isEmpty()){
-            leaderBoard.add(player);
-            currentPlayer = player;
-        }
-        else
-            leaderBoard.add(player);
+
+    public void userPlayAdventureCard(Player player) {
     }
 
+    public void userFinishDecision(Player player) {
+    }
+
+    public void userActivateComponent(Player player, Point coordinates) {
+    }
+
+    public void userActivateDaysUpdate() {
+    }
+
+    public void userLandOnPlanet(Player player) {
+    }
+
+    public void userLandOnShip(Player player) {
+    }
+
+    public void userQuitGame(Player player) {
+    }
+
+    public void addPlayerToLeaderboard(Player player) {
+        if (leaderBoard.isEmpty()) {
+            leaderBoard.add(player);
+            currentPlayer = player;
+        } else
+            leaderBoard.add(player);
+    }
 
 
     public void addDiscardedTile(Player player) {
@@ -233,12 +251,12 @@ public class GameBoard {
     public void calculateFinalCredits() {
 
         leaderBoard.stream().forEach(entry -> {
-            int credits =0;
+            int credits = 0;
             Player p = entry.getKey();
             credits = 5 - leaderBoard.getPos(p);
             credits -= p.getLostComponents();
             credits += p.scoreOfGoods();
-            if(minimumExposedComponents().contains(p)) {
+            if (minimumExposedComponents().contains(p)) {
                 credits += 2;
             }
 
@@ -247,12 +265,12 @@ public class GameBoard {
         });
 
         landedPlayers.forEach(player -> {
-            int credits =0;
+            int credits = 0;
 
             credits = 5 - leaderBoard.getPos(player);
             credits -= player.getLostComponents();
             credits += player.scoreOfGoods();
-            if(minimumExposedComponents().contains(player)) {
+            if (minimumExposedComponents().contains(player)) {
                 credits += 2;
             }
             player.addCredits(credits);
@@ -304,10 +322,11 @@ public class GameBoard {
     }
 
 
-    public void finishUpdateLeaderboard(){
+    public void finishUpdateLeaderboard() {
         updateLeaderboard();
         checkIfIsLapped();
     }
+
     public void updateLeaderboard() {
 
         //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
@@ -333,7 +352,7 @@ public class GameBoard {
                 .map(Map.Entry::getKey)
                 .forEach(player -> {
                     //System.out.println("Player " + player.getUsername() + " has " + leaderBoard.getDays(player) + " days");
-                    if(leaderBoard.getDays(player) + leaderBoard.getNumberOfCells()< leaderBoard.getDays(leaderBoard.getLeader())){
+                    if (leaderBoard.getDays(player) + leaderBoard.getNumberOfCells() < leaderBoard.getDays(leaderBoard.getLeader())) {
                         // System.out.println("Player " + player.getUsername() + " is lapped");
                         lappedPlayers.add(player);
                     }
@@ -353,29 +372,25 @@ public class GameBoard {
     }
 
     public void userLookSmallAdventureCardDeck(Player player, int index) {
-        if(mapSmallAdventureDecks.containsKey(index)){
+        if (mapSmallAdventureDecks.containsKey(index)) {
             if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
                 mapSmallAdventureDecks.get(index).watch();
                 player.lockLastTile();
                 player.setSmallDeck(mapSmallAdventureDecks.get(index));
-            }
-            else
+            } else
                 throw new GameSettingsException("You cannot watch this deck");
-        }
-        else
+        } else
             throw new OutOfDeckExceptions("This deck does not exist");
     }
 
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {
-        if(mapSmallAdventureDecks.containsKey(index)){
+        if (mapSmallAdventureDecks.containsKey(index)) {
             if (player.isWatching() && mapSmallAdventureDecks.get(index).equals(player.getSmallAdventureDeck())) {
                 player.clearSmallDeck();
                 mapSmallAdventureDecks.get(index).stopWatch();
-            }
-            else
+            } else
                 throw new GameSettingsException("You are not watching this deck");
-        }
-        else
+        } else
             throw new OutOfDeckExceptions("This deck does not exist");
 
     }

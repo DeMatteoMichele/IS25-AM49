@@ -7,8 +7,10 @@ import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
 
+import java.util.ArrayList;
 
-public class SlaverCard extends EnemyCard {
+
+public class SlaverCard extends Enemy {
 
     protected int lostAstronauts;
     protected int creditsEarned;
@@ -26,6 +28,7 @@ public class SlaverCard extends EnemyCard {
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have more firepower to defeat the Slavers! You win some credits!");
             System.out.println("Now decide if you want to accept the rewards ");
             isDefeated = true;
@@ -34,10 +37,12 @@ public class SlaverCard extends EnemyCard {
 
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have drawn with the Slavers!");
             tryNextPlayer();
         } else {
             deactivateComponents(shipBoard);
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
             currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
