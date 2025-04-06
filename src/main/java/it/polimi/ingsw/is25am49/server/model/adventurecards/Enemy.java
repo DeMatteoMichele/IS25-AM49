@@ -105,7 +105,7 @@ public abstract class Enemy extends AdventureCard {
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             System.out.println("No more players, now to update");
-            currentState = AdventureStatesTypes.UPDATE;
+            update();
         }
     }
 

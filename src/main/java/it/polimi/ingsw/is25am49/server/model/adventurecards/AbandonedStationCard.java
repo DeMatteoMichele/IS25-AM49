@@ -66,9 +66,7 @@ public class AbandonedStationCard extends AdventureCard {
             catch(IllegalSetOfNextPlayerException e){
                 //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                 System.out.println("It goes to update state");
-                isFinished = true;
-                currentState = AdventureStatesTypes.UPDATE;
-            }
+                update();            }
         }
     }
 
@@ -95,8 +93,7 @@ public class AbandonedStationCard extends AdventureCard {
             }
             catch(IllegalSetOfNextPlayerException e){
                 System.out.println("No more players, now to update");
-                isFinished=true;
-                currentState = AdventureStatesTypes.UPDATE;
+                update();
             }
         }
 
@@ -132,9 +129,7 @@ public class AbandonedStationCard extends AdventureCard {
         System.out.println("You are winning goods but you lost " + daysLost + " travel days");
         currentEffect.action(player);
         player.setDaysThisTurn(-daysLost);
-        isFinished = true;
-        currentState = AdventureStatesTypes.UPDATE;
-
+        update();
     }
 
 }

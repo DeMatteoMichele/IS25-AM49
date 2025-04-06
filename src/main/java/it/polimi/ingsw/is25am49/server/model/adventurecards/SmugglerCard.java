@@ -28,19 +28,19 @@ public class SmugglerCard extends Enemy {
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
-            coordinatesOfActivable= new ArrayList<>();
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have more firepower to defeat the smugglers! Choose where you want to put your new goods");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
-            coordinatesOfActivable= new ArrayList<>();
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have drawn with the smugglers!");
             tryNextPlayer();
         } else {
             deactivateComponents(shipBoard);
-            coordinatesOfActivable= new ArrayList<>();
+            coordinatesOfActivable = new ArrayList<>();
             System.out.println("You have been defeated by the smugglers! You lose some goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
             currentState = AdventureStatesTypes.EFFECT;
@@ -57,8 +57,7 @@ public class SmugglerCard extends Enemy {
         currentEffect.action(currentPlayer);
         currentPlayer.setDaysThisTurn(-daysLost);
         if (isDefeated) {
-            currentState = AdventureStatesTypes.UPDATE;
-            isFinished = true;
+            update();
         } else {
             tryNextPlayer();
         }
@@ -84,8 +83,7 @@ public class SmugglerCard extends Enemy {
     @Override
     protected void handleRefuseOfRewards() {
         System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
-        currentState = AdventureStatesTypes.UPDATE;
-        isFinished = true;
+        update();
     }
 
     @Override

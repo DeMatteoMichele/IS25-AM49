@@ -90,8 +90,7 @@ public class PiratesCard extends Enemy {
     private void handleDefeatedPlayers() {
         if (defeatedPlayers.isEmpty()) {
             System.out.println("No defeated players, now to update");
-            currentState = AdventureStatesTypes.UPDATE;
-            isFinished = true;
+            update();
         } else {
             System.out.println("No more players, now the first defeated must roll the dices!");
             gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
@@ -113,8 +112,7 @@ public class PiratesCard extends Enemy {
         } else {    //i have applied the effect on all the players
             if (listEffects.isEmpty()) {  //effects are terminated, card is finished
                 System.out.println("All the effects are finished, now to update");
-                currentState = AdventureStatesTypes.UPDATE;
-                isFinished = true;
+                update();
             } else {      //effects are not finished, first player has to roll the dices on the next effect
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
                 currentEffect = listEffects.removeFirst();

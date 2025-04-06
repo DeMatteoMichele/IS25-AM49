@@ -30,8 +30,7 @@ public class StarDustCard extends AdventureCard {
                 player.setDaysThisTurn(-numExposedConnectors);
             }
         }
-        currentState = AdventureStatesTypes.UPDATE;
-        isFinished = true;
+        update();
     }
 
 

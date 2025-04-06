@@ -56,8 +56,7 @@ public class SlaverCard extends Enemy {
         currentPlayer.setDaysThisTurn(-daysLost);
         if (isDefeated) {
             currentPlayer.addCredits(creditsEarned);
-            currentState = AdventureStatesTypes.UPDATE;
-            isFinished = true;
+            update();
         } else {
             currentEffect.action(currentPlayer);
             tryNextPlayer();
@@ -83,8 +82,7 @@ public class SlaverCard extends Enemy {
     @Override
     protected void handleRefuseOfRewards() {
         System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
-        currentState = AdventureStatesTypes.UPDATE;
-        isFinished = true;
+        update();
     }
 
     @Override

@@ -71,7 +71,7 @@ public class AbandonedShipCard extends AdventureCard {
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             System.out.println("No more players, now to update");
-            currentState = AdventureStatesTypes.UPDATE;
+            update();
         }
     }
 
@@ -97,8 +97,7 @@ public class AbandonedShipCard extends AdventureCard {
         currentPlayer.addCredits(creditsEarned);
         System.out.println("You have earned " + creditsEarned + " credits");
         currentPlayer.setDaysThisTurn(-daysLost);
-        currentState = AdventureStatesTypes.UPDATE;
-        isFinished = true;
+        update();
     }
 
 }

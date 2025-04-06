@@ -100,5 +100,11 @@ public abstract class AdventureCard {
         isFinished = finished;
     }
 
+    protected void update(){
+        currentState = AdventureStatesTypes.UPDATE;
+        gameBoard.checkIfSomeoneHasZeroAstronauts();
+        gameBoard.finishUpdateLeaderboard();
+        isFinished= true;
+    }
 
 }

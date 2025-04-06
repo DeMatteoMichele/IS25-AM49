@@ -41,7 +41,7 @@ public class SabotageCard extends AdventureCard {
     @Override
     public void checkRequirements() {
         if(gameBoard.getLeaderBoard().size()==1){
-            currentState=AdventureStatesTypes.UPDATE;
+            update();
             System.out.println("you are the only player, you skip this card");
             //chiamo il metodo update
         }

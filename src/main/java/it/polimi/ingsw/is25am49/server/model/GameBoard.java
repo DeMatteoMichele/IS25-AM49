@@ -3,11 +3,11 @@ package it.polimi.ingsw.is25am49.server.model;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.SabotageCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.SpazioAperto;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.StarDustCard;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
@@ -66,9 +66,9 @@ public class GameBoard {
             level = 2;
         else
             throw new GameSettingsException("Illegal gameMode");
-        players.stream().forEach(player -> {
-            player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()));
-        });
+        players.stream().forEach(player ->
+                player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()))
+        );
         setLeaderBoard(gameMode);
     }
 
@@ -333,15 +333,15 @@ public class GameBoard {
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
                 .sorted(Comparator.comparing(player -> -leaderBoard.getPos(player))) // ordine decrescente per posizione
-                .forEach(player -> {
-                    leaderBoard.modifyFlightDays(player, player.getDaysThisTurn());
-                });
+                .forEach(player ->
+                        leaderBoard.modifyFlightDays(player, player.getDaysThisTurn())
+                );
         //alla fine setto tutti i days this turn a 0
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
-                .forEach(player -> {
-                    player.setDaysThisTurn(0);
-                });
+                .forEach(player ->
+                        player.setDaysThisTurn(0)
+                );
     }
 
 
@@ -392,6 +392,14 @@ public class GameBoard {
                 throw new GameSettingsException("You are not watching this deck");
         } else
             throw new OutOfDeckExceptions("This deck does not exist");
+    }
 
+    public void checkIfSomeoneHasZeroAstronauts() {
+        leaderBoard.stream()
+                .map(Map.Entry::getKey)
+                .forEach(player -> {
+                    if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0)
+                        playerNoMoreInFlight(player);
+                });
     }
 }

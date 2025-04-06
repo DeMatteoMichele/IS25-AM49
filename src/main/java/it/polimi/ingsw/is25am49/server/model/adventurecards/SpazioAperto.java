@@ -16,7 +16,7 @@ import java.util.Set;
 public class SpazioAperto extends AdventureCard {
 
     public SpazioAperto(GameBoard gameBoard, String description, int level) {
-        super(gameBoard,description, level);
+        super(gameBoard, description, level);
 
     }
 
@@ -25,11 +25,11 @@ public class SpazioAperto extends AdventureCard {
 
     private List<Player> playersProcess;
     private int currentPlayerIndex;
-
+    private List<Player> playersNoEnginePower = new ArrayList<>();
 
 
     @Override
-    public void drawCard(){
+    public void drawCard() {
         //chiamo il super
         super.drawCard();
         System.out.println("You have found an open space! You can choose if you wanna activate your double motors for travel days");
@@ -41,26 +41,26 @@ public class SpazioAperto extends AdventureCard {
             playersProcess.add(e.getValue());
         }*/
         playersProcess = gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).toList();
-        currentPlayerIndex =0;
+        currentPlayerIndex = 0;
         checkRequirements();
 
     }
+
     @Override
     public void checkRequirements() {
-        if(currentState!= AdventureStatesTypes.CHECK_REQUIREMENTS){
+        if (currentState != AdventureStatesTypes.CHECK_REQUIREMENTS) {
             throw new IllegalArgumentException("wrong state");
         }
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
 
-        ShipBoard ship=gameBoard.getCurrentPlayer().getShipBoard();
+        ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
-        if(totalNumberOfBatteries > 0){
+        if (totalNumberOfBatteries > 0) {
             System.out.println("you have enough batteries to activate your double motors. One battery activates one motor. " +
                     "Now choose which batteries you wanna use and how much");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
-        }
-        else{
+        } else {
             //non ho abbastanza batterie per attivare i doppi motori
             System.out.println("You don't have enough batteries to activate your double motors");
             int daysEarned = ship.getTotalEnginePower();
@@ -72,12 +72,11 @@ public class SpazioAperto extends AdventureCard {
 
             //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
             currentPlayerIndex++;
-            if(currentPlayerIndex>=playersProcess.size()){
-                    System.out.println("it was the last player, end of the turn");
-                    System.out.println("it goes to draw state");
-                    currentState = AdventureStatesTypes.DRAW;
-             }
-            else{
+            if (currentPlayerIndex >= playersProcess.size()) {
+                System.out.println("it was the last player, end of the turn");
+                System.out.println("it goes to draw state");
+                currentState = AdventureStatesTypes.DRAW;
+            } else {
 
                 System.out.println("It wasn't the last player, go on with the next player");
                 checkRequirements();
@@ -85,46 +84,49 @@ public class SpazioAperto extends AdventureCard {
             }
 
 
-    }}
-
-    @Override
-    public void finishDecision(List <Pair<Point, Token>> coordinates) {
-        Player currentPlayer = playersProcess.get(currentPlayerIndex);
-        gameBoard.setCurrentPlayer(currentPlayer);
-        ShipBoard ship=gameBoard.getCurrentPlayer().getShipBoard();
-        switch(currentState){
-            case DECISION_BATTERIES -> {
-                if(coordinates.size()>ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)){
-                    throw new IllegalArgumentException("you have chosen more batteries than you have");
-                }
-                //ho deciso quali batterie attivare, setto la lista di coordinate della batterie con quella passata
-                //dall'utente e passo allo stato in cui in base alle batterie decide i cannoni da attivare
-                System.out.println("you have choosen "+ coordinates.size() + " batteries, so you will activate " + coordinates.size() + " motors");
-                this.batteries = new ArrayList<>(coordinates);
-                System.out.println("now choose which motors you wanna activate");
-                currentState= AdventureStatesTypes.DECISION_MOTOR;
-                           }
-
-        default ->{ throw  new IllegalArgumentException("invalid state");}
         }
     }
 
     @Override
-    public void finishDecision(Set<Point> coordinates){
+    public void finishDecision(List<Pair<Point, Token>> coordinates) {
+        Player currentPlayer = playersProcess.get(currentPlayerIndex);
+        gameBoard.setCurrentPlayer(currentPlayer);
+        ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
+        switch (currentState) {
+            case DECISION_BATTERIES -> {
+                if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
+                    throw new IllegalArgumentException("you have chosen more batteries than you have");
+                }
+                //ho deciso quali batterie attivare, setto la lista di coordinate della batterie con quella passata
+                //dall'utente e passo allo stato in cui in base alle batterie decide i cannoni da attivare
+                System.out.println("you have choosen " + coordinates.size() + " batteries, so you will activate " + coordinates.size() + " motors");
+                this.batteries = new ArrayList<>(coordinates);
+                System.out.println("now choose which motors you wanna activate");
+                currentState = AdventureStatesTypes.DECISION_MOTOR;
+            }
+
+            default -> {
+                throw new IllegalArgumentException("invalid state");
+            }
+        }
+    }
+
+    @Override
+    public void finishDecision(Set<Point> coordinates) {
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         this.cannons = new ArrayList<>(coordinates);
-        switch(currentState){
+        switch (currentState) {
             case DECISION_MOTOR -> {
                 System.out.println("you have decided the coordinates of the motors you wanna activate");
 
                 //controllo che il numero dei cannoni da attivare corrisponda al numero delle batterie
-                if(batteries.size()!=coordinates.size()){
+                if (batteries.size() != coordinates.size()) {
                     throw new IllegalArgumentException("you have to activate the same number of motors as batteries");
                 }
                 //attivo i cannoni e passo allo stato in cui applico l'effetto
-                for(int i=0; i< batteries.size();i++){
+                for (int i = 0; i < batteries.size(); i++) {
                     ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
                     System.out.println("turning on the motor at " + cannons.get(i).x + " " + cannons.get(i).y);
                 }
@@ -132,8 +134,11 @@ public class SpazioAperto extends AdventureCard {
                 applyEffect();
             }
 
-        default -> {throw new IllegalArgumentException("invalid state");}
-    }}
+            default -> {
+                throw new IllegalArgumentException("invalid state");
+            }
+        }
+    }
 
 
     @Override
@@ -147,7 +152,7 @@ public class SpazioAperto extends AdventureCard {
         int daysEarned = ship.getTotalEnginePower();
         System.out.println("you have earned " + daysEarned + " travel days");
         //spengo i motori
-        for(int i=0; i< batteries.size();i++){
+        for (int i = 0; i < batteries.size(); i++) {
             System.out.println("turning off the motor at " + cannons.get(i).x + " " + cannons.get(i).y);
             ship.turnOff(cannons.get(i));
         }
@@ -157,20 +162,25 @@ public class SpazioAperto extends AdventureCard {
         //controllo se era l'ultimo giocatore
         System.out.println("now i check if it was the last player");
         currentPlayerIndex++;
-        if(currentPlayerIndex>=playersProcess.size()){
+        if (currentPlayerIndex >= playersProcess.size()) {
             System.out.println("it was the last player, end of the turn");
             System.out.println("it goes to draw state");
             isFinished = true;
             currentState = AdventureStatesTypes.DRAW;
-        }
-        else{
+        } else {
 
             System.out.println("It wasn't the last player, go on with the next player");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
 
         }
-
-
     }
+
+    @Override
+    protected void update() {
+        playersNoEnginePower.forEach(gameBoard::playerNoMoreInFlight);
+        gameBoard.checkIfSomeoneHasZeroAstronauts();
+        gameBoard.checkIfIsLapped();
+    }
+
 }
