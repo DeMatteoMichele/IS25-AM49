@@ -155,10 +155,12 @@ public class GameBoard {
     }
 
     public void mergeDecks() {
-        AdventureCardDeck bufferDeck = new AdventureCardDeck();
-        mapSmallAdventureDecks.forEach((index, smallDeck) -> smallDeck.stream().forEach(bufferDeck::add));
-        mapSmallAdventureDecks.clear();
-        setMainAdventureDeck(bufferDeck);
+        if(!mapSmallAdventureDecks.isEmpty()) {
+            AdventureCardDeck bufferDeck = new AdventureCardDeck();
+            mapSmallAdventureDecks.forEach((index, smallDeck) -> smallDeck.stream().forEach(bufferDeck::add));
+            mapSmallAdventureDecks.clear();
+            setMainAdventureDeck(bufferDeck);
+        }
     }
 
     public LeaderBoard getLeaderBoard() {
@@ -230,7 +232,8 @@ public class GameBoard {
         if (leaderBoard.isEmpty()) {
             leaderBoard.add(player);
             currentPlayer = player;
-        } else
+        }
+        else if(!leaderBoard.contains(player))
             leaderBoard.add(player);
     }
 

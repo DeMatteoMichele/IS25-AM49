@@ -88,6 +88,7 @@ public class Game {
     }
     public void userStopLookSmallAdventureCardDeck(Player player, Integer index){ board.userStopLookSmallAdventureCardDeck(player, index);}
     public void addPlayersToLeaderBoard(){
+        players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
     }
     public void mergeSmallDecks(){

@@ -3,14 +3,14 @@ package it.polimi.ingsw.is25am49.server;
 import java.io.File;
 import java.util.List;
 
-public class Serializer {
+public class ServerSerializer implements VirtualView{
     private final ServerController serverController;
-    private NetworkLevel networkLevel;
-    public Serializer(ServerController serverController) {
+    private ClientHandler clientHandler;
+    public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
     }
-    public void setNetworkLevel(NetworkLevel networkLevel) {
-        this.networkLevel = networkLevel;
+    public void setNetworkLevel(ClientHandler clientHandler) {
+        this.clientHandler = clientHandler;
     }
     public void deSerializeStringFromClient(File fileJson) {
         //Qua chiamerò i corretti metodi con i corretti parametri su ControllerServer

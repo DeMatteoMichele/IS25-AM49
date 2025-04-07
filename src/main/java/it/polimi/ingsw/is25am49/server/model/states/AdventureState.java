@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
@@ -60,6 +61,9 @@ public class AdventureState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void timerIsDone(){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userSelectTypeOfToken(Player player, Token token, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userThrowDices(Player player){

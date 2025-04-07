@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.NetworkLevel;
 import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;

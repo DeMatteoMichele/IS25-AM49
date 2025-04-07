@@ -201,5 +201,8 @@ public class LeaderBoard {
         }
         return true;
     }
+    public boolean contains(Player player){
+        return mapLeaderboard.containsKey(player);
+    }
 }
 

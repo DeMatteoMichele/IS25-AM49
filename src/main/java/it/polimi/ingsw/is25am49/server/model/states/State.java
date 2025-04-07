@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
 
 import java.awt.*;
 
@@ -35,6 +36,7 @@ public abstract class State {
     public abstract void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex);
     public abstract void userPlaceTimer(Player player);
     public abstract void timerIsDone();
+    public abstract void userSelectTypeOfToken(Player player, Token token, Point coordinates);
 
     public abstract void userThrowDices(Player player);
     public abstract void userDrawAdventureCard(Player player);

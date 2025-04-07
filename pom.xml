@@ -53,8 +53,15 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+    </dependency>
 
+    <dependency>
+      <groupId>org.jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>3.29.0</version>
+    </dependency>
+
+  </dependencies>
   <build>
     <plugins>
       <plugin>

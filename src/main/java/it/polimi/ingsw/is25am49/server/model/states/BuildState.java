@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
@@ -46,21 +47,25 @@ public class BuildState extends State {
         player.pickTile(coordinates);
     }
     public void userDiscardTile(Player player){
+        player.shipBoardIsNotCompletedYet();
         gameSession.userDiscardTile(player);
     }
     public void userDrawTile(Player player, int idTIle) {
+        player.shipBoardIsNotCompletedYet();
         gameSession.userDrawTile(player, idTIle);
     }
     public void userFinishShipboard(Player player) {
+        player.shipBoardIsNotCompletedYet();
         if(gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
-            transition(new AdventureState(gameSession));
         }
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {
+        player.shipBoardIsNotCompletedYet();
         gameSession.userLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
     public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex) {
+        player.shipBoardIsNotCompletedYet();
         gameSession.userStopLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
     public void userPlaceTimer(Player player) {
@@ -69,7 +74,9 @@ public class BuildState extends State {
     public void timerIsDone(){
         gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
-        transition(new AdventureState(gameSession));
+    }
+    public void userSelectTypeOfToken(Player player, Token token, Point coordinates){
+
     }
     //illegal
     public void userThrowDices(Player player) {

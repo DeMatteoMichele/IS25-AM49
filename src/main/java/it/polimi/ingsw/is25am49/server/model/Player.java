@@ -22,6 +22,7 @@ public class Player {
     private final int idPlayer;
     private AdventureCardDeck smallAdventureDeckLooked;
     private boolean isWatching;
+    private boolean theCrewHasBeenPlaced;
 
     public Player(String username, Color color, int idPlayer) {
         this.username = username;
@@ -39,6 +40,10 @@ public class Player {
     private void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");
+    }
+    public void shipBoardIsNotCompletedYet(){
+        if(shipBoard.isCompleted())
+            throw new IllegalStateException("Shipboard is already completed");
     }
     public boolean isWatching(){
         return isWatching;
@@ -98,14 +103,17 @@ public class Player {
     }
 
     public void pickTile(Point coordinates){
+        shipBoardIsNotCompletedYet();
         handTile = Optional.of(shipBoard.removeTile(coordinates));
     }
     public void placeTile(Point coordinates){
         thereIsHandTile();
+        shipBoardIsNotCompletedYet();
         handTile.ifPresent(tile -> shipBoard.insertTile(coordinates, tile));
         handTile = Optional.empty();
     }
     public void rotateTile(boolean isClockwise){
+        shipBoardIsNotCompletedYet();
         if(isClockwise)
             handTile.ifPresent(Tile::rotateTileClockwise);
         else
