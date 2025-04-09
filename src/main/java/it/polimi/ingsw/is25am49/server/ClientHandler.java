@@ -7,7 +7,11 @@ public class ClientHandler {
     public ClientHandler(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
-    public void passInformationToServerController(File fileJson) {
+
+    public void passInformationToServerSerializer(File fileJson) {
         serverSerializer.deSerializeStringFromClient(fileJson);
+    }
+    public void passInformationToServerHandler(File fileJson) {
+
     }
 }

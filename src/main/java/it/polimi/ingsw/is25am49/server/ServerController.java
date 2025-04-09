@@ -28,7 +28,7 @@ public class ServerController {
         if(player.getShipBoard().isCompleted())
             shipBoards.add(player.getShipBoard());
     }
-    public void passInformationToNetworkLevel(String method, List<Object> parameters) {
+    public void passInformationToClientHandler(String method, List<Object> parameters) {
         serverSerializer.SerializeObjectFromServer(method, parameters);
     }
 
