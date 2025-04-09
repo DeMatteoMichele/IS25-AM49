@@ -21,7 +21,7 @@ public class EffectCannonata extends CardEffect {
         this.direction = direction;
     }
     public void action(Player player) {
-
+        System.out.println("ok");
     }
 
     public void setPosition(int position) {

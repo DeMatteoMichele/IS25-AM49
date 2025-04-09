@@ -51,6 +51,14 @@ public class SpazioAperto extends AdventureCard {
         if (currentState != AdventureStatesTypes.CHECK_REQUIREMENTS) {
             throw new IllegalArgumentException("wrong state");
         }
+        for(Player player : gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).toList()){
+            if(player.getShipBoard().getTotalEnginePower()==0 && player.getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS) == 0){
+                playersNoEnginePower.add(player);
+            }
+        }
+
+
+
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
 

@@ -16,11 +16,12 @@ public class PlanetCard extends AdventureCard {
 
     protected final List<Planet> planets=new ArrayList<Planet>();
     private final int daysLost;
-    public PlanetCard(GameBoard gameBoard, String description, int daysLost, int level,List<Planet> planets) {
+    public PlanetCard(GameBoard gameBoard, String description, int level,int daysLost, List<Planet> planets) {
         super(gameBoard,description, level);
         this.daysLost = daysLost;
         this.planets.addAll(planets);
     }
+
 
 
     @Override
@@ -104,6 +105,7 @@ public class PlanetCard extends AdventureCard {
         //applico l'effetto, aggiorno il player con i giorni persi
         currentEffect.action(gameBoard.getCurrentPlayer());
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
+        gameBoard.updateLeaderboard();
         System.out.println("You have lost " + daysLost + " travel days");
         if(planets.isEmpty()){
             System.out.println("You have no more planets to land on, you have to go on with the game");

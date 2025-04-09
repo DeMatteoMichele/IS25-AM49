@@ -1,14 +1,638 @@
 [
   {
+    "level" : 1,
+    "description" : "SpazioAperto"
+  },
+  {
+    "level" : 1,
+    "description" : "SpazioAperto"
+  },
+  {
+    "level" : 1,
+    "description" : "SpazioAperto"
+  },
+  {
+    "level" : 1,
+    "description" : "MeteorRainCard",
+    "effects" : [
+      {
+        "name" : "effectMeteorRain",
+        "level" : 0,
+        "orientation" : "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "EAST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "WEST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "SOUTH"
+      }
+    ]
+  },
+  {
+    "level" :1,
+    "description" : "MeteorRainCard",
+    "effects" : [
+      {
+        "name" : "effectMeteorRain",
+        "level" : 1,
+        "orientation" : "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 1,
+        "orientation": "NORTH"
+      }
+    ]
+  },
+  {
+    "level": 1,
+    "description" : "PlanetCard",
+    "daysLost" : 3,
+    "planets" : [
+      {
+        "redGoods" : 1,
+        "yellowGoods" : 0,
+        "greenGoods" : 1,
+        "blueGoods" : 3
+      },
+      {
+        "redGoods" : 1,
+        "yellowGoods" : 1,
+        "greenGoods" : 0,
+        "blueGoods" : 1
+      },
+      {
+        "redGoods" : 1,
+        "yellowGoods" : 0,
+        "greenGoods" : 0,
+        "blueGoods" : 3
+      },
+      {
+        "redGoods" : 1,
+        "yellowGoods" : 0,
+        "greenGoods" : 1,
+        "blueGoods" : 0
+      }
+    ]
+  },
+  {
+    "level" : 1,
+    "description" : "PlanetCard",
+    "daysLost" : 2,
+    "planets" : [
+      {
+        "redGoods" : 2,
+        "yellowGoods" : 0,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      },
+      {
+        "redGoods" : 1,
+        "yellowGoods" : 0,
+        "greenGoods" : 0,
+        "blueGoods" : 2
+      },
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 1,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      }
+    ]
+  },
+  {
+    "level" : 1,
+    "description" : "PlanetCard",
+    "daysLost" : 3,
+    "planets" : [
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 1,
+        "greenGoods" : 1,
+        "blueGoods" : 2
+      },
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 2,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      }
+    ]
+  },
+  {
+    "level" : 1,
+    "description" : "PlanetCard",
+    "daysLost" : 1,
+    "planets" : [
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 0,
+        "greenGoods" : 2,
+        "blueGoods" : 0
+      },
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 1,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      },
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 0,
+        "greenGoods" : 0,
+        "blueGoods" : 3
+      }
+    ]
+  },
+  {
+    "level" : 1,
+    "description" : "AbandonedShipCard",
+    "daysLost" : 1,
+    "creditsEarned" : 3,
+    "lostAstronauts" : 2
+  },
+  {
+    "level": 1,
+    "description" : "AbandonedStationCard",
+    "daysLost" : 1,
+    "minimumAstronauts" : 6,
+    "redGoods" : 2,
+    "yellowGoods" : 0,
+    "greenGoods" : 0,
+    "blueGoods" : 0
+  },
+  {
+    "level": 2,
+    "description" : "SmugglerCard",
+    "daysLost" : 1,
+    "minimumFirepower" : 8,
+    "redGoods" : 1,
+    "yellowGoods" : 2,
+    "greenGoods" : 0,
+    "blueGoods" : 0,
+    "number" : 3
+  },
+  {
+    "level": 2,
+    "description" : "StarDustCard"
+  },
+  {
+    "level" : 0,
+    "description" : "SmugglerCard",
+    "daysLost" : 1,
+    "minimumFirepower" : 4,
+    "redGoods" : 0,
+    "yellowGoods" : 1,
+    "greenGoods" : 1,
+    "blueGoods" : 1,
+    "number" : 2
+  },
+  {
+    "level": 2,
+    "description" : "SpazioAperto"
+  },
+  {
+    "level": 2,
+    "description" : "SpazioAperto"
+  },
+  {
+    "level": 2,
+    "description" : "SpazioAperto"
+  },
+  {
+    "level": 2,
+    "description" : "MeteorRainCard",
+    "effects" : [
+      {
+        "name" : "effectMeteorRain",
+        "level" : 0,
+        "orientation" : "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 1,
+        "orientation": "EAST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "EAST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "EAST"
+      }
+    ]
+  },
+  {
+    "level" : 2,
+    "description" : "MeteorRainCard",
+    "effects" : [
+      {
+        "name" : "effectMeteorRain",
+        "level" : 1,
+        "orientation" : "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 1,
+        "orientation": "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "SOUTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "SOUTH"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description": "MeteorRainCard",
+    "effects": [
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "NORTH"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 1,
+        "orientation": "WEST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "WEST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "WEST"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description": "PlanetCard",
+    "daysLost": 4,
+    "planets": [
+      {
+        "redGoods": 3,
+        "yellowGoods": 1,
+        "greenGoods": 0,
+        "blueGoods": 0
+      },
+      {
+        "redGoods": 2,
+        "yellowGoods": 0,
+        "greenGoods": 2,
+        "blueGoods": 0
+      },
+      {
+        "redGoods": 1,
+        "yellowGoods": 0,
+        "greenGoods": 0,
+        "blueGoods": 4
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description": "PlanetCard",
+    "daysLost": 3,
+    "planets": [
+      {
+        "redGoods": 2,
+        "yellowGoods": 0,
+        "greenGoods": 0,
+        "blueGoods": 0
+      },
+      {
+        "redGoods": 0,
+        "yellowGoods": 0,
+        "greenGoods": 4,
+        "blueGoods": 0
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description": "PlanetCard",
+    "daysLost": 2,
+    "planets": [
+      {
+        "redGoods":1,
+        "yellowGoods": 1,
+        "greenGoods": 0,
+        "blueGoods": 0
+      },
+      {
+        "redGoods": 0,
+        "yellowGoods": 1,
+        "greenGoods": 1,
+        "blueGoods": 3
+      },
+      {
+        "redGoods": 0,
+        "yellowGoods": 0,
+        "greenGoods": 2,
+        "blueGoods": 0
+      },
+      {
+        "redGoods": 0,
+        "yellowGoods": 1,
+        "greenGoods": 0,
+        "blueGoods": 0
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description": "PlanetCard",
+    "daysLost" : 3,
+    "planets" : [
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 0,
+        "greenGoods" : 4,
+        "blueGoods" : 0
+      },
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 2,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      },
+        {
+          "redGoods" : 0,
+          "yellowGoods" : 0,
+          "greenGoods" : 0,
+          "blueGoods" : 4
+        }
+    ]
+
+  },
+
+
+  {
+    "level": 0,
+    "description" : "StarDustCard"
+  },
+  {
+    "level" : 0,
+    "description" : "MeteorRainCard",
+    "effects" : [
+      {
+        "name" : "effectMeteorRain",
+        "level" : 1,
+        "orientation" : "NORTH"
+      },
+      {
+        "name" : "effectMeteorRain",
+        "level" : 0,
+        "orientation" : "EAST"
+      },
+      {
+        "name": "effectMeteorRain",
+        "level": 0,
+        "orientation": "WEST"
+      }
+    ]
+  },
+  {
+    "level" : 0,
+    "description" : "AbandonedStationCard",
+    "daysLost" : 1,
+    "minimumAstronauts" : 5,
+    "redGoods" : 0,
+    "yellowGoods" : 1,
+    "greenGoods" : 1,
+    "blueGoods" : 0
+  },
+  {
+    "level" : 0,
+    "description" : "AbandonedShipCard",
+    "daysLost" : 1,
+    "creditsEarned" : 4,
+    "lostAstronauts" : 3
+  },
+  {
     "level" : 0,
     "description" : "SpazioAperto"
   },
   {
     "level" : 0,
-    "description" : "SabotageCard"
+    "description" : "WarZoneCard",
+    "daysLost" : 3,
+    "lostAstronauts" : 2,
+    "effects" : [
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "SOUTH"
+      },
+        {
+          "name" : "effectCannonata",
+          "level" : 1,
+          "orientation" : "SOUTH"
+        }
+    ]
+
   },
   {
-    "level": 0,
-    "description" : "StarDust"
+    "level": 2,
+    "description" : "WarZoneCard",
+    "daysLost" : 4,
+    "lostAstronauts" : 3,
+    "effects" : [
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "NORTH"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "EAST"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "WEST"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 1,
+        "orientation" : "SOUTH"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description" : "AbandonedShipCard",
+    "daysLost" : 1,
+    "creditsEarned" : 6,
+    "lostAstronauts" : 4
+  },
+  {
+    "level": 2,
+    "description" : "AbandonedShipCard",
+    "daysLost" : 2,
+    "creditsEarned" : 8,
+    "lostAstronauts" : 5
+  },
+  {
+    "level": 2,
+    "description" : "AbandonedStationCard",
+    "daysLost" : 1,
+    "minimumAstronauts" : 7,
+    "redGoods" : 1,
+    "yellowGoods" : 1,
+    "greenGoods" : 0,
+    "blueGoods" : 0
+  },
+  {
+    "level": 2,
+    "description" : "AbandonedStationCard",
+    "daysLost" : 2,
+    "minimumAstronauts" : 8,
+    "redGoods" : 0,
+    "yellowGoods" : 2,
+    "greenGoods" : 1,
+    "blueGoods" : 0
+  },
+  {
+    "level": 2,
+    "description" : "SabotageCard"
+  },
+
+  {
+    "level" : 0,
+    "description" : "PlanetCard",
+    "daysLost" : 2,
+    "planets" : [
+      {
+        "redGoods" : 2,
+        "yellowGoods" : 0,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      },
+      {
+        "redGoods" : 1,
+        "yellowGoods" : 0,
+        "greenGoods" : 0,
+        "blueGoods" : 2
+      },
+      {
+        "redGoods" : 0,
+        "yellowGoods" : 1,
+        "greenGoods" : 0,
+        "blueGoods" : 0
+      }
+    ]
+  },
+  {
+    "level": 1,
+    "description" : "PiratesCard",
+    "daysLost" : 1,
+    "minimumFirepower" : 5,
+    "creditsEarned" : 4,
+    "effects" : [
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "NORTH"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 1,
+        "orientation" : "NORTH"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "NORTH"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "description" : "PiratesCard",
+    "daysLost" : 2,
+    "minimumFirepower" : 6,
+    "creditsEarned" : 7,
+    "effects" : [
+      {
+        "name" : "effectCannonata",
+        "level" : 1,
+        "orientation" : "NORTH"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 0,
+        "orientation" : "NORTH"
+      },
+      {
+        "name" : "effectCannonata",
+        "level" : 1,
+        "orientation" : "NORTH"
+      }
+    ]
+  },
+  {
+    "level": 1,
+    "description" : "SlaverCard",
+    "daysLost" : 1,
+    "minimumFirepower" : 6,
+    "creditsEarned" : 5,
+    "lostAstronauts" : 3
+  },
+  {
+    "level": 2,
+    "description" : "SlaverCard",
+    "daysLost" : 2,
+    "minimumFirepower" : 7,
+    "creditsEarned" : 8,
+    "lostAstronauts" : 4
+  },
+  {
+    "level": 2,
+    "description" : "EpidemyCard"
   }
+
 ]

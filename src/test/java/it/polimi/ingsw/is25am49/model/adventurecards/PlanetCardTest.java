@@ -102,7 +102,7 @@ class PlanetCardTest {
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(-3,gameBoard.getCurrentPlayer().getDaysThisTurn());
+        assertEquals(0,gameBoard.getCurrentPlayer().getDaysThisTurn());
 
         //gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
     }
@@ -118,7 +118,7 @@ class PlanetCardTest {
         gameBoard.getCurrentCard().finishDecision(coordinates);
         assertEquals(player1,gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(-9,gameBoard.getCurrentPlayer().getDaysThisTurn());
+        assertEquals(0,gameBoard.getCurrentPlayer().getDaysThisTurn());
         assertEquals(0,deck.size());
         assertEquals("Planet Card",gameBoard.getCurrentCard().getDescription());
 

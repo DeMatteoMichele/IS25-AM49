@@ -43,7 +43,6 @@ public class SabotageCard extends AdventureCard {
         if(gameBoard.getLeaderBoard().size()==1){
             update();
             System.out.println("you are the only player, you skip this card");
-            //chiamo il metodo update
         }
         //con uno stream trovo il giocatore che ha meno equipaggio
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
@@ -65,7 +64,7 @@ public class SabotageCard extends AdventureCard {
 
         //passo a roll dices
         currentState=AdventureStatesTypes.ROLL_DICES;
-        rollDices();
+
 
     }
 
@@ -83,7 +82,8 @@ public class SabotageCard extends AdventureCard {
             dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
             column = dicesResult;
-            rollDices();
+            System.out.println("you have set the column to: " + column + ", now roll the dices again to set the row");
+
 
         }
         else{

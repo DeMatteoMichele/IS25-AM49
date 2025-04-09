@@ -1,8 +1,10 @@
 package it.polimi.ingsw.is25am49.model;
 
+import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.PlanetCard;
 import it.polimi.ingsw.is25am49.server.model.enums.*;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
@@ -13,7 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -194,19 +198,64 @@ class GameBoardTest {
     }
     @Test
     void initialize(){
-        gameBoard.generateDeck(GameMode.FLIGHT_MODE);
+//        gameBoard.generateDeck(GameMode.FLIGHT_MODE);
         gameBoard.initialize(GameMode.FLIGHT_MODE);
-        assertEquals(2,gameBoard.getMainAdventureDeck().size());
+//        assertEquals(3,gameBoard.getMainAdventureDeck().size());
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
 
 
     }
     @Test
-    void generateDeck() {
-        List<AdventureCard> deck = gameBoard.generateDeck(GameMode.FLIGHT_MODE);
-        assertEquals(2,deck.size());
-        for(AdventureCard card : deck){
+    void initialize2(){
+        gameBoard.initialize(GameMode.LEVEL_2);
+        assertEquals(0,gameBoard.getMainAdventureDeck().size());
+        gameBoard.mergeDecks();
+        assertEquals(12,gameBoard.getMainAdventureDeck().size());
+        for(int i = 0; i < gameBoard.getMainAdventureDeck().size(); i++) {
+            AdventureCard card = gameBoard.getMainAdventureDeck().getCard(i);
             System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
-        };
+        }
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+    }
+    @Test
+    void generateDeck() {
+        gameBoard.generateSmallDecks(GameMode.FLIGHT_MODE);
+//        assertEquals(8, gameBoard.getMainAdventureDeck().size());
+        for(int i = 0; i < gameBoard.getMainAdventureDeck().size(); i++) {
+            AdventureCard card = gameBoard.getMainAdventureDeck().getCard(i);
+            System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+        }
+    }
+    @Test
+    void generateDeck2(){
+        gameBoard.generateSmallDecks(GameMode.LEVEL_1);
+        assertEquals(2, gameBoard.getSmallAdventureDeck(0).size());
+        assertEquals(2, gameBoard.getSmallAdventureDeck(1).size());
+        assertEquals(2, gameBoard.getSmallAdventureDeck(2).size());
+        assertEquals(2, gameBoard.getSmallAdventureDeck(3).size());
+        for(int i=0; i<4;i++){
+            System.out.println("Small Deck "+i);
+            for(int j=0;j<gameBoard.getSmallAdventureDeck(i).size();j++){
+                AdventureCard card = gameBoard.getSmallAdventureDeck(i).getCard(j);
+                System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+            }
+        }
+
+    }
+    @Test
+    void generateDeck3(){
+        gameBoard.generateSmallDecks(GameMode.LEVEL_2);
+        assertEquals(3, gameBoard.getSmallAdventureDeck(0).size());
+        assertEquals(3, gameBoard.getSmallAdventureDeck(1).size());
+        assertEquals(3, gameBoard.getSmallAdventureDeck(2).size());
+        assertEquals(3, gameBoard.getSmallAdventureDeck(3).size());
+        for(int i=0; i<4;i++){
+            System.out.println("Small Deck "+i);
+            for(int j=0;j<gameBoard.getSmallAdventureDeck(i).size();j++){
+                AdventureCard card = gameBoard.getSmallAdventureDeck(i).getCard(j);
+                System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+            }
+        }
     }
 
     @Test

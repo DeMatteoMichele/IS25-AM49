@@ -8,5 +8,5 @@ module it.polimi.ingsw.is25am49 {
     requires java.rmi;
 
     opens it.polimi.ingsw.is25am49 to javafx.fxml;
-    exports it.polimi.ingsw.is25am49;
+    exports it.polimi.ingsw.is25am49.client;
 }
