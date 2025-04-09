@@ -6,16 +6,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import static java.lang.Thread.sleep;
+
 public class HeartBeatAgent implements Runnable{
 
     private int interval = 5000;
     private Socket heartBeatSocket;
     private DataOutputStream heartBeatStream;
     private File heartBeatJson;
+    ServerHandler serverHandler;
 
-    public HeartBeatAgent(Socket heartBeatSocket, DataOutputStream heartBeatStream) {
-        this.heartBeatSocket = heartBeatSocket;
-        this.heartBeatStream = heartBeatStream;
+    public HeartBeatAgent(ServerHandler serverHandler) {
+        heartBeatSocket = serverHandler.getClientSocket();
+        heartBeatStream = serverHandler.getOutputStream();
+        this.serverHandler = serverHandler;
     }
     @Override
     public void run() {
@@ -38,7 +42,7 @@ public class HeartBeatAgent implements Runnable{
             System.out.println("Client still alive");
         }
         catch(IOException e){
-            throw new RuntimeException("Errore durante l'invio del JSON: " + e.getMessage(), e);
+            serverHandler.setConnectionFalse();
         }
     }
 }

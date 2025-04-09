@@ -9,7 +9,7 @@ public class ServerSerializer implements VirtualView{
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
     }
-    public void setNetworkLevel(ClientHandler clientHandler) {
+    public void setClientHandler(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
     }
     public void deSerializeStringFromClient(File fileJson) {

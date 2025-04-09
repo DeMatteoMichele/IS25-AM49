@@ -19,21 +19,21 @@ public class ServerHandler {
     private DataOutputStream outputStream;
     private DataInputStream inputStream;
     private final ExecutorService executors;
-    private ScheduledExecutorService scheduler;
-    int intervalHeartBeat = 5000;
+    //private ScheduledExecutorService scheduler;
     int numberOfTries;
     int thresholdTries;
     boolean connected;
     int secondsForReconnection;
     boolean timeIsNotDone;
+    Thread heartBeatThread;
 
     public ServerHandler(ClientSerializer clientSerializer) {
         this.clientSerializer = clientSerializer;
-        scheduler = Executors.newScheduledThreadPool(5);
+        // scheduler = Executors.newScheduledThreadPool(5);
         thresholdTries = 10;
         secondsForReconnection = 3;
-        attemptedConnection();
         executors = Executors.newFixedThreadPool(5);
+        attemptedConnection();
         executors.submit(() -> {
             while (connected) {
                 try {
@@ -50,7 +50,7 @@ public class ServerHandler {
                 }
             }
         });
-        executors.submit(new HeartBeatAgent(clientSocket, outputStream));
+
     }
 
     public void attemptedConnection() {
@@ -62,6 +62,8 @@ public class ServerHandler {
                 numberOfTries++;
                 tryConnection();
                 trySend();
+                heartBeatThread.interrupt();
+                heartBeatThread = new Thread(new HeartBeatAgent(this));
                 connected = true;
             } catch (IOException e) {
                 shutDown();
@@ -69,12 +71,17 @@ public class ServerHandler {
         }
     }
 
-    public void timer() {
-        timeIsNotDone = true;
-        while (timeIsNotDone)
-            scheduler.schedule(() -> {
-                timeIsNotDone = false;
-            }, secondsForReconnection, TimeUnit.SECONDS);
+    public void timer(){
+//        timeIsNotDone = true;
+//        scheduler.schedule(() -> {
+//            timeIsNotDone = false;
+//        }, secondsForReconnection, TimeUnit.SECONDS);
+//        while (timeIsNotDone){}
+        try {
+            Thread.sleep(secondsForReconnection* 1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void trySend() throws IOException {
@@ -120,11 +127,25 @@ public class ServerHandler {
             inputStream.close();
             outputStream.close();
             executors.shutdownNow();
+            //scheduler.shutdownNow();
+            heartBeatThread.interrupt();
             clientSocket.close();
             connected = false;
             System.out.println("Connection closed");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setConnectionFalse() {
+        connected = false;
+    }
+
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
+    public DataOutputStream getOutputStream() {
+        return outputStream;
     }
 }
