@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.StarDustCard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
@@ -47,6 +48,7 @@ class StarDustCardTest {
         player1.setShipBoard(shipMock1);
         player2.setShipBoard(shipMock2);
         player3.setShipBoard(shipMock3);
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard( player1);
         gameBoard.addPlayerToLeaderboard( player2);
         gameBoard.addPlayerToLeaderboard( player3);
@@ -54,6 +56,7 @@ class StarDustCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player1, 0);
         gameBoard.getLeaderBoard().modifyFlightDays(player3, 2);
         adventureDeck = new AdventureCardDeck();
+
         card1 = new StarDustCard(gameBoard, "StardDust", 1);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);

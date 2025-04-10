@@ -96,6 +96,13 @@ class ShipBoardTest {
 
     @Test
     void getNumberOfExposedConnectors() {
+        for (int i = 0; i <10 ; i++) {
+            System.out.println(i+1 +") Generazione");
+            ship2=ShipBoard.generateShipboard(2,30);
+            ship2.completeShipBoard();
+            ship2.printShipboardSpecial();
+            System.out.println("CONNETTORI ESPOSTI: "+ship2.getNumberOfExposedConnectors()+ " --> conta siano giusti");
+        }
     }
 
     @Test
@@ -195,14 +202,6 @@ class ShipBoardTest {
 
     @Test
     void testRemoveAllTokens() {
-    }
-
-    @Test
-    void testGetNumberOfExposedConnectors() {
-        ship1.completeShipBoard();
-        ship1.printShipboardSpecial();
-
-        System.out.println(ship1.getNumberOfExposedConnectors());
     }
 
     @Test

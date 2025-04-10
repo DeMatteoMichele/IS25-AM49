@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EpidemyCard extends AdventureCard {
-    private final List<CardEffect> effects;
-    public EpidemyCard(GameBoard gameBoard, String description, int daysLost, int level, List<CardEffect> ListEffects) {
+
+    public EpidemyCard(GameBoard gameBoard, String description,int level) {
         super(gameBoard,description, level);
-        effects = new ArrayList<>();
-        effects.addAll(ListEffects);
     }
 
     @Override

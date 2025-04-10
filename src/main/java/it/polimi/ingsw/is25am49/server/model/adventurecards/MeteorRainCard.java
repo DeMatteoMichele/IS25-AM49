@@ -27,7 +27,7 @@ public class MeteorRainCard extends AdventureCard {
         listEffects.addAll(ListEffects);
     }
 
-    private static final int BIG_METEORA_LEVEL = 2;
+    private static final int BIG_METEORA_LEVEL = 1;
     private List<Pair<Point, Token>> coordinatesOfBatteries = new ArrayList<>();
     private List<Point> coordinatesOfActivable = new ArrayList<>();
     private final List<Player> listOfPlayers = new ArrayList<>();

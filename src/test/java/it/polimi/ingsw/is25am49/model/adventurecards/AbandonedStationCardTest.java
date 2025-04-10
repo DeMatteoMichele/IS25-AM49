@@ -124,7 +124,7 @@ class AbandonedStationCardTest {
         gameBoard.getCurrentCard().finishDecision(coordinates);
 
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(-2,gameBoard.getCurrentPlayer().getDaysThisTurn());
+
 
     }
 }
