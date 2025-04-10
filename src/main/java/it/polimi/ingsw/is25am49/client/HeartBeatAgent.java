@@ -25,8 +25,8 @@ public class HeartBeatAgent implements Runnable{
     public void run() {
         while(true) {
             try {
-                heartBeat();
                 Thread.sleep(interval);
+                heartBeat();
             } catch (InterruptedException e) {
                 throw new RuntimeException("HeartBeatAgent interrupted" + e.getMessage(), e);
             }
@@ -34,10 +34,10 @@ public class HeartBeatAgent implements Runnable{
     }
 
     private void heartBeat() {
-        String isHeartBeat = "HTB"; // se non è un HeartBeat "MSG"
+        String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
         try{
-            heartBeatStream.writeInt(isHeartBeat.length());
-            heartBeatStream.writeBytes(isHeartBeat);
+            heartBeatStream.writeInt(HeartBeat.length());
+            heartBeatStream.writeBytes(HeartBeat);
             heartBeatStream.flush();
             System.out.println("Client still alive");
         }

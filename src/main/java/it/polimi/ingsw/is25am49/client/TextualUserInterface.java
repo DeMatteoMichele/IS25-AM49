@@ -28,6 +28,8 @@ public class TextualUserInterface implements View {
         });
     }
     public static void main(String args[]){
+        ClientSerializer clientSerializer = new ClientSerializer();
+        ServerHandler serverHandler = new ServerHandler(clientSerializer, "localhost", 8080);
         ClientController controller = new ClientController();
         TextualUserInterface tui = new TextualUserInterface();
         tui.start();

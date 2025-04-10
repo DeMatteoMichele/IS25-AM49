@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.ExecutorService;
@@ -19,22 +18,31 @@ public class ServerHandler {
     private DataOutputStream outputStream;
     private DataInputStream inputStream;
     private final ExecutorService executors;
-    //private ScheduledExecutorService scheduler;
-    int numberOfTries;
-    int thresholdTries;
-    boolean connected;
-    int secondsForReconnection;
-    boolean timeIsNotDone;
-    Thread heartBeatThread;
+    private ScheduledExecutorService scheduler;
+    private boolean timeIsNotDone;
+    private int numberOfTries;
+    private final int thresholdTries;
+    private boolean connected;
+    private final int secondsForReconnection;
+    private Thread heartBeatThread;
+    private final String serverIP;
+    private final int serverPort;
 
-    public ServerHandler(ClientSerializer clientSerializer) {
+
+    public ServerHandler(ClientSerializer clientSerializer, String serverIP, int serverPort) {
+        this.serverIP = serverIP;
+        this.serverPort = serverPort;
         this.clientSerializer = clientSerializer;
-        // scheduler = Executors.newScheduledThreadPool(5);
+        scheduler = Executors.newScheduledThreadPool(5);
         thresholdTries = 10;
-        secondsForReconnection = 3;
+        secondsForReconnection = 30;
         executors = Executors.newFixedThreadPool(5);
-        attemptedConnection();
-        executors.submit(() -> {
+        attemptToConnect();
+        executors.submit(this::listenToServer);
+    }
+
+    public void listenToServer() {  //TODO coda per i file json?
+        while (true) {
             while (connected) {
                 try {
                     int length = inputStream.readInt();
@@ -46,42 +54,39 @@ public class ServerHandler {
                     System.out.println("Json Received\n");
                     passInformationToClientSerializer(fileJson);
                 } catch (IOException e) {
-                    attemptedConnection();
+                    attemptToConnect();
                 }
             }
-        });
-
+        }
     }
 
-    public void attemptedConnection() {
+    public void attemptToConnect() {
         numberOfTries = 0;
         connected = false;
         while (!connected && numberOfTries <= thresholdTries) {
             try {
-                timer();
                 numberOfTries++;
                 tryConnection();
                 trySend();
-                heartBeatThread.interrupt();
+                if (heartBeatThread != null) {
+                    heartBeatThread.interrupt();
+                }
                 heartBeatThread = new Thread(new HeartBeatAgent(this));
-                connected = true;
+                heartBeatThread.start();
+                timer();
             } catch (IOException e) {
                 shutDown();
             }
         }
     }
 
-    public void timer(){
-//        timeIsNotDone = true;
-//        scheduler.schedule(() -> {
-//            timeIsNotDone = false;
-//        }, secondsForReconnection, TimeUnit.SECONDS);
-//        while (timeIsNotDone){}
-        try {
-            Thread.sleep(secondsForReconnection* 1000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public void timer() {
+        timeIsNotDone = true;
+        scheduler.schedule(() -> {
+            timeIsNotDone = false;
+        }, secondsForReconnection, TimeUnit.SECONDS);
+        while (timeIsNotDone){}
+
     }
 
     public void trySend() throws IOException {
@@ -93,16 +98,20 @@ public class ServerHandler {
     }
 
     public void tryConnection() throws IOException {
-        clientSocket = new Socket("127.0.0.1", 8080);
+        clientSocket = new Socket(serverIP, serverPort);
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
         connected = true;
     }
 
-    public void passInformationToClientHandler(File fileJson) {
+    public void passInformationToServer(File fileJson) {
         boolean messageSent = false;
+        if (fileJson == null || !fileJson.exists()) {
+            System.err.println("JSON doesnt exist");
+            return;
+        }
         if (!connected) {
-            attemptedConnection();
+            attemptToConnect();
         }
         while (!messageSent && connected) {
             try {
@@ -113,7 +122,7 @@ public class ServerHandler {
                 messageSent = true;
                 System.out.println("Message: " + jsonContent);
             } catch (IOException e) {
-                attemptedConnection();
+                attemptToConnect();
             }
         }
     }
@@ -123,17 +132,25 @@ public class ServerHandler {
     }
 
     public void shutDown() {
+        connected = false;
         try {
-            inputStream.close();
-            outputStream.close();
-            executors.shutdownNow();
-            //scheduler.shutdownNow();
-            heartBeatThread.interrupt();
-            clientSocket.close();
-            connected = false;
-            System.out.println("Connection closed");
+            if (heartBeatThread != null) {
+                heartBeatThread.interrupt();
+            }
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (outputStream != null) {
+                outputStream.close();
+            }
+            if (executors != null && !executors.isShutdown()) {
+                executors.shutdownNow();
+            }
+            if (clientSocket != null && !clientSocket.isClosed()) {
+                clientSocket.close();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Errore durante la chiusura delle risorse: " + e.getMessage());
         }
     }
 

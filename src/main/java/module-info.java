@@ -7,6 +7,8 @@ module it.polimi.ingsw.is25am49 {
     requires com.fasterxml.jackson.databind;
     requires java.rmi;
 
-    opens it.polimi.ingsw.is25am49 to javafx.fxml;
-    exports it.polimi.ingsw.is25am49;
+    opens it.polimi.ingsw.is25am49.client to javafx.fxml;
+    opens it.polimi.ingsw.is25am49.server to javafx.fxml;
+    exports it.polimi.ingsw.is25am49.client;
+    exports it.polimi.ingsw.is25am49.server;
 }
