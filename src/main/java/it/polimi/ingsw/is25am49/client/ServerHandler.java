@@ -19,7 +19,7 @@ public class ServerHandler {
     private DataInputStream inputStream;
     private final ExecutorService executors;
     private ScheduledExecutorService scheduler;
-    private boolean timeIsNotDone;
+    private volatile boolean timeIsNotDone;
     private int numberOfTries;
     private final int thresholdTries;
     private boolean connected;
@@ -27,17 +27,19 @@ public class ServerHandler {
     private Thread heartBeatThread;
     private final String serverIP;
     private final int serverPort;
+    private HeartBeatAgent heartBeatAgent;
 
 
     public ServerHandler(ClientSerializer clientSerializer, String serverIP, int serverPort) {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
         this.clientSerializer = clientSerializer;
-        scheduler = Executors.newScheduledThreadPool(5);
-        thresholdTries = 10;
-        secondsForReconnection = 30;
-        executors = Executors.newFixedThreadPool(5);
-        attemptToConnect();
+        heartBeatAgent = null;
+        scheduler = Executors.newScheduledThreadPool(10);
+        thresholdTries = 20;
+        secondsForReconnection = 8;
+        executors = Executors.newFixedThreadPool(10);
+        firstConnection();
         executors.submit(this::listenToServer);
     }
 
@@ -54,7 +56,8 @@ public class ServerHandler {
                     System.out.println("Json Received\n");
                     passInformationToClientSerializer(fileJson);
                 } catch (IOException e) {
-                    attemptToConnect();
+                    System.out.println("Server Error");
+                    connected = false;
                 }
             }
         }
@@ -66,18 +69,22 @@ public class ServerHandler {
         while (!connected && numberOfTries <= thresholdTries) {
             try {
                 numberOfTries++;
+                System.out.println("Connecting to " + serverIP + ":" + serverPort + "tentative number: " + numberOfTries);
+                timer();
                 tryConnection();
                 trySend();
-                if (heartBeatThread != null) {
-                    heartBeatThread.interrupt();
+                synchronized (heartBeatAgent) {
+                    heartBeatAgent.setClientConnection(this);
+                    heartBeatAgent.notify();
                 }
-                heartBeatThread = new Thread(new HeartBeatAgent(this));
-                heartBeatThread.start();
-                timer();
             } catch (IOException e) {
                 shutDown();
             }
         }
+        if(numberOfTries >= thresholdTries)
+            System.out.println("Connection failed");
+        else
+            System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
     }
 
     public void timer() {
@@ -86,7 +93,6 @@ public class ServerHandler {
             timeIsNotDone = false;
         }, secondsForReconnection, TimeUnit.SECONDS);
         while (timeIsNotDone){}
-
     }
 
     public void trySend() throws IOException {
@@ -102,6 +108,18 @@ public class ServerHandler {
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
         connected = true;
+
+    }
+    public void firstConnection() {
+        try {
+            tryConnection();
+            heartBeatAgent = new HeartBeatAgent(this);
+            heartBeatThread = new Thread(heartBeatAgent);
+            heartBeatThread.start();
+        }
+        catch (IOException e) {
+            shutDown();
+        }
     }
 
     public void passInformationToServer(File fileJson) {
@@ -152,10 +170,6 @@ public class ServerHandler {
         } catch (IOException e) {
             System.err.println("Errore durante la chiusura delle risorse: " + e.getMessage());
         }
-    }
-
-    public void setConnectionFalse() {
-        connected = false;
     }
 
     public Socket getClientSocket() {

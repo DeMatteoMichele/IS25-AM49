@@ -3,7 +3,7 @@ package it.polimi.ingsw.is25am49.server;
 import java.io.File;
 import java.util.List;
 
-public class ServerSerializer implements VirtualView{
+public class ServerSerializer implements VirtualView {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     public ServerSerializer(ServerController serverController) {

@@ -24,10 +24,10 @@ public class ClientHandler {
     private Map<Integer, Long> lastHeartBeats;
     private Map<Integer, DataOutputStream> outputStreams;
     private Map<Integer, DataInputStream> inputStreams;
-    private final int maxClients = 4;
+    private final int maxClients = 1;
     private final int thresholdAttempts = 10;
     private final int secondsForReconnection = 3;
-
+    //dentro il for devo mettere un if(connessioneNormale){accept} else{nulla}
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         this.serverSerializer = serverSerializer;
         executors = Executors.newFixedThreadPool(10);

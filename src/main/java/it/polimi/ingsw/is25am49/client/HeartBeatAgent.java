@@ -22,17 +22,25 @@ public class HeartBeatAgent implements Runnable{
         this.serverHandler = serverHandler;
     }
     @Override
-    public void run() {
+    public synchronized void run() {
         while(true) {
             try {
                 Thread.sleep(interval);
                 heartBeat();
             } catch (InterruptedException e) {
-                throw new RuntimeException("HeartBeatAgent interrupted" + e.getMessage(), e);
+                try {
+                    this.wait();
+                } catch (InterruptedException ex) {
+                    System.err.println("Wait HeartBeat: " + e.getMessage());
+                }
             }
         }
     }
-
+    public void setClientConnection(ServerHandler serverHandler) {
+        heartBeatSocket = serverHandler.getClientSocket();
+        heartBeatStream = serverHandler.getOutputStream();
+        this.serverHandler = serverHandler;
+    }
     private void heartBeat() {
         String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
         try{
@@ -42,7 +50,7 @@ public class HeartBeatAgent implements Runnable{
             System.out.println("Client still alive");
         }
         catch(IOException e){
-            serverHandler.setConnectionFalse();
+            serverHandler.attemptToConnect();
         }
     }
 }
