@@ -21,6 +21,13 @@ public class HeartBeatAgent implements Runnable{
         heartBeatStream = serverHandler.getOutputStream();
         this.serverHandler = serverHandler;
     }
+
+    /**
+     * This method is the runnable for the heart beat agent.
+     * It sends a heart beat message to the server every interval milliseconds.
+     * If the HeartBeatAgent has been interrupted by the shutdown method of ServerHandler, it waits for a notify from attemptToConnect.
+     * It restarts after the notify.
+     */
     @Override
     public synchronized void run() {
         while(true) {
@@ -36,11 +43,19 @@ public class HeartBeatAgent implements Runnable{
             }
         }
     }
+
     public void setClientConnection(ServerHandler serverHandler) {
         heartBeatSocket = serverHandler.getClientSocket();
         heartBeatStream = serverHandler.getOutputStream();
         this.serverHandler = serverHandler;
     }
+
+    /**
+     * This method is used to send a periodic heart beat message to the server.
+     * * The message is "HTB" for heart beat.
+     * It sends the length of the message and the HTB itself.
+     * If it fails, it tries to reconnect to the server.
+     */
     private void heartBeat() {
         String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
         try{
