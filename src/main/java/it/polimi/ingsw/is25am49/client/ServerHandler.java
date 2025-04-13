@@ -91,19 +91,16 @@ public class ServerHandler {
         while (!connected && numberOfTries <= thresholdTries) {
             try {
                 numberOfTries++;
-                System.out.println("Connecting to " + serverIP + ":" + serverPort + "tentative number: " + numberOfTries);
+                System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
                 timer();
                 tryConnection();
                 trySend();
-                synchronized (heartBeatAgent) {
-                    heartBeatAgent.setClientConnection(this);
-                    heartBeatAgent.notify();
-                }
+                heartBeatAgent.setClientConnection(this);
             } catch (IOException e) {
                 shutDown();
             }
         }
-        if(numberOfTries >= thresholdTries)
+        if (numberOfTries >= thresholdTries)
             System.out.println("Connection failed");
         else
             System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
@@ -119,7 +116,8 @@ public class ServerHandler {
         scheduler.schedule(() -> {
             timeIsNotDone = false;
         }, secondsForReconnection, TimeUnit.SECONDS);
-        while (timeIsNotDone){}
+        while (timeIsNotDone) {
+        }
     }
 
     /**
@@ -158,8 +156,7 @@ public class ServerHandler {
             heartBeatAgent = new HeartBeatAgent(this);
             heartBeatThread = new Thread(heartBeatAgent);
             heartBeatThread.start();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             shutDown();
         }
     }
@@ -171,24 +168,21 @@ public class ServerHandler {
      * It keeps trying to send the message until it is successful or the connected flag goes to false.
      */
     public void sendInformationToServer(File fileJson) {
-        boolean messageSent = false;
         if (fileJson == null || !fileJson.exists()) {
             System.err.println("JSON doesnt exist");
             return;
         }
         if (!connected) {
-            attemptToConnect();     //NON CORRETTO, ATTEMPTTOCONNECT DEVE ESSERE CHIAMATO SOLO DA UN SINGOLO CONNECTIONCHECKER (HEARBEATAGENT ??)
-        }
-        while (!messageSent && connected) {
+            System.out.println("Server disconnected.\n Write again the command when the connection will be ready");
+        } else {
             try {
                 String jsonContent = Files.readString(fileJson.toPath());
                 outputStream.writeInt(jsonContent.length());
                 outputStream.writeBytes(jsonContent);
                 outputStream.flush();
-                messageSent = true;
                 System.out.println("Message: " + jsonContent);
             } catch (IOException e) {
-                attemptToConnect();     //NON CORRETTO, ATTEMPTTOCONNECT DEVE ESSERE CHIAMATO SOLO DA UN SINGOLO CONNECTIONCHECKER (HEARBEATAGENT ??)
+                System.out.println("Server disconnected.\n Write again the command when the connection will be ready");
             }
         }
     }
@@ -209,9 +203,9 @@ public class ServerHandler {
     public void shutDown() {
         connected = false;
         try {
-            if (heartBeatThread != null) {
-                heartBeatThread.interrupt();
-            }
+//            if (heartBeatThread != null) {
+//                heartBeatThread.interrupt();
+//            }
             if (inputStream != null) {
                 inputStream.close();
             }
