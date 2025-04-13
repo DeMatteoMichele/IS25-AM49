@@ -26,7 +26,7 @@ public class HeartBeatAgent implements Runnable {
      * This method is the runnable for the heart beat agent.
      * It sends a heart beat message to the server every interval milliseconds.
      * If the HeartBeatAgent has been interrupted by the shutdown method of ServerHandler, it waits for a notify from attemptToConnect.
-     * It restarts after the notify.
+     * It restarts after notify.
      */
     @Override
     public void run() {

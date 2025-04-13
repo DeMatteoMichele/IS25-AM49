@@ -18,9 +18,8 @@ public class ServerHandler {
     private DataOutputStream outputStream;
     private DataInputStream inputStream;
     private final ExecutorService executors;
-    private ScheduledExecutorService scheduler;
+    private final ScheduledExecutorService scheduler;
     private volatile boolean timeIsNotDone;
-    private int numberOfTries;
     private final int thresholdTries;
     private boolean connected;
     private final int secondsForReconnection;
@@ -86,7 +85,7 @@ public class ServerHandler {
      */
 
     public void attemptToConnect() {
-        numberOfTries = 0;
+        int numberOfTries = 0;
         connected = false;
         while (!connected && numberOfTries <= thresholdTries) {
             try {
