@@ -9,28 +9,38 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ClientHandler {
     private final ServerSerializer serverSerializer;
     private ServerSocket serverSocket;
-    private ExecutorService executors;
-    private Map<InetAddress, Socket> clientSockets;
-    private Map<InetAddress, Boolean> connections;
-    private Map<InetAddress, Long> lastHeartBeats;
-    private Map<InetAddress, DataOutputStream> outputStreams;
-    private Map<InetAddress, DataInputStream> inputStreams;
-    private final int maxClients = 4;
-    private final int thresholdAttempts = 10;
-    private final int secondsForReconnection = 3;
+    private final ExecutorService executors;
+    private final ScheduledExecutorService scheduler;
+    private final Map<InetAddress, Socket> clientSockets;
+    private final Map<InetAddress, Boolean> connections;
+    private final Map<InetAddress, Long> lastHeartBeats;
+    private final Map<InetAddress, DataOutputStream> outputStreams;
+    private final Map<InetAddress, DataInputStream> inputStreams;
+    private final int maxClients;
+    private final int thresholdAttempts;
+    private final int secondsForReconnection;
+    private volatile boolean timeIsNotDone;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
+        maxClients = 4;
+        thresholdAttempts = 10;
+        secondsForReconnection = 3;
+
         this.serverSerializer = serverSerializer;
+        scheduler = Executors.newScheduledThreadPool(20);
         executors = Executors.newFixedThreadPool(10);
         clientSockets = new HashMap<>();
         outputStreams = new HashMap<>();
@@ -39,7 +49,6 @@ public class ClientHandler {
         lastHeartBeats = new HashMap<>();
         try {
             startServer(port);
-
         } catch (IOException e) {
             System.err.println("Error starting server: " + e.getMessage());
         }
@@ -106,7 +115,6 @@ public class ClientHandler {
         passInformationToServerSerializer(fileJson);
     }
 
-
     /**
      * This method is used to attempt to reconnect a client after a disconnection.
      * This method is called by the HeartBeatMonitor when it detects that a client is not responding.
@@ -142,11 +150,12 @@ public class ClientHandler {
     /**
      * This method stops the current thread for 1 second
      */
-    public void timer() {   //TODO È DIVERSO DAL METODO IN SERVERHANDLER... DA MODIFICARE?
-        try {
-            Thread.sleep(secondsForReconnection * 1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    public void timer() {
+        timeIsNotDone = true;
+        scheduler.schedule(() -> {
+            timeIsNotDone = false;
+        }, secondsForReconnection, TimeUnit.SECONDS);
+        while (timeIsNotDone) {
         }
     }
 

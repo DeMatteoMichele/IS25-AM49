@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import static java.lang.Thread.sleep;
 
-public class HeartBeatAgent implements Runnable{
+public class HeartBeatAgent implements Runnable {
 
     private int interval = 5000;
     private Socket heartBeatSocket;
@@ -26,20 +26,16 @@ public class HeartBeatAgent implements Runnable{
      * This method is the runnable for the heart beat agent.
      * It sends a heart beat message to the server every interval milliseconds.
      * If the HeartBeatAgent has been interrupted by the shutdown method of ServerHandler, it waits for a notify from attemptToConnect.
-     * It restarts after the notify.
+     * It restarts after notify.
      */
     @Override
-    public synchronized void run() {
-        while(true) {
+    public void run() {
+        while (true) {
             try {
                 Thread.sleep(interval);
                 heartBeat();
             } catch (InterruptedException e) {
-                try {
-                    this.wait();
-                } catch (InterruptedException ex) {
-                    System.err.println("Wait HeartBeat: " + e.getMessage());
-                }
+                System.err.println("Wait HeartBeat: " + e.getMessage());
             }
         }
     }
@@ -58,13 +54,12 @@ public class HeartBeatAgent implements Runnable{
      */
     private void heartBeat() {
         String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
-        try{
+        try {
             heartBeatStream.writeInt(HeartBeat.length());
             heartBeatStream.writeBytes(HeartBeat);
             heartBeatStream.flush();
             System.out.println("Client still alive");
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             serverHandler.attemptToConnect();
         }
     }
