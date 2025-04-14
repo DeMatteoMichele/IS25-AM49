@@ -39,6 +39,8 @@ public class EffectMeteoriti extends CardEffect {
                         System.out.println("No damage, the meteor bounces ");
                     } else {
                         player.getShipBoard().destroyTile(target.get());
+                        System.out.println("distruggo il componente in posizione " + target.get());
+                        player.getShipBoard().destroyDisconnectedTiles();
 
                     }}}
         }
@@ -52,6 +54,7 @@ public class EffectMeteoriti extends CardEffect {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 target.ifPresent(point -> player.getShipBoard().destroyTile(point));
                 System.out.println("distruggo il componente in posizione " + target.get());
+                player.getShipBoard().destroyDisconnectedTiles();
             }
         }
     }

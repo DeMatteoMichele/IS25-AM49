@@ -5,11 +5,12 @@ import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.PlanetCard;
-import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +29,11 @@ class PlanetCardTest {
     AdventureCardDeck deck;
     List<Planet> planets;
     List<Planet> planets2;
-    List<Pair<Point, Token>> coordinates;
+    List<Pair<Point, Token>> coordinates,coordinates2;
     Point coordinate1 = new Point(7,8);
-
+    Point coordinate2 = new Point(8,7);
+    Component component1,component2,component3;
+    Tile tile1,tile2,tile3;
 
 
     @BeforeEach
@@ -49,8 +52,19 @@ class PlanetCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
         gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
         planet1 = new Planet(1,0,0,0);
-        planet2 = new Planet(0,1,0,0);
+        planet2 = new Planet(0,2,0,0);
         planet3 = new Planet(0,0,1,0);
+        component1 = new ContainerComponent(ComponentType.SPECIAL_STORAGE,3);
+        tile1 = new Tile(2, component1);
+        component2 = new ContainerComponent(ComponentType.STORAGE,2);
+        tile2 = new Tile(1, component2);
+        player1.getShipBoard().insertTile(coordinate2, tile2);
+        player1.getShipBoard().addTokenToTile(coordinate2, Token.GREEN_GOODS);
+        player1.getShipBoard().addTokenToTile(coordinate2, Token.YELLOW_GOODS);
+        player2.getShipBoard().insertTile(coordinate1, tile1);
+        player2.getShipBoard().addTokenToTile(coordinate1,Token.BLUE_GOODS);
+        player2.getShipBoard().addTokenToTile(coordinate1,Token.GREEN_GOODS);
+        player2.getShipBoard().addTokenToTile(coordinate1,Token.RED_GOODS);
         deck = new AdventureCardDeck();
         planets = new ArrayList<>();
         planets2 = new ArrayList<>();
@@ -59,9 +73,10 @@ class PlanetCardTest {
         planets2.add(planet3);
         planets.add(planet1);
         coordinates = new ArrayList<>();
-
-
         coordinates.add(new Pair<>(coordinate1, Token.RED_GOODS));
+        coordinates2 = new ArrayList<>();
+        coordinates2.add(new Pair<>(coordinate2, Token.YELLOW_GOODS));
+        coordinates2.add(new Pair<>(coordinate2, Token.YELLOW_GOODS));
 
         deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,planets));
         deck.add(new PlanetCard(gameBoard,"Planet Card",9,1,planets2));
@@ -113,7 +128,7 @@ class PlanetCardTest {
         gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
         gameBoard.getCurrentCard().landingOnPlanet(true, planet2);
-        gameBoard.getCurrentCard().finishDecision(coordinates);
+        gameBoard.getCurrentCard().finishDecision(coordinates2);
         assertEquals(player1,gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
         assertEquals(0,gameBoard.getCurrentPlayer().getDaysThisTurn());

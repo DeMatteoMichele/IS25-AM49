@@ -65,6 +65,7 @@ class EffectCannonataTest {
     void action() {
         player.getShipBoard().turnOnComponent(new Point(7,6), new Point(8,6));
         cardEffect.action(player);
+        ship.printShipboardSpecial();
 
     }
     @Test

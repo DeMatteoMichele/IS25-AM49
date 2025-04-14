@@ -30,6 +30,7 @@ public class EffectCannonata extends CardEffect {
             if (target.isPresent()) {
                 player.getShipBoard().destroyTile(target.get());
                 System.out.println("distruggo il componente in posizione " + target.get());
+                player.getShipBoard().destroyDisconnectedTiles();
             }
         } else if(level==0) {
             //cannonata di livello zero, si può prevenire con attivazione di scudi
@@ -42,6 +43,7 @@ public class EffectCannonata extends CardEffect {
                 if (target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
                     System.out.println("distruggo il componente in posizione " + target.get());
+                    player.getShipBoard().destroyDisconnectedTiles();
                 }
             }
     }}

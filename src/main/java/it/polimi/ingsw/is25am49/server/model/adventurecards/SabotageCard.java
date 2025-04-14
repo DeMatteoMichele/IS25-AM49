@@ -111,9 +111,9 @@ public class SabotageCard extends AdventureCard {
             //rimuovo il componente, se non lancia eccezioni lo ho rimosso altrimenti catturo l'eccezione
             gameBoard.getCurrentPlayer().getShipBoard().destroyTile(coordinate);
             gameBoard.getCurrentPlayer().addLostComponents(1);
+            gameBoard.getCurrentPlayer().getShipBoard().destroyDisconnectedTiles();
             System.out.println("The component at row: " + row + " and column: " + column + " has been destroyed");
             System.out.println("Your lostComponent has been added to your discard pile");
-            //TODO DEVO CONTROLLARE CHE IL COMPONENTE RIMOSSO NON FOSSE QUELLO AL CENTRO ALTRIMENTI LA NAVE SI DISTRUGGE TUTTA, ASPETTO METODO DI COMPA
             currentState = AdventureStatesTypes.DRAW;
         }
         catch (InvalidCoordinatesException e){
