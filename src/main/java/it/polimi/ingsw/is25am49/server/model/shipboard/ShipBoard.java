@@ -154,7 +154,7 @@ public class ShipBoard {
      * method that returns the point where the shipboard could be hit in a given position
      *
      */
-    private Optional<Point> getExposedPoint(int position, Orientation orientation){
+    public Optional<Point> getExposedPoint(int position, Orientation orientation){
         Set<Point> points = new HashSet<>(getExternalPoints());
         return switch (orientation) {
             case NORTH -> points.stream()
@@ -805,6 +805,7 @@ public class ShipBoard {
         }
         return ship;
     }
+
 
 
 }

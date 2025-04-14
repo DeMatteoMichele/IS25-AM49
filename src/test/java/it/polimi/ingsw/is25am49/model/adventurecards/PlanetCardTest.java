@@ -29,12 +29,10 @@ class PlanetCardTest {
     List<Planet> planets;
     List<Planet> planets2;
     List<Pair<Point, Token>> coordinates;
-
     Point coordinate1 = new Point(7,8);
 
 
-    //TODO cambiare addplayer (prende solo player) e per modificare giorni di viaggio usare modifyfligydays
-    //TODO cambiare carta dove c'era leaderboard
+
     @BeforeEach
     public void init() {
         gameBoard = new GameBoard();

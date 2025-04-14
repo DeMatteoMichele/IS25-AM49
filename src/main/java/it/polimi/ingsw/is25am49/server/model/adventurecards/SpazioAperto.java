@@ -25,7 +25,7 @@ public class SpazioAperto extends AdventureCard {
 
     private List<Player> playersProcess;
     private int currentPlayerIndex;
-    private List<Player> playersNoEnginePower = new ArrayList<>();
+    private final List<Player> playersNoEnginePower = new ArrayList<>();
 
 
     @Override

@@ -26,17 +26,19 @@ class EffectLoseGoodsTest {
     Component component;
     Component component2;
     Component component3;
-    Point coordinate = new Point(3, 2);
-    Point coordinate2 = new Point(3, 4);
-    Point coordinate3 = new Point(3, 5);
+    Point coordinate = new Point(7, 8);
+    Point coordinate2 = new Point(6, 8);
+    Point coordinate3 = new Point(6, 7);
     CardEffect card;
     Tile tile2;
     Tile tile3;
 
     @BeforeEach
     void init(){
-        shipBoard = new ShipBoard();
+
         player = new Player("io",Color.RED,3);
+        shipBoard = new ShipBoard(1,3);
+        player.setShipBoard(shipBoard);
         component3 = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 2);
         component2 = new ContainerComponent(ComponentType.BATTERY,4);
         component = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 5);
@@ -56,15 +58,15 @@ class EffectLoseGoodsTest {
         player.getShipBoard().addTokenToTile(coordinate, Token.GREEN_GOODS);
         player.getShipBoard().addTokenToTile(coordinate, Token.YELLOW_GOODS);
         player.getShipBoard().addTokenToTile(coordinate, Token.GREEN_GOODS);
-        card = new EffectLoseGoods("perdi", 3);
+        card = new EffectLoseGoods("perdi", 8);
 
     }
     @Test
     void action() {
         card.action(player);
-        assertEquals(1, player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS));
-        assertEquals(2, player.getShipBoard().getPositionsOfaToken(Token.GREEN_GOODS).size());
-        assertEquals(3, player.getShipBoard().getPositionsOfaToken(Token.BATTERY_CELLS).size());
+        assertEquals(0, player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS));
+        assertEquals(0, player.getShipBoard().getPositionsOfaToken(Token.GREEN_GOODS).size());
+        assertEquals(2, player.getShipBoard().getPositionsOfaToken(Token.BATTERY_CELLS).size());
     }
 
     @Test

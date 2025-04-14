@@ -8,6 +8,9 @@ import javafx.util.Pair;
 import java.util.List;
 
 import java.awt.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class EffectCannonata extends CardEffect {
     private final int level;
@@ -21,8 +24,27 @@ public class EffectCannonata extends CardEffect {
         this.direction = direction;
     }
     public void action(Player player) {
-        System.out.println("ok");
-    }
+        // Implementazione per cannonata di livello 1
+        if (level == 1) {
+            Optional<Point> target = player.getShipBoard().getExposedPoint(position,direction);
+            if (target.isPresent()) {
+                player.getShipBoard().destroyTile(target.get());
+                System.out.println("distruggo il componente in posizione " + target.get());
+            }
+        } else if(level==0) {
+            //cannonata di livello zero, si può prevenire con attivazione di scudi
+            //controllo se ci sono scudi che proteggono dalle direioni da cui colpisce la cannoanata
+            if(player.getShipBoard().getProtectedSides().contains(direction)) {
+                System.out.println("No damage, shield activated");
+            }
+            else{
+                Optional<Point> target = player.getShipBoard().getExposedPoint(position,direction);
+                if (target.isPresent()) {
+                    player.getShipBoard().destroyTile(target.get());
+                    System.out.println("distruggo il componente in posizione " + target.get());
+                }
+            }
+    }}
 
     public void setPosition(int position) {
         this.position = position;

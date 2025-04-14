@@ -27,16 +27,18 @@ class EffectModifyEnergyTest {
     Tile tile;
     Tile tile2;
     Component component;
-    Point coordinate = new Point(0, 0);
-    Point coordinate2 = new Point(1, 1);
+    Point coordinate = new Point(7, 8);
+    Point coordinate2 = new Point(6, 6);
     CardEffect cardEffect;
     Component component2;
     ArrayList<Pair<Point,Token>> coordinates;
 
     @BeforeEach
     void init(){
-        shipBoard = new ShipBoard();
+
         player = new Player("io",Color.RED,2);
+        shipBoard = new ShipBoard(1,2);
+        player.setShipBoard(shipBoard);
         coordinates = new ArrayList<>();
         coordinates.add(new Pair<>(coordinate,Token.BATTERY_CELLS));
         coordinates.add(new Pair<>(coordinate,Token.BATTERY_CELLS));

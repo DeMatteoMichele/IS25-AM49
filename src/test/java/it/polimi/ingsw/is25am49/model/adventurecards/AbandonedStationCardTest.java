@@ -13,6 +13,7 @@ import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import javafx.util.Pair;
+import net.bytebuddy.description.type.RecordComponentDescription;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +31,8 @@ class AbandonedStationCardTest {
     AdventureCardDeck adventureDeck;
     List<Pair<Point, Token>> coordinates;
     ShipBoard shipBoard;
-    Tile tile;
-    Component component;
+    Tile tile,tile2;
+    Component component,component2;
     Point coordinate = new Point(7, 8);
     LeaderBoard leaderBoard;
 
@@ -41,21 +42,26 @@ class AbandonedStationCardTest {
 
 
         coordinates = new ArrayList<>();
-        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
-        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
-        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
+        coordinates.add(new Pair<>(new Point(6,7),Token.RED_GOODS));
+        coordinates.add(new Pair<>(new Point(6,7),Token.YELLOW_GOODS));
+        coordinates.add(new Pair<>(new Point(6,7),Token.GREEN_GOODS));
         gameBoard = new GameBoard();
         player1 = new Player("pippo", Color.RED, 1);
         player2 = new Player("pluto", Color.BLUE, 2);
         shipBoard = new ShipBoard(1,2);
         player1.setShipBoard(shipBoard);
         component = new ContainerComponent(ComponentType.CABINE, 5);
+        component2 = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 4);
+        tile2 = new Tile(2,component2);
         tile = new Tile(3,component);
         player1.getShipBoard().insertTile(coordinate, tile);
+        player1.getShipBoard().insertTile(new Point(6,7), tile2);
         player1.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate,Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player1.getShipBoard().addTokenToTile(coordinate,Token.ASTRONAUT);
+        player1.getShipBoard().addTokenToTile(new Point(6,7), Token.BLUE_GOODS);
+        player1.getShipBoard().addTokenToTile(new Point(6,7), Token.YELLOW_GOODS);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);

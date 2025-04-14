@@ -22,7 +22,7 @@ import java.util.Set;
 public class WarZoneCard extends AdventureCard {
 
 
-    //TODO da aggiungere contatore e fare checkrequirements3
+
     Player playerWithMinimumEnginePower;
     Player playerWithMinimumFirePower;
     private int minimumEnginePower;
@@ -31,11 +31,11 @@ public class WarZoneCard extends AdventureCard {
     private List<Point> cannons;
     private List<Point> motors;
     private int number=0;
-    private int daysLost;
+    private final int daysLost;
     private double minimumFirePower = 1;
     private static final int BIG_CANNONBALL_LEVEL = 1;
     private List<Point> coordinatesOfActivable = new ArrayList<>();
-    private boolean shieldActivate;
+
 
     public WarZoneCard(GameBoard gameBoard, String description, int level,int daysLost, int lostAstronauts, List<CardEffect> effects) {
         super(gameBoard, description, level);
@@ -44,7 +44,7 @@ public class WarZoneCard extends AdventureCard {
         this.listEffects.addAll(effects);
         minimumEnginePower = 1;
         this.daysLost = daysLost;
-        shieldActivate = false;
+
 
     }
 
@@ -317,7 +317,6 @@ public class WarZoneCard extends AdventureCard {
                     List<Point> coordinatesOfShield = new ArrayList<>(coordinates);
                     activateComponentWithBatteries(coordinatesOfShield, ship);
                     currentState = AdventureStatesTypes.EFFECT;
-                    shieldActivate = true;
                     applyEffect();
                 } catch (IllegalNumOfActivableException e) {
                     System.out.println("Rechoose correctly the number of shields as the same as batteries");
@@ -382,16 +381,12 @@ public class WarZoneCard extends AdventureCard {
 
     @Override
     public void applyEffect() {
-        if (shieldActivate) {
-            System.out.println("scudo attivato, non subisci l.effetto");
-            shieldActivate = false;
-            tryAgain();
-        } else {
-            currentEffect.action(gameBoard.getCurrentPlayer());
-            deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
-            tryAgain();
+        currentEffect.action(gameBoard.getCurrentPlayer());
+        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
+        tryAgain();
 
-        }
+
+
     }
     private void tryAgain() {
         if (listEffects.isEmpty()) {

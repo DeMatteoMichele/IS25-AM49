@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EffectModifyCrew extends CardEffect {
-    private int lostCrew;
+    private final int lostCrew;
     private List<Pair<Point,Token>> coordinates = new ArrayList<>();
     public EffectModifyCrew(String nameEffect, int lostCrew) {
         super(nameEffect);
