@@ -215,7 +215,13 @@ public class ShipBoard {
      */
     public void destroyTile(Point coordinates){
         if(grid.containsKey(coordinates)){
-            if(grid.get(coordinates).isPresent()) destroyedTiles++;
+            if(grid.get(coordinates).isPresent()){
+                Tile t=getTile(coordinates);
+                if(t.getComponentType().equals(ComponentType.BROWN_ALIEN_MODULE)||t.getComponentType().equals(ComponentType.PURPLE_ALIEN_MODULE)){
+                    //TODO se distruggo un modulo alieno devo rimuovere l'alieno dalla cabine
+                }
+                destroyedTiles++;
+            }
             grid.remove(coordinates);
         } else {
             throw new InvalidCoordinatesException("cannot DESTROY a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
@@ -280,6 +286,12 @@ public class ShipBoard {
             }
         }catch (InvalidCoordinatesException _){return;}
     }
+
+    /**
+     * recursive algorithm that returns all the tiles connected to the given point
+     * @param center starting point
+     * @return a set containing all the points connected to the center
+     */
     public Set<Point> getTilesConnectedTo(Point center){
         Set<Point> connectedTiles =new HashSet<>();
         if(!grid.containsKey(center)) throw new InvalidCoordinatesException("cannot checkTileConnectorsCascade --> out of shipboard"); //DA RIVEDERE L'ECCEZIONE
@@ -293,12 +305,24 @@ public class ShipBoard {
     }
 
     /**
+     * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
+     */
+    public void destroyDisconnectedTiles(){
+        Set<Point> elimina = new HashSet<>(grid.keySet());
+        elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
+        for(Point p: elimina){
+            destroyTile(p);
+        }
+    }
+
+    /**
      * check all 4 sides of a cabin to verify if an alien can be present in the crew
      * @param coordinates of the cabin to check
      * @return a HashMap<\Point,Token> of the possible crew members of the cabin at given coordinates
      */
     public HashMap<Point,Token> checkIfAlienArePossible(Point coordinates) {
         HashMap<Point,Token> crew=new HashMap<>();
+        //todo sistema
         try {
             Tile centerTile=getTile(coordinates);
             if(centerTile.getComponentType().equals(ComponentType.CABINE)) {
@@ -616,11 +640,7 @@ public class ShipBoard {
         destroyTile(new Point(10,5));
 
         System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
-        Set<Point> elimina = new HashSet<>(grid.keySet());
-        elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
-        for(Point p: elimina){
-            destroyTile(p);
-        }
+        destroyDisconnectedTiles();
         printShipboardSpecial();
 
         System.out.println("RIMUOVO CANNONI");
@@ -662,8 +682,7 @@ public class ShipBoard {
                     }
                 }
             }
-        }
-        if(!checkCannon.isEmpty())printShipboardSpecial();
+        } if(!checkCannon.isEmpty())printShipboardSpecial();
 
         System.out.println("RIMUOVO MOTORI");
         Set<Point> checkEngine = new HashSet<>(getComponentsPositions(ComponentType.ENGINE));
@@ -685,19 +704,10 @@ public class ShipBoard {
                     //System.out.println("ERRORE RIMOZIONE MOTORE");
                 }
             }
-        }
-        if(!checkEngine.isEmpty())printShipboardSpecial();
+        } if(!checkEngine.isEmpty())printShipboardSpecial();
 
         //elimino tessere disconnesse dopo la rimozione sopra
-        elimina.clear();
-        elimina.addAll(grid.keySet());
-        elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
-        for(Point p: elimina){
-            try{destroyTile(p);}
-            catch (InvalidCoordinatesException e){
-                System.out.println("ERRORE RIMOZIONE TESSERE SCONNESSE"+e.getMessage());
-            }
-        }
+        destroyDisconnectedTiles();
     }
 
     public void printShipboard(){
@@ -783,7 +793,7 @@ public class ShipBoard {
     }
 
     public static ShipBoard generateShipboard(int level, int nTiles){
-        int n=level==1?20:28;
+        int n=level==1?19:28;
         if(nTiles>n)nTiles=n;
 
         ShipBoard ship=new ShipBoard(level,999);
