@@ -9,142 +9,137 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ClientHandler {
     private final ServerSerializer serverSerializer;
     private ServerSocket serverSocket;
     private final ExecutorService executors;
     private final ScheduledExecutorService scheduler;
-    private final Map<InetAddress, Socket> clientSockets;
-    private final Map<InetAddress, Boolean> connections;
-    private final Map<InetAddress, Long> lastHeartBeats;
-    private final Map<InetAddress, DataOutputStream> outputStreams;
-    private final Map<InetAddress, DataInputStream> inputStreams;
+    private final ConcurrentHashMap<InetAddress, Socket> clientSockets;
+    //    private final ConcurrentMap<InetAddress, HeartBeatMonitor> heartBeatMonitors; DEPRECATED
+    private final ConcurrentMap<InetAddress, Boolean> connections;
+    private final ConcurrentMap<InetAddress, Long> lastHeartBeats;
+    private final ConcurrentMap<InetAddress, DataOutputStream> outputStreams;
+    private final ConcurrentMap<InetAddress, DataInputStream> inputStreams;
     private final int maxClients;
-    private final int thresholdAttempts;
-    private final int secondsForReconnection;
     private volatile boolean timeIsNotDone;
+    private final Thread serverThread;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         maxClients = 4;
-        thresholdAttempts = 10;
-        secondsForReconnection = 3;
-
         this.serverSerializer = serverSerializer;
         scheduler = Executors.newScheduledThreadPool(20);
         executors = Executors.newFixedThreadPool(10);
-        clientSockets = new HashMap<>();
-        outputStreams = new HashMap<>();
-        inputStreams = new HashMap<>();
-        connections = new HashMap<>();
-        lastHeartBeats = new HashMap<>();
-        try {
-            startServer(port);
-        } catch (IOException e) {
-            System.err.println("Error starting server: " + e.getMessage());
-        }
-    }
-
-
-    private void startServer(int port) throws IOException {
-        System.out.println("Server started, waiting for client connection...");
-        serverSocket = new ServerSocket(port);
-        while (clientSockets.size() < maxClients) {
-            Socket socket = serverSocket.accept();
-            InetAddress clientAddress = socket.getInetAddress();
-            System.out.println("Client connected: " + socket.getInetAddress());
-            clientSockets.put(clientAddress, socket);
-            outputStreams.put(clientAddress, new DataOutputStream(socket.getOutputStream()));
-            inputStreams.put(clientAddress, new DataInputStream(socket.getInputStream()));
-            connections.put(clientAddress, true);
-            executors.submit(() -> handleClient(clientAddress));
-            Thread heartBeatMonitorThread = new Thread(new HeartBeatMonitor(this, clientAddress));
-            heartBeatMonitorThread.start();
-        }
+        clientSockets = new ConcurrentHashMap<>();
+        outputStreams = new ConcurrentHashMap<>();
+        inputStreams = new ConcurrentHashMap<>();
+        connections = new ConcurrentHashMap<>();
+        lastHeartBeats = new ConcurrentHashMap<>();
+//        heartBeatMonitors = new ConcurrentHashMap<>(); DEPRECATED
+        serverThread = new Thread(() -> {
+            try {
+                startServer(port);
+            } catch (IOException e) {
+                System.err.println("Error starting server: " + e.getMessage());
+            }
+        });
+        serverThread.start();
     }
 
     /**
-     * This method is used to handle the client connection.
-     * It calls the listenToClient method and updates the last heart beat time every time it arrives a message.
-     * If the connection is lost (it acknowledge this because when inputstream fails it throws IoException), it sets the connection flag to false.
+     * This method is used to start the server and listens continously for incoming connections from clients.
+     * It creates a new ServerSocket and waits for clients to connect.
+     * It accepts only the first maxClients connections or connections from the clients that connected in the past.
      *
-     * @param clientAddress The InetAddress of the client being handled.
+     * @param port The port number on which the server will listen for incoming connections.
+     * @throws IOException If an I/O error occurs when creating the ServerSocket or accepting a connection.
      */
-    public void handleClient(InetAddress clientAddress) {
-        lastHeartBeats.put(clientAddress, System.currentTimeMillis());
+    private void startServer(int port) throws IOException {
+        System.out.println("Server started, waiting for client connection...");
+        serverSocket = new ServerSocket(port);
+        startCentralHeartBeatMonitor();
         while (true) {
-            while (connections.get(clientAddress)) {
-                try {
-                    if (inputStreams.get(clientAddress).available() > 0) {
-                        listenToClient(clientAddress);
-                        lastHeartBeats.put(clientAddress, System.currentTimeMillis());
-                    }
-                } catch (IOException e) {
-                    connections.put(clientAddress, false);
-                }
+            Socket socket = serverSocket.accept();
+            InetAddress clientAddress = socket.getInetAddress();
+            if ((clientSockets.size() < maxClients) || (clientSockets.size() == maxClients && connections.containsKey(clientAddress))) {
+                System.out.println("Client connected: " + socket.getInetAddress());
+                connectClient(socket, clientAddress);
+            } else {
+                System.out.println("Unwanted connection from: " + socket.getInetAddress());
+                socket.close();
             }
         }
     }
 
     /**
-     * Called by handleClient method.
+     * This method creates all network components needed for the connection..
+     * It submit to an executor the task of listening to that specific client which just connected.
+     *
+     * @param socket        The socket of the client.
+     * @param clientAddress The InetAddress of the client being connected.
+     */
+    private void connectClient(Socket socket, InetAddress clientAddress) {
+        try {
+            lastHeartBeats.put(clientAddress, System.currentTimeMillis());
+            clientSockets.put(clientAddress, socket);
+            outputStreams.put(clientAddress, new DataOutputStream(socket.getOutputStream()));
+            inputStreams.put(clientAddress, new DataInputStream(socket.getInputStream()));
+            connections.put(clientAddress, true);
+            executors.submit(() -> listenToClient(clientAddress));
+        } catch (IOException e) {
+            System.out.println("Error while connecting to client " + clientAddress);
+        }
+    }
+
+    /**
+     * This method is used to start a centralized heart beat monitor that checks if all the clients are still connected.
+     * It works through a ScheduledExecutorService.
+     * It scans all the lastHeartBeat map and checks every 5 seconds if the last heart beat received from the clients is older than 15 seconds.
+     * If it is, it shuts down the connection with that client.
+     * Beware that this method is used as a double check for disconnections in case the catches for IOException in other methods fail.
+     */
+    private void startCentralHeartBeatMonitor() {
+        scheduler.scheduleAtFixedRate(() -> {
+            for (Map.Entry<InetAddress, Long> entry : lastHeartBeats.entrySet()) {
+                if (connections.get(entry.getKey())) {
+                    if (System.currentTimeMillis() - entry.getValue() > 15000) {
+                        System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+                        shutDownClientRelated(entry.getKey());
+                    }
+                }
+            }
+        }, 0, 5, TimeUnit.SECONDS);
+    }
+
+    /**
      * This method is used to listen to the client and receive messages incoming from the InputStream from the client with id clientId
      * It reads the length of the message, then reads the message itself and writes it to a file JSON.
      * After that, it passes the information to the server serializer.
      *
      * @param clientAddress The InetAddress of the client being handled.
      */
-    private void listenToClient(InetAddress clientAddress) throws IOException {  //TODO coda per i file json?
-        DataInputStream clientInputStream = inputStreams.get(clientAddress);
-        int length = clientInputStream.readInt();
-        byte[] buffer = new byte[length];
-        clientInputStream.readFully(buffer, 0, length);
-        String jsonString = new String(buffer, StandardCharsets.UTF_8);
-        File fileJson = new File("received.json");
-        Files.writeString(fileJson.toPath(), jsonString);
-        System.out.println("Json Received\n");
-        passInformationToServerSerializer(fileJson);
-    }
-
-    /**
-     * This method is used to attempt to reconnect a client after a disconnection.
-     * This method is called by the HeartBeatMonitor when it detects that a client is not responding.
-     * It tries to accept a new connection from the client and re-establish the input and output streams.
-     * If the connection is successful, it updates the connection status and method handleClient can restart working correctly.
-     * If all tentative failed, it prints in output and connection flag remain false
-     *
-     * @param clientAddress The InetAddress of the client being handled.
-     */
-    public void attemptToConnect(InetAddress clientAddress) {
-        int numAttempts = 0;
-        shutDownClientRelated(clientAddress);
-        while (!connections.get(clientAddress) && numAttempts <= thresholdAttempts) {
+    private void listenToClient(InetAddress clientAddress) {  //TODO coda per i file json?
+        while (connections.get(clientAddress)) {
             try {
-                timer();
-                numAttempts++;
-                System.out.println("Attempting to reconnect client " + clientAddress);
-                serverSocket.setSoTimeout(secondsForReconnection * 1000);
-                Socket socket = serverSocket.accept();
-                System.out.println("Client reconnected: " + socket.getInetAddress());
-                clientSockets.put(clientAddress, socket);
-                outputStreams.put(clientAddress, new DataOutputStream(socket.getOutputStream()));
-                inputStreams.put(clientAddress, new DataInputStream(socket.getInputStream()));
-                connections.put(clientAddress, true);
-                return;
+                DataInputStream clientInputStream = inputStreams.get(clientAddress);
+                int length = clientInputStream.readInt();
+                byte[] buffer = new byte[length];
+                clientInputStream.readFully(buffer, 0, length);
+                String jsonString = new String(buffer, StandardCharsets.UTF_8);
+                lastHeartBeats.put(clientAddress, System.currentTimeMillis());
+                File fileJson = new File("received.json");
+                Files.writeString(fileJson.toPath(), jsonString);
+                System.out.println("Json Received\n");
+                passInformationToServerSerializer(fileJson);
             } catch (IOException e) {
-                System.err.println("Error reconnecting client: " + e.getMessage());
+                System.out.println("Error while listening to client " + clientAddress + " shutting down his connection");
+                shutDownClientRelated(clientAddress);
             }
         }
-        System.out.println("Client " + clientAddress.getHostAddress() + " didn't reconnect.");
     }
 
     /**
@@ -154,7 +149,7 @@ public class ClientHandler {
         timeIsNotDone = true;
         scheduler.schedule(() -> {
             timeIsNotDone = false;
-        }, secondsForReconnection, TimeUnit.SECONDS);
+        }, 3, TimeUnit.SECONDS);
         while (timeIsNotDone) {
         }
     }
@@ -179,7 +174,7 @@ public class ClientHandler {
      *
      * @param clientAddress The InetAddress of the client which we want shutdown.
      */
-    private void shutDownClientRelated(InetAddress clientAddress) {
+    private synchronized void shutDownClientRelated(InetAddress clientAddress) {
         try {
             if (clientSockets.get(clientAddress) != null && !clientSockets.get(clientAddress).isClosed()) {
                 connections.put(clientAddress, false);

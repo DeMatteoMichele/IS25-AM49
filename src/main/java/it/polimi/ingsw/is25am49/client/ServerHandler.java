@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerHandler {
     private final ClientSerializer clientSerializer;
@@ -21,12 +22,12 @@ public class ServerHandler {
     private final ScheduledExecutorService scheduler;
     private volatile boolean timeIsNotDone;
     private final int thresholdTries;
-    private boolean connected;
+    private AtomicBoolean connected;
     private final int secondsForReconnection;
     private Thread heartBeatThread;
     private final String serverIP;
     private final int serverPort;
-    private HeartBeatAgent heartBeatAgent;
+    private final Object outputStreamLock;
 
 
     /**
@@ -42,13 +43,62 @@ public class ServerHandler {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
         this.clientSerializer = clientSerializer;
-        heartBeatAgent = null;
+        connected = new AtomicBoolean(false);
         scheduler = Executors.newScheduledThreadPool(10);
         thresholdTries = 20;
-        secondsForReconnection = 8;
+        secondsForReconnection = 5;
+        outputStreamLock = new Object();
         executors = Executors.newFixedThreadPool(10);
         firstConnection();
-        executors.submit(this::listenToServer);
+    }
+
+    /**
+     * This method is used to establish the first connection to the server.
+     * It tries to connect to the server and starts the heart beat agent.
+     * If it fails, it disconnects the client..
+     */
+    public void firstConnection() {
+        try {
+            tryConnection(serverPort);
+            executors.submit(this::listenToServer);
+            scheduler.scheduleWithFixedDelay(this::heartBeat, 0, 5, TimeUnit.SECONDS);
+        } catch (IOException e) {
+            disconnectAndTryToReconnect();
+        }
+    }
+
+    /**
+     * This method is used to send a heart beat message to the server.
+     * It is called periodically in a scheduled task.
+     * It checks if the client is connected and sends a HTB to the server.
+     * If it fails, it disconnects and tries to reconnect.
+     */
+    private void heartBeat() {
+        String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
+        if (connected.get()) {
+            synchronized (outputStreamLock) {
+                try {
+                    outputStream.writeInt(HeartBeat.length());
+                    outputStream.writeBytes(HeartBeat);
+                    outputStream.flush();
+                    System.out.println("Client still alive");
+                } catch (IOException e) {
+                    disconnectAndTryToReconnect();
+                }
+            }
+        }
+    }
+
+    /**
+     * This method is used to establish a connection to the server.
+     * It creates a new socket with serverIp and serverPort and initializes the input and output streams.
+     * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method..
+     */
+    public void tryConnection(int port) throws IOException {
+        clientSocket = new Socket(serverIP, port);
+        outputStream = new DataOutputStream(clientSocket.getOutputStream());
+        inputStream = new DataInputStream(clientSocket.getInputStream());
+        connected.set(true);
     }
 
     /**
@@ -58,7 +108,7 @@ public class ServerHandler {
      */
     public void listenToServer() {  //TODO coda per i file json?
         while (true) {
-            while (connected) {
+            while (connected.get()) {
                 try {
                     int length = inputStream.readInt();
                     byte[] buffer = new byte[length];
@@ -69,9 +119,37 @@ public class ServerHandler {
                     System.out.println("Json Received\n");
                     passInformationToClientSerializer(fileJson);
                 } catch (IOException e) {
-                    System.out.println("Server Error");
-                    connected = false;
+                    System.out.println("Error while listening to server, putting the connection to false");
+                    disconnectAndTryToReconnect();
                 }
+            }
+        }
+    }
+
+
+    /**
+     * This method is used to disconnect from the server and try to reconnect.
+     * It works only if at the time the method is called the connection flag is true, ensuring redundant disconnection are avoided in case more methods call this .
+     * It sets the connected flag to false.
+     * It closes the input/output streams and the socket, then submits a new connection attempt to the executor service.
+     */
+    private synchronized void disconnectAndTryToReconnect() {
+        if (connected.get()) {
+            connected.set(false);
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
+                System.out.println("submitting the connection attempt");
+                executors.submit(this::attemptToConnect);
+            } catch (IOException e) {
+                System.err.println("Errore durante la chiusura delle risorse per la disconnesione: " + e.getMessage());
             }
         }
     }
@@ -79,30 +157,25 @@ public class ServerHandler {
     /**
      * This method is used to attempt to reconnect to the server after the original connection has failed.
      * It tries to connect to the server a certain number of times (thresholdTries).
-     * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again.
-     * If the reconnection is successful, notifies the heartbeatagent to awake from the wait caused by precedent shutdown.
-     * If the connection fails, it shuts down the client.
+     * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again using the timer() method.
      */
-
     public void attemptToConnect() {
+        System.out.println("Attempting to reconnect to the server...");
         int numberOfTries = 0;
-        connected = false;
-        while (!connected && numberOfTries <= thresholdTries) {
+        while (numberOfTries < thresholdTries) {
             try {
                 numberOfTries++;
                 System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
-                timer();
-                tryConnection();
-                trySend();
-                heartBeatAgent.setClientConnection(this);
+                tryConnection(serverPort);
+                System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
+                break;
             } catch (IOException e) {
-                shutDown();
+                disconnectAndTryToReconnect(); //seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
             }
+            timer();
         }
         if (numberOfTries >= thresholdTries)
             System.out.println("Connection failed");
-        else
-            System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
     }
 
     /**
@@ -120,47 +193,6 @@ public class ServerHandler {
     }
 
     /**
-     * This method is used to send a test message to the server during the reconnection attempt.
-     * It sends a string "HTB" to the server and flushes the output stream.
-     */
-
-    public void trySend() throws IOException {
-        String tryString = "HTB";
-        outputStream.writeInt(tryString.length());
-        outputStream.writeBytes(tryString);
-        outputStream.flush();
-        System.out.println("Message: " + tryString);
-    }
-
-    /**
-     * This method is used to establish a connection to the server.
-     * It creates a new socket with serverIp and serverPort and initializes the input and output streams.
-     * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method..
-     */
-    public void tryConnection() throws IOException {
-        clientSocket = new Socket(serverIP, serverPort);
-        outputStream = new DataOutputStream(clientSocket.getOutputStream());
-        inputStream = new DataInputStream(clientSocket.getInputStream());
-        connected = true;
-    }
-
-    /**
-     * This method is used to establish the first connection to the server.
-     * It tries to connect to the server and starts the heart beat agent.
-     * If it fails, it shuts down the client.
-     */
-    public void firstConnection() {
-        try {
-            tryConnection();
-            heartBeatAgent = new HeartBeatAgent(this);
-            heartBeatThread = new Thread(heartBeatAgent);
-            heartBeatThread.start();
-        } catch (IOException e) {
-            shutDown();
-        }
-    }
-
-    /**
      * This method is used to send information to the server.
      * It is called by the clientSerializer to send the serialized object.
      * It reads the content of a JSON file and sends it to the server.
@@ -171,17 +203,20 @@ public class ServerHandler {
             System.err.println("JSON doesnt exist");
             return;
         }
-        if (!connected) {
+        if (!connected.get()) {
             System.out.println("Server disconnected.\n Write again the command when the connection will be ready");
         } else {
-            try {
-                String jsonContent = Files.readString(fileJson.toPath());
-                outputStream.writeInt(jsonContent.length());
-                outputStream.writeBytes(jsonContent);
-                outputStream.flush();
-                System.out.println("Message: " + jsonContent);
-            } catch (IOException e) {
-                System.out.println("Server disconnected.\n Write again the command when the connection will be ready");
+            synchronized (outputStreamLock) {
+                try {
+                    String jsonContent = Files.readString(fileJson.toPath());
+                    outputStream.writeInt(jsonContent.length());
+                    outputStream.writeBytes(jsonContent);
+                    outputStream.flush();
+                    System.out.println("Message: " + jsonContent);
+                } catch (IOException e) {
+                    System.out.println("Error while sending message to server, disconnecting");
+                    disconnectAndTryToReconnect();
+                }
             }
         }
     }
@@ -192,34 +227,6 @@ public class ServerHandler {
      */
     public void passInformationToClientSerializer(File fileJson) {
         clientSerializer.deSerializeStringFromServer(fileJson);
-    }
-
-    /**
-     * This method is used to shut down the client.
-     * It interrupts the heartbeat thread.
-     * It sets the connected variable to false and closes the input and output streams, the socket, and the executor service.
-     */
-    public void shutDown() {
-        connected = false;
-        try {
-//            if (heartBeatThread != null) {
-//                heartBeatThread.interrupt();
-//            }
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (outputStream != null) {
-                outputStream.close();
-            }
-            if (executors != null && !executors.isShutdown()) {
-                executors.shutdownNow();
-            }
-            if (clientSocket != null && !clientSocket.isClosed()) {
-                clientSocket.close();
-            }
-        } catch (IOException e) {
-            System.err.println("Errore durante la chiusura delle risorse: " + e.getMessage());
-        }
     }
 
     public Socket getClientSocket() {

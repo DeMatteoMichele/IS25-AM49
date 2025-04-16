@@ -21,7 +21,11 @@ public class HeartBeatAgent implements Runnable {
         heartBeatStream = serverHandler.getOutputStream();
         this.serverHandler = serverHandler;
     }
-
+    //**************************************************************************************
+    //**************************************************************************************
+    //*********THIS CLASS IS DEPRECATED, MUST BE DELETED IN FUTURE VERSIONS***************
+    //**************************************************************************************
+    //*************************************************************************************
     /**
      * This method is the runnable for the heart beat agent.
      * It sends a heart beat message to the server every interval milliseconds.
@@ -45,6 +49,12 @@ public class HeartBeatAgent implements Runnable {
         heartBeatStream = serverHandler.getOutputStream();
         this.serverHandler = serverHandler;
     }
+
+    //**************************************************************************************
+    //**************************************************************************************
+    //*********THIS CLASS IS DEPRECATED, MUST BE DELETED IN FUTURE VERSIONS***************
+    //**************************************************************************************
+    //*************************************************************************************
 
     /**
      * This method is used to send a periodic heart beat message to the server.
