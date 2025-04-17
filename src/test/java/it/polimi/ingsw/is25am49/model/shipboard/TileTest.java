@@ -106,10 +106,15 @@ class TileTest {
     }
 
     @Test
-    void generateTiles(){
+    void testGenerateTiles(){
         Map<Integer,Tile> tiles= Tile.generateTiles();
         for (Tile t: tiles.values()){
-            System.out.println("TILE: "+t.getIdTile()+ "\tComponent: "+t.getComponent().getType()+"\tlvl:"+t.getComponent().getLevel());
+            String s= switch (t.getComponent()){
+                case BasicComponent ignored -> s="BasicComponent";
+                case SpecialComponent ignored -> s="SpecialComponent";
+                case ContainerComponent ignored -> s="ContainerComponent";
+            };
+            System.out.println("TILE: "+t.getIdTile()+ "\t"+s+": "+t.getComponent().getType()+"\tlvl:"+t.getComponent().getLevel());
             System.out.println("\tconnectors: "+t.getConnector(0)+" "+t.getConnector(1)+" "+t.getConnector(2)+" "+t.getConnector(3)+"\n");
         }
     }

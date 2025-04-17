@@ -34,12 +34,9 @@ public final class ContainerComponent extends Component {
 
     @Override
     public boolean checkIfTokenIsValid(Token token) {
-        //TODO sistema alieni dentro cabin
         return switch (token) {
             case BATTERY_CELLS -> type.equals(ComponentType.BATTERY);
-            case ASTRONAUT -> type.equals(ComponentType.CABINE);
-            case PURPLE_ALIENS -> type.equals(ComponentType.PURPLE_ALIEN_MODULE);
-            case BROWN_ALIENS -> type.equals(ComponentType.BROWN_ALIEN_MODULE);
+            case ASTRONAUT, PURPLE_ALIENS, BROWN_ALIENS -> type.equals(ComponentType.CABINE);
             case RED_GOODS -> type.equals(ComponentType.SPECIAL_STORAGE);
             default -> (type.equals(ComponentType.STORAGE) || (type.equals(ComponentType.SPECIAL_STORAGE)));
         };

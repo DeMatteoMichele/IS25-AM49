@@ -183,7 +183,7 @@ public class Tile {
                     ConnectorType c4= ConnectorType.valueOf(node.get("c4").asText());
                     //System.out.println(idTile + " " + type+ " "+ level+ " "+ c1+ " "+ c2+ " "+ c3+ " "+ c4);
                     Component component = switch (type) {
-                        case ENGINE, CANNON, FRAME_SECTION, SKY -> new BasicComponent(type, level);
+                        case ENGINE, CANNON, FRAME_SECTION, SKY, PURPLE_ALIEN_MODULE ,BROWN_ALIEN_MODULE -> new BasicComponent(type, level);
                         case DOUBLE_CANNON, DOUBLE_ENGINE, SHIELD -> new SpecialComponent(type, level);
                         default -> new ContainerComponent(type, level);
                     };
