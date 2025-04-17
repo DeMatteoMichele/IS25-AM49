@@ -1,4 +1,4 @@
-package it.polimi.ingsw.is25am49.server.model.adventurecards;
+package it.polimi.ingsw.is25am49.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;

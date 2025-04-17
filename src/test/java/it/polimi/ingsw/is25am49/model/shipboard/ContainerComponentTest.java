@@ -2,7 +2,9 @@ package it.polimi.ingsw.is25am49.model.shipboard;
 
 import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokenInComponentEcxeption;
+import it.polimi.ingsw.is25am49.server.model.shipboard.BasicComponent;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,7 @@ class ContainerComponentTest {
     ContainerComponent storage;
     ContainerComponent specialStorage;
     ContainerComponent battery;
-    ContainerComponent alienModule;
+    BasicComponent alienModule;
     ContainerComponent cabin;
 
     @BeforeEach
@@ -22,7 +24,7 @@ class ContainerComponentTest {
         storage= new ContainerComponent(ComponentType.STORAGE,3);
         specialStorage= new ContainerComponent(ComponentType.SPECIAL_STORAGE,2);
         battery= new ContainerComponent(ComponentType.BATTERY,5);
-        alienModule= new ContainerComponent(ComponentType.BROWN_ALIEN_MODULE,1);
+        alienModule= new BasicComponent(ComponentType.BROWN_ALIEN_MODULE,1);
         cabin= new ContainerComponent(ComponentType.CABINE,2);
 
         battery.fillComponent(Token.BATTERY_CELLS);
@@ -40,7 +42,7 @@ class ContainerComponentTest {
     @Test //test per fillComponent
     void testNumberOfTokensEqualLevelInAFilledComponent() {
         assertEquals(battery.getLevel(),battery.getNumberOfTokens());
-        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> cabin.fillComponent(Token.PURPLE_ALIENS));
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> cabin.fillComponent(Token.BLUE_GOODS));
         assertNotEquals(cabin.getLevel(),cabin.getNumberOfTokens());
     }
     @Test
@@ -81,16 +83,19 @@ class ContainerComponentTest {
         battery.removeToken(Token.BATTERY_CELLS);
         assertEquals(oldSize-1,battery.getTokenList().size());
         assertEquals(oldSize-1,battery.getNumberOfTokens());
-        alienModule.addToken(Token.BROWN_ALIENS);
-        alienModule.removeToken(Token.BROWN_ALIENS);
-        assertEquals(0, alienModule.getNumberOfTokens());
+        assertThrows(IllegalMethodOnThisComponentException.class, ()->alienModule.addToken(Token.BROWN_ALIENS));
+        cabin.fillComponent(Token.BROWN_ALIENS);
+        assertEquals(2,cabin.getTokenList().size());
+        cabin.clearComponent();
+        assertEquals(0, cabin.getNumberOfTokens());
     }
     @Test
     void testRemoveWrongToken(){
         assertThrows(IllegalTokenInComponentEcxeption.class, ()-> battery.removeToken(Token.ASTRONAUT));
-        assertThrows(IndexOutOfBoundsException.class, ()-> alienModule.removeToken());
-        assertThrows(IndexOutOfBoundsException.class, ()-> alienModule.removeToken(Token.BROWN_ALIENS));
-        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> alienModule.removeToken(Token.BLUE_GOODS));
+        assertThrows(IllegalMethodOnThisComponentException.class, ()-> alienModule.removeToken(Token.ASTRONAUT));
+        assertThrows(IndexOutOfBoundsException.class, ()-> cabin.removeToken());
+        assertThrows(IndexOutOfBoundsException.class, ()-> cabin.removeToken(Token.BROWN_ALIENS));
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> battery.removeToken(Token.BLUE_GOODS));
     }
     @Test
     void testRemoveToken() {
@@ -113,7 +118,8 @@ class ContainerComponentTest {
     @Test
     void checkIfTokenIsValid() {
         assertTrue(battery.checkIfTokenIsValid(Token.BATTERY_CELLS));
-        assertTrue(alienModule.checkIfTokenIsValid(Token.BROWN_ALIENS));
+        assertTrue(cabin.checkIfTokenIsValid(Token.BROWN_ALIENS));
+        assertTrue(cabin.checkIfTokenIsValid(Token.PURPLE_ALIENS));
         assertTrue(cabin.checkIfTokenIsValid(Token.ASTRONAUT));
         assertTrue(specialStorage.checkIfTokenIsValid(Token.RED_GOODS));
         assertTrue(specialStorage.checkIfTokenIsValid(Token.YELLOW_GOODS));
@@ -122,6 +128,7 @@ class ContainerComponentTest {
         assertTrue(storage.checkIfTokenIsValid(Token.YELLOW_GOODS));
         assertFalse(cabin.checkIfTokenIsValid(Token.YELLOW_GOODS));
         assertFalse(storage.checkIfTokenIsValid(Token.RED_GOODS));
+        assertThrows(IllegalMethodOnThisComponentException.class, ()-> alienModule.checkIfTokenIsValid(Token.BROWN_ALIENS));
     }
 }
 

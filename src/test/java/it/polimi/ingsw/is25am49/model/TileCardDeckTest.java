@@ -1,5 +1,6 @@
-package it.polimi.ingsw.is25am49.server.model;
+package it.polimi.ingsw.is25am49.model;
 
+import it.polimi.ingsw.is25am49.server.model.TileCardDeck;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

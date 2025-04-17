@@ -21,4 +21,8 @@ public class ServerSerializer implements VirtualView {
         return null;
     }
 
+    @Override
+    public void serverTestConnection() {
+        System.out.println("c");
+    }
 }
