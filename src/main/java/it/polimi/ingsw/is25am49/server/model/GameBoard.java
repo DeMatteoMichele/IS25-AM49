@@ -42,6 +42,7 @@ public class GameBoard {
 
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
+        // Nel costruttore è presente la generate() e lo shuffle() integrati.
         tilesDeck = new TileCardDeck();
         mainAdventureDeck = new AdventureCardDeck();
         flightMode = FlightMode.DEFAULT;
@@ -76,8 +77,6 @@ public class GameBoard {
     }
 
     public void initialize(GameMode gameMode) {
-        tilesDeck.generateDeck();
-        tilesDeck.shuffle();
         generateSmallDecks(gameMode);
         mainAdventureDeck.shuffle();
     }
@@ -281,6 +280,7 @@ public class GameBoard {
             mapSmallAdventureDecks.clear();
             setMainAdventureDeck(bufferDeck);
         }
+        mainAdventureDeck.shuffle();
     }
 
     public LeaderBoard getLeaderBoard() {

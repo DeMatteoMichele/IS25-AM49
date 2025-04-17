@@ -1,4 +1,7 @@
 package it.polimi.ingsw.is25am49.server;
 
-public interface VirtualView {
+import java.rmi.Remote;
+
+public interface VirtualView extends Remote {
+
 }

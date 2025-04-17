@@ -200,5 +200,9 @@ public class Tile {
         }
         return null;
     }
-
+    public String toString(){
+        String tileString = "";
+        tileString = tileString + Integer.toString(idTile);
+        return tileString;
+    }
 }

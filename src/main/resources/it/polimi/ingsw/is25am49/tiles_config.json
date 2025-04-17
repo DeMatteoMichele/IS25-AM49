@@ -1,175 +1,175 @@
 [
-{
-  "idTile": 1,
-  "component": "BATTERY",
-  "level": 2,
-  "c1": "UNIVERSAL",
-  "c2": "SINGLE",
-  "c3": "DOUBLE",
-  "c4": "FLAT"
-},
-{
-"idTile": 2,
-"component": "BATTERY",
-"level": 2,
-"c1": "UNIVERSAL",
-"c2": "DOUBLE",
-"c3": "FLAT",
-"c4": "FLAT"
-},
-{
-"idTile": 3,
-"component": "BATTERY",
-"level": 2,
-"c1": "UNIVERSAL",
-"c2": "DOUBLE",
-"c3": "SINGLE",
-"c4": "FLAT"
-},
-{
-"idTile": 4,
-"component": "BATTERY",
-"level": 2,
-"c1": "DOUBLE",
-"c2": "SINGLE",
-"c3": "DOUBLE",
-"c4": "SINGLE"
-},
-{
-"idTile": 5,
-"component": "BATTERY",
-"level": 2,
-"c1": "UNIVERSAL",
-"c2": "FLAT",
-"c3": "FLAT",
-"c4": "SINGLE"
-},
-{
-"idTile": 6,
-"component": "BATTERY",
-"level": 2,
-"c1": "UNIVERSAL",
-"c2": "SINGLE",
-"c3": "SINGLE",
-"c4": "SINGLE"
-},
-{
-"idTile": 7,
-"component": "BATTERY",
-"level": 2,
-"c1": "UNIVERSAL",
-"c2": "DOUBLE",
-"c3": "DOUBLE",
-"c4": "DOUBLE"
-},
-{
-"idTile": 8,
-"component": "BATTERY",
-"level": 2,
-"c1": "FLAT",
-"c2": "FLAT",
-"c3": "FLAT",
-"c4": "UNIVERSAL"
-},
-{
-"idTile": 9,
-"component": "BATTERY",
-"level": 2,
-"c1": "FLAT",
-"c2": "FLAT",
-"c3": "FLAT",
-"c4": "UNIVERSAL"
-},
-{
-"idTile": 10,
-"component": "BATTERY",
-"level": 2,
-"c1": "FLAT",
-"c2": "UNIVERSAL",
-"c3": "FLAT",
-"c4": "UNIVERSAL"
-},
-{
-"idTile": 11,
-"component": "BATTERY",
-"level": 2,
-"c1": "UNIVERSAL",
-"c2": "FLAT",
-"c3": "FLAT",
-"c4": "UNIVERSAL"
-},
-{
-"idTile": 12,
-"component": "BATTERY",
-"level": 3,
-"c1": "SINGLE",
-"c2": "FLAT",
-"c3": "DOUBLE",
-"c4": "FLAT"
-},
-{
-"idTile": 13,
-"component": "BATTERY",
-"level": 3,
-"c1": "SINGLE",
-"c2": "SINGLE",
-"c3": "DOUBLE",
-"c4": "FLAT"
-},
-{
-"idTile": 14,
-"component": "BATTERY",
-"level": 3,
-"c1": "DOUBLE",
-"c2": "FLAT",
-"c3": "FLAT",
-"c4": "FLAT"
-},
-{
-"idTile": 15,
-"component": "BATTERY",
-"level": 3,
-"c1": "DOUBLE",
-"c2": "SINGLE",
-"c3": "FLAT",
-"c4": "FLAT"
-},
-{
-"idTile": 16,
-"component": "BATTERY",
-"level": 3,
-"c1": "DOUBLE",
-"c2": "DOUBLE",
-"c3": "SINGLE",
-"c4": "FLAT"
-},
-{
-"idTile": 17,
-"component": "BATTERY",
-"level": 3,
-"c1": "FLAT",
-"c2": "FLAT",
-"c3": "FLAT",
-"c4": "SINGLE"
-},
-{
-"idTile": 18,
-"component": "STORAGE",
-"level": 2,
-"c1": "DOUBLE",
-"c2": "SINGLE",
-"c3": "UNIVERSAL",
-"c4": "FLAT"
-},
-{
-"idTile": 19,
-"component": "STORAGE",
-"level": 2,
-"c1": "DOUBLE",
-"c2": "SINGLE",
-"c3": "UNIVERSAL",
-"c4": "SINGLE"
-},
+  {
+    "idTile": 1,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "SINGLE",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 2,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 3,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "DOUBLE",
+    "c3": "SINGLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 4,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "DOUBLE",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 5,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 6,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "SINGLE",
+    "c3": "SINGLE",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 7,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "DOUBLE",
+    "c3": "DOUBLE",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 8,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 9,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 10,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "FLAT",
+    "c2": "UNIVERSAL",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 11,
+    "component": "BATTERY",
+    "level": 2,
+    "c1": "UNIVERSAL",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 12,
+    "component": "BATTERY",
+    "level": 3,
+    "c1": "SINGLE",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 13,
+    "component": "BATTERY",
+    "level": 3,
+    "c1": "SINGLE",
+    "c2": "SINGLE",
+    "c3": "DOUBLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 14,
+    "component": "BATTERY",
+    "level": 3,
+    "c1": "DOUBLE",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 15,
+    "component": "BATTERY",
+    "level": 3,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 16,
+    "component": "BATTERY",
+    "level": 3,
+    "c1": "DOUBLE",
+    "c2": "DOUBLE",
+    "c3": "SINGLE",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 17,
+    "component": "BATTERY",
+    "level": 3,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 18,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "UNIVERSAL",
+    "c4": "FLAT"
+  },
+  {
+    "idTile": 19,
+    "component": "STORAGE",
+    "level": 2,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "UNIVERSAL",
+    "c4": "SINGLE"
+  },
   {
     "idTile": 20,
     "component": "STORAGE",

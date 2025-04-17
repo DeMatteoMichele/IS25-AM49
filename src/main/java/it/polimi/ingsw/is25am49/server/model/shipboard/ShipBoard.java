@@ -321,7 +321,7 @@ public class ShipBoard {
      * @return a HashMap<\Point,Token> of the possible crew members of the cabin at given coordinates
      */
     public HashMap<Point,Token> checkIfAlienArePossible(Point coordinates) {
-        HashMap<Point,Token> crew=new HashMap<>();
+        HashMap<Point,Token> crew = new HashMap<>();
         //todo sistema
         try {
             Tile centerTile=getTile(coordinates);

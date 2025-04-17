@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.server.model;
 
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
@@ -66,15 +67,15 @@ public class Player {
         shipBoard.completeShipBoard();
     }
     public void setHandTile(Tile tile){
-        this.handTile = Optional.of(tile);
+        handTile = Optional.of(tile);
     }
 
     public String getUsername() {
         return username;
     }
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public Integer getPlayerNumber() {
         return idPlayer;
@@ -83,7 +84,7 @@ public class Player {
     public Optional<Tile> getHandTile(){
         return handTile;
     }
-    public void addLostComponents(Integer numberOfLostComponents) {
+    public void addLostComponents(int numberOfLostComponents) {
         lostComponents = lostComponents + numberOfLostComponents;
     }
 
@@ -94,24 +95,29 @@ public class Player {
     public Integer getScore() {
         return finalScore;
     }
-    public void setScore(int score) {
-        this.finalScore = score;
-    }
+//    public void setScore(int score) {
+//        finalScore = score;
+//    }
 
     public void addCredits(int amount){
         totCredits = totCredits + amount;
     }
-
+    // da testare
     public void pickTile(Point coordinates){
         shipBoardIsNotCompletedYet();
-        handTile = Optional.of(shipBoard.removeTile(coordinates));
+        if(handTile.isEmpty())
+            handTile = Optional.of(shipBoard.removeTile(coordinates));
+        else
+            throw new GameSettingsException("You cannot pick this tile");
     }
+    // da testare
     public void placeTile(Point coordinates){
         thereIsHandTile();
         shipBoardIsNotCompletedYet();
         handTile.ifPresent(tile -> shipBoard.insertTile(coordinates, tile));
         handTile = Optional.empty();
     }
+    // da testare e cambiare
     public void rotateTile(boolean isClockwise){
         shipBoardIsNotCompletedYet();
         if(isClockwise)
@@ -119,6 +125,7 @@ public class Player {
         else
             handTile.ifPresent(Tile::rotateTileCounterClockwise);
     }
+    // da testare
     public Optional<Tile> discardTile(){
         thereIsHandTile();
         Optional<Tile> temp = handTile;
@@ -147,9 +154,11 @@ public class Player {
     public void setShipBoard(ShipBoard shipBoard) {
         this.shipBoard = shipBoard;
     }
+    // da testare e cambiare
     public void setSmallDeck(AdventureCardDeck smallDeck) {
         smallAdventureDeckLooked = smallDeck;
         isWatching = true;
+
     }
     public void clearSmallDeck(){
         smallAdventureDeckLooked = null;
