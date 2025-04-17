@@ -17,8 +17,10 @@ public class SkeletonRMI extends UnicastRemoteObject implements VirtualView{
 //        controller.setHandTile();
 //    }
 
-    public void testConnection() {
-        System.out.println("connesione avvenuta con successo");
+    @Override
+    public void serverTestConnection() {
+        controller=new ServerController(new GameSession());
+        controller.serverTestConnection();
     }
     public static void main(String[] args) {
         try {
@@ -30,7 +32,7 @@ public class SkeletonRMI extends UnicastRemoteObject implements VirtualView{
 
         }
         catch (RemoteException e){
-            e.printStackTrace();
+            System.out.println("errore lato Skeleton: "+e.getMessage());
         }
     }
 }

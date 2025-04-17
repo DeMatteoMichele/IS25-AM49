@@ -32,5 +32,8 @@ public class ServerController {
         serverSerializer.SerializeObjectFromServer(method, parameters);
     }
 
+    public void serverTestConnection(){
+        System.out.println("connesione avvenuta con successo");
+    }
 
 }

@@ -22,7 +22,7 @@ public class ServerSerializer implements VirtualView {
     }
 
     @Override
-    public void testConnection() {
+    public void serverTestConnection() {
         System.out.println("c");
     }
 }
