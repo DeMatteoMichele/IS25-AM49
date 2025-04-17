@@ -6,6 +6,7 @@ public class ClientController {
     public ClientController(){
         clientModel = new ClientModel();
     }
+
     public void handleInput(String inputString){
         // da fare
     }
