@@ -29,7 +29,11 @@ public class StubRMI implements VirtualServer{
     @Override
     public void clientTestConnection() throws RemoteException {
         createStub();
-        stub.serverTestConnection();
+        if(stub != null){
+            stub.serverTestConnection();
+        }else{
+            System.out.println("Stub non creato");
+        }
     }
 }
 
