@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 public class ClientController {
     ClientModel clientModel;
-    VirtualServer server;
+    RemoteServerMethods server;
 
     public ClientController(){
         clientModel = new ClientModel();
@@ -19,7 +19,7 @@ public class ClientController {
     }
 
     public void clientTestConnection() throws RemoteException {
-        server.clientTestConnection();
+        server.serverTestConnection();
     }
 
     public void handleInput(String inputString){

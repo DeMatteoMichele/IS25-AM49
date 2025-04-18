@@ -4,7 +4,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class ClientSerializer implements VirtualServer{
+public class ClientSerializer implements RemoteServerMethods {
     private ServerHandler serverHandler;
     public void placetile(){
         //traduci in un pacchetto serializzato
@@ -20,7 +20,7 @@ public class ClientSerializer implements VirtualServer{
     }
 
     @Override
-    public void clientTestConnection() throws RemoteException {
+    public void serverTestConnection() throws RemoteException {
         System.out.println("no");
     }
 }

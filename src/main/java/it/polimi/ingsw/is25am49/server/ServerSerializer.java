@@ -3,7 +3,7 @@ package it.polimi.ingsw.is25am49.server;
 import java.io.File;
 import java.util.List;
 
-public class ServerSerializer implements VirtualView {
+public class ServerSerializer implements RemoteClientMethods {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     public ServerSerializer(ServerController serverController) {
@@ -22,7 +22,7 @@ public class ServerSerializer implements VirtualView {
     }
 
     @Override
-    public void serverTestConnection() {
+    public void clientTestConnection() {
         System.out.println("c");
     }
 }
