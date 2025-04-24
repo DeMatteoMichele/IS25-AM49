@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model.adventurecards;
 import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.MeteorRainCard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
 import it.polimi.ingsw.is25am49.server.model.enums.*;

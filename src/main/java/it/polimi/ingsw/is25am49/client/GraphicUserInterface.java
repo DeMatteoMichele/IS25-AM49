@@ -1,6 +1,6 @@
 package it.polimi.ingsw.is25am49.client;
 
-public class GraphicUserInterface implements View {
+public class GraphicUserInterface implements UserInterface {
     private ClientController controller;
 
     public GraphicUserInterface() {

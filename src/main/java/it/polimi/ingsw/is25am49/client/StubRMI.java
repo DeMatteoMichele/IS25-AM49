@@ -20,7 +20,7 @@ public class StubRMI implements VirtualServer {
     void createStub(){
         try {
             Registry reg = LocateRegistry.getRegistry("localhost", 1099);
-            stub= (VirtualView) reg.lookup("ServerController");
+            stub = (VirtualView) reg.lookup("ServerController");
         }catch (Exception e){
             System.out.println("errore lato Stub: "+e.getMessage());
         }

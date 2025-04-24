@@ -20,14 +20,14 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdventureCardDeckTest {
-    private GameBoard gameBoard;
-    private AdventureCardDeck deck2;
-    private AdventureCard card;
-    private AdventureCard card2;
-    private List<CardEffect> effects = new ArrayList<>();
-    private EffectCannonata cannonata;
-    private AdventureCard cardDrawn;
-    private List<Planet> planets = new ArrayList<>();
+    GameBoard gameBoard;
+    AdventureCardDeck deck2;
+    AdventureCard card;
+    AdventureCard card2;
+    List<CardEffect> effects = new ArrayList<>();
+    EffectCannonata cannonata;
+    AdventureCard cardDrawn;
+    List<Planet> planets = new ArrayList<>();
     Player player1;
 
     @BeforeEach

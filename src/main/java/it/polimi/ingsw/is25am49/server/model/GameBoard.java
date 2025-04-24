@@ -360,11 +360,11 @@ public class GameBoard {
 
     public void addDiscardedTile(Player player) {
         Optional<Tile> newTile = player.discardTile();
-        newTile.ifPresent(tilesDeck::addDiscardTile);
+        newTile.ifPresent(tile -> tilesDeck.addDiscardTile(tile, player));
     }
 
-    public Tile drawTile(int index) {
-        return tilesDeck.draw(index);
+    public Tile drawTile(int index, Player player) {
+        return tilesDeck.draw(index, player);
     }
 
     public Player getLeader() {

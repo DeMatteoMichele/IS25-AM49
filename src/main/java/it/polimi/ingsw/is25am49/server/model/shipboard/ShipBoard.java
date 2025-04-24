@@ -38,7 +38,7 @@ public class ShipBoard {
         isCompleted = false;
         destroyedTiles = 0;
 
-        var centerCabinTile =new Tile(playerID, new ContainerComponent(ComponentType.CABINE,2));
+        var centerCabinTile = new Tile(playerID, new ContainerComponent(ComponentType.CABINE,2));
         centerCabinTile.setConnectors(ConnectorType.UNIVERSAL,ConnectorType.UNIVERSAL,ConnectorType.UNIVERSAL,ConnectorType.UNIVERSAL);
 
         switch (level){

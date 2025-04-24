@@ -4,31 +4,36 @@ package it.polimi.ingsw.is25am49.server.model;
 import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 public class TileCardDeck {
-    private ConcurrentHashMap<Integer, Tile> tileDeck;
-    private ConcurrentHashMap<Integer, Tile> temporaryTileDeck;
+    private final ConcurrentHashMap<Integer, Tile> tileDeck;
+    private final ConcurrentHashMap<Player, Integer> lastRemovedTile;
+    private final int numOfTiles;
 
     public TileCardDeck() {
+        lastRemovedTile = new ConcurrentHashMap<>();
+        numOfTiles = 157;
         tileDeck = new ConcurrentHashMap<>();
-        ConcurrentHashMap<Integer, Tile> temporaryTileDeck = new ConcurrentHashMap<>(Objects.requireNonNull(Tile.generateTiles()));
-        Random rand = new Random();
-        temporaryTileDeck.forEach((key, value) -> tileDeck.put(rand.nextInt(200), value));
+        HashMap<Integer, Tile> temporaryTileDeck = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
+        List<Integer> trackingRandoms = new ArrayList<>(numOfTiles);
+        for (int i = 0; i < numOfTiles; i++)
+            trackingRandoms.add(i);
+        Collections.shuffle(trackingRandoms);
+        temporaryTileDeck.forEach((key, value) -> tileDeck.put(trackingRandoms.get(tileDeck.size()), value));
     }
-    public void addDiscardTile(Tile tile){
+    public void addDiscardTile(Tile tile, Player player) {
         tile.uncoverTile();
-        tileDeck.put(tile.getIdTile(),tile);
+        tileDeck.put(lastRemovedTile.get(player),tile);
     }
 
-    public Tile draw(int index){
+    public Tile draw(int index, Player player) {
         if(tileDeck.containsKey(index)) {
             Tile tmp = tileDeck.get(index);
             tileDeck.remove(index);
+            lastRemovedTile.put(player, index);
             tmp.uncoverTile();
             return tmp;
         }
@@ -37,5 +42,8 @@ public class TileCardDeck {
     }
     public Stream<Map.Entry<Integer, Tile>> stream(){
         return tileDeck.entrySet().stream();
+    }
+    public int getNumberOfTile() {
+        return numOfTiles;
     }
 }
