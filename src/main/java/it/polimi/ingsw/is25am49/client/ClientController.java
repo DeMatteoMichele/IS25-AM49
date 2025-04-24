@@ -1,25 +1,31 @@
 package it.polimi.ingsw.is25am49.client;
 
-import java.rmi.RemoteException;
+import it.polimi.ingsw.is25am49.server.model.Player;
 
 public class ClientController {
+    Integer playerID;
     ClientModel clientModel;
-    RemoteServerMethods server;
+    RemoteServer serverMethods;
 
     public ClientController(){
         clientModel = new ClientModel();
     }
-    public ClientController(Integer connectionType){
+    public ClientController(Integer connectionType, Integer playerID){
+        this.playerID = playerID;
         clientModel = new ClientModel();
-        server=switch(connectionType){
+        serverMethods= switch(connectionType){
             case 0 -> new ClientSerializer();
-            case 1 -> new StubRMI();
+            case 1 -> new ClientRMI().getServerStub();
             default -> throw new IllegalStateException("METODO DI CONNESIIONE NON VALIDO --> Unexpected value: " + connectionType);
         };
     }
 
-    public void clientTestConnection() throws RemoteException {
-        server.serverTestConnection();
+    public void clientTestConnection(){
+        try {
+            serverMethods.serverTestConnection(playerID);
+        } catch (Exception e) {
+            System.out.println("clientTestConnection failed --> " + e.getMessage());
+        }
     }
 
     public void handleInput(String inputString){

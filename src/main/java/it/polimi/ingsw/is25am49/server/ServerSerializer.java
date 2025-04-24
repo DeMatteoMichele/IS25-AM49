@@ -1,9 +1,10 @@
 package it.polimi.ingsw.is25am49.server;
 
 import java.io.File;
+import java.rmi.RemoteException;
 import java.util.List;
 
-public class ServerSerializer implements RemoteClientMethods {
+public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     public ServerSerializer(ServerController serverController) {
@@ -22,7 +23,7 @@ public class ServerSerializer implements RemoteClientMethods {
     }
 
     @Override
-    public void clientTestConnection() {
-        System.out.println("c");
+    public void notifyClient(String msg) throws RemoteException {
+        //DANIELE GAY
     }
 }

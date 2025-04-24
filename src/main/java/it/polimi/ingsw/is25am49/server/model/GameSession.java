@@ -1,6 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.RemoteClientMethods;
+import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -12,7 +12,7 @@ import java.awt.*;
 import java.util.Optional;
 
 public class GameSession {
-    private RemoteClientMethods view;
+    private RemoteClient view;
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
@@ -21,7 +21,7 @@ public class GameSession {
         admin = Optional.empty();
         currentState = new InitState(this);
     }
-    public void setView(RemoteClientMethods view) {
+    public void setView(RemoteClient view) {
         this.view = view;
     }
     public Optional<Game> getGame() { return game; }
