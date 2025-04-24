@@ -1,10 +1,12 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.server.RemoteClient;
+
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class ClientSerializer implements VirtualServer{
+public class ClientSerializer implements RemoteServer {
     private ServerHandler serverHandler;
     public void placetile(){
         //traduci in un pacchetto serializzato
@@ -20,7 +22,12 @@ public class ClientSerializer implements VirtualServer{
     }
 
     @Override
-    public void clientTestConnection() throws RemoteException {
+    public void serverTestConnection(Integer playerId) throws RemoteException {
         System.out.println("no");
+    }
+
+    @Override
+    public void registerClient(RemoteClient client, Integer playerId) throws RemoteException {
+        //MICHELE E' UN GAY DEL CAZZO
     }
 }

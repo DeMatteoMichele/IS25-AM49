@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerHandler {
@@ -22,12 +19,13 @@ public class ServerHandler {
     private final ScheduledExecutorService scheduler;
     private volatile boolean timeIsNotDone;
     private final int thresholdTries;
-    private AtomicBoolean connected;
+    private final AtomicBoolean connected;
     private final int secondsForReconnection;
-    private Thread heartBeatThread;
     private final String serverIP;
     private final int serverPort;
     private final Object outputStreamLock;
+    private final BlockingQueue<String> InGoingStringQueue;
+    private final BlockingQueue<File> OutGoingFileQueue;
 
 
     /**
@@ -43,6 +41,8 @@ public class ServerHandler {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
         this.clientSerializer = clientSerializer;
+        InGoingStringQueue = new ArrayBlockingQueue<>(1000, true);
+        OutGoingFileQueue = new ArrayBlockingQueue<>(1000, true);
         connected = new AtomicBoolean(false);
         scheduler = Executors.newScheduledThreadPool(10);
         thresholdTries = 20;
@@ -57,10 +57,9 @@ public class ServerHandler {
      * It tries to connect to the server and starts the heart beat agent.
      * If it fails, it disconnects the client..
      */
-    public void firstConnection() {
+    private void firstConnection() {
         try {
             tryConnection(serverPort);
-            executors.submit(this::listenToServer);
             scheduler.scheduleWithFixedDelay(this::heartBeat, 0, 5, TimeUnit.SECONDS);
         } catch (IOException e) {
             disconnectAndTryToReconnect();
@@ -92,36 +91,58 @@ public class ServerHandler {
     /**
      * This method is used to establish a connection to the server.
      * It creates a new socket with serverIp and serverPort and initializes the input and output streams.
-     * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method..
+     * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method).
+     * Starts the executor to make it listen to the server.
      */
-    public void tryConnection(int port) throws IOException {
+    private void tryConnection(int port) throws IOException {
         clientSocket = new Socket(serverIP, port);
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
         connected.set(true);
+        executors.submit(this::listenToServer);
+        executors.submit(this::processOutGoingQueue);
     }
 
     /**
      * This method is used to listen to the server and receive messages.
-     * While the client is connected, it reads the length of the message, then reads the message itself and writes it to a file JSON.
-     * After that, it passes the information to the client serializer for further processing.
+     * While the client is connected, it reads the length of the message, then reads the message itself and puts it in a BlockingQueue.
+     * The BlockingQueue is processed by the processStringQueue method.
      */
-    public void listenToServer() {  //TODO coda per i file json?
-        while (true) {
-            while (connected.get()) {
-                try {
-                    int length = inputStream.readInt();
-                    byte[] buffer = new byte[length];
-                    inputStream.readFully(buffer, 0, length);
-                    String jsonString = new String(buffer, StandardCharsets.UTF_8);
-                    File fileJson = new File("received.json");
-                    Files.writeString(fileJson.toPath(), jsonString);
-                    System.out.println("Json Received\n");
-                    passInformationToClientSerializer(fileJson);
-                } catch (IOException e) {
-                    System.out.println("Error while listening to server, putting the connection to false");
-                    disconnectAndTryToReconnect();
-                }
+    private void listenToServer() {  //TODO coda per i file json?
+        executors.submit(this::processStringQueueToSerializer);
+        while (connected.get()) {
+            try {
+                int length = inputStream.readInt();
+                byte[] buffer = new byte[length];
+                inputStream.readFully(buffer, 0, length);
+                String jsonString = new String(buffer, StandardCharsets.UTF_8);
+                InGoingStringQueue.put(jsonString);
+            } catch (IOException e) {
+                System.out.println("Error while listening to server, putting the connection to false");
+                disconnectAndTryToReconnect();
+            } catch (InterruptedException e) {
+                System.out.println("Error while putting the message in the queue, thread has been interrupted");
+            }
+        }
+    }
+
+    /**
+     * This method is used to process the messages in the BlockingQueue.
+     * The BlockingQueue is thread-safe and method take() blocks itself until a message is available.
+     * It takes the message from the queue, writes it to a JSON file, and passes it to the client serializer.
+     * It keeps processing messages until the client is connected.
+     */
+    private void processStringQueueToSerializer() {
+        while (connected.get()) {
+            try {
+                String jsonString = InGoingStringQueue.take();
+                File fileJson = new File("jsonFileFromServer.json");
+                Files.writeString(fileJson.toPath(), jsonString);
+                passInformationToClientSerializer(fileJson);
+            } catch (IOException e) {
+                System.out.println("Error while writing the message to the file");
+            } catch (InterruptedException e) {
+                System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
         }
     }
@@ -183,7 +204,7 @@ public class ServerHandler {
      * It uses a ScheduledExecutorService to schedule a task that sets the timeIsNotDone variable to false after a certain amount of time (secondsForReconnection).
      * The while ensures that the thread is really waiting until timeIsNotDone becomes false.
      */
-    public void timer() {
+    private void timer() {
         timeIsNotDone = true;
         scheduler.schedule(() -> {
             timeIsNotDone = false;
@@ -192,31 +213,61 @@ public class ServerHandler {
         }
     }
 
+
     /**
-     * This method is used to send information to the server.
-     * It is called by the clientSerializer to send the serialized object.
-     * It reads the content of a JSON file and sends it to the server.
-     * It keeps trying to send the message until it is successful or the connected flag goes to false.
+     * This method is called by ClientSerializer, it is used to put a JSON file in the OutGoingFileQueue.
+     * It uses a BlockingQueue to ensure thread safety.
+     * If the queue is full, it waits until space becomes available.
+     *
+     * @param fileJson The JSON file to be put in the OutGoingFileQueue.
      */
-    public void sendInformationToServer(File fileJson) {
-        if (fileJson == null || !fileJson.exists()) {
-            System.err.println("JSON doesnt exist");
-            return;
+    public void putInTheOutGoingFileQueue(File fileJson) {
+        try {
+            OutGoingFileQueue.put(fileJson);
+        } catch (InterruptedException e) {
+            System.out.println("Error while putting the file in the OutGoingQueue, thread has been interrupted");
         }
-        if (!connected.get()) {
-            System.out.println("Server disconnected.\n Write again the command when the connection will be ready");
-        } else {
-            synchronized (outputStreamLock) {
-                try {
-                    String jsonContent = Files.readString(fileJson.toPath());
-                    outputStream.writeInt(jsonContent.length());
-                    outputStream.writeBytes(jsonContent);
-                    outputStream.flush();
-                    System.out.println("Message: " + jsonContent);
-                } catch (IOException e) {
-                    System.out.println("Error while sending message to server, disconnecting");
-                    disconnectAndTryToReconnect();
-                }
+    }
+
+    /**
+     * This method is used to process messages in OutGoingFileQueue.
+     * It's a method that runs in an executors, submitted in the tryconnection method.
+     * It takes the messages from the queue and sends them to the server using the sendMessageToServer method.
+     * The method take() blocks itself until a message is available in the queue.
+     */
+    private void processOutGoingQueue() {
+        while (connected.get()) {
+            try {
+                File fileJson = OutGoingFileQueue.take();
+                sendMessageToServer(fileJson);
+            } catch (IOException e) {
+                System.out.println("Error while sending the message to the server");
+            } catch (InterruptedException e) {
+                System.out.println("Error while taking the message from the queue, thread has been interrupted");
+            }
+        }
+    }
+
+    /**
+     * This method is used to send a message to the server.
+     * It takes a JSON file, converts it in a string, sends the string just obtained in the outputsream.
+     * It synchronizes on the outputStreamLock object to ensure thread safety.
+     * If an IOException occurs, it disconnects and tries to reconnect.
+     *
+     * @param fileJson The JSON file to be sent to the server.
+     * @throws IOException If an I/O error occurs while sending the message.
+     */
+    private void sendMessageToServer(File fileJson) throws IOException {
+        synchronized (outputStreamLock) {
+            try {
+                String jsonContent = Files.readString(fileJson.toPath());
+                outputStream.writeInt(jsonContent.length());
+                outputStream.writeBytes(jsonContent);
+                outputStream.flush();
+                System.out.println("Message: " + jsonContent);
+            } catch (IOException e) {
+                System.out.println("Error while sending message to server, disconnecting");
+                disconnectAndTryToReconnect();
             }
         }
     }

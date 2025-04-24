@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class ServerController {
         serverSerializer.SerializeObjectFromServer(method, parameters);
     }
 
-    public void serverTestConnection(){
-        System.out.println("connesione avvenuta con successo");
+    public void serverTestConnection(Integer playerId) {
+        System.out.println("connesione avvenuta con successo ID:"+playerId);
     }
 
 }

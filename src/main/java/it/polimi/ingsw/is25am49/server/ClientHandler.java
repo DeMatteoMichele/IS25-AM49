@@ -20,11 +20,12 @@ public class ClientHandler {
     private final ExecutorService executors;
     private final ScheduledExecutorService scheduler;
     private final ConcurrentHashMap<InetAddress, Socket> clientSockets;
-    //    private final ConcurrentMap<InetAddress, HeartBeatMonitor> heartBeatMonitors; DEPRECATED
     private final ConcurrentMap<InetAddress, Boolean> connections;
     private final ConcurrentMap<InetAddress, Long> lastHeartBeats;
     private final ConcurrentMap<InetAddress, DataOutputStream> outputStreams;
     private final ConcurrentMap<InetAddress, DataInputStream> inputStreams;
+    private final ConcurrentMap<InetAddress,ArrayBlockingQueue<String>> InGoingStringQueues;
+    private final ConcurrentMap<InetAddress,ArrayBlockingQueue<File>> OutGoingFileQueues;
     private final int maxClients;
     private volatile boolean timeIsNotDone;
     private final Thread serverThread;
@@ -39,7 +40,8 @@ public class ClientHandler {
         inputStreams = new ConcurrentHashMap<>();
         connections = new ConcurrentHashMap<>();
         lastHeartBeats = new ConcurrentHashMap<>();
-//        heartBeatMonitors = new ConcurrentHashMap<>(); DEPRECATED
+        InGoingStringQueues = new ConcurrentHashMap<>();
+        OutGoingFileQueues = new ConcurrentHashMap<>();
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -76,7 +78,7 @@ public class ClientHandler {
     }
 
     /**
-     * This method creates all network components needed for the connection..
+     * This method creates all network components needed for the connection.
      * It submit to an executor the task of listening to that specific client which just connected.
      *
      * @param socket        The socket of the client.
@@ -89,6 +91,8 @@ public class ClientHandler {
             outputStreams.put(clientAddress, new DataOutputStream(socket.getOutputStream()));
             inputStreams.put(clientAddress, new DataInputStream(socket.getInputStream()));
             connections.put(clientAddress, true);
+            InGoingStringQueues.put(clientAddress, new ArrayBlockingQueue<>(1000, true));
+            OutGoingFileQueues.put(clientAddress, new ArrayBlockingQueue<>(1000, true));
             executors.submit(() -> listenToClient(clientAddress));
         } catch (IOException e) {
             System.out.println("Error while connecting to client " + clientAddress);
@@ -123,6 +127,7 @@ public class ClientHandler {
      * @param clientAddress The InetAddress of the client being handled.
      */
     private void listenToClient(InetAddress clientAddress) {  //TODO coda per i file json?
+        executors.submit(()->processStringQueueToServerSerializer(clientAddress));
         while (connections.get(clientAddress)) {
             try {
                 DataInputStream clientInputStream = inputStreams.get(clientAddress);
@@ -131,19 +136,42 @@ public class ClientHandler {
                 clientInputStream.readFully(buffer, 0, length);
                 String jsonString = new String(buffer, StandardCharsets.UTF_8);
                 lastHeartBeats.put(clientAddress, System.currentTimeMillis());
-                File fileJson = new File("received.json");
-                Files.writeString(fileJson.toPath(), jsonString);
-                System.out.println("Json Received\n");
-                passInformationToServerSerializer(fileJson);
+                InGoingStringQueues.get(clientAddress).put(jsonString);
             } catch (IOException e) {
                 System.out.println("Error while listening to client " + clientAddress + " shutting down his connection");
                 shutDownClientRelated(clientAddress);
+            } catch (InterruptedException e) {
+                System.out.println("Error while putting the String in the queue for client " + clientAddress + " cause thread was interrupted");
             }
         }
     }
 
     /**
-     * This method stops the current thread for 1 second
+     * This method is used to process the InGoingStringQueue and pass the information to the server serializer.
+     * It is executed by an executor for each client.
+     * It takes the String from the queue and writes it to a file JSON.
+     * The method take() is blocking, so it blocks until it finds an element in the queue to be taken.
+     *
+     * @param clientAddress The InetAddress corresponding to the specific client
+     */
+    private void processStringQueueToServerSerializer(InetAddress clientAddress) {
+        while(connections.get(clientAddress)){
+            try {
+                String jsonString = InGoingStringQueues.get(clientAddress).take();
+                File fileJson = new File(clientAddress.getHostAddress() + "_received.json");
+                Files.writeString(fileJson.toPath(), jsonString);
+                System.out.println("Json Received from " + clientAddress.getHostAddress());
+                passInformationToServerSerializer(fileJson);
+            } catch (InterruptedException e) {
+                System.out.println("Error while taking the String from the queue for client " + clientAddress + " cause thread was interrupted");
+            } catch (IOException e) {
+                System.out.println("Error while writing the String in  the json for client " + clientAddress);
+            }
+        }
+    }
+
+    /**
+     * This method stops the current thread for 3 seconds.
      */
     public void timer() {
         timeIsNotDone = true;
