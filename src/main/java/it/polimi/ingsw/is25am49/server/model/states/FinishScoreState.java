@@ -10,6 +10,7 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
+import java.util.Set;
 
 public class FinishScoreState extends State {
     public FinishScoreState(GameSession gameSession){
@@ -75,7 +76,7 @@ public class FinishScoreState extends State {
     public void userPlayAdventureCard(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userFinishDecision(Player player) {
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userActivateComponent(Player player, Point coordinates) {

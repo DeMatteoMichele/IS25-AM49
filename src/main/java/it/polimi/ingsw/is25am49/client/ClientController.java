@@ -3,9 +3,9 @@ package it.polimi.ingsw.is25am49.client;
 import it.polimi.ingsw.is25am49.server.model.Player;
 
 public class ClientController {
-    Integer playerID;
-    ClientModel clientModel;
-    RemoteServer serverMethods;
+    private int playerID;
+    public ClientModel clientModel;
+    public RemoteServer serverMethods;
 
     public ClientController(){
         clientModel = new ClientModel();

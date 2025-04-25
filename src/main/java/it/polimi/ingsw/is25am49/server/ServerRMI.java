@@ -9,7 +9,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class ServerRMI extends UnicastRemoteObject implements RemoteServer{
+public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
     ServerController serverController;
     HashMap<Integer, RemoteClient> clients;
 

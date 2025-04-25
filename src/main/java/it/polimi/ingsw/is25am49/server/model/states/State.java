@@ -6,8 +6,11 @@ import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Set;
 
 
 public abstract class State {
@@ -26,8 +29,8 @@ public abstract class State {
     public abstract void adminSelectTypeFlight(Player player, FlightMode flightMode);
 
     public abstract void userPlaceTile(Player player, Point coordinates);
-    public abstract void userRotateTileClockwise(Player player, Point coordinates);
-    public abstract void userRotateTileCounterClockwise(Player player, Point coordinates) ;
+//    public abstract void userRotateTileClockwise(Player player, Point coordinates);
+//    public abstract void userRotateTileCounterClockwise(Player player, Point coordinates) ;
     public abstract void userPickTile(Player player, Point coordinates);
     public abstract void userDiscardTile(Player player);
     public abstract void userDrawTile(Player player, int idTIle);
@@ -40,12 +43,10 @@ public abstract class State {
 
     public abstract void userThrowDices(Player player);
     public abstract void userDrawAdventureCard(Player player);
-    public abstract void userPlayAdventureCard(Player player);
-    public abstract void userFinishDecision(Player player);
-    public abstract void userActivateComponent(Player player, Point coordinates);
+    public abstract void userFinishDecisionActivating(Player player, Set<Point> coordinates);
+    public abstract void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens);
     public abstract void userLandOnPlanet(Player player);
     public abstract void userLandOnShip(Player player);
-    public abstract void userActivateDaysUpdate();
 
 
     public abstract void userQuitGame(Player player);

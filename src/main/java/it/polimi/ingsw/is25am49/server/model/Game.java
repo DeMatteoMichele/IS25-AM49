@@ -79,7 +79,7 @@ public class Game {
             board.addDiscardedTile(player);
         }
         player.lockLastTile();
-        player.setHandTile(board.drawTile(idTile));
+        player.setHandTile(board.drawTile(idTile, player));
     }
     public boolean userFinishShipboard(Player player){ return board.userFinishShipboard(player) == numPlayers;}
     public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}

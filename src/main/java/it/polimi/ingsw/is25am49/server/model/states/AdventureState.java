@@ -7,8 +7,11 @@ import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Set;
 
 public class AdventureState extends State {
     public AdventureState(GameSession gameSession){
@@ -69,12 +72,11 @@ public class AdventureState extends State {
     public void userThrowDices(Player player){
         gameSession.userThrowDices(player);
     }
-    public void userDrawAdventureCard(Player player){
+    public void userDrawAdventureCard(Player player) {
         gameSession.userDrawAdventureCard(player);
     }
-    public void userPlayAdventureCard(Player player){}
-    public void userFinishDecision(Player player){}
-    public void userActivateComponent(Player player, Point coordinates){}
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates){}
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){}
     public void userActivateDaysUpdate(){}
     public void userLandOnPlanet(Player player) {
     }

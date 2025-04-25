@@ -29,7 +29,7 @@ public class TextualUserInterface implements UserInterface {
     }
     public static void main(String args[]){
         ClientSerializer clientSerializer = new ClientSerializer();
-        ServerHandler serverHandler = new ServerHandler(clientSerializer, "37.161.161.139", 8080);
+        ServerHandler serverHandler = new ServerHandler(clientSerializer, "localhost", 8080);
         ClientController controller = new ClientController();
         TextualUserInterface tui = new TextualUserInterface();
         tui.start();

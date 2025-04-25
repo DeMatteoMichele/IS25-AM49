@@ -9,6 +9,7 @@ import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
+import java.util.Set;
 
 public class BuildState extends State {
     public BuildState(GameSession gameSession){
@@ -36,12 +37,12 @@ public class BuildState extends State {
         player.placeTile(coordinates);
     }
     //da discutere
-    public void userRotateTileClockwise(Player player, Point coordinates) {
-        player.rotateTile(true);
-    }
-    public void userRotateTileCounterClockwise(Player player, Point coordinates) {
-        player.rotateTile(false);
-    }
+//    public void userRotateTileClockwise(Player player, Point coordinates) {
+//        player.rotateTile(true);
+//    }
+//    public void userRotateTileCounterClockwise(Player player, Point coordinates) {
+//        player.rotateTile(false);
+//    }
     //ok
     public void userPickTile(Player player, Point coordinates){
         player.pickTile(coordinates);
@@ -75,6 +76,7 @@ public class BuildState extends State {
         gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
     }
+    //riempi tutti i component, anche le batterie, ecc.
     public void userSelectTypeOfToken(Player player, Token token, Point coordinates){
 
     }
@@ -88,7 +90,7 @@ public class BuildState extends State {
     public void userPlayAdventureCard(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userFinishDecision(Player player) {
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void userActivateComponent(Player player, Point coordinates) {

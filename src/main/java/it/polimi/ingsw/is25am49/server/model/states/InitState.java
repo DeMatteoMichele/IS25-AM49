@@ -10,6 +10,7 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 
 import java.awt.*;
+import java.util.Set;
 
 public class InitState extends State {
     public InitState(GameSession gameSession){
@@ -99,13 +100,7 @@ public class InitState extends State {
     public void userDrawAdventureCard(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userPlayAdventureCard(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
-    public void userFinishDecision(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
-    public void userActivateComponent(Player player, Point coordinates) {
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
     public void userLandOnPlanet(Player player) {
