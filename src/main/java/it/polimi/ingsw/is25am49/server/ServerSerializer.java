@@ -1,8 +1,15 @@
 package it.polimi.ingsw.is25am49.server;
 
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import javafx.util.Pair;
+
+import java.awt.*;
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
@@ -25,5 +32,90 @@ public class ServerSerializer implements RemoteClient {
     @Override
     public void notifyClient(String msg) throws RemoteException {
         //DANIELE GAY
+    }
+
+    @Override
+    public void userDrawTileCallback(int playerId, int tileId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userErrorDrawTileCallback(int playerId, int tileId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
+
+    }
+
+    @Override
+    public void userPickTileCallback(int playerId, Point coordinates) throws RemoteException {
+
+    }
+
+    @Override
+    public void userDiscardTileCallback(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userFinishShipboardCallback(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
+
+    }
+
+    @Override
+    public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
+
+    }
+
+    @Override
+    public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
+
+    }
+
+    @Override
+    public void userPlaceTimerCallback(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userErrorPlaceTimerCallback(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates) throws RemoteException {
+
+    }
+
+    @Override
+    public void userThrowDicesCallback(int playerId, int result) throws RemoteException {
+
+    }
+
+    @Override
+    public void userDrawAdventureCardCallback(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates) throws RemoteException {
+
+    }
+
+    @Override
+    public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+
+    }
+
+    @Override
+    public void changeState(String state) throws RemoteException {
+
     }
 }

@@ -1,10 +1,9 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
-import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.server.model.exceptions.ConcurrentException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -29,8 +28,12 @@ public interface RemoteServer extends Remote {
     void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException;
 
     //Metodi AdventureState !!!!!!!!!! ZIOPORCO
-    void userThrowDices(int playerId) throws RemoteException;
+    void userThrowDices(int playerId) throws RemoteException;//come fare con il risultato random?
     void userDrawAdventureCard(int playerId) throws RemoteException;
     void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException;
     void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException;
+    void userAcceptPrizes(int playerId,boolean wantsRewards) throws RemoteException;
+    void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException;
+    void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException;
+
 }
