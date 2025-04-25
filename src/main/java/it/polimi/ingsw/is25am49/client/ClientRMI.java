@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import javafx.util.Pair;
@@ -54,6 +55,14 @@ public class ClientRMI implements RemoteClient {
     @Override
     public void notifyClient(String msg) throws RemoteException {
         System.out.println("messaggio: "+msg);
+    }
+    @Override
+    public void playerJoinCallback(int playerId) throws RemoteException {
+
+    }
+    @Override
+    public void gameStartedCallback() throws RemoteException {
+
     }
 
     @Override
@@ -133,6 +142,33 @@ public class ClientRMI implements RemoteClient {
 
     @Override
     public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+
+    }
+
+    @Override
+    public void userAcceptPrizesCallback(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLandOnStationOrShipCallback(int playerId, boolean isLanded) throws RemoteException {
+
+    }
+    @Override
+    public void userStopFlightCallback(int playerId) throws RemoteException {
+
+    }
+    @Override
+    public void adminCalculateScoreCallback(int playerId) throws RemoteException {
+
+    }
+    @Override
+    public void userEndGameCallback(int playerId) throws RemoteException {
 
     }
 

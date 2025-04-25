@@ -2,6 +2,10 @@ package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.client.RemoteServer;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
+import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import javafx.util.Pair;
@@ -40,26 +44,27 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
     }
 
     @Override
-    public void serverTestConnection(Integer playerId) throws RemoteException {
+    public void serverTestConnection(int playerId) throws RemoteException {
         serverController=new ServerController(new GameSession());
         serverController.serverTestConnection(playerId);
         clients.get(playerId).notifyClient("il client "+playerId+" è stato registrato");
     }
 
     @Override
-    public void registerClient(RemoteClient client, Integer playerId) throws RemoteException {
+    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
         clients.put(playerId, client);
     }
 
     @Override
-    public void serverTestConnection(int playerId) throws RemoteException {
+    public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException {
 
     }
 
     @Override
-    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
+    public void playerJoin(String username, Color color) throws RemoteException {
 
     }
+
 
     @Override
     public void userDrawTile(int playerId, int tileId) throws RemoteException {
@@ -123,6 +128,36 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
 
     @Override
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+
+    }
+
+    @Override
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
+
+    }
+
+    @Override
+    public void userStopFlight(Player player) throws RemoteException {
+
+    }
+
+    @Override
+    public void adminCalculateScore(Player player) throws RemoteException {
+
+    }
+
+    @Override
+    public void userEndGame(Player player) throws RemoteException {
 
     }
 }

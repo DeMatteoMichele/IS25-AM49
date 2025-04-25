@@ -8,8 +8,10 @@ import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class InitState extends State {
@@ -59,12 +61,7 @@ public class InitState extends State {
     public void userPlaceTile(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userRotateTileClockwise(Player player, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
-    public void userRotateTileCounterClockwise(Player player, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
+
     public void userPickTile(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
@@ -103,24 +100,27 @@ public class InitState extends State {
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens) {
+
+    }
+
     public void userLandOnPlanet(Player player) {
 
     }
-    public void userLandOnShip(Player player) {
+    public void userLandOnStationOrShip(Player player) {
 
     }
-    public void userActivateDaysUpdate() {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
-
     public void userQuitGame(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
+    public void userStopFlight(Player player) {
+
+    }
+
     public void adminCalculateScore(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
-    public Player userShowWinner(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userEndGame(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");

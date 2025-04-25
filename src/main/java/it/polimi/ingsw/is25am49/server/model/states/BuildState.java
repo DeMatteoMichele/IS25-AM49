@@ -7,8 +7,10 @@ import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class BuildState extends State {
@@ -93,13 +95,19 @@ public class BuildState extends State {
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
+    @Override
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens) {
+
+    }
+
     public void userActivateComponent(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void userLandOnPlanet(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userLandOnShip(Player player) {
+    public void userLandOnStationOrShip(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void userActivateDaysUpdate() {
@@ -108,11 +116,13 @@ public class BuildState extends State {
     public void userQuitGame(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
+    public void userStopFlight(Player player) {
+
+    }
+
     public void adminCalculateScore(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
-    public Player userShowWinner(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userEndGame(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");

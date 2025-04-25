@@ -29,8 +29,6 @@ public abstract class State {
     public abstract void adminSelectTypeFlight(Player player, FlightMode flightMode);
 
     public abstract void userPlaceTile(Player player, Point coordinates);
-//    public abstract void userRotateTileClockwise(Player player, Point coordinates);
-//    public abstract void userRotateTileCounterClockwise(Player player, Point coordinates) ;
     public abstract void userPickTile(Player player, Point coordinates);
     public abstract void userDiscardTile(Player player);
     public abstract void userDrawTile(Player player, int idTIle);
@@ -46,12 +44,11 @@ public abstract class State {
     public abstract void userFinishDecisionActivating(Player player, Set<Point> coordinates);
     public abstract void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens);
     public abstract void userLandOnPlanet(Player player);
-    public abstract void userLandOnShip(Player player);
-
-
+    public abstract void userLandOnStationOrShip(Player player);
     public abstract void userQuitGame(Player player);
+    public abstract void userStopFlight(Player player);
+
     public abstract void adminCalculateScore(Player player);
-    public abstract Player userShowWinner(Player player);
     public abstract void userEndGame(Player player);
 }
 

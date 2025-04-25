@@ -35,12 +35,6 @@ public class AdventureState extends State {
     public void userPlaceTile(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userRotateTileClockwise(Player player, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
-    }
-    public void userRotateTileCounterClockwise(Player player, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
     public void userPickTile(Player player, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
@@ -77,17 +71,19 @@ public class AdventureState extends State {
     }
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates){}
     public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){}
-    public void userActivateDaysUpdate(){}
     public void userLandOnPlanet(Player player) {
     }
-    public void userLandOnShip(Player player) {
+    public void userLandOnStationOrShip(Player player) {
     }
-    public void userQuitGame(Player player){}
+    public void userQuitGame(Player player){
+
+    }
+
+    public void userStopFlight(Player player) {
+
+    }
 
     public void adminCalculateScore(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
-    }
-    public Player userShowWinner(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userEndGame(Player player) {

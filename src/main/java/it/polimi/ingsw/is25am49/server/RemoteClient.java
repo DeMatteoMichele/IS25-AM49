@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server;
 
+import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -14,7 +15,9 @@ import java.util.Set;
 public interface RemoteClient extends Remote {
      void notifyClient(String msg) throws RemoteException;
 
-
+    // Metodi InitState !!!!!!!!! ZIOPORCO
+    void playerJoinCallback(int playerId) throws RemoteException;
+    void gameStartedCallback() throws RemoteException;
 
     // Metodi BuildState !!!!!!!!! ZIOPORCO
     void userDrawTileCallback(int playerId, int tileId) throws RemoteException;
@@ -38,7 +41,12 @@ public interface RemoteClient extends Remote {
     void userAcceptPrizesCallback(int playerId) throws RemoteException;
     void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet) throws RemoteException;
     void userLandOnStationOrShipCallback(int playerId, boolean isLanded) throws RemoteException;
+    void userStopFlightCallback(int playerId) throws RemoteException;
 
+    //Metodi FinishScoreState !!!!!!!!!! ZIOPORCO
+
+    void adminCalculateScoreCallback(int playerId) throws RemoteException;
+    void userEndGameCallback(int playerId) throws RemoteException;
 
     void changeState(String state) throws RemoteException;
 }

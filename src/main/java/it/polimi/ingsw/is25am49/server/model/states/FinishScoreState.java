@@ -8,8 +8,10 @@ import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class FinishScoreState extends State {
@@ -79,34 +81,30 @@ public class FinishScoreState extends State {
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userActivateComponent(Player player, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
 
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens) {
+
+    }
 
     public void userLandOnPlanet(Player player) {
 
     }
 
 
-    public void userLandOnShip(Player player) {
+    public void userLandOnStationOrShip(Player player) {
 
     }
 
-    public void userActivateDaysUpdate() {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
     public void userQuitGame(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+    public void userStopFlight(Player player) {
+
+    }
+
     public void adminCalculateScore(Player player) {
         gameSession.calculateScore(player);
-    }
-    public Player userShowWinner(Player player) {
-        if(gameSession.userShowWinner(player).isPresent())
-            return gameSession.userShowWinner(player).get();
-        else
-            throw new GameSettingsException("The game is not finished yet");
     }
     public void userEndGame(Player player) {
         gameSession.userEndGame(player);

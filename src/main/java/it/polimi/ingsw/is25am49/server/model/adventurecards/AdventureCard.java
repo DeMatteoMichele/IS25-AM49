@@ -99,7 +99,7 @@ public abstract class AdventureCard {
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
-
+    //TODO a fine update bisogna rimuovere i player in landedPlayers dalla leaderboard, ATTENZIONE: GUARDA CODICE LEADERBOARD
     protected void update(){
         currentState = AdventureStatesTypes.UPDATE;
         gameBoard.checkIfSomeoneHasZeroAstronauts();

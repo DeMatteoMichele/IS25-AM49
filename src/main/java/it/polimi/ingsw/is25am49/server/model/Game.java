@@ -48,8 +48,8 @@ public class Game {
     //TODO: da fare
     public void calculateScore(Player player) {
         if(winner.isEmpty()){
-                //board.calculateFinalScore();
-                winner = players.stream().max((p1, p2) -> Integer.compare(p1.getScore(), p2.getScore()));
+                board.calculateFinalCredits();
+                winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
         }
         else
             throw new GameSettingsException("Final score already calculated");
