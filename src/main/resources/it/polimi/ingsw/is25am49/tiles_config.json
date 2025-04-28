@@ -1037,12 +1037,182 @@
     "c4": "UNIVERSAL"
   },
   {
+    "idTile": 137,
+    "component": "BROWN_ALIEN_MODULE",
+    "level": 0,
+    "c1": "SINGLE",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 138,
+    "component": "BROWN_ALIEN_MODULE",
+    "level": 0,
+    "c1": "DOUBLE",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 139,
+    "component": "BROWN_ALIEN_MODULE",
+    "level": 0,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 140,
+    "component": "BROWN_ALIEN_MODULE",
+    "level": 0,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 141,
+    "component": "BROWN_ALIEN_MODULE",
+    "level": 0,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 142,
+    "component": "BROWN_ALIEN_MODULE",
+    "level": 0,
+    "c1": "SINGLE",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 143,
+    "component": "PURPLE_ALIEN_MODULE",
+    "level": 0,
+    "c1": "SINGLE",
+    "c2": "DOUBLE",
+    "c3": "FLAT",
+    "c4": "DOUBLE"
+  },{
+  "idTile": 144,
+  "component": "PURPLE_ALIEN_MODULE",
+  "level": 0,
+  "c1": "DOUBLE",
+  "c2": "DOUBLE",
+  "c3": "FLAT",
+  "c4": "DOUBLE"
+},
+  {
+    "idTile": 145,
+    "component": "PURPLE_ALIEN_MODULE",
+    "level": 0,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 146,
+    "component": "PURPLE_ALIEN_MODULE",
+    "level": 0,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "DOUBLE",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 147,
+    "component": "PURPLE_ALIEN_MODULE",
+    "level": 0,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 148,
+    "component": "PURPLE_ALIEN_MODULE",
+    "level": 0,
+    "c1": "DOUBLE",
+    "c2": "FLAT",
+    "c3": "FLAT",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 149,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "SINGLE",
+    "c3": "UNIVERSAL",
+    "c4": "SINGLE"
+  },
+  {
+    "idTile": 150,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "SINGLE",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "SINGLE"
+  },
+  {
     "idTile": 151,
     "component": "SHIELD",
-    "level": 0,
+    "level": 1,
     "c1": "DOUBLE",
     "c2": "SINGLE",
     "c3": "DOUBLE",
     "c4": "SINGLE"
+  },
+  {
+    "idTile": 152,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "UNIVERSAL",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 153,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "DOUBLE",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 154,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "SINGLE",
+    "c2": "DOUBLE",
+    "c3": "SINGLE",
+    "c4": "DOUBLE"
+  },
+  {
+    "idTile": 155,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "FLAT",
+    "c3": "SINGLE",
+    "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 156,
+    "component": "SHIELD",
+    "level": 1,
+    "c1": "FLAT",
+    "c2": "DOUBLE",
+    "c3": "DOUBLE",
+    "c4": "UNIVERSAL"
   }
 ]

@@ -171,10 +171,6 @@ public class ShipBoard {
                     .min(Comparator.comparing(p -> p.x));
         };
     }
-    //metodo che restituisce la tessera della nave più esterna in una determinata posizione
-    public Optional<Tile> getExposedTile(int position, Orientation orientation){
-        return getExposedPoint(position,orientation).flatMap(grid::get);
-    }
 
     /**
      * inserts a tile in the ShipBoard if the coordinates are free
@@ -211,6 +207,7 @@ public class ShipBoard {
     /**
      * Destroy a Tile in the ShipBoard
      * removes the tile at given coordinates from the map and increase destroyedTiles attribute
+     * if an alien module is destroyed the corresponding alien will die
      * @param coordinates of the Tile to Destroy
      */
     public void destroyTile(Point coordinates){
@@ -218,7 +215,19 @@ public class ShipBoard {
             if(grid.get(coordinates).isPresent()){
                 Tile t=getTile(coordinates);
                 if(t.getComponentType().equals(ComponentType.BROWN_ALIEN_MODULE)||t.getComponentType().equals(ComponentType.PURPLE_ALIEN_MODULE)){
-                    //TODO se distruggo un modulo alieno devo rimuovere l'alieno dalla cabine
+                    Token token= t.getComponentType().equals(ComponentType.BROWN_ALIEN_MODULE)? Token.BROWN_ALIENS:Token.PURPLE_ALIENS;
+                    try {
+                        this.removeTokenFromTile(new Point(coordinates.x, coordinates.y-1), token);
+                    } catch (Exception _) {}
+                    try {
+                        this.removeTokenFromTile(new Point(coordinates.x, coordinates.y+1), token);
+                    } catch (Exception _) {}
+                    try {
+                        this.removeTokenFromTile(new Point(coordinates.x-1, coordinates.y), token);
+                    } catch (Exception _) {}
+                    try {
+                        this.removeTokenFromTile(new Point(coordinates.x+1, coordinates.y), token);
+                    } catch (Exception _) {}
                 }
                 destroyedTiles++;
             }
@@ -227,6 +236,7 @@ public class ShipBoard {
             throw new InvalidCoordinatesException("cannot DESTROY a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
         }
     }
+
     /**
      * recursive algorithm that checks all the direction of a Tile
      */
@@ -320,45 +330,44 @@ public class ShipBoard {
      * @param coordinates of the cabin to check
      * @return a HashMap<\Point,Token> of the possible crew members of the cabin at given coordinates
      */
-    public HashMap<Point,Token> checkIfAlienArePossible(Point coordinates) {
-        HashMap<Point,Token> crew = new HashMap<>();
-        //todo sistema
+    public Set<Token> checkIfAlienArePossible(Point coordinates) {
+        Set<Token> crew = new HashSet<>();
         try {
             Tile centerTile=getTile(coordinates);
             if(centerTile.getComponentType().equals(ComponentType.CABINE)) {
-                crew.put(coordinates,Token.ASTRONAUT);
+                crew.add(Token.ASTRONAUT);
                 Tile sideTile;
                 Point p;
                 try {
                     p=new Point(coordinates.x, coordinates.y - 1);
                     sideTile = getTile(p);
                     switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.put(p,Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.put(p,Token.PURPLE_ALIENS);
+                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
                     }
                 } catch (InvalidCoordinatesException _) {}
                 try {
                     p=new Point(coordinates.x + 1, coordinates.y);
                     sideTile = getTile(p);
                     switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.put(p,Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.put(p,Token.PURPLE_ALIENS);
+                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
                     }
                 } catch (InvalidCoordinatesException _) {}
                 try {
                     p=new Point(coordinates.x, coordinates.y + 1);
                     sideTile = getTile(p);
                     switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.put(p,Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.put(p,Token.PURPLE_ALIENS);
+                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
                     }
                 } catch (InvalidCoordinatesException _) {}
                 try {
                     p=new Point(coordinates.x - 1, coordinates.y);
                     sideTile = getTile(p);
                     switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.put(p,Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.put(p,Token.PURPLE_ALIENS);
+                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
                     }
                 } catch (InvalidCoordinatesException _) {}
             } else throw new InvalidCoordinatesException("cannot checkIfAlienArePossible --> point<"+coordinates.x+","+coordinates.y+"> is not a cabin");
