@@ -13,6 +13,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 
 public class ClientRMI implements RemoteClient {
@@ -25,6 +27,7 @@ public class ClientRMI implements RemoteClient {
             Registry reg = LocateRegistry.getRegistry("localhost", 1099);
             serverStub = (RemoteServer) reg.lookup("ServerController");
             isConnected = true;
+            System.out.println("Client successfully connected to [localhost , 1099]");
         }catch(RemoteException | NotBoundException e){
             System.out.println("errore creazione stub --> "+e.getMessage());
             isConnected = false;
@@ -38,23 +41,32 @@ public class ClientRMI implements RemoteClient {
         try {
             //il client registra sul server
             ClientRMI clientRMI = new ClientRMI();
-            RemoteClient client = clientRMI;
 
-            ClientController controller = new ClientController(1,10);
+            //ThreadLocalRandom rand = ThreadLocalRandom.current();
+            //int id = rand.nextInt(100);
+            System.out.println("inserisci ID giocatore: ");
+            Scanner sc = new Scanner(System.in);
+            int id= sc.nextInt();
+            sc.nextLine();
+
+            ClientController controller = new ClientController(id);
+            controller.serverMethods=clientRMI.getServerStub();
+
+            System.out.println("trying to log in to the server ...");
+            UnicastRemoteObject.exportObject(clientRMI, 0);
+            clientRMI.getServerStub().registerClient(clientRMI, id);
+            System.out.println("client logged");
+
             controller.clientTestConnection();
-            System.out.println("client aggiunto al register client");
 
-            UnicastRemoteObject.exportObject(client, 0);
-            clientRMI.getServerStub().registerClient(client, 10);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (RemoteException e ) {
+            System.out.println("errore client si registra su server: "+ e.getMessage());
         }
     }
 
     @Override
     public void notifyClient(String msg) throws RemoteException {
-        System.out.println("messaggio: "+msg);
+        System.out.println("server - "+msg);
     }
     @Override
     public void playerJoinCallback(int playerId) throws RemoteException {

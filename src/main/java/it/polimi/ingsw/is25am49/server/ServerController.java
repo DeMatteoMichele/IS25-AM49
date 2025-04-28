@@ -34,7 +34,7 @@ public class ServerController {
     }
 
     public void serverTestConnection(Integer playerId) {
-        System.out.println("connesione avvenuta con successo ID:"+playerId);
+        System.out.println("server - trying to callback [ID:"+playerId+"] ...");
     }
 
 }

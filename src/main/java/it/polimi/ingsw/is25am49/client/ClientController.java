@@ -2,6 +2,8 @@ package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.model.Player;
 
+import java.rmi.RemoteException;
+
 public class ClientController {
     private int playerID;
     public ClientModel clientModel;
@@ -10,6 +12,7 @@ public class ClientController {
     public ClientController(){
         clientModel = new ClientModel();
     }
+    public ClientController(int playerID){this.playerID = playerID;}
     public ClientController(Integer connectionType, Integer playerID){
         this.playerID = playerID;
         clientModel = new ClientModel();
@@ -23,7 +26,7 @@ public class ClientController {
     public void clientTestConnection(){
         try {
             serverMethods.serverTestConnection(playerID);
-        } catch (Exception e) {
+        } catch (RemoteException e) {
             System.out.println("clientTestConnection failed --> " + e.getMessage());
         }
     }
