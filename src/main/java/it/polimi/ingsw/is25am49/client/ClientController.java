@@ -5,16 +5,15 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import java.rmi.RemoteException;
 
 public class ClientController {
-    private int playerID;
+    public int playerID;
     public ClientModel clientModel;
     public RemoteServer serverMethods;
 
     public ClientController(){
-        clientModel = new ClientModel();
+
     }
-    public ClientController(int playerID){this.playerID = playerID;}
-    public ClientController(Integer connectionType, Integer playerID){
-        this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
+    public ClientController(Integer connectionType){
+        //this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
         clientModel = new ClientModel();
         serverMethods= switch(connectionType){
             case 0 -> new ClientSerializer();
@@ -22,7 +21,12 @@ public class ClientController {
             default -> throw new IllegalStateException("METODO DI CONNESIIONE NON VALIDO --> Unexpected value: " + connectionType);
         };
     }
-
+    public void clientLogin(){
+        //todo playerID= setto l'id con il register client assegnato dal server switch con i due tipi di connessione
+    }
+    public Integer getPlayerId(){
+        return playerID;
+    }
     public void clientTestConnection(){
         try {
             serverMethods.serverTestConnection(playerID);

@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.client.RemoteServer;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -15,10 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
     ServerController serverController;
@@ -89,13 +85,13 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
 
 
     @Override
-    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
+    public Integer registerClientRMI(RemoteClient client) throws RemoteException {
         //TODO da sistemare e mettere dentro all'if(forse), attualmente l'istanza del
         // client cambia ogni riavvio del main, quindi va aggiornata la mappa
+        int playerId=clients.size()+1;
         clients.put(playerId, client);
-        if(!clients.containsKey(playerId)){
-            System.out.println("ID:"+playerId+" - client logged");
-        }else System.out.println("ID:"+playerId+" - client tried to reconnect, already present");
+        System.out.println("ID:"+playerId+" - client logged");
+        return playerId;
     }
 
     @Override
