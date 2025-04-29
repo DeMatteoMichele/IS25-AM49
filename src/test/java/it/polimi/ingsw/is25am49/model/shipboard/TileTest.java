@@ -117,6 +117,7 @@ class TileTest {
             System.out.println("TILE: "+t.getIdTile()+ "\t"+s+": "+t.getComponent().getType()+"\tlvl:"+t.getComponent().getLevel());
             System.out.println("\tconnectors: "+t.getConnector(0)+" "+t.getConnector(1)+" "+t.getConnector(2)+" "+t.getConnector(3)+"\n");
         }
+        System.out.println(tiles.size());
     }
 
 }

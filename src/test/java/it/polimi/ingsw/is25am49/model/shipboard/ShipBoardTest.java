@@ -18,11 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShipBoardTest {
     ShipBoard ship1;
     ShipBoard ship2;
+    ShipBoard shipTest;
 
     @BeforeEach
     void setUp() {
         ship1 = new ShipBoard(1,501);
         ship2 = new ShipBoard(2,502);
+        shipTest= new ShipBoard(2,555);
 
         Map<Integer, Tile> tiles= Tile.generateTiles();
         ship1.insertTile(new Point(7,6), tiles.get(151));
@@ -135,10 +137,6 @@ class ShipBoardTest {
         ship1.printShipboardSpecial();
 
 
-    }
-
-    @Test
-    void turnOnComponent() {
     }
 
     @Test

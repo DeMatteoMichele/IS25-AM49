@@ -2,6 +2,8 @@ package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.model.Player;
 
+import java.rmi.RemoteException;
+
 public class ClientController {
     private int playerID;
     public ClientModel clientModel;
@@ -10,8 +12,9 @@ public class ClientController {
     public ClientController(){
         clientModel = new ClientModel();
     }
+    public ClientController(int playerID){this.playerID = playerID;}
     public ClientController(Integer connectionType, Integer playerID){
-        this.playerID = playerID;
+        this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
         clientModel = new ClientModel();
         serverMethods= switch(connectionType){
             case 0 -> new ClientSerializer();
@@ -23,13 +26,21 @@ public class ClientController {
     public void clientTestConnection(){
         try {
             serverMethods.serverTestConnection(playerID);
-        } catch (Exception e) {
+        } catch (RemoteException e) {
             System.out.println("clientTestConnection failed --> " + e.getMessage());
         }
     }
 
     public void handleInput(String inputString){
-        // da fare
+        switch (inputString){
+            case "placetile"://esempio
+                //serverMethods.userPlaceTile();
+
+        };
+    }
+    public void userPlaceTile(){
+        //metodo chiamato dal callback, che aggiorna il model lato client
+        //clientModel.placeTile
     }
 
 }

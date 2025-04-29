@@ -31,7 +31,7 @@ public class ServerController implements RemoteServer {
     }
 
     public void serverTestConnection(Integer playerId) {
-        System.out.println("connesione avvenuta con successo ID:"+playerId);
+        System.out.println("server - trying to callback [ID:"+playerId+"] ...");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ServerController implements RemoteServer {
     }
 
     @Override
-    public void registerClient(RemoteClient client) throws RemoteException {
+    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
         players.put(players.size(), Optional.empty());
 
     }
