@@ -1,40 +1,152 @@
 package it.polimi.ingsw.is25am49.server;
 
+import it.polimi.ingsw.is25am49.client.RemoteServer;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import javafx.util.Pair;
 
+import java.awt.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
-public class ServerController {
+public class ServerController implements RemoteServer {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
-    //Ci serve averle nel controller per filtrare le possibili selezioni di Token/Tessere dell'utente
-    private final ArrayList<ShipBoard> shipBoards;
-    private AdventureCard currentAdventureCard;
-    private Player currentPlayer;
-    //Bisogna decidere se implementare la funzionalità per i game multipli, per ora faccio come se non ci sia
+    private final HashMap<Integer, Optional<Player>> players;
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
-        shipBoards = new ArrayList<>();
-        currentAdventureCard = null;
+        this.players = new HashMap<>();
     }
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
-    public void addFinalShipBoardToArray(Player player){
-        if(player.getShipBoard().isCompleted())
-            shipBoards.add(player.getShipBoard());
-    }
     public void passInformationToClientHandler(String method, List<Object> parameters) {
-        serverSerializer.SerializeObjectFromServer(method, parameters);
+        serverSerializer.serializeObjectFromServer(method, parameters);
     }
 
     public void serverTestConnection(Integer playerId) {
         System.out.println("connesione avvenuta con successo ID:"+playerId);
     }
 
+    @Override
+    public void serverTestConnection(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void registerClient(RemoteClient client) throws RemoteException {
+        players.put(players.size(), Optional.empty());
+
+    }
+
+    @Override
+    public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException {
+
+    }
+
+    @Override
+    public void playerJoin(int playerId, String username, Color color) throws RemoteException {
+
+    }
+
+    @Override
+    public void userDrawTile(int playerId, int tileId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
+
+    }
+
+    @Override
+    public void userPickTile(int playerId, Point coordinates) throws RemoteException {
+
+    }
+
+    @Override
+    public void userDiscardTile(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userFinishShipboard(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+
+    }
+
+    @Override
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+
+    }
+
+    @Override
+    public void userPlaceTimer(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
+
+    }
+
+    @Override
+    public void userThrowDices(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userDrawAdventureCard(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException {
+
+    }
+
+    @Override
+    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+
+    }
+
+    @Override
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
+
+    }
+
+    @Override
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
+
+    }
+
+    @Override
+    public void userStopFlight(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void adminCalculateScore(int playerId) throws RemoteException {
+
+    }
+
+    @Override
+    public void userEndGame(int playerId) throws RemoteException {
+
+    }
 }

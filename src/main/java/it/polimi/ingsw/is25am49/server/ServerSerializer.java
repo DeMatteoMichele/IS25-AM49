@@ -25,14 +25,19 @@ public class ServerSerializer implements RemoteClient {
         //Qua chiamerò i corretti metodi con i corretti parametri su ControllerServer
         //Definire il Protocollo
     }
-    public File SerializeObjectFromServer(String method, List<Object> parameters) {
+    public File serializeObjectFromServer(String method, List<Object> parameters) {
         //Definire il Protocollo
         return null;
     }
 
     @Override
     public void notifyClient(String msg) throws RemoteException {
-        //DANIELE GAY
+
+    }
+
+    @Override
+    public void registerClientCallback(RemoteClient client, int playerId) throws RemoteException {
+
     }
 
     @Override

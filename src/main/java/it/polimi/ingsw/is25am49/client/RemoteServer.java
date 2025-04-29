@@ -1,7 +1,6 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
-import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -17,11 +16,11 @@ import java.util.Set;
 
 public interface RemoteServer extends Remote {
     void serverTestConnection(int playerId) throws RemoteException;
-    void registerClient(RemoteClient client, int playerId) throws RemoteException;
+    void registerClient(RemoteClient client) throws RemoteException;
     // Metodi InitState !!!!!!!!! ZIOPORCO
 
     void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException;
-    void playerJoin(String username, Color color) throws RemoteException;
+    void playerJoin(int playerId, String username, Color color) throws RemoteException;
 
 
 
@@ -39,16 +38,16 @@ public interface RemoteServer extends Remote {
 
     //Metodi AdventureState !!!!!!!!!! ZIOPORCO
 
-    void userThrowDices(int playerId) throws RemoteException; //come fare con il risultato random?
+    void userThrowDices(int playerId) throws RemoteException;
     void userDrawAdventureCard(int playerId) throws RemoteException;
     void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException;
     void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException;
     void userAcceptPrizes(int playerId,boolean wantsRewards) throws RemoteException;
     void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException;
     void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException;
-    void userStopFlight(Player player) throws RemoteException;
+    void userStopFlight(int playerId) throws RemoteException;
 
     //Metodi FinishScoreState !!!!!!!!!! ZIOPORCO
-    void adminCalculateScore(Player player) throws RemoteException;
-    void userEndGame(Player player) throws RemoteException;
+    void adminCalculateScore(int playerId) throws RemoteException;
+    void userEndGame(int playerId) throws RemoteException;
 }

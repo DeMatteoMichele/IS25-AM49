@@ -1,7 +1,6 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
-import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -37,7 +36,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
+    public void registerClient(RemoteClient client) throws RemoteException {
 
     }
 
@@ -47,7 +46,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void playerJoin(String username, Color color) throws RemoteException {
+    public void playerJoin(int playerId, String username, Color color) throws RemoteException {
 
     }
 
@@ -132,17 +131,17 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void userStopFlight(Player player) throws RemoteException {
+    public void userStopFlight(int playerId) throws RemoteException {
 
     }
 
     @Override
-    public void adminCalculateScore(Player player) throws RemoteException {
+    public void adminCalculateScore(int playerId) throws RemoteException {
 
     }
 
     @Override
-    public void userEndGame(Player player) throws RemoteException {
+    public void userEndGame(int playerId) throws RemoteException {
 
     }
 }

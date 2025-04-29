@@ -45,7 +45,7 @@ public class ClientRMI implements RemoteClient {
             System.out.println("client aggiunto al register client");
 
             UnicastRemoteObject.exportObject(client, 0);
-            clientRMI.getServerStub().registerClient(client, 10);
+            clientRMI.getServerStub().registerClient(client);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -54,8 +54,14 @@ public class ClientRMI implements RemoteClient {
 
     @Override
     public void notifyClient(String msg) throws RemoteException {
-        System.out.println("messaggio: "+msg);
+
     }
+
+    @Override
+    public void registerClientCallback(RemoteClient client, int playerId) throws RemoteException {
+
+    }
+
     @Override
     public void playerJoinCallback(int playerId) throws RemoteException {
 
