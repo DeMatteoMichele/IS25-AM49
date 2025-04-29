@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
 
-public class ServerController implements RemoteServer {
+public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
     private final HashMap<Integer, Optional<Player>> players;
@@ -34,118 +34,91 @@ public class ServerController implements RemoteServer {
         System.out.println("server - trying to callback [ID:"+playerId+"] ...");
     }
 
-    @Override
-    public void serverTestConnection(int playerId) throws RemoteException {
-
-    }
-
-    @Override
     public void registerClient(RemoteClient client, int playerId) throws RemoteException {
         players.put(players.size(), Optional.empty());
 
     }
 
-    @Override
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException {
 
     }
 
-    @Override
     public void playerJoin(int playerId, String username, Color color) throws RemoteException {
 
     }
 
-    @Override
     public void userDrawTile(int playerId, int tileId) throws RemoteException {
 
     }
 
-    @Override
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
 
     }
 
-    @Override
     public void userPickTile(int playerId, Point coordinates) throws RemoteException {
 
     }
 
-    @Override
     public void userDiscardTile(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void userFinishShipboard(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
 
     }
 
-    @Override
     public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
 
     }
 
-    @Override
     public void userPlaceTimer(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
 
     }
 
-    @Override
     public void userThrowDices(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void userDrawAdventureCard(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException {
 
     }
 
-    @Override
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
 
     }
 
-    @Override
     public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
 
     }
 
-    @Override
     public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
 
     }
 
-    @Override
     public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
 
     }
 
-    @Override
     public void userStopFlight(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void adminCalculateScore(int playerId) throws RemoteException {
 
     }
 
-    @Override
     public void userEndGame(int playerId) throws RemoteException {
 
     }

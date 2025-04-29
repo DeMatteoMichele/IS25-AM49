@@ -13,7 +13,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -45,19 +44,12 @@ public class ClientRMI implements RemoteClient {
             //il client registra sul server
             ClientRMI clientRMI = new ClientRMI();
 
-            //ThreadLocalRandom rand = ThreadLocalRandom.current();
-            //int id = rand.nextInt(100);
-            System.out.println("inserisci ID giocatore: ");
-            Scanner sc = new Scanner(System.in);
-            int id= sc.nextInt();
-            sc.nextLine();
-
-            ClientController controller = new ClientController(id);
+            ClientController controller = new ClientController();
             controller.serverMethods=clientRMI.getServerStub();
 
             System.out.println("trying to log in to the server ...");
             UnicastRemoteObject.exportObject(clientRMI, 0);
-            clientRMI.getServerStub().registerClient(clientRMI, id);
+            controller.playerID=clientRMI.getServerStub().registerClientRMI(clientRMI);
             System.out.println("client logged");
 
             controller.clientTestConnection();

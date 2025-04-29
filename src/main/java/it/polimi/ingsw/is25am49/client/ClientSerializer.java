@@ -36,8 +36,9 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
+    public Integer registerClientRMI(RemoteClient client) throws RemoteException {
 
+        return null;
     }
 
     @Override
