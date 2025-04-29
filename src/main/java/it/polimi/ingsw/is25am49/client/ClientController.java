@@ -16,7 +16,7 @@ public class ClientController {
     public ClientController(Integer connectionType, Integer playerID){
         this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
         clientModel = new ClientModel();
-        serverMethods= switch(connectionType){
+        serverMethods = switch(connectionType){
             case 0 -> new ClientSerializer();
             case 1 -> new ClientRMI().getServerStub();
             default -> throw new IllegalStateException("METODO DI CONNESIIONE NON VALIDO --> Unexpected value: " + connectionType);

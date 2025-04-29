@@ -3,10 +3,8 @@ package it.polimi.ingsw.is25am49.server.model.states;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -49,9 +47,6 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userFinishShipboard(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
-    public void adminSelectTypeFlight(Player player, FlightMode flightMode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex) {

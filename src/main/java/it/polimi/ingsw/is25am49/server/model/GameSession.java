@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.server.model;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.states.InitState;
@@ -105,9 +104,6 @@ public class GameSession {
     }
 
     public void userQuitGame(Player player){
-    }
-    public void adminSelectTypeFlight(FlightMode flightMode){
-        game.ifPresent(g -> g.adminSelectTypeFlight(flightMode));
     }
     public void calculateScore(Player player) {
         checkIsAdmin(player);

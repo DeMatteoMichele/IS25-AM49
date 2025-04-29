@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -16,7 +15,6 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
-import javafx.scene.effect.Effect;
 
 import java.awt.*;
 import java.io.File;
@@ -35,7 +33,6 @@ public class GameBoard {
     private final ConcurrentHashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private AdventureCard currentCard;
     private Player currentPlayer;
-    private FlightMode flightMode;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
 
@@ -45,7 +42,6 @@ public class GameBoard {
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
         tilesDeck = new TileCardDeck();
         mainAdventureDeck = new AdventureCardDeck();
-        flightMode = FlightMode.DEFAULT;
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
     }
@@ -53,10 +49,6 @@ public class GameBoard {
     private void isYourTurn(Player player) {
         if (!player.equals(currentPlayer))
             throw new IllegalMethodOnThisStateException("It's not your turn");
-    }
-
-    public boolean isTestFlight() {
-        return flightMode == FlightMode.TEST;
     }
 
     //TODO da fare
@@ -261,13 +253,6 @@ public class GameBoard {
         leaderBoard = new LeaderBoard(gameMode);
     }
 
-    public boolean checkStatus() {
-        return !flightMode.equals(FlightMode.DEFAULT);
-    }
-
-    public void setFlightMode(FlightMode flightMode) {
-        this.flightMode = flightMode;
-    }
 
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
@@ -398,10 +383,6 @@ public class GameBoard {
             }
             player.addCredits(credits);
         });
-    }
-
-    public void setFlightModeToDefault() {
-        flightMode = FlightMode.DEFAULT;
     }
 
     public List<Player> minimumExposedComponents() {

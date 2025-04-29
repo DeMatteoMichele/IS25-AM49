@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.server.model.states;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
@@ -16,7 +15,6 @@ import java.util.Set;
 public class BuildState extends State {
     public BuildState(GameSession gameSession){
         super(gameSession);
-
     }
     //illegal
     public void adminSelectGameMode(Player admin, GameMode gamemode) {
@@ -29,9 +27,6 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void adminStartGame(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
-    public void adminSelectTypeFlight(Player player, FlightMode flightMode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     //ok
