@@ -114,7 +114,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
 
     @Override
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-
+        //serverController.placeTile()
     }
 
     @Override

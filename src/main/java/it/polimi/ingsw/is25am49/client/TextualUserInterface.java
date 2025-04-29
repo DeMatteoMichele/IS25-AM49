@@ -21,9 +21,13 @@ public class TextualUserInterface implements UserInterface {
             while(true){
                 String inputString;
                 inputString = in.nextLine();
-                if(inputString.equals("Quit"))
-                    break;
-                controller.handleInput(inputString);
+                if(inputString.equalsIgnoreCase("quit")){
+                    System.out.println("Server: Sto chiudendo...");
+                    //todo non so come si spenga il server
+                    System.exit(0);
+                }
+                controller.handleInput(inputString.toLowerCase());
+
             }
         });
     }

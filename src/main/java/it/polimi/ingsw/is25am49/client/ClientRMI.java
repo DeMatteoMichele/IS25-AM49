@@ -19,6 +19,9 @@ import java.util.Set;
 
 public class ClientRMI implements RemoteClient {
     private RemoteServer serverStub;
+    public ClientController clientController;
+    private Integer playerID;
+
     private boolean isConnected;
 
     public ClientRMI() {
@@ -89,7 +92,7 @@ public class ClientRMI implements RemoteClient {
 
     @Override
     public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-
+        clientController.userPlaceTile();
     }
 
     @Override
