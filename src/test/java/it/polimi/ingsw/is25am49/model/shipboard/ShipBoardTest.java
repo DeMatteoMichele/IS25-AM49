@@ -32,6 +32,18 @@ class ShipBoardTest {
         ship1.getTile(new Point(6,7)).setTileOrientation(Orientation.EAST);
         ship1.insertTile(new Point(5,9), tiles.get(11));
         ship1.insertTile(new Point(7,8), tiles.get(17));
+
+        shipTest.insertTile(new Point(7,6), tiles.get(153));
+        shipTest.insertTile(new Point(6,6), tiles.get(152));
+        shipTest.getTile(new Point(6,6)).setTileOrientation(Orientation.WEST);
+        shipTest.insertTile(new Point(8,6), tiles.get(16));
+        shipTest.getTile(new Point(8,6)).setTileOrientation(Orientation.WEST);
+        shipTest.insertTile(new Point(6,7), tiles.get(46));
+        shipTest.insertTile(new Point(6,8), tiles.get(143));
+        shipTest.insertTile(new Point(8,5), tiles.get(126));
+        shipTest.insertTile(new Point(9,6), tiles.get(116));
+        shipTest.insertTile(new Point(5,7), tiles.get(104));
+        shipTest.getTile(new Point(5,7)).setTileOrientation(Orientation.WEST);
     }
 
     @Test
@@ -53,9 +65,6 @@ class ShipBoardTest {
         assertThrows(InvalidCoordinatesException.class, ()->ship1.getTile(new Point(9,5)));
         assertThrows(InvalidCoordinatesException.class, ()->ship1.getTile(new Point(6,6)));
     }
-    @Test
-    void insertTile() {
-    }
 
     @Test
     void removeTile() {
@@ -63,10 +72,6 @@ class ShipBoardTest {
 
     @Test
     void destroyTile() {
-    }
-
-    @Test
-    void destroyTilesCascade() {
     }
 
     @Test
@@ -132,15 +137,21 @@ class ShipBoardTest {
         assertEquals(2, ship1.getTotalNumberOfaToken(Token.BATTERY_CELLS));
     }
 
-    @Test
-    void testConsumeComponentToken() {
-        ship1.printShipboardSpecial();
-
-
-    }
 
     @Test
     void testTurnOnComponent() {
+        ship1.completeShipBoard();
+        ship1.printShipboardSpecial();
+        ship1.turnOnComponent(new Point(7,6),new Point(6,7));
+        assertEquals(0,ship1.getProtectedSides().size());
+
+        ship1.fillTileComponent(new Point(6,7), Token.BATTERY_CELLS);
+        ship1.turnOnComponent(new Point(21,6),new Point(6,7));
+        assertEquals(0,ship1.getProtectedSides().size());
+        assertEquals(2,ship1.getTotalNumberOfaToken(Token.BATTERY_CELLS));
+
+        ship1.turnOnComponent(new Point(7,6),new Point(6,7));
+        assertEquals(2,ship1.getProtectedSides().size());
     }
 
     @Test
@@ -154,52 +165,68 @@ class ShipBoardTest {
 
     @Test
     void testGetProtectedSides() {
-        Set<Orientation> sides = ship1.getProtectedSides();
-        assertEquals(0,sides.size());
-        ship1.turnOnComponent(new Point(7,6), new Point(7,8));
-        assertEquals(0,sides.size());
-        ship1.fillTileComponent(new Point(7,8), Token.BATTERY_CELLS);
-        ship1.turnOnComponent(new Point(7,6), new Point(7,8));
-        sides = ship1.getProtectedSides();
-        System.out.println(sides);
-        assertEquals(2,sides.size());
+        shipTest.fillTileComponent(new Point(8,6),Token.BATTERY_CELLS);
+        shipTest.printShipboardSpecial();
+
+        assertEquals(0,shipTest.getProtectedSides().size());
+        shipTest.turnOnComponent(new Point(7,6),new Point(8,6));
+        assertEquals(2,shipTest.getProtectedSides().size());
+        System.out.println(shipTest.getProtectedSides());
+        shipTest.turnOff(new Point(7,6));
+
+        shipTest.turnOnComponent(new Point(6,6),new Point(8,6));
+        assertEquals(2,shipTest.getProtectedSides().size());
+        System.out.println(shipTest.getProtectedSides());
+
+        shipTest.turnOnComponent(new Point(7,6),new Point(8,6));
+        assertEquals(3,shipTest.getProtectedSides().size());
+        System.out.println(shipTest.getProtectedSides());
     }
 
+    @Test
+    void testCheckIfAlienArePossible() {
+        shipTest.printShipboardSpecial();
+        assertEquals(1,shipTest.checkIfAlienArePossible(new Point(7,7)).size());
+        assertTrue(shipTest.checkIfAlienArePossible(new Point(7,7)).contains(Token.ASTRONAUT));
+        assertEquals(2,shipTest.checkIfAlienArePossible(new Point(6,7)).size());
+        assertTrue(shipTest.checkIfAlienArePossible(new Point(6,7)).contains(Token.PURPLE_ALIENS));
+    }
     @Test
     void getTotalFirePower() {
+        shipTest.printShipboardSpecial();
+        shipTest.fillTileComponent(new Point(8,6),Token.BATTERY_CELLS);
+
+        assertEquals(1.5,shipTest.getTotalFirePower());
+        shipTest.turnOnComponent(new Point(8,5),new Point(8,6));
+        assertEquals(3.5,shipTest.getTotalFirePower());
+        shipTest.addTokenToTile(new Point(6,7),Token.PURPLE_ALIENS);
+        assertEquals(5.5,shipTest.getTotalFirePower());
     }
 
     @Test
-    void getEnginePower() {
+    void testGetTotalEnginePower() {
     }
 
-    @Test
-    void getTotalNumberOfaToken() {
-    }
 
     @Test
     void getPositionsOfaToken() {
+        shipTest.printShipboardSpecial();
+        shipTest.fillTileComponent(new Point(8,6),Token.BATTERY_CELLS);
+        shipTest.fillTileComponent(new Point(7,7),Token.ASTRONAUT);
+        shipTest.addTokenToTile(new Point(6,7),Token.PURPLE_ALIENS);
+        System.out.println("purple aliens: "+shipTest.getPositionsOfaToken(Token.PURPLE_ALIENS));
+        System.out.println("BatteryCells: "+shipTest.getPositionsOfaToken(Token.BATTERY_CELLS));
     }
-
-    @Test
-    void removeAllTokens() {
-    }
-
-    @Test
-    void checkRocketTile() {
-    }
-
-    @Test
-    void checkCannonTile() {
-    }
-
-    @Test
-    void afterBuildCheckShipboard() {
-    }
-
 
     @Test
     void testRemoveAllTokens() {
+        shipTest.fillTileComponent(new Point(8,6),Token.BATTERY_CELLS);
+        shipTest.fillTileComponent(new Point(7,7),Token.ASTRONAUT);
+        shipTest.addTokenToTile(new Point(6,7),Token.PURPLE_ALIENS);
+        shipTest.removeAllTokens();
+        assertEquals(0,shipTest.getTotalNumberOfaToken(Token.BATTERY_CELLS));
+        assertEquals(0,shipTest.getTotalNumberOfaToken(Token.ASTRONAUT));
+        assertEquals(0,shipTest.getTotalNumberOfaToken(Token.PURPLE_ALIENS));
     }
 
     @Test
@@ -213,15 +240,17 @@ class ShipBoardTest {
         ship1.completeShipBoard();
         ship1.printShipboardSpecial();
         externalPoints= ship1.getExternalPoints();
-        assertEquals(4,externalPoints.size());
+        assertEquals(3,externalPoints.size());
         System.out.println(externalPoints);
-    }
-    @Test
-    void testConnectorsMatch() {
     }
 
     @Test
     void testGetExposedPoint() {
+        shipTest.printShipboardSpecial();
+        assertEquals(new Point(5,7),shipTest.getExposedPoint(5,Orientation.NORTH).get());
+        assertEquals(new Point(8,5),shipTest.getExposedPoint(5,Orientation.WEST).get());
+        assertEquals(new Point(6,6),shipTest.getExposedPoint(6,Orientation.WEST).get());
+        assertEquals(new Point(8,6),shipTest.getExposedPoint(8,Orientation.SOUTH).get());
     }
 
 

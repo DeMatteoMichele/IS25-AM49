@@ -487,6 +487,7 @@ public class ShipBoard {
                     t.removeToken();
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
+                    throw e;
                 }
             }else throw new IllegalMethodOnThisComponentException("cannot donate a BATTERY from" + t.getComponentType() + " point<" + donator.x + "," + donator.y+">");
 
@@ -504,6 +505,7 @@ public class ShipBoard {
             try{t.turnOn();}
             catch(IllegalMethodOnThisComponentException e){
                 System.out.println("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+                throw e;
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot turn ON point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
@@ -516,14 +518,23 @@ public class ShipBoard {
      * @param donator point of the battery
      */
     public void turnOnComponent(Point coordinates, Point donator){
-        turnOnComponent(coordinates);
-        consumeComponentToken(donator);
+        try {
+            consumeComponentToken(donator);
+        }catch (ArrayIndexOutOfBoundsException _){ return;}
+        try {
+            turnOnComponent(coordinates);
+        }
+        catch (InvalidCoordinatesException | IllegalMethodOnThisComponentException _){
+            addTokenToTile(donator,Token.BATTERY_CELLS);
+        }
+
     }
     /**
      * method to turn off the component of a Tile
      * @param coordinates of the Tile
      */
-    public void turnOff(Point coordinates){
+    public void
+    turnOff(Point coordinates){
         try{
             Tile t=getTile(coordinates);
             try{t.turnOff();}
@@ -571,7 +582,7 @@ public class ShipBoard {
                 .mapToDouble(Tile::getFirePower)
                 .sum();
         if(d>0){
-            d+=2*getTotalNumberOfaToken(Token.BROWN_ALIENS);
+            d+=2*getTotalNumberOfaToken(Token.PURPLE_ALIENS);
         }
         return d;
     }
@@ -586,7 +597,7 @@ public class ShipBoard {
                 .mapToInt(Tile::getEnginePower)
                 .sum();
         if(n>0){
-            n+=2*getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+            n+=2*getTotalNumberOfaToken(Token.BROWN_ALIENS);
         }
         return n;
     }
@@ -648,11 +659,11 @@ public class ShipBoard {
         destroyTile(new Point(9,5));
         destroyTile(new Point(10,5));
 
-        System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
+        //System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
         destroyDisconnectedTiles();
-        printShipboardSpecial();
+        //printShipboardSpecial();
 
-        System.out.println("RIMUOVO CANNONI");
+        //System.out.println("RIMUOVO CANNONI");
         Set<Point> checkCannon = new HashSet<>(getComponentsPositions(ComponentType.CANNON));
         checkCannon.addAll(getComponentsPositions(ComponentType.DOUBLE_CANNON));
         for(Point pCannon: checkCannon){
@@ -691,9 +702,9 @@ public class ShipBoard {
                     }
                 }
             }
-        } if(!checkCannon.isEmpty())printShipboardSpecial();
+        } //if(!checkCannon.isEmpty())printShipboardSpecial();
 
-        System.out.println("RIMUOVO MOTORI");
+        //System.out.println("RIMUOVO MOTORI");
         Set<Point> checkEngine = new HashSet<>(getComponentsPositions(ComponentType.ENGINE));
         checkEngine.addAll(getComponentsPositions(ComponentType.DOUBLE_ENGINE));
         for(Point pEngine: checkEngine){
@@ -713,7 +724,7 @@ public class ShipBoard {
                     //System.out.println("ERRORE RIMOZIONE MOTORE");
                 }
             }
-        } if(!checkEngine.isEmpty())printShipboardSpecial();
+        }// if(!checkEngine.isEmpty())printShipboardSpecial();
 
         //elimino tessere disconnesse dopo la rimozione sopra
         destroyDisconnectedTiles();
@@ -792,11 +803,15 @@ public class ShipBoard {
             case BATTERY ->  System.out.print("\uD83D\uDD0B\t");
             case SKY ->  System.out.print("⬛\t");
             case STORAGE -> System.out.print("\uD83D\uDCE6\t");
+            case SPECIAL_STORAGE -> System.out.print("\uD83E\uDDF0\t");
             case SHIELD ->  System.out.print("\uD83D\uDEE1️\t");
             case CANNON -> System.out.print("\uD83D\uDD95\t");
             case DOUBLE_CANNON -> System.out.print("\uD83E\uDD18\t");
             case ENGINE -> System.out.print("E\t");
             case DOUBLE_ENGINE -> System.out.print("DE\t");
+            case BROWN_ALIEN_MODULE -> System.out.print("\uD83E\uDD0E\t");
+            case PURPLE_ALIEN_MODULE -> System.out.print("\uD83D\uDC9C\t");
+            case FRAME_SECTION -> System.out.print("\uD83E\uDDF1\t");
             default -> System.out.print("\uD83D\uDFE6\t");
         }
     }

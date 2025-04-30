@@ -65,7 +65,9 @@ public class AdventureState extends State {
     public void userDrawAdventureCard(Player player) {
         gameSession.userDrawAdventureCard(player);
     }
-    public void userFinishDecisionActivating(Player player, Set<Point> coordinates){}
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates){
+
+    }
     public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){}
     public void userLandOnPlanet(Player player) {
     }

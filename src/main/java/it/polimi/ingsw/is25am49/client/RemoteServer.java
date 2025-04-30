@@ -23,8 +23,6 @@ public interface RemoteServer extends Remote {
     void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException;
     void playerJoin(int playerId, String username, Color color) throws RemoteException;
 
-
-
     // Metodi BuildState !!!!!!!!! ZIOPORCO
 
     void userDrawTile(int playerId, int tileId) throws RemoteException;
