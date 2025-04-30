@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerHandler {
-    private final ClientSerializer clientSerializer;
+    private ClientSerializer clientSerializer;
     private Socket clientSocket;
     private DataOutputStream outputStream;
     private DataInputStream inputStream;
@@ -33,14 +33,12 @@ public class ServerHandler {
      * It initializes the server IP, port, client serializer, and other necessary variables.
      * It also attempts to establish the first connection to the server and starts the heart beat agent.
      *
-     * @param clientSerializer The client serializer used to serialize and deserialize messages.
-     * @param serverIP         The IP address of the server.
-     * @param serverPort       The port number of the server.
+     * @param serverIP   The IP address of the server.
+     * @param serverPort The port number of the server.
      */
-    public ServerHandler(ClientSerializer clientSerializer, String serverIP, int serverPort) {
+    public ServerHandler(String serverIP, int serverPort) {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
-        this.clientSerializer = clientSerializer;
         InGoingStringQueue = new ArrayBlockingQueue<>(1000, true);
         OutGoingFileQueue = new ArrayBlockingQueue<>(1000, true);
         connected = new AtomicBoolean(false);
@@ -138,7 +136,7 @@ public class ServerHandler {
                 String jsonString = InGoingStringQueue.take();
                 File fileJson = new File("jsonFileFromServer.json");
                 Files.writeString(fileJson.toPath(), jsonString);
-                passInformationToClientSerializer(fileJson);
+                clientSerializer.putFileFromSocketInQueue(fileJson);
             } catch (IOException e) {
                 System.out.println("Error while writing the message to the file");
             } catch (InterruptedException e) {
@@ -286,5 +284,9 @@ public class ServerHandler {
 
     public DataOutputStream getOutputStream() {
         return outputStream;
+    }
+
+    public void setClientSerializer(ClientSerializer clientSerializer) {
+        this.clientSerializer = clientSerializer;
     }
 }

@@ -14,9 +14,31 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ClientSerializer implements RemoteServer {
     private ServerHandler serverHandler;
+    private BlockingQueue<File> filesFromSocketQueue;
+
+    public ClientSerializer() {
+       filesFromSocketQueue = new ArrayBlockingQueue<>(100,true);
+    }
+
+    //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
+
+    /**
+     * This method is used to put files in the queue.
+     * It is called by ServerHandler after receiving a message from server
+     */
+    public void putFileFromSocketInQueue(File file){
+        try {
+            filesFromSocketQueue.put(file);
+        } catch (InterruptedException e) {
+            System.out.println("Error while putting the file in the filesFromSocketQueue, thread has been interrupted");
+        }
+    }
+
     public void placetile(){
         //traduci in un pacchetto serializzato
     }
@@ -144,5 +166,9 @@ public class ClientSerializer implements RemoteServer {
     @Override
     public void userEndGame(int playerId) throws RemoteException {
 
+    }
+
+    public void setServerHandler(ServerHandler serverHandler) {
+        this.serverHandler = serverHandler;
     }
 }

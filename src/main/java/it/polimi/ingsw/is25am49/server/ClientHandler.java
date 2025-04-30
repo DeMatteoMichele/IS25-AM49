@@ -128,9 +128,9 @@ public class ClientHandler {
      */
     private void listenToClient(InetAddress clientAddress) {  //TODO coda per i file json?
         executors.submit(()->processStringQueueToServerSerializer(clientAddress));
+        DataInputStream clientInputStream = inputStreams.get(clientAddress);
         while (connections.get(clientAddress)) {
             try {
-                DataInputStream clientInputStream = inputStreams.get(clientAddress);
                 int length = clientInputStream.readInt();
                 byte[] buffer = new byte[length];
                 clientInputStream.readFully(buffer, 0, length);
@@ -192,8 +192,11 @@ public class ClientHandler {
         serverSerializer.deSerializeStringFromClient(fileJson);
     }
 
+    public void FileQueueToClients;
+
 
     public void passInformationToClient(File fileJson) {
+
     }
 
     /**
