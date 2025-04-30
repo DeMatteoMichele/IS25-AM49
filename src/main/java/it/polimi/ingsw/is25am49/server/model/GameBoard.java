@@ -15,6 +15,7 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.File;
@@ -98,7 +99,7 @@ public class GameBoard {
                     card = switch (description) {
                         case "SpazioAperto" -> new SpazioAperto(this, description, level);
                         case "StarDustCard" -> new StarDustCard(this, description, level);
-                        case "PlanetCard"->{
+                        case "PlanetCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             List<Planet> planets = new ArrayList<>();
                             JsonNode planetsNode = node.get("planets");
@@ -118,33 +119,33 @@ public class GameBoard {
                             int daysLost = node.get("daysLost").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new AbandonedShipCard(this, description, level,daysLost,creditsEarned,lostAstronauts);
+                            yield new AbandonedShipCard(this, description, level, daysLost, creditsEarned, lostAstronauts);
                         }
-                        case "AbandonedStationCard"->{
+                        case "AbandonedStationCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int minimumAstronauts = node.get("minimumAstronauts").asInt();
                             int redGoods = node.get("redGoods").asInt();
                             int yellowGoods = node.get("yellowGoods").asInt();
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
-                            yield new AbandonedStationCard(this, description,level, daysLost,minimumAstronauts,redGoods,yellowGoods,greenGoods,blueGoods);
+                            yield new AbandonedStationCard(this, description, level, daysLost, minimumAstronauts, redGoods, yellowGoods, greenGoods, blueGoods);
                         }
                         case "SabotageCard" -> new SabotageCard(this, description, level);
-                        case "WarZoneCard"->{
+                        case "WarZoneCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int loseAstronauts = node.get("lostAstronauts").asInt();
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for(JsonNode effectNode : effectsNode) {
+                            for (JsonNode effectNode : effectsNode) {
                                 String name = effectNode.get("name").asText();
                                 int power = effectNode.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
                                 effects.add(new EffectCannonata(name, power, orientation));
                             }
-                            yield new WarZoneCard(this, description, level, daysLost, loseAstronauts,effects);
+                            yield new WarZoneCard(this, description, level, daysLost, loseAstronauts, effects);
 
                         }
-                        case "SmugglerCard"->{
+                        case "SmugglerCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int redGoods = node.get("redGoods").asInt();
@@ -152,13 +153,13 @@ public class GameBoard {
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
                             int lostGoods = node.get("number").asInt();
-                            yield new SmugglerCard(this, description,level, daysLost,minimumFirePower,redGoods,yellowGoods,greenGoods,blueGoods,lostGoods);
+                            yield new SmugglerCard(this, description, level, daysLost, minimumFirePower, redGoods, yellowGoods, greenGoods, blueGoods, lostGoods);
 
                         }
-                        case "MeteorRainCard"->{
+                        case "MeteorRainCard" -> {
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for(JsonNode effect : effectsNode) {
+                            for (JsonNode effect : effectsNode) {
                                 String name = effect.get("name").asText();
                                 int power = effect.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effect.get("orientation").asText());
@@ -181,14 +182,14 @@ public class GameBoard {
                             }
                             yield new PiratesCard(this, description, level, daysLost, minimumFirePower, creditsEarned, effects);
                         }
-                        case "SlaverCard"->{
+                        case "SlaverCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new SlaverCard(this,description,level,daysLost,minimumFirePower,creditsEarned,lostAstronauts);
+                            yield new SlaverCard(this, description, level, daysLost, minimumFirePower, creditsEarned, lostAstronauts);
                         }
-                        case "EpidemyCard"->new EpidemyCard(this,description,level);
+                        case "EpidemyCard" -> new EpidemyCard(this, description, level);
                         default -> null;
                     };
 
@@ -205,15 +206,16 @@ public class GameBoard {
                         }
 
                     }
-                    }
-                if(gameMode==GameMode.FLIGHT_MODE){
+                }
+                if (gameMode == GameMode.FLIGHT_MODE) {
                     deckFlightMode.forEach(adventureCard -> {
                         mainAdventureDeck.add(adventureCard);
-                    });}
-                if(gameMode==GameMode.LEVEL_1){
+                    });
+                }
+                if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
                     // Mescolo per distribuire casualmente
-                    for(int i=0; i<4; i++) {
+                    for (int i = 0; i < 4; i++) {
                         Collections.shuffle(deckLevel1);
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
@@ -221,10 +223,10 @@ public class GameBoard {
                         mapSmallAdventureDecks.put(i, smallDeck);
                     }
                 }
-                if(gameMode==GameMode.LEVEL_2){
+                if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
                     //mescolo per distribuire casualmente
-                    for(int i=0;i<4;i++){
+                    for (int i = 0; i < 4; i++) {
                         Collections.shuffle(deckLevel2);
                         Collections.shuffle(deckLevel1);
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
@@ -234,7 +236,6 @@ public class GameBoard {
                         mapSmallAdventureDecks.put(i, smallDeck);
                     }
                 }
-
 
 
             }
@@ -247,8 +248,6 @@ public class GameBoard {
     }
 
 
-
-
     public void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
@@ -259,7 +258,7 @@ public class GameBoard {
     }
 
     public void mergeDecks() {
-        if(!mapSmallAdventureDecks.isEmpty()) {
+        if (!mapSmallAdventureDecks.isEmpty()) {
             AdventureCardDeck bufferDeck = new AdventureCardDeck();
             mapSmallAdventureDecks.forEach((index, smallDeck) -> smallDeck.stream().forEach(bufferDeck::add));
             mapSmallAdventureDecks.clear();
@@ -285,6 +284,15 @@ public class GameBoard {
         return landedPlayers;
     }
 
+    public void playerNoMoreInFlight(Player player) {
+        if (landedPlayers.contains(player))
+            throw new GameSettingsException("This player is already landed");
+        else {
+            landedPlayers.add(player);
+            leaderBoard.remove(player);
+        }
+    }
+
     public void drawAdventureCard(Player player) {
         if (player.equals(leaderBoard.getLeader())) {
             if (isFirstCard || currentCard.getIsFinished()) {
@@ -298,47 +306,43 @@ public class GameBoard {
             throw new GameSettingsException("You are not the leader of this turn");
     }
 
-    public void playerNoMoreInFlight(Player player) {
-        if (landedPlayers.contains(player))
-            throw new GameSettingsException("This player is already landed");
-        else {
-            landedPlayers.add(player);
-            leaderBoard.remove(player);
-        }
-    }
-
     public void userThrowDices(Player player) {
         isYourTurn(player);
         currentCard.rollDices();
     }
 
-    public void userPlayAdventureCard(Player player) {
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
+        isYourTurn(player);
+        currentCard.finishDecision(coordinates);
     }
 
-    public void userFinishDecision(Player player) {
-    }
-
-    public void userActivateComponent(Player player, Point coordinates) {
-    }
-
-    public void userActivateDaysUpdate() {
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens) {
+        isYourTurn(player);
+        currentCard.finishDecision(listOfTokens);
     }
 
     public void userLandOnPlanet(Player player) {
+        isYourTurn(player);
     }
 
-    public void userLandOnShip(Player player) {
+    public void userLandOnStationOrShip(Player player) {
+        isYourTurn(player);
+
     }
 
     public void userQuitGame(Player player) {
+
+    }
+
+    public void userStopFlight(Player player) {
+
     }
 
     public void addPlayerToLeaderboard(Player player) {
         if (leaderBoard.isEmpty()) {
             leaderBoard.add(player);
             currentPlayer = player;
-        }
-        else if(!leaderBoard.contains(player))
+        } else if (!leaderBoard.contains(player))
             leaderBoard.add(player);
     }
 
@@ -476,15 +480,17 @@ public class GameBoard {
     }
 
     public void userLookSmallAdventureCardDeck(Player player, int index) {
-        if (mapSmallAdventureDecks.containsKey(index)) {
-            if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
-                mapSmallAdventureDecks.get(index).watch();
-                player.lockLastTile();
-                player.setSmallDeck(mapSmallAdventureDecks.get(index));
+        synchronized (mapSmallAdventureDecks.get(index)) {
+            if (mapSmallAdventureDecks.containsKey(index)) {
+                if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
+                    mapSmallAdventureDecks.get(index).watch();
+                    player.lockLastTile();
+                    player.setSmallDeck(mapSmallAdventureDecks.get(index));
+                } else
+                    throw new GameSettingsException("You cannot watch this deck");
             } else
-                throw new GameSettingsException("You cannot watch this deck");
-        } else
-            throw new OutOfDeckExceptions("This deck does not exist");
+                throw new OutOfDeckExceptions("This deck does not exist");
+        }
     }
 
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {
