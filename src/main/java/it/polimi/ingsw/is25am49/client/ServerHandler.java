@@ -106,7 +106,7 @@ public class ServerHandler {
      * While the client is connected, it reads the length of the message, then reads the message itself and puts it in a BlockingQueue.
      * The BlockingQueue is processed by the processStringQueue method.
      */
-    private void listenToServer() {  //TODO coda per i file json?
+    private void listenToServer() {
         executors.submit(this::processStringQueueToSerializer);
         while (connected.get()) {
             try {
@@ -260,7 +260,7 @@ public class ServerHandler {
             try {
                 String jsonContent = Files.readString(fileJson.toPath());
                 outputStream.writeInt(jsonContent.length());
-                outputStream.writeBytes(jsonContent);
+                outputStream.write(jsonContent.getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();
                 System.out.println("Message: " + jsonContent);
             } catch (IOException e) {

@@ -22,7 +22,7 @@ public class ClientSerializer implements RemoteServer {
     private BlockingQueue<File> filesFromSocketQueue;
 
     public ClientSerializer() {
-       filesFromSocketQueue = new ArrayBlockingQueue<>(100,true);
+       filesFromSocketQueue = new ArrayBlockingQueue<>(1000,true);
     }
 
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.

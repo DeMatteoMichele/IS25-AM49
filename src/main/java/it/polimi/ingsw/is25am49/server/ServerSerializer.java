@@ -8,19 +8,25 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private ClientHandler clientHandler;
+    private final BlockingQueue<File> filesFromSocketQueue;
+
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
+        filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
     }
+
     public void setClientHandler(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
     }
+
     public void deSerializeStringFromClient(File fileJson) {
         //Qua chiamerò i corretti metodi con i corretti parametri su ControllerServer
         //Definire il Protocollo
@@ -163,5 +169,13 @@ public class ServerSerializer implements RemoteClient {
     @Override
     public void changeState(String state) throws RemoteException {
 
+    }
+
+    public void putFileFromClientSocketInQueue(File fileJson) {
+        try {
+            filesFromSocketQueue.put(fileJson);
+        } catch (InterruptedException e) {
+            System.err.println("Error putting file from socket in queue in serializer cause thread was interrupted: " + e.getMessage());
+        }
     }
 }

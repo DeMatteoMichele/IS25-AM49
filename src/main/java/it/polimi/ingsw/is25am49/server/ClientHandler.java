@@ -24,8 +24,8 @@ public class ClientHandler {
     private final ConcurrentMap<InetAddress, Long> lastHeartBeats;
     private final ConcurrentMap<InetAddress, DataOutputStream> outputStreams;
     private final ConcurrentMap<InetAddress, DataInputStream> inputStreams;
-    private final ConcurrentMap<InetAddress,ArrayBlockingQueue<String>> InGoingStringQueues;
-    private final ConcurrentMap<InetAddress,ArrayBlockingQueue<File>> OutGoingFileQueues;
+    private final ConcurrentMap<InetAddress, ArrayBlockingQueue<String>> InGoingStringQueues;
+    private final ArrayBlockingQueue<File> OutGoingFileQueue;
     private final int maxClients;
     private volatile boolean timeIsNotDone;
     private final Thread serverThread;
@@ -34,14 +34,14 @@ public class ClientHandler {
         maxClients = 4;
         this.serverSerializer = serverSerializer;
         scheduler = Executors.newScheduledThreadPool(20);
-        executors = Executors.newFixedThreadPool(10);
+        executors = Executors.newFixedThreadPool(20);
         clientSockets = new ConcurrentHashMap<>();
         outputStreams = new ConcurrentHashMap<>();
         inputStreams = new ConcurrentHashMap<>();
         connections = new ConcurrentHashMap<>();
         lastHeartBeats = new ConcurrentHashMap<>();
         InGoingStringQueues = new ConcurrentHashMap<>();
-        OutGoingFileQueues = new ConcurrentHashMap<>();
+        OutGoingFileQueue = new ArrayBlockingQueue<File>(1000, true);
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -64,6 +64,7 @@ public class ClientHandler {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
         startCentralHeartBeatMonitor();
+        startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
             InetAddress clientAddress = socket.getInetAddress();
@@ -79,7 +80,7 @@ public class ClientHandler {
 
     /**
      * This method creates all network components needed for the connection.
-     * It submit to an executor the task of listening to that specific client which just connected.
+     * It submits to an executor the task of listening to that specific client which just connected.
      *
      * @param socket        The socket of the client.
      * @param clientAddress The InetAddress of the client being connected.
@@ -92,7 +93,6 @@ public class ClientHandler {
             inputStreams.put(clientAddress, new DataInputStream(socket.getInputStream()));
             connections.put(clientAddress, true);
             InGoingStringQueues.put(clientAddress, new ArrayBlockingQueue<>(1000, true));
-            OutGoingFileQueues.put(clientAddress, new ArrayBlockingQueue<>(1000, true));
             executors.submit(() -> listenToClient(clientAddress));
         } catch (IOException e) {
             System.out.println("Error while connecting to client " + clientAddress);
@@ -126,8 +126,8 @@ public class ClientHandler {
      *
      * @param clientAddress The InetAddress of the client being handled.
      */
-    private void listenToClient(InetAddress clientAddress) {  //TODO coda per i file json?
-        executors.submit(()->processStringQueueToServerSerializer(clientAddress));
+    private void listenToClient(InetAddress clientAddress) {
+        executors.submit(() -> processStringQueueToServerSerializer(clientAddress));
         DataInputStream clientInputStream = inputStreams.get(clientAddress);
         while (connections.get(clientAddress)) {
             try {
@@ -136,7 +136,8 @@ public class ClientHandler {
                 clientInputStream.readFully(buffer, 0, length);
                 String jsonString = new String(buffer, StandardCharsets.UTF_8);
                 lastHeartBeats.put(clientAddress, System.currentTimeMillis());
-                InGoingStringQueues.get(clientAddress).put(jsonString);
+                if (!jsonString.equals("HTB"))
+                    InGoingStringQueues.get(clientAddress).put(jsonString);
             } catch (IOException e) {
                 System.out.println("Error while listening to client " + clientAddress + " shutting down his connection");
                 shutDownClientRelated(clientAddress);
@@ -155,13 +156,13 @@ public class ClientHandler {
      * @param clientAddress The InetAddress corresponding to the specific client
      */
     private void processStringQueueToServerSerializer(InetAddress clientAddress) {
-        while(connections.get(clientAddress)){
+        while (connections.get(clientAddress)) {
             try {
                 String jsonString = InGoingStringQueues.get(clientAddress).take();
                 File fileJson = new File(clientAddress.getHostAddress() + "_received.json");
                 Files.writeString(fileJson.toPath(), jsonString);
                 System.out.println("Json Received from " + clientAddress.getHostAddress());
-                passInformationToServerSerializer(fileJson);
+                serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the String from the queue for client " + clientAddress + " cause thread was interrupted");
             } catch (IOException e) {
@@ -171,32 +172,51 @@ public class ClientHandler {
     }
 
     /**
-     * This method stops the current thread for 3 seconds.
+     * This method starts the outgoing broadcast service.
+     * It is executed by an executor and is functioning until the server dies.
+     * It uses the blocking method take() of the blockinqueue to take the file that has to be sent
+     * When it finds a file to be taken, it pass it to the sendMessageInBroadcast method
      */
-    public void timer() {
-        timeIsNotDone = true;
-        scheduler.schedule(() -> {
-            timeIsNotDone = false;
-        }, 3, TimeUnit.SECONDS);
-        while (timeIsNotDone) {
-        }
+    private void startBroadCastService() {
+        executors.submit(() -> {
+            while (true) {
+                try {
+                    File fileToSend = OutGoingFileQueue.take();
+                    sendMessageInBroadcast(fileToSend);
+                } catch (InterruptedException e) {
+                    System.out.println("Error while taking the file from the queue");
+                }
+            }
+        });
     }
 
     /**
-     * This method is used to pass the information received from the client to the server serializer.
-     * It is called by the listenToClient method.
+     * This method is used to send a file in broadcast to all the clients connected.
+     * It takes the file, converts it to a string and sends it to all the clients connected.
+     * It uses the output streams of the clients to send the file.
      *
-     * @param fileJson The file containing the JSON string received from the client.
+     * @param fileToSend The file that has to be sent in broadcast.
      */
-    public void passInformationToServerSerializer(File fileJson) {
-        serverSerializer.deSerializeStringFromClient(fileJson);
-    }
-
-    public void FileQueueToClients;
-
-
-    public void passInformationToClient(File fileJson) {
-
+    private void sendMessageInBroadcast(File fileToSend) {
+        try {
+            String jsonContent = Files.readString(fileToSend.toPath());
+            int length = jsonContent.length();
+            byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
+            outputStreams.forEach((clientAddress, outputStream) -> {
+                try {
+                    if (connections.get(clientAddress)) {
+                        outputStream.writeInt(length);
+                        outputStream.write(buffer);
+                        outputStream.flush();
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error while sending the file in broadcast, in particular to client " + clientAddress);
+                    shutDownClientRelated(clientAddress);
+                }
+            });
+        } catch (IOException e) {
+            System.err.println("Error while converting the file in string to send in broadcast: " + e.getMessage());
+        }
     }
 
     /**
@@ -216,26 +236,6 @@ public class ClientHandler {
         } catch (IOException e) {
             System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
         }
-    }
-
-    public Map<InetAddress, Socket> getClientSockets() {
-        return clientSockets;
-    }
-
-    public Map<InetAddress, DataOutputStream> getOutputStreams() {
-        return outputStreams;
-    }
-
-    public Map<InetAddress, DataInputStream> getInputStreams() {
-        return inputStreams;
-    }
-
-    public Map<InetAddress, Boolean> getConnections() {
-        return connections;
-    }
-
-    public Map<InetAddress, Long> getLastHeartBeats() {
-        return lastHeartBeats;
     }
 
     public static void main(String[] args) {
