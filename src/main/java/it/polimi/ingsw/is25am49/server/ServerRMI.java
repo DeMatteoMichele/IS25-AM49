@@ -28,21 +28,6 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
 //    public setHandTile(){
 //        controller.setHandTile();
 //    }
-    public static void main(String[] args) {
-        try {
-            ServerRMI serverRMI=new ServerRMI();
-
-            Registry reg = LocateRegistry.createRegistry(1099);
-            reg.rebind("ServerController", serverRMI);
-            System.out.println("server in attesa...");
-
-            serverRMI.inputThread();
-
-        }
-        catch (RemoteException e){
-            System.out.println("errore lato Skeleton: "+e.getMessage());
-        }
-    }
 
     private void inputThread() {
         new Thread(() -> {
@@ -85,13 +70,18 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
 
 
     @Override
-    public Integer registerClientRMI(RemoteClient client) throws RemoteException {
+    public void registerClientRMI(RemoteClient client) throws RemoteException {
         //TODO da sistemare e mettere dentro all'if(forse), attualmente l'istanza del
         // client cambia ogni riavvio del main, quindi va aggiornata la mappa
         int playerId=clients.size()+1;
         clients.put(playerId, client);
         System.out.println("ID:"+playerId+" - client logged");
-        return playerId;
+        //return playerId;
+    }
+
+    @Override
+    public void registerClientSocket(int playerId) throws RemoteException {
+
     }
 
     @Override

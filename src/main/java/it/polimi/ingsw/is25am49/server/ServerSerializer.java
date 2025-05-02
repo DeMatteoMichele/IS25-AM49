@@ -178,4 +178,9 @@ public class ServerSerializer implements RemoteClient {
             System.err.println("Error putting file from socket in queue in serializer cause thread was interrupted: " + e.getMessage());
         }
     }
+
+    public int deserializeHandshake(File fileJson) {
+        //ritorna id del client
+        return 2;
+    }
 }

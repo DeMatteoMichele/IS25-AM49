@@ -49,7 +49,7 @@ public class ClientRMI implements RemoteClient {
 
             System.out.println("trying to log in to the server ...");
             UnicastRemoteObject.exportObject(clientRMI, 0);
-            controller.playerID=clientRMI.getServerStub().registerClientRMI(clientRMI);
+            //controller.playerID=clientRMI.getServerStub().registerClientRMI(clientRMI);
             System.out.println("client logged");
 
             controller.clientTestConnection();

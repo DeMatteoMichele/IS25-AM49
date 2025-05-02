@@ -58,7 +58,7 @@ public class ServerHandler {
     private void firstConnection() {
         try {
             tryConnection(serverPort);
-            scheduler.scheduleWithFixedDelay(this::heartBeat, 0, 5, TimeUnit.SECONDS);
+            scheduler.scheduleWithFixedDelay(this::heartBeat, 5, 5, TimeUnit.SECONDS);
         } catch (IOException e) {
             disconnectAndTryToReconnect();
         }
@@ -96,9 +96,9 @@ public class ServerHandler {
         clientSocket = new Socket(serverIP, port);
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
-        connected.set(true);
         executors.submit(this::listenToServer);
         executors.submit(this::processOutGoingQueue);
+        connected.set(true);
     }
 
     /**
@@ -189,7 +189,7 @@ public class ServerHandler {
                 System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
                 break;
             } catch (IOException e) {
-                disconnectAndTryToReconnect(); //seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
+                disconnectAndTryToReconnect(); //Reminder: if the connection isn't established, does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
             }
             timer();
         }

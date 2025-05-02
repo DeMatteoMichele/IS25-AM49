@@ -10,7 +10,7 @@ public class ClientController {
     public RemoteServer serverMethods;
 
     public ClientController(){
-
+        playerID = -1;  //non ancora assegnato
     }
 
     public ClientController(int connectionType){
@@ -22,8 +22,12 @@ public class ClientController {
         //todo playerID= setto l'id con il register client assegnato dal server switch con i due tipi di connessione
     }
 
-    public Integer getPlayerId(){
-        return playerID;
+    public void registerClientSocket(){
+        try {
+            serverMethods.registerClientSocket(playerID);
+        } catch (RemoteException e) {
+            System.out.println("registerClientSocket failed --> " + e.getMessage());
+        }
     }
 
     public void clientTestConnection(){

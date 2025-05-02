@@ -58,9 +58,14 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public Integer registerClientRMI(RemoteClient client) throws RemoteException {
+    public void registerClientRMI(RemoteClient client) throws RemoteException {
 
-        return null;
+    }
+
+    @Override
+    public void registerClientSocket(int playerId) throws RemoteException {
+        //va passato il proprio clientId. In caso di prima connessione playerId=-1, altrimenti si ripassa quello assegnato dal server.
+        //poi va messo il pacchetto nella outgoingqueue con il metodo apposito
     }
 
     @Override

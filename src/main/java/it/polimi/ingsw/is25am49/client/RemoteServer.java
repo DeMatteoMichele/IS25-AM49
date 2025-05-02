@@ -16,8 +16,8 @@ import java.util.Set;
 
 public interface RemoteServer extends Remote {
     void serverTestConnection(int playerId) throws RemoteException;
-    Integer registerClientRMI(RemoteClient client) throws RemoteException;
-
+    void registerClientRMI(RemoteClient client) throws RemoteException;
+    void registerClientSocket(int playerId) throws RemoteException;
     // Metodi InitState !!!!!!!!! ZIOPORCO
 
     void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException;
