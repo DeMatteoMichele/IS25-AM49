@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -20,9 +21,14 @@ import java.util.concurrent.BlockingQueue;
 public class ClientSerializer implements RemoteServer {
     private ServerHandler serverHandler;
     private BlockingQueue<File> filesFromSocketQueue;
+    private GameSession gameSession;
 
     public ClientSerializer() {
        filesFromSocketQueue = new ArrayBlockingQueue<>(1000,true);
+    }
+    public ClientSerializer(GameSession session) {
+        this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000,true);
+        gameSession = session;
     }
 
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
