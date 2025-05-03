@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTimerMoveExceptio
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Timer {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -29,14 +30,14 @@ public class Timer {
     public Timer(GameMode level, GameSession gameSession) {
         this.lifetime = 30;
         this.usageCounter = 0;
-        this.isActive = false;
+        isActive = false;
         if(level.equals(GameMode.LEVEL_1))
             this.level = 2;
         else
             this.level = 3;
         this.gameSession = gameSession;
     }
-    public void place(Player player) {
+    public synchronized void place(Player player) {
         if(!isActive && usageCounter < level - 1) {
             usageCounter++;
             isActive = true;

@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.server.model.states;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import javafx.util.Pair;
@@ -26,7 +25,6 @@ public abstract class State {
     public abstract void userSelectColorAndUserName(Color playerColor, String username);
     public abstract void adminCreateGame(Player player);
     public abstract void adminStartGame(Player player);
-    public abstract void adminSelectTypeFlight(Player player, FlightMode flightMode);
 
     public abstract void userPlaceTile(Player player, Point coordinates);
     public abstract void userPickTile(Player player, Point coordinates);

@@ -30,15 +30,17 @@ public class TileCardDeck {
     }
 
     public Tile draw(int index, Player player) {
-        if(tileDeck.containsKey(index)) {
-            Tile tmp = tileDeck.get(index);
-            tileDeck.remove(index);
-            lastRemovedTile.put(player, index);
-            tmp.uncoverTile();
-            return tmp;
+        synchronized (tileDeck.get(index)) {
+            if(tileDeck.containsKey(index)) {
+                Tile tmp = tileDeck.get(index);
+                tileDeck.remove(index);
+                lastRemovedTile.put(player, index);
+                tmp.uncoverTile();
+                return tmp;
+            }
+            else
+                throw new OutOfDeckExceptions("Tile not found in the deck");
         }
-        else
-            throw new OutOfDeckExceptions("Tile not found in the deck");
     }
     public Stream<Map.Entry<Integer, Tile>> stream(){
         return tileDeck.entrySet().stream();

@@ -1,26 +1,34 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 
 import java.rmi.RemoteException;
 
 public class ClientController {
-    private int playerID;
-    public ClientModel clientModel;
-    public RemoteServer serverMethods;
+    public int playerID;
+    private GameSession gameSession;
+    private RemoteServer serverMethods;
 
-    public ClientController(){
-        clientModel = new ClientModel();
+    public ClientController(GameSession gameSession) {
+        playerID = -1;  //non ancora assegnato
     }
-    public ClientController(int playerID){this.playerID = playerID;}
-    public ClientController(Integer connectionType, Integer playerID){
-        this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
-        clientModel = new ClientModel();
-        serverMethods= switch(connectionType){
-            case 0 -> new ClientSerializer();
-            case 1 -> new ClientRMI().getServerStub();
-            default -> throw new IllegalStateException("METODO DI CONNESIIONE NON VALIDO --> Unexpected value: " + connectionType);
-        };
+
+    public ClientController(int connectionType){
+        //this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
+
+    }
+
+    public void clientLogin(){
+        //todo playerID= setto l'id con il register client assegnato dal server switch con i due tipi di connessione
+    }
+
+    public void registerClientSocket(){
+        try {
+            serverMethods.registerClientSocket(playerID);
+        } catch (RemoteException e) {
+            System.out.println("registerClientSocket failed --> " + e.getMessage());
+        }
     }
 
     public void clientTestConnection(){
@@ -38,9 +46,16 @@ public class ClientController {
 
         };
     }
+
     public void userPlaceTile(){
         //metodo chiamato dal callback, che aggiorna il model lato client
         //clientModel.placeTile
     }
 
+    public void setServerMethods(RemoteServer serverMethods) {
+        this.serverMethods = serverMethods;
+    }
+    public RemoteServer getServerMethods() {
+        return serverMethods;
+    }
 }

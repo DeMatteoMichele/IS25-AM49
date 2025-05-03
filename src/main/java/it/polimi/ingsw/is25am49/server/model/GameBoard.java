@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
+
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -17,6 +17,7 @@ import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import javafx.scene.effect.Effect;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.File;
@@ -35,7 +36,6 @@ public class GameBoard {
     private final ConcurrentHashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
     private AdventureCard currentCard;
     private Player currentPlayer;
-    private FlightMode flightMode;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
 
@@ -45,7 +45,6 @@ public class GameBoard {
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
         tilesDeck = new TileCardDeck();
         mainAdventureDeck = new AdventureCardDeck();
-        flightMode = FlightMode.DEFAULT;
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
     }
@@ -55,15 +54,9 @@ public class GameBoard {
             throw new IllegalMethodOnThisStateException("It's not your turn");
     }
 
-    public void printAdventureCard(AdventureCard card) {
-        System.out.println("---------------------------------------------");
-        System.out.println("Adventure Card: " + card.getDescription());
-        System.out.println("Level: " + card.getLevel());
-    }
 
-    public boolean isTestFlight() {
-        return flightMode == FlightMode.TEST;
-    }
+
+
 
     //TODO da fare
     //Bisogna modificare la lunghezza del percorso, in base a flightMode e gameMode
@@ -218,15 +211,16 @@ public class GameBoard {
                         }
 
                     }
-                    }
-                if(gameMode==GameMode.FLIGHT_MODE){
+                }
+                if (gameMode == GameMode.FLIGHT_MODE) {
                     deckFlightMode.forEach(adventureCard -> {
                         mainAdventureDeck.add(adventureCard);
-                    });}
-                if(gameMode==GameMode.LEVEL_1){
+                    });
+                }
+                if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
                     // Mescolo per distribuire casualmente
-                    for(int i=0; i<4; i++) {
+                    for (int i = 0; i < 4; i++) {
                         Collections.shuffle(deckLevel1);
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
@@ -234,10 +228,10 @@ public class GameBoard {
                         mapSmallAdventureDecks.put(i, smallDeck);
                     }
                 }
-                if(gameMode==GameMode.LEVEL_2){
+                if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
                     //mescolo per distribuire casualmente
-                    for(int i=0;i<4;i++){
+                    for (int i = 0; i < 4; i++) {
                         Collections.shuffle(deckLevel2);
                         Collections.shuffle(deckLevel1);
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
@@ -282,20 +276,13 @@ public class GameBoard {
         leaderBoard = new LeaderBoard(gameMode);
     }
 
-    public boolean checkStatus() {
-        return !flightMode.equals(FlightMode.DEFAULT);
-    }
-
-    public void setFlightMode(FlightMode flightMode) {
-        this.flightMode = flightMode;
-    }
 
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
 
     public void mergeDecks() {
-        if(!mapSmallAdventureDecks.isEmpty()) {
+        if (!mapSmallAdventureDecks.isEmpty()) {
             AdventureCardDeck bufferDeck = new AdventureCardDeck();
             mapSmallAdventureDecks.forEach((index, smallDeck) -> smallDeck.stream().forEach(bufferDeck::add));
             mapSmallAdventureDecks.clear();
@@ -321,6 +308,15 @@ public class GameBoard {
         return landedPlayers;
     }
 
+    public void playerNoMoreInFlight(Player player) {
+        if (landedPlayers.contains(player))
+            throw new GameSettingsException("This player is already landed");
+        else {
+            landedPlayers.add(player);
+            leaderBoard.remove(player);
+        }
+    }
+
     public void drawAdventureCard(Player player) {
         if (player.equals(leaderBoard.getLeader())) {
             if (isFirstCard || currentCard.getIsFinished()) {
@@ -334,47 +330,43 @@ public class GameBoard {
             throw new GameSettingsException("You are not the leader of this turn");
     }
 
-    public void playerNoMoreInFlight(Player player) {
-        if (landedPlayers.contains(player))
-            throw new GameSettingsException("This player is already landed");
-        else {
-            landedPlayers.add(player);
-            leaderBoard.remove(player);
-        }
-    }
-
     public void userThrowDices(Player player) {
         isYourTurn(player);
         currentCard.rollDices();
     }
 
-    public void userPlayAdventureCard(Player player) {
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
+        isYourTurn(player);
+        currentCard.finishDecision(coordinates);
     }
 
-    public void userFinishDecision(Player player) {
-    }
-
-    public void userActivateComponent(Player player, Point coordinates) {
-    }
-
-    public void userActivateDaysUpdate() {
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens) {
+        isYourTurn(player);
+        currentCard.finishDecision(listOfTokens);
     }
 
     public void userLandOnPlanet(Player player) {
+        isYourTurn(player);
     }
 
-    public void userLandOnShip(Player player) {
+    public void userLandOnStationOrShip(Player player) {
+        isYourTurn(player);
+
     }
 
     public void userQuitGame(Player player) {
+
+    }
+
+    public void userStopFlight(Player player) {
+
     }
 
     public void addPlayerToLeaderboard(Player player) {
         if (leaderBoard.isEmpty()) {
             leaderBoard.add(player);
             currentPlayer = player;
-        }
-        else if(!leaderBoard.contains(player))
+        } else if (!leaderBoard.contains(player))
             leaderBoard.add(player);
     }
 
@@ -419,10 +411,6 @@ public class GameBoard {
             }
             player.addCredits(credits);
         });
-    }
-
-    public void setFlightModeToDefault() {
-        flightMode = FlightMode.DEFAULT;
     }
 
     public List<Player> minimumExposedComponents() {
@@ -516,15 +504,17 @@ public class GameBoard {
     }
 
     public void userLookSmallAdventureCardDeck(Player player, int index) {
-        if (mapSmallAdventureDecks.containsKey(index)) {
-            if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
-                mapSmallAdventureDecks.get(index).watch();
-                player.lockLastTile();
-                player.setSmallDeck(mapSmallAdventureDecks.get(index));
+        synchronized (mapSmallAdventureDecks.get(index)) {
+            if (mapSmallAdventureDecks.containsKey(index)) {
+                if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
+                    mapSmallAdventureDecks.get(index).watch();
+                    player.lockLastTile();
+                    player.setSmallDeck(mapSmallAdventureDecks.get(index));
+                } else
+                    throw new GameSettingsException("You cannot watch this deck");
             } else
-                throw new GameSettingsException("You cannot watch this deck");
-        } else
-            throw new OutOfDeckExceptions("This deck does not exist");
+                throw new OutOfDeckExceptions("This deck does not exist");
+        }
     }
 
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {

@@ -1,5 +1,4 @@
 package it.polimi.ingsw.is25am49.server.model;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 
@@ -30,10 +29,7 @@ public class Game {
         numPlayers = 0;
     }
     public boolean checkStatus(){
-        if(!mode.equals(GameMode.DEFAULT))
-            return board.checkStatus();
-        else
-            return false;
+        return !mode.equals(GameMode.DEFAULT);
     }
     public GameBoard getGameboard() {
         return board;
@@ -65,8 +61,11 @@ public class Game {
             isFinished = true;
             return winner;
     }
+    public boolean isTestFlight() {
+        return mode == GameMode.FLIGHT_MODE;
+    }
     public void userPlaceTimer(Player player){
-        if(!board.isTestFlight())
+        if(!isTestFlight())
             timer.place(player);
         else
             throw new GameSettingsException("This is a Test Flight");
@@ -83,9 +82,6 @@ public class Game {
     }
     public boolean userFinishShipboard(Player player){ return board.userFinishShipboard(player) == numPlayers;}
     public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}
-    public void adminSelectTypeFlight(FlightMode flightMode){
-        board.setFlightMode(flightMode);
-    }
     public void userStopLookSmallAdventureCardDeck(Player player, Integer index){ board.userStopLookSmallAdventureCardDeck(player, index);}
     public void addPlayersToLeaderBoard(){
         players.forEach(Player::completeShipboard);

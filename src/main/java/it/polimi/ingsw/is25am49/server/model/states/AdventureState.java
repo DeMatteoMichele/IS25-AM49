@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.server.model.states;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.FlightMode;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
@@ -27,9 +26,6 @@ public class AdventureState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void adminStartGame(Player player) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
-    }
-    public void adminSelectTypeFlight(Player player, FlightMode flightMode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userPlaceTile(Player player, Point coordinates) {
@@ -69,7 +65,9 @@ public class AdventureState extends State {
     public void userDrawAdventureCard(Player player) {
         gameSession.userDrawAdventureCard(player);
     }
-    public void userFinishDecisionActivating(Player player, Set<Point> coordinates){}
+    public void userFinishDecisionActivating(Player player, Set<Point> coordinates){
+
+    }
     public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){}
     public void userLandOnPlanet(Player player) {
     }
