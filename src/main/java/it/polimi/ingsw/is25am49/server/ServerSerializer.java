@@ -1,5 +1,7 @@
 package it.polimi.ingsw.is25am49.server;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -7,6 +9,7 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
@@ -28,9 +31,21 @@ public class ServerSerializer implements RemoteClient {
     }
 
     public void deSerializeStringFromClient(File fileJson) {
-        //Qua chiamerò i corretti metodi con i corretti parametri su ControllerServer
-        //Definire il Protocollo
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(fileJson);
+            String typeOfMessage = rootNode.get("typeOfMessage").asText();
+            String methodName = rootNode.get("methodName").asText();
+            String numberOfParams = rootNode.get("numberOfParams").asText();
+            JsonNode params = rootNode.get("params");
+            for(JsonNode param : params){
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
     public File serializeObjectFromServer(String method, List<Object> parameters) {
         //Definire il Protocollo
         return null;

@@ -1,0 +1,66 @@
+{
+  "typeOfMessage": "MSG",
+  "methodName": "Nome del Metodo sull'interfaccia",
+  "params": [
+    {
+      "typeOfCollection": "Nome della classe della collezione oppure stringa vuota se non lo è",
+      "nestedIsCollection": false,
+      "content": [
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        }
+      ]
+    },
+    {
+      "typeOfCollection": "",
+      "nestedIsCollection": true,
+      "content": [
+        {
+          "typeOfCollection": "Pair",
+          "nestedIsCollection": false,
+          "content": [
+            {
+              "className": "",
+              "content": {}
+            },
+            {
+              "className": "",
+              "content": {}
+            }
+          ]
+        },
+        {
+          "typeOfCollection": "Pair",
+          "nestedIsCollection": false,
+          "content": [
+            {
+              "className": "",
+              "content": {}
+            },
+            {
+              "className": "",
+              "content": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,6 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTimerMoveExceptio
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Timer {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

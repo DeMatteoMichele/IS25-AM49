@@ -68,10 +68,14 @@ public class AdventureState extends State {
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates){
 
     }
-    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){}
+    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){
+
+    }
     public void userLandOnPlanet(Player player) {
+
     }
     public void userLandOnStationOrShip(Player player) {
+
     }
     public void userQuitGame(Player player){
 
