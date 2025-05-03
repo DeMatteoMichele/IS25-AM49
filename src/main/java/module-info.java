@@ -6,6 +6,7 @@ module it.polimi.ingsw.is25am49 {
     requires java.desktop;
     requires com.fasterxml.jackson.databind;
     requires java.rmi;
+    requires org.jline;
 
     opens it.polimi.ingsw.is25am49.client to javafx.fxml;
     opens it.polimi.ingsw.is25am49.server to javafx.fxml;

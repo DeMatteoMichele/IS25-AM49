@@ -1,16 +1,17 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 
 import java.rmi.RemoteException;
 
 public class ClientController {
     public int playerID;
-    public ClientModel clientModel;
-    public RemoteServer serverMethods;
+    private GameSession gameSession;
+    private RemoteServer serverMethods;
 
-    public ClientController(){
-
+    public ClientController(GameSession gameSession) {
+        playerID = -1;  //non ancora assegnato
     }
 
     public ClientController(int connectionType){
@@ -22,8 +23,12 @@ public class ClientController {
         //todo playerID= setto l'id con il register client assegnato dal server switch con i due tipi di connessione
     }
 
-    public Integer getPlayerId(){
-        return playerID;
+    public void registerClientSocket(){
+        try {
+            serverMethods.registerClientSocket(playerID);
+        } catch (RemoteException e) {
+            System.out.println("registerClientSocket failed --> " + e.getMessage());
+        }
     }
 
     public void clientTestConnection(){
@@ -49,5 +54,8 @@ public class ClientController {
 
     public void setServerMethods(RemoteServer serverMethods) {
         this.serverMethods = serverMethods;
+    }
+    public RemoteServer getServerMethods() {
+        return serverMethods;
     }
 }

@@ -10,6 +10,5 @@ public class GraphicUserInterface implements UserInterface {
 
     }
     public static void main(String args[]){
-        ClientController controller = new ClientController();
     }
 }
