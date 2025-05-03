@@ -3,6 +3,8 @@ package it.polimi.ingsw.is25am49.server;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import javafx.util.Pair;
@@ -33,18 +35,73 @@ public class ServerSerializer implements RemoteClient {
     public void setClientHandler(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
     }
-
+    //se cambiano i parametri dei metodi bisogna modificare questo codice
     public void deSerializeStringFromClient(File fileJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
-            String numberOfParams = rootNode.get("numberOfParams").asText();
+            ArrayList<Object> parameters = new ArrayList<>();
             JsonNode params = rootNode.get("params");
-            for(JsonNode param : params){
-
+            for(JsonNode paramNode : params){
+                ArrayList<Object> collectionList = null;
+                HashSet<Object> collectionSet = null;
+                Object object = null;
+                String typeOfCollection = paramNode.get("typeOfCollection").asText();
+                Object collection;
+                collection = switch(typeOfCollection){
+                    case "Set" -> new HashSet<>();
+                    case "List" -> new ArrayList<>();
+                    default -> new Object();
+                };
+                if(collection instanceof ArrayList) {
+                    collectionList = (ArrayList<Object>) collection;
+                }
+                else if(collection instanceof HashSet) {
+                    collectionSet = (HashSet<Object>) collection;
+                }
+                else {
+                    object = collection;
+                }
+                JsonNode content = paramNode.get("content");
+                for(JsonNode contentNode : content){
+                    String className = contentNode.get("className").asText();
+                    String contentObject  = contentNode.get("contentObject").asText();
+                    Object value;
+                    value = switch(className){
+                        case "Pair" -> mapper.readValue(contentObject, Pair.class);
+                        case "Token" -> mapper.readValue(contentObject, Token.class);
+                        case "Color" -> mapper.readValue(contentObject, Color.class);
+                        case "int" -> mapper.readValue(contentObject, int.class);
+                        case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
+                        case "String" -> mapper.readValue(contentObject, String.class);
+                        case "Point" -> mapper.readValue(contentObject, Point.class);
+                        case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
+                        case "boolean" -> mapper.readValue(contentObject, boolean.class);
+                        default -> new Object();
+                    };
+                    if(collection instanceof ArrayList){
+                        collectionList.add(value);
+                    }
+                    else if(collection instanceof HashSet){
+                        collectionSet.add(value);
+                    }
+                    else {
+                        object = value;
+                    }
+                }
+                if(collection instanceof ArrayList){
+                    parameters.add(collectionList);
+                }
+                else if(collection instanceof HashSet){
+                    parameters.add(collectionSet);
+                }
+                else{
+                    parameters.add(object);
+                }
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -201,7 +258,7 @@ public class ServerSerializer implements RemoteClient {
     public int deserializeHandshake(File fileJson) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
         try {
-            String stringa = java.nio.file.Files.readString(fileJson.toPath()).trim();
+            String stringa = Files.readString(fileJson.toPath()).trim();
             int clientId = Integer.parseInt(stringa);
             if (clientId == -1) {
                 i++;

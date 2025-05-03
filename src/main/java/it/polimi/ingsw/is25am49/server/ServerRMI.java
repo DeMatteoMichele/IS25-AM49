@@ -11,8 +11,6 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -150,7 +148,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteServer {
     }
 
     @Override
-    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException {
+    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
 
     }
 

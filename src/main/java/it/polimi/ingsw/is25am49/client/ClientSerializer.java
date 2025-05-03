@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -171,7 +171,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException {
+    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
 
     }
 

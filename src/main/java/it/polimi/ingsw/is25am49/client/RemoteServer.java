@@ -12,6 +12,7 @@ import java.awt.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public interface RemoteServer extends Remote {
@@ -39,7 +40,7 @@ public interface RemoteServer extends Remote {
 
     void userThrowDices(int playerId) throws RemoteException;
     void userDrawAdventureCard(int playerId) throws RemoteException;
-    void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException;
+    void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException;
     void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException;
     void userAcceptPrizes(int playerId,boolean wantsRewards) throws RemoteException;
     void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException;

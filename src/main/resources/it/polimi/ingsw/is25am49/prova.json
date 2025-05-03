@@ -4,7 +4,6 @@
   "params": [
     {
       "typeOfCollection": "Nome della classe della collezione oppure stringa vuota se non lo è",
-      "nestedIsCollection": false,
       "content": [
         {
           "className": "",
@@ -29,36 +28,15 @@
       ]
     },
     {
-      "typeOfCollection": "",
-      "nestedIsCollection": true,
+      "typeOfCollection": "ArrayList",
       "content": [
         {
-          "typeOfCollection": "Pair",
-          "nestedIsCollection": false,
-          "content": [
-            {
-              "className": "",
-              "content": {}
-            },
-            {
-              "className": "",
-              "content": {}
-            }
-          ]
+          "className": "Pair",
+          "content": {}
         },
         {
-          "typeOfCollection": "Pair",
-          "nestedIsCollection": false,
-          "content": [
-            {
-              "className": "",
-              "content": {}
-            },
-            {
-              "className": "",
-              "content": {}
-            }
-          ]
+          "className": "Pair",
+          "content": {}
         }
       ]
     }
