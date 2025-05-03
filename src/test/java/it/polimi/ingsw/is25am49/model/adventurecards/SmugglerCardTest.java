@@ -52,7 +52,7 @@ class SmugglerCardTest {
         adventureDeck = new AdventureCardDeck();
         listEffects.add(new EffectWinGoods("WinGoods", 3,2,1,1));
         listEffects.add(new EffectLoseGoods("LoseGoods", 3));
-        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, 2,  3, 3,2,1,1,3 );
+        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, "smuggler",2,  3, 3,2,1,1,3 );
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 

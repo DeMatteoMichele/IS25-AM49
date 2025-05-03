@@ -38,8 +38,8 @@ class AdventureCardDeckTest {
         gameBoard.addPlayerToLeaderboard(player1);
         deck2 = new AdventureCardDeck();
         effects.add(cannonata);
-        card = new PlanetCard(gameBoard,"pianeti",3,1,planets);
-        card2 = new EpidemyCard(gameBoard,"epidemia", 2);
+        card = new PlanetCard(gameBoard,"pianeti",3,"pianeti",1,planets);
+        card2 = new EpidemyCard(gameBoard,"epidemia", 2,"epidemia");
         gameBoard.setMainAdventureDeck(deck2);
 
 

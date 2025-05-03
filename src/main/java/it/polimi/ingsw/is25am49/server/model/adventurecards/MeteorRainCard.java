@@ -22,8 +22,8 @@ public class MeteorRainCard extends AdventureCard {
 
     List<CardEffect> listEffects = new ArrayList<>();
 
-    public MeteorRainCard(GameBoard gameBoard, String description, int level, List<CardEffect> ListEffects) {
-        super(gameBoard, description, level);
+    public MeteorRainCard(GameBoard gameBoard, String description, int level,String name, List<CardEffect> ListEffects) {
+        super(gameBoard, description, level,name);
         listEffects.addAll(ListEffects);
     }
 

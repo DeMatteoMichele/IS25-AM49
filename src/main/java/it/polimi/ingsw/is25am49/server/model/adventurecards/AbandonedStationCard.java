@@ -23,8 +23,8 @@ public class AbandonedStationCard extends AdventureCard {
     private final List<CardEffect> listEffects;
     private final int daysLost;
     private final int lostAstronauts;
-    public AbandonedStationCard(GameBoard gameBoard, String description, int level,int daysLost, int minimumAstronauts, int redGoods,int yellowGoods,int greenGoods, int blueGoods ){
-        super(gameBoard,description,level);
+    public AbandonedStationCard(GameBoard gameBoard, String description, int level, String name,int daysLost, int minimumAstronauts, int redGoods,int yellowGoods,int greenGoods, int blueGoods ){
+        super(gameBoard,description,level,name);
         this.daysLost = daysLost;
         this.lostAstronauts = minimumAstronauts;
         listEffects = new ArrayList<>();

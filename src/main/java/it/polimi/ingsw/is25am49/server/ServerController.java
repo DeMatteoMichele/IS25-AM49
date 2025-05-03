@@ -34,6 +34,10 @@ public class ServerController implements RemoteServer {
         System.out.println("server - trying to callback [ID:"+playerId+"] ...");
     }
 
+    public void addPlayerToLobby(int playerId, Player player) {
+        players.put(playerId, Optional.of(player));
+    }
+
     @Override
     public void serverTestConnection(int playerId) throws RemoteException {
 
@@ -62,12 +66,20 @@ public class ServerController implements RemoteServer {
 
     @Override
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-
+        //devo cercare il player corrispondente in base al player id
+        Optional<Player> playerOpt = players.get(playerId);
+        if (playerOpt.isPresent()) {
+            Player player = playerOpt.get();
+            gameSession.getState().userPlaceTile(player, coordinates);
+        } else {
+            throw new IllegalArgumentException("Player con ID " + playerId + " non trovato");
+        }
+        //chiamare callback su remoteclient
     }
 
     @Override
     public void userPickTile(int playerId, Point coordinates) throws RemoteException {
-
+        //gameSession.getState().userPickTile(player,coordinates);
     }
 
     @Override

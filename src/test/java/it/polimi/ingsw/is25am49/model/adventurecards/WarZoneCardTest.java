@@ -80,7 +80,7 @@ class WarZoneCardTest {
         gameBoard = new GameBoard();
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         deck = new AdventureCardDeck();
-        deck.add(new WarZoneCard(gameBoard,"War Zone",1,3,2,effects));
+        deck.add(new WarZoneCard(gameBoard,"War Zone",1, "war",3,2,effects));
         ship1 = new ShipBoard(1,2);
         ship2 = new ShipBoard(1,1);
         player1.setShipBoard(ship1);

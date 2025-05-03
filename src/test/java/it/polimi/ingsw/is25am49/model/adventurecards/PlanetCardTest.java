@@ -78,8 +78,8 @@ class PlanetCardTest {
         coordinates2.add(new Pair<>(coordinate2, Token.YELLOW_GOODS));
         coordinates2.add(new Pair<>(coordinate2, Token.YELLOW_GOODS));
 
-        deck.add(new PlanetCard(gameBoard,"Planet Card",3,1,planets));
-        deck.add(new PlanetCard(gameBoard,"Planet Card",9,1,planets2));
+        deck.add(new PlanetCard(gameBoard,"Planet Card",3,"planet",1,planets));
+        deck.add(new PlanetCard(gameBoard,"Planet Card",9,"planet",1,planets2));
         gameBoard.setMainAdventureDeck(deck);
 
 

@@ -16,8 +16,8 @@ public class PlanetCard extends AdventureCard {
 
     protected final List<Planet> planets=new ArrayList<Planet>();
     private final int daysLost;
-    public PlanetCard(GameBoard gameBoard, String description, int level,int daysLost, List<Planet> planets) {
-        super(gameBoard,description, level);
+    public PlanetCard(GameBoard gameBoard, String description, int level,String name,int daysLost, List<Planet> planets) {
+        super(gameBoard,description, level,name);
         this.daysLost = daysLost;
         this.planets.addAll(planets);
     }

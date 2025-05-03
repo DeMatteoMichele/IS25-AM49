@@ -1,19 +1,23 @@
 [
   {
     "level" : 1,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level" : 1,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level" : 1,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level" : 1,
-    "description" : "MeteorRainCard",
+    "name" : "MeteorRainCard",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -44,7 +48,8 @@
   },
   {
     "level" :1,
-    "description" : "MeteorRainCard",
+    "name" : "MeteorRainCard",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -65,7 +70,8 @@
   },
   {
     "level": 1,
-    "description" : "PlanetCard",
+    "name" : "PlanetCard",
+    "description" : "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost" : 3,
     "planets" : [
       {
@@ -96,7 +102,8 @@
   },
   {
     "level" : 1,
-    "description" : "PlanetCard",
+    "name" : "PlanetCard",
+    "description" : "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost" : 2,
     "planets" : [
       {
@@ -121,7 +128,8 @@
   },
   {
     "level" : 1,
-    "description" : "PlanetCard",
+    "name" : "PlanetCard",
+    "description" : "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost" : 3,
     "planets" : [
       {
@@ -140,7 +148,8 @@
   },
   {
     "level" : 1,
-    "description" : "PlanetCard",
+    "name" : "PlanetCard",
+    "description" : "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost" : 1,
     "planets" : [
       {
@@ -165,14 +174,16 @@
   },
   {
     "level" : 1,
-    "description" : "AbandonedShipCard",
+    "name" : "AbandonedShipCard",
+    "description" : "You found an Abandoned Ship—lucky you! Spend the shown crew tokens and flight days to repair it and gain the indicated credits. Only one player can do this. The leader chooses first; if they pass, the next player may take it.",
     "daysLost" : 1,
     "creditsEarned" : 3,
     "lostAstronauts" : 2
   },
   {
     "level": 1,
-    "description" : "AbandonedStationCard",
+    "name" : "AbandonedStationCard",
+    "description" : "To search it, you need at least the number of crew (humans + aliens) shown on the card. Only one player may do this. The leader chooses first; if they can’t or won’t, the next in route order may. Once someone docks, others miss out. Load the shown goods, then move your rocket back on the route by the listed flight days. No crew is lost here.",
     "daysLost" : 1,
     "minimumAstronauts" : 6,
     "redGoods" : 2,
@@ -182,7 +193,8 @@
   },
   {
     "level": 2,
-    "description" : "SmugglerCard",
+    "name" : "SmugglerCard",
+    "description" : "Enemies attack in route order. The leader faces them first. If they win, they get the reward; if they lose, they suffer the penalty and the enemy attacks the next player. In case of a tie, the enemy moves on without consequences for the player. Players calculate their firepower and pay batteries for double cannons.",
     "daysLost" : 1,
     "minimumFirepower" : 8,
     "redGoods" : 1,
@@ -193,11 +205,13 @@
   },
   {
     "level": 2,
-    "description" : "StarDustCard"
+    "name" : "StarDustCard",
+    "description" : "Star Dust, which causes each player to lose 1 day of flight for each exposed connector (each exposed connector counts only once, regardless of whether it’s single, double, or universal). In reverse order of route, starting with the last player, each player counts their exposed connectors and moves their rocket back the corresponding number of spaces."
   },
   {
     "level" : 0,
-    "description" : "SmugglerCard",
+    "name" : "SmugglerCard",
+    "description" : "Enemies attack in route order. The leader faces them first. If they win, they get the reward; if they lose, they suffer the penalty and the enemy attacks the next player. In case of a tie, the enemy moves on without consequences for the player. Players calculate their firepower and pay batteries for double cannons.",
     "daysLost" : 1,
     "minimumFirepower" : 4,
     "redGoods" : 0,
@@ -208,19 +222,23 @@
   },
   {
     "level": 2,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level": 2,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level": 2,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level": 2,
-    "description" : "MeteorRainCard",
+    "name" : "MeteorRainCard",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -251,7 +269,8 @@
   },
   {
     "level" : 2,
-    "description" : "MeteorRainCard",
+    "name" : "MeteorRainCard",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -277,7 +296,8 @@
   },
   {
     "level": 2,
-    "description": "MeteorRainCard",
+    "name": "MeteorRainCard",
+    "description": "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects": [
       {
         "name": "effectMeteorRain",
@@ -308,7 +328,8 @@
   },
   {
     "level": 2,
-    "description": "PlanetCard",
+    "name": "PlanetCard",
+    "description": "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost": 4,
     "planets": [
       {
@@ -333,7 +354,8 @@
   },
   {
     "level": 2,
-    "description": "PlanetCard",
+    "name": "PlanetCard",
+    "description": "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost": 3,
     "planets": [
       {
@@ -352,7 +374,8 @@
   },
   {
     "level": 2,
-    "description": "PlanetCard",
+    "name": "PlanetCard",
+    "description": "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost": 2,
     "planets": [
       {
@@ -383,7 +406,8 @@
   },
   {
     "level": 2,
-    "description": "PlanetCard",
+    "name": "PlanetCard",
+    "description": "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost" : 3,
     "planets" : [
       {
@@ -411,11 +435,13 @@
 
   {
     "level": 0,
-    "description" : "StarDustCard"
+    "name": "StarDustCard",
+    "description" : "Star Dust, which causes each player to lose 1 day of flight for each exposed connector (each exposed connector counts only once, regardless of whether it’s single, double, or universal). In reverse order of route, starting with the last player, each player counts their exposed connectors and moves their rocket back the corresponding number of spaces."
   },
   {
     "level" : 0,
-    "description" : "MeteorRainCard",
+    "name" : "MeteorRainCard",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -436,7 +462,8 @@
   },
   {
     "level" : 0,
-    "description" : "AbandonedStationCard",
+    "name" : "AbandonedStationCard",
+    "description" : "To search it, you need at least the number of crew (humans + aliens) shown on the card. Only one player may do this. The leader chooses first; if they can’t or won’t, the next in route order may. Once someone docks, others miss out. Load the shown goods, then move your rocket back on the route by the listed flight days. No crew is lost here.",
     "daysLost" : 1,
     "minimumAstronauts" : 5,
     "redGoods" : 0,
@@ -446,18 +473,21 @@
   },
   {
     "level" : 0,
-    "description" : "AbandonedShipCard",
+    "name" : "AbandonedShipCard",
+    "description" : "You found an Abandoned Ship—lucky you! Spend the shown crew tokens and flight days to repair it and gain the indicated credits. Only one player can do this. The leader chooses first; if they pass, the next player may take it.",
     "daysLost" : 1,
     "creditsEarned" : 4,
     "lostAstronauts" : 3
   },
   {
     "level" : 0,
-    "description" : "SpazioAperto"
+    "name" : "SpazioAperto",
+    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
   },
   {
     "level" : 0,
-    "description" : "WarZoneCard",
+    "name" : "WarZoneCard",
+    "description" : "The War Zone card has 3 criteria with penalties for the weakest player:\n\n1 Least Crew: Loses 3 days of flight.\n2 Least Engine Power: Loses two crew members.\n3 Least Firepower: Faces light and heavy cannon attacks. Light can be defended with a shield (battery token), but heavy cannot be defended.\n\nIn ties, the player ahead on the route suffers the penalty.",
     "daysLost" : 3,
     "lostAstronauts" : 2,
     "effects" : [
@@ -476,7 +506,8 @@
   },
   {
     "level": 2,
-    "description" : "WarZoneCard",
+    "name": "WarZoneCard",
+    "description" : "The War Zone card has 3 criteria with penalties for the weakest player:\n\n1 Least Crew: Loses 3 days of flight.\n2 Least Engine Power: Loses two crew members.\n3 Least Firepower: Faces light and heavy cannon attacks. Light can be defended with a shield (battery token), but heavy cannot be defended.\n\nIn ties, the player ahead on the route suffers the penalty.",
     "daysLost" : 4,
     "lostAstronauts" : 3,
     "effects" : [
@@ -504,21 +535,24 @@
   },
   {
     "level": 2,
-    "description" : "AbandonedShipCard",
+    "name": "AbandonedShipCard",
+    "description" : "You found an Abandoned Ship—lucky you! Spend the shown crew tokens and flight days to repair it and gain the indicated credits. Only one player can do this. The leader chooses first; if they pass, the next player may take it.",
     "daysLost" : 1,
     "creditsEarned" : 6,
     "lostAstronauts" : 4
   },
   {
     "level": 2,
-    "description" : "AbandonedShipCard",
+    "name": "AbandonedShipCard",
+    "description" : "You found an Abandoned Ship—lucky you! Spend the shown crew tokens and flight days to repair it and gain the indicated credits. Only one player can do this. The leader chooses first; if they pass, the next player may take it.",
     "daysLost" : 2,
     "creditsEarned" : 8,
     "lostAstronauts" : 5
   },
   {
     "level": 2,
-    "description" : "AbandonedStationCard",
+    "name" : "AbandonedStationCard",
+    "description" : "To search it, you need at least the number of crew (humans + aliens) shown on the card. Only one player may do this. The leader chooses first; if they can’t or won’t, the next in route order may. Once someone docks, others miss out. Load the shown goods, then move your rocket back on the route by the listed flight days. No crew is lost here.",
     "daysLost" : 1,
     "minimumAstronauts" : 7,
     "redGoods" : 1,
@@ -528,7 +562,8 @@
   },
   {
     "level": 2,
-    "description" : "AbandonedStationCard",
+    "name" : "AbandonedStationCard",
+    "description" : "To search it, you need at least the number of crew (humans + aliens) shown on the card. Only one player may do this. The leader chooses first; if they can’t or won’t, the next in route order may. Once someone docks, others miss out. Load the shown goods, then move your rocket back on the route by the listed flight days. No crew is lost here.",
     "daysLost" : 2,
     "minimumAstronauts" : 8,
     "redGoods" : 0,
@@ -538,12 +573,14 @@
   },
   {
     "level": 2,
-    "description" : "SabotageCard"
+    "name" : "SabotageCard",
+    "description" : "Sabotage destroys a random component of the ship with the least crew. In case of a tie, the ship furthest ahead on the route is targeted. The player being sabotaged rolls 2 dice for the column and then rolls again for the row. If no components are at those coordinates, they reroll twice more. If no component is hit after three rolls, the sabotage fails and nothing happens."
   },
 
   {
     "level" : 0,
-    "description" : "PlanetCard",
+    "name" : "PlanetCard",
+    "description" : "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost" : 2,
     "planets" : [
       {
@@ -568,7 +605,8 @@
   },
   {
     "level": 1,
-    "description" : "PiratesCard",
+    "name" : "PiratesCard",
+    "description" : "If the Pirates defeat you, your ship comes under enemy fire (the card indicates the firepower and direction of the shots). Track all defeated players and have the first defeated player roll two dice to determine the row or column for each shot. This roll applies to all defeated players.",
     "daysLost" : 1,
     "minimumFirepower" : 5,
     "creditsEarned" : 4,
@@ -592,7 +630,8 @@
   },
   {
     "level": 2,
-    "description" : "PiratesCard",
+    "name" : "PiratesCard",
+    "description" : "If the Pirates defeat you, your ship comes under enemy fire (the card indicates the firepower and direction of the shots). Track all defeated players and have the first defeated player roll two dice to determine the row or column for each shot. This roll applies to all defeated players.",
     "daysLost" : 2,
     "minimumFirepower" : 6,
     "creditsEarned" : 7,
@@ -616,7 +655,8 @@
   },
   {
     "level": 1,
-    "description" : "SlaverCard",
+    "name" : "SlaverCard",
+    "description" : "If the Slavers defeat you, they force you to give up part of your crew. You choose which humans or aliens to lose in exchange for your freedom.",
     "daysLost" : 1,
     "minimumFirepower" : 6,
     "creditsEarned" : 5,
@@ -624,7 +664,8 @@
   },
   {
     "level": 2,
-    "description" : "SlaverCard",
+    "name" : "SlaverCard",
+    "description" : "If the Slavers defeat you, they force you to give up part of your crew. You choose which humans or aliens to lose in exchange for your freedom.",
     "daysLost" : 2,
     "minimumFirepower" : 7,
     "creditsEarned" : 8,
@@ -632,7 +673,8 @@
   },
   {
     "level": 2,
-    "description" : "EpidemyCard"
+    "name" : "EpidemicCard",
+    "description" : "The Epidemic removes one crew member from each connected occupied cabin. To avoid this, ensure no adjacent cabins or clear one before the epidemic hits."
   }
 
 ]

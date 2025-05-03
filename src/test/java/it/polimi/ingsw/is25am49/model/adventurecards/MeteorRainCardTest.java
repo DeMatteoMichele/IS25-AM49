@@ -61,7 +61,7 @@ class MeteorRainCardTest {
         listEffects.add(new EffectMeteoriti("Meteorite1", 1, Orientation.NORTH));
         listEffects.add(new EffectMeteoriti("Meteorite2", 2, Orientation.SOUTH));
         listEffects.add(new EffectMeteoriti("Meteorite3", 1, Orientation.EAST));
-        card1 = new MeteorRainCard(gameBoard, "Meteorrain", 2, listEffects);
+        card1 = new MeteorRainCard(gameBoard, "Meteorrain", 2,"meteor", listEffects);
         spyCard = Mockito.spy(card1);
 
         gameBoard.setMainAdventureDeck(adventureDeck);

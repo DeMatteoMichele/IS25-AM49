@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.model;
 import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.adventurecards.AbandonedShipCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.PlanetCard;
 import it.polimi.ingsw.is25am49.server.model.enums.*;
@@ -103,6 +104,11 @@ class GameBoardTest {
 
     }
 
+    @Test
+    void printCard(){
+        AdventureCard card = new AbandonedShipCard(gameBoard, "AbandonedShip", 2, "AbandonedShipCard", 1, 100, 3);
+        gameBoard.printCard(card);
+    }
     @Test
     void configurateFlight() {
     }
@@ -213,7 +219,8 @@ class GameBoardTest {
         assertEquals(12,gameBoard.getMainAdventureDeck().size());
         for(int i = 0; i < gameBoard.getMainAdventureDeck().size(); i++) {
             AdventureCard card = gameBoard.getMainAdventureDeck().getCard(i);
-            System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+            System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+            System.out.println("\n");
         }
         gameBoard.drawAdventureCard(gameBoard.getLeader());
     }
@@ -221,9 +228,11 @@ class GameBoardTest {
     void generateDeck() {
         gameBoard.generateSmallDecks(GameMode.FLIGHT_MODE);
 //        assertEquals(8, gameBoard.getMainAdventureDeck().size());
+
         for(int i = 0; i < gameBoard.getMainAdventureDeck().size(); i++) {
             AdventureCard card = gameBoard.getMainAdventureDeck().getCard(i);
-            System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+            System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+            System.out.println("\n");
         }
     }
     @Test
@@ -237,11 +246,13 @@ class GameBoardTest {
             System.out.println("Small Deck "+i);
             for(int j=0;j<gameBoard.getSmallAdventureDeck(i).size();j++){
                 AdventureCard card = gameBoard.getSmallAdventureDeck(i).getCard(j);
-                System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+                System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+                System.out.println("\n");
             }
         }
 
     }
+
     @Test
     void generateDeck3(){
         gameBoard.generateSmallDecks(GameMode.LEVEL_2);
@@ -253,7 +264,8 @@ class GameBoardTest {
             System.out.println("Small Deck "+i);
             for(int j=0;j<gameBoard.getSmallAdventureDeck(i).size();j++){
                 AdventureCard card = gameBoard.getSmallAdventureDeck(i).getCard(j);
-                System.out.println("Description: " + card.getDescription() + " Level: " + card.getLevel());
+                System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+                System.out.println("\n");
             }
         }
     }
