@@ -7,6 +7,7 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
@@ -17,10 +18,13 @@ public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     private final BlockingQueue<File> filesFromSocketQueue;
+    private int i = -1;
+
 
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
         filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
+
     }
 
     public void setClientHandler(ClientHandler clientHandler) {
@@ -180,7 +184,22 @@ public class ServerSerializer implements RemoteClient {
     }
 
     public int deserializeHandshake(File fileJson) {
-        //ritorna id del client
-        return 2;
+        // ritorna id del client e mette il pacchetto nella coda outgoing unicast
+        try {
+            String stringa = java.nio.file.Files.readString(fileJson.toPath()).trim();
+            int clientId = Integer.parseInt(stringa);
+            if (clientId == -1) {
+                i++;
+                clientId = i;
+            }
+            String stringResponse = String.valueOf(clientId);
+            File fileJsonResponse = new File("handshake_response.json");
+            Files.writeString(fileJsonResponse.toPath(), stringResponse);
+            clientHandler.putFileInTheOutGoingFileQueue(fileJsonResponse);
+            return clientId;
+        } catch (Exception e) {
+            System.err.println("Errore nella deserializzazione dell'handshake: " + e.getMessage());
+            return -1;
+        }
     }
 }

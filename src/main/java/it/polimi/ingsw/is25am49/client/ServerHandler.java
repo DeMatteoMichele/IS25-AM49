@@ -17,7 +17,8 @@ public class ServerHandler {
     private DataInputStream inputStream;
     private final ExecutorService executors;
     private final ScheduledExecutorService scheduler;
-    private volatile boolean timeIsNotDone;
+    private ScheduledFuture<?> heartBeatTask;
+    private volatile boolean timeIsDone;
     private final int thresholdTries;
     private final AtomicBoolean connected;
     private final int secondsForReconnection;
@@ -31,7 +32,6 @@ public class ServerHandler {
     /**
      * Constructor for the ServerHandler class.
      * It initializes the server IP, port, client serializer, and other necessary variables.
-     * It also attempts to establish the first connection to the server and starts the heart beat agent.
      *
      * @param serverIP   The IP address of the server.
      * @param serverPort The port number of the server.
@@ -47,21 +47,23 @@ public class ServerHandler {
         secondsForReconnection = 5;
         outputStreamLock = new Object();
         executors = Executors.newFixedThreadPool(10);
-        firstConnection();
     }
 
     /**
-     * This method is used to establish the first connection to the server.
-     * It tries to connect to the server and starts the heart beat agent.
-     * If it fails, it disconnects the client..
+     * This method is used to establish connection to the server.
+     * It creates a new socket with serverIp and serverPort and initializes the input and output streams.
+     * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method).
+     * Starts the executor to make it listen to the server. Starts the heart beat agent.
+     * @throws IOException If an error occurs while establishing the connection.
      */
-    private void firstConnection() {
-        try {
-            tryConnection(serverPort);
-            scheduler.scheduleWithFixedDelay(this::heartBeat, 5, 5, TimeUnit.SECONDS);
-        } catch (IOException e) {
-            disconnectAndTryToReconnect();
-        }
+    private void connection() throws IOException {
+        clientSocket = new Socket(serverIP, serverPort);
+        outputStream = new DataOutputStream(clientSocket.getOutputStream());
+        inputStream = new DataInputStream(clientSocket.getInputStream());
+        executors.submit(this::listenToServer);
+        executors.submit(this::processOutGoingQueue);
+        connected.set(true);
+        startHeartBeat();
     }
 
     /**
@@ -84,21 +86,6 @@ public class ServerHandler {
                 }
             }
         }
-    }
-
-    /**
-     * This method is used to establish a connection to the server.
-     * It creates a new socket with serverIp and serverPort and initializes the input and output streams.
-     * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method).
-     * Starts the executor to make it listen to the server.
-     */
-    private void tryConnection(int port) throws IOException {
-        clientSocket = new Socket(serverIP, port);
-        outputStream = new DataOutputStream(clientSocket.getOutputStream());
-        inputStream = new DataInputStream(clientSocket.getInputStream());
-        executors.submit(this::listenToServer);
-        executors.submit(this::processOutGoingQueue);
-        connected.set(true);
     }
 
     /**
@@ -165,6 +152,7 @@ public class ServerHandler {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();
                 }
+                stopHeartBeat();
                 System.out.println("submitting the connection attempt");
                 executors.submit(this::attemptToConnect);
             } catch (IOException e) {
@@ -185,7 +173,7 @@ public class ServerHandler {
             try {
                 numberOfTries++;
                 System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
-                tryConnection(serverPort);
+                connection();
                 System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
                 break;
             } catch (IOException e) {
@@ -203,11 +191,11 @@ public class ServerHandler {
      * The while ensures that the thread is really waiting until timeIsNotDone becomes false.
      */
     private void timer() {
-        timeIsNotDone = true;
+        timeIsDone = true;
         scheduler.schedule(() -> {
-            timeIsNotDone = false;
+            timeIsDone = false;
         }, secondsForReconnection, TimeUnit.SECONDS);
-        while (timeIsNotDone) {
+        while (timeIsDone) {
         }
     }
 
@@ -262,7 +250,7 @@ public class ServerHandler {
                 outputStream.writeInt(jsonContent.length());
                 outputStream.write(jsonContent.getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();
-                System.out.println("Message: " + jsonContent);
+                System.out.println("Message sent: " + jsonContent);
             } catch (IOException e) {
                 System.out.println("Error while sending message to server, disconnecting");
                 disconnectAndTryToReconnect();
@@ -289,4 +277,29 @@ public class ServerHandler {
     public void setClientSerializer(ClientSerializer clientSerializer) {
         this.clientSerializer = clientSerializer;
     }
+
+    /**
+     * Starts the heartbeat task.
+     */
+    private void startHeartBeat() {
+        heartBeatTask = scheduler.scheduleWithFixedDelay(this::heartBeat, 10, 5, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Stops the heartbeat task.
+     */
+    private void stopHeartBeat() {
+        if (heartBeatTask != null) {
+            heartBeatTask.cancel(false);
+        }
+    }
+
+    public void connectCommand() {
+        try {
+            connection();
+        } catch (IOException e) {
+            System.out.println("Error while trying to connect to the server: " + e.getMessage());
+        }
+    }
 }
+

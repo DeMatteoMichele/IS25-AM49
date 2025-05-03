@@ -71,6 +71,7 @@ public class ClientHandler {
             if ((clientSockets.size() < maxClients) || (clientSockets.size() == maxClients && connections.containsKey(clientId))) {
                 System.out.println("Client connected: " + clientId);
                 connectClient(socket, inputStream, outputStream, clientId);
+                System.out.println("size: " + clientSockets.size());
             } else {
                 System.out.println("Unwanted connection");
                 socket.close();
@@ -102,17 +103,13 @@ public class ClientHandler {
      * @param clientId The clientId of the client being connected.
      */
     private void connectClient(Socket socket, DataInputStream clientInputStream, DataOutputStream clientOutputStream, int clientId) {
-        try {
             lastHeartBeats.put(clientId, System.currentTimeMillis());
             clientSockets.put(clientId, socket);
-            outputStreams.put(clientId, new DataOutputStream(socket.getOutputStream()));
-            inputStreams.put(clientId, new DataInputStream(socket.getInputStream()));
+            outputStreams.put(clientId, clientOutputStream);
+            inputStreams.put(clientId, clientInputStream);
             connections.put(clientId, true);
             InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
             executors.submit(() -> listenToClient(clientId));
-        } catch (IOException e) {
-            System.out.println("Error while connecting to client " + clientId);
-        }
     }
 
     /**
@@ -126,7 +123,7 @@ public class ClientHandler {
         scheduler.scheduleAtFixedRate(() -> {
             for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
                 if (connections.get(entry.getKey())) {
-                    if (System.currentTimeMillis() - entry.getValue() > 15000) {
+                    if (System.currentTimeMillis() - entry.getValue() > 20000) {
                         System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
                         shutDownClientRelated(entry.getKey());
                     }
