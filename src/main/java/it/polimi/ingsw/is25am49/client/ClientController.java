@@ -1,15 +1,16 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 
 import java.rmi.RemoteException;
 
 public class ClientController {
     public int playerID;
-    public ClientModel clientModel;
-    public RemoteServer serverMethods;
+    private GameSession gameSession;
+    private RemoteServer serverMethods;
 
-    public ClientController(){
+    public ClientController(GameSession gameSession) {
         playerID = -1;  //non ancora assegnato
     }
 
@@ -53,5 +54,8 @@ public class ClientController {
 
     public void setServerMethods(RemoteServer serverMethods) {
         this.serverMethods = serverMethods;
+    }
+    public RemoteServer getServerMethods() {
+        return serverMethods;
     }
 }

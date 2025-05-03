@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -25,11 +26,13 @@ public class ClientSerializer implements RemoteServer {
     private ServerHandler serverHandler;
     private BlockingQueue<File> filesFromSocketQueue;
     private final ExecutorService executors;
+    private GameSession gameSession;
 
-    public ClientSerializer() {
-        filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
+    public ClientSerializer(GameSession session) {
+        this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000,true);
         executors = Executors.newFixedThreadPool(20);
         executors.submit(this::processFilesFromSocketQueue);
+        gameSession = session;
     }
 
     private void processFilesFromSocketQueue() {    // TODO: implementare il metodo
@@ -42,7 +45,6 @@ public class ClientSerializer implements RemoteServer {
     }
 
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
-
     /**
      * This method is used to put files in the queue.
      * It is called by ServerHandler after receiving a message from server
@@ -101,6 +103,7 @@ public class ClientSerializer implements RemoteServer {
             System.out.println("Errore durante la creazione del file di handshake: " + e.getMessage());
         }
     }
+
 
     @Override
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException {

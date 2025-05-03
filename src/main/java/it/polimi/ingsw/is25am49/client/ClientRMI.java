@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -11,52 +12,31 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Set;
 
 public class ClientRMI implements RemoteClient {
-    private RemoteServer serverStub;
-    public ClientController clientController;
+    public GameSession gameSession;
     private Integer playerID;
 
     private boolean isConnected;
 
-    public ClientRMI() {
-        //il client si connette al server
+    public ClientRMI() {}
+    public ClientRMI(GameSession session) {
+        gameSession = session;
+    }
+
+    RemoteServer connect(String serverIP, int serverPort) throws RemoteException {
+        RemoteServer serverStub = null;
         try {
-            Registry reg = LocateRegistry.getRegistry("localhost", 1099);
-            serverStub = (RemoteServer) reg.lookup("ServerController");
-            isConnected = true;
-            System.out.println("Client successfully connected to [localhost , 1099]");
+            Registry reg = LocateRegistry.getRegistry(serverIP, 1099);//eventualmente serverPort
+            serverStub = (RemoteServer) reg.lookup("ServerController");//nome serverController da cambiare
+            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+
         }catch(RemoteException | NotBoundException e){
             System.out.println("errore creazione stub --> "+e.getMessage());
-            isConnected = false;
         }
-    }
-
-    public RemoteServer getServerStub() {
         return serverStub;
-    }
-    public static void main(String[] args){
-        try {
-            //il client registra sul server
-            ClientRMI clientRMI = new ClientRMI();
-
-            ClientController controller = new ClientController();
-            controller.serverMethods=clientRMI.getServerStub();
-
-            System.out.println("trying to log in to the server ...");
-            UnicastRemoteObject.exportObject(clientRMI, 0);
-            //controller.playerID=clientRMI.getServerStub().registerClientRMI(clientRMI);
-            System.out.println("client logged");
-
-            controller.clientTestConnection();
-
-        } catch (RemoteException e ) {
-            System.out.println("errore client si registra su server: "+ e.getMessage());
-        }
     }
 
     @Override
@@ -90,7 +70,6 @@ public class ClientRMI implements RemoteClient {
 
     @Override
     public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-        clientController.userPlaceTile();
     }
 
     @Override
