@@ -195,7 +195,7 @@ public class ServerSerializer implements RemoteClient {
             String stringResponse = String.valueOf(clientId);
             File fileJsonResponse = new File("handshake_response.json");
             Files.writeString(fileJsonResponse.toPath(), stringResponse);
-            clientHandler.putFileInTheOutGoingFileQueue(fileJsonResponse);
+            clientHandler.putFileInTheOutGoingFileQueue(fileJsonResponse,clientId);
             return clientId;
         } catch (Exception e) {
             System.err.println("Errore nella deserializzazione dell'handshake: " + e.getMessage());
