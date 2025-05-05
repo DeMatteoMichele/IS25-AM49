@@ -1,7 +1,13 @@
 package it.polimi.ingsw.is25am49.server;
 
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -35,81 +41,153 @@ public class ServerSerializer implements RemoteClient {
     public void setClientHandler(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
     }
+
     //se cambiano i parametri dei metodi bisogna modificare questo codice
     public void deSerializeStringFromClient(File fileJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
-            String methodName = rootNode.get("methodName").asText();
-            ArrayList<Object> parameters = new ArrayList<>();
-            JsonNode params = rootNode.get("params");
-            for(JsonNode paramNode : params){
-                ArrayList<Object> collectionList = null;
-                HashSet<Object> collectionSet = null;
-                Object object = null;
-                String typeOfCollection = paramNode.get("typeOfCollection").asText();
-                Object collection;
-                collection = switch(typeOfCollection){
-                    case "Set" -> new HashSet<>();
-                    case "List" -> new ArrayList<>();
-                    default -> new Object();
-                };
-                if(collection instanceof ArrayList) {
-                    collectionList = (ArrayList<Object>) collection;
-                }
-                else if(collection instanceof HashSet) {
-                    collectionSet = (HashSet<Object>) collection;
-                }
-                else {
-                    object = collection;
-                }
-                JsonNode content = paramNode.get("content");
-                for(JsonNode contentNode : content){
-                    String className = contentNode.get("className").asText();
-                    String contentObject  = contentNode.get("contentObject").asText();
-                    Object value;
-                    value = switch(className){
-                        case "Pair" -> mapper.readValue(contentObject, Pair.class);
-                        case "Token" -> mapper.readValue(contentObject, Token.class);
-                        case "Color" -> mapper.readValue(contentObject, Color.class);
-                        case "int" -> mapper.readValue(contentObject, int.class);
-                        case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
-                        case "String" -> mapper.readValue(contentObject, String.class);
-                        case "Point" -> mapper.readValue(contentObject, Point.class);
-                        case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
-                        case "boolean" -> mapper.readValue(contentObject, boolean.class);
+            if (typeOfMessage.equals("MSG")) {
+                String methodName = rootNode.get("methodName").asText();
+                SerializationObject serObject = new SerializationObject(methodName, serverController);
+                JsonNode params = rootNode.get("params");
+                for (JsonNode paramNode : params) {
+                    ArrayList<Object> collectionList = null;
+                    HashSet<Object> collectionSet = null;
+                    Object object = null;
+                    String typeOfCollection = paramNode.get("typeOfCollection").asText();
+                    Object collection;
+                    collection = switch (typeOfCollection) {
+                        case "Set" -> new HashSet<>();
+                        case "List" -> new ArrayList<>();
                         default -> new Object();
                     };
-                    if(collection instanceof ArrayList){
-                        collectionList.add(value);
+                    if (collection instanceof ArrayList) {
+                        collectionList = (ArrayList<Object>) collection;
+                        JsonNode content = paramNode.get("content");
+                        for (JsonNode contentNode : content) {
+                            String className = contentNode.get("className").asText();
+                            String contentObject = contentNode.get("contentObject").asText();
+                            Object value = switch (className) {
+                                case "Pair" -> mapper.readValue(contentObject, Pair.class);
+                                case "Token" -> mapper.readValue(contentObject, Token.class);
+                                case "Color" -> mapper.readValue(contentObject, Color.class);
+                                case "int" -> mapper.readValue(contentObject, int.class);
+                                case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
+                                case "String" -> mapper.readValue(contentObject, String.class);
+                                case "Point" -> mapper.readValue(contentObject, Point.class);
+                                case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
+                                case "boolean" -> mapper.readValue(contentObject, boolean.class);
+                                default -> new Object();
+                            };
+                            collectionList.add(value);
+                        }
+                        serObject.addParameter(collectionList);
+                    } else if (collection instanceof HashSet) {
+                        collectionSet = (HashSet<Object>) collection;
+                        JsonNode content = paramNode.get("content");
+                        for (JsonNode contentNode : content) {
+                            String className = contentNode.get("className").asText();
+                            String contentObject = contentNode.get("contentObject").asText();
+                            Object value = switch (className) {
+                                case "Pair" -> mapper.readValue(contentObject, Pair.class);
+                                case "Token" -> mapper.readValue(contentObject, Token.class);
+                                case "Color" -> mapper.readValue(contentObject, Color.class);
+                                case "int" -> mapper.readValue(contentObject, int.class);
+                                case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
+                                case "String" -> mapper.readValue(contentObject, String.class);
+                                case "Point" -> mapper.readValue(contentObject, Point.class);
+                                case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
+                                case "boolean" -> mapper.readValue(contentObject, boolean.class);
+                                default -> new Object();
+                            };
+                            collectionSet.add(value);
+                        }
+                        serObject.addParameter(collectionSet);
+                    } else {
+                        object = collection;
+                        JsonNode content = paramNode.get("content");
+                        for (JsonNode contentNode : content) {
+                            String className = contentNode.get("className").asText();
+                            String contentObject = contentNode.get("contentObject").asText();
+                            object = switch (className) {
+                                case "Pair" -> mapper.readValue(contentObject, Pair.class);
+                                case "Token" -> mapper.readValue(contentObject, Token.class);
+                                case "Color" -> mapper.readValue(contentObject, Color.class);
+                                case "int" -> mapper.readValue(contentObject, int.class);
+                                case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
+                                case "String" -> mapper.readValue(contentObject, String.class);
+                                case "Point" -> mapper.readValue(contentObject, Point.class);
+                                case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
+                                case "boolean" -> mapper.readValue(contentObject, boolean.class);
+                                default -> new Object();
+                            };
+                        }
+                        serObject.addParameter(object);
                     }
-                    else if(collection instanceof HashSet){
-                        collectionSet.add(value);
-                    }
-                    else {
-                        object = value;
-                    }
                 }
-                if(collection instanceof ArrayList){
-                    parameters.add(collectionList);
-                }
-                else if(collection instanceof HashSet){
-                    parameters.add(collectionSet);
-                }
-                else{
-                    parameters.add(object);
-                }
+                serObject.callServerMethod();
             }
+            // HandShake ?, HeartBeat ?, dipende dalla gestione nel Layer di Rete
+            else {
 
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public File serializeObjectFromServer(String method, List<Object> parameters) {
-        //Definire il Protocollo
-        return null;
+    public void serializeObjectFromServer(SerializationObject serObject) {
+        File jsonFile = new File("commandToClient.json");
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+        ArrayNode params = mapper.createArrayNode();
+        rootNode.put("typeOfMessage", "MSG");
+        rootNode.put("methodName", serObject.getMethodName());
+        rootNode.set("params", params);
+        for (Object param : serObject.getParameters()) {
+            ObjectNode paramNode = mapper.createObjectNode();
+            if (param instanceof HashSet) {
+                ArrayNode contentNode = mapper.createArrayNode();
+                paramNode.put("typeOfCollection", "Set");
+                paramNode.set("content", contentNode);
+                HashSet set = (HashSet) param;
+                for (Object elem : set) {
+                    ObjectNode elemNode = mapper.createObjectNode();
+                    ObjectNode valueNode = mapper.valueToTree(elem);
+                    elemNode.put("className", elem.getClass().getName());
+                    elemNode.set("content", valueNode);
+                    contentNode.add(elemNode);
+                }
+            } else if (param instanceof ArrayList) {
+                ArrayNode contentNode = mapper.createArrayNode();
+                paramNode.put("typeOfCollection", "List");
+                paramNode.set("content", contentNode);
+                ArrayList list = (ArrayList) param;
+                for (Object elem : list) {
+                    ObjectNode elemNode = mapper.createObjectNode();
+                    ObjectNode valueNode = mapper.valueToTree(elem);
+                    elemNode.put("className", elem.getClass().getName());
+                    elemNode.set("content", valueNode);
+                    contentNode.add(elemNode);
+                }
+            } else {
+                ObjectNode contentNode = mapper.createObjectNode();
+                paramNode.put("typeOfCollection", "");
+                contentNode.put("className", param.getClass().getName());
+                ObjectNode valueNode = mapper.valueToTree(param);
+                contentNode.set("content", valueNode);
+                paramNode.set("content", contentNode);
+            }
+            params.add(paramNode);
+        }
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, rootNode);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        clientHandler.putFileInTheOutGoingFileQueue(jsonFile);
     }
 
     @Override

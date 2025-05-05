@@ -19,107 +19,122 @@ public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
     private final HashMap<Integer, Optional<Player>> players;
+
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
         this.players = new HashMap<>();
     }
+
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
+
     public void passInformationToClientHandler(String method, List<Object> parameters) {
         serverSerializer.serializeObjectFromServer(method, parameters);
     }
 
-    public void serverTestConnection(Integer playerId) {
-        System.out.println("server - trying to callback [ID:"+playerId+"] ...");
-    }
-
-    public void registerClient(RemoteClient client, int playerId) throws RemoteException {
+    public void registerClient(RemoteClient client, int playerId) {
         players.put(players.size(), Optional.empty());
 
     }
 
-    public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException {
+    public void serverTestConnection(int playerId) {
+        System.out.println("server - trying to callback [ID:" + playerId + "] ...");
+    }
+
+    public void registerClientRMI(RemoteClient client) {
 
     }
 
-    public void playerJoin(int playerId, String username, Color color) throws RemoteException {
+    public void registerClientSocket(int playerId) {
 
     }
 
-    public void userDrawTile(int playerId, int tileId) throws RemoteException {
+    public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
 
     }
 
-    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
+    public void playerJoin(int playerId, String username, Color color) {
 
     }
 
-    public void userPickTile(int playerId, Point coordinates) throws RemoteException {
+    public void userDrawTile(int playerId, int tileId) {
 
     }
 
-    public void userDiscardTile(int playerId) throws RemoteException {
+    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
 
     }
 
-    public void userFinishShipboard(int playerId) throws RemoteException {
+    public void userPickTile(int playerId, Point coordinates) {
 
     }
 
-    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+    public void userDiscardTile(int playerId) {
 
     }
 
-    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+    public void userFinishShipboard(int playerId) {
 
     }
 
-    public void userPlaceTimer(int playerId) throws RemoteException {
+    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userThrowDices(int playerId) throws RemoteException {
+    public void userPlaceTimer(int playerId) {
 
     }
 
-    public void userDrawAdventureCard(int playerId) throws RemoteException {
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
 
     }
 
-    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) throws RemoteException {
+    public void userThrowDices(int playerId) {
 
     }
 
-    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+    public void userDrawAdventureCard(int playerId) {
 
     }
 
-    public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
+    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) {
 
     }
 
-    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
+    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) {
 
     }
 
-    public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
+    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
 
     }
 
-    public void userStopFlight(int playerId) throws RemoteException {
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) {
 
     }
 
-    public void adminCalculateScore(int playerId) throws RemoteException {
+    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) {
 
     }
 
-    public void userEndGame(int playerId) throws RemoteException {
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
+
+    }
+
+    public void userStopFlight(int playerId) {
+
+    }
+
+    public void adminCalculateScore(int playerId) {
+
+    }
+
+    public void userEndGame(int playerId) {
 
     }
 }

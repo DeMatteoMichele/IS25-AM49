@@ -1,7 +1,11 @@
 package it.polimi.ingsw.is25am49.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.SerializationObject;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -65,9 +69,56 @@ public class ClientSerializer implements RemoteServer {
         //deserializza il pacchetto
     }
 
-    public File serializeObjectFromClient(String method, List<Object> parameters) {
-        //serializza il pacchetto
-        return null;
+    public void serializeObjectFromClient(SerializationObject serObject) {
+        File jsonFile = new File("commandToServer.json");
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode rootNode = mapper.createObjectNode();
+        ArrayNode params = mapper.createArrayNode();
+        rootNode.put("typeOfMessage", "MSG");
+        rootNode.put("methodName", serObject.getMethodName());
+        rootNode.set("params", params);
+        for (Object param : serObject.getParameters()) {
+            ObjectNode paramNode = mapper.createObjectNode();
+            if (param instanceof HashSet) {
+                ArrayNode contentNode = mapper.createArrayNode();
+                paramNode.put("typeOfCollection", "Set");
+                paramNode.set("content", contentNode);
+                HashSet set = (HashSet) param;
+                for (Object elem : set) {
+                    ObjectNode elemNode = mapper.createObjectNode();
+                    ObjectNode valueNode = mapper.valueToTree(elem);
+                    elemNode.put("className", elem.getClass().getName());
+                    elemNode.set("content", valueNode);
+                    contentNode.add(elemNode);
+                }
+            } else if (param instanceof ArrayList) {
+                ArrayNode contentNode = mapper.createArrayNode();
+                paramNode.put("typeOfCollection", "List");
+                paramNode.set("content", contentNode);
+                ArrayList list = (ArrayList) param;
+                for (Object elem : list) {
+                    ObjectNode elemNode = mapper.createObjectNode();
+                    ObjectNode valueNode = mapper.valueToTree(elem);
+                    elemNode.put("className", elem.getClass().getName());
+                    elemNode.set("content", valueNode);
+                    contentNode.add(elemNode);
+                }
+            } else {
+                ObjectNode contentNode = mapper.createObjectNode();
+                paramNode.put("typeOfCollection", "");
+                contentNode.put("className", param.getClass().getName());
+                ObjectNode valueNode = mapper.valueToTree(param);
+                contentNode.set("content", valueNode);
+                paramNode.set("content", contentNode);
+            }
+            params.add(paramNode);
+        }
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, rootNode);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        serverHandler.putInTheOutGoingFileQueue(jsonFile);
     }
 
     @Override
