@@ -76,7 +76,7 @@ class EpidemyCardTest {
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player3);
         deck = new AdventureCardDeck();
-        deck.add(new EpidemyCard(gameBoard,"Epidemy Card", 1));
+        deck.add(new EpidemyCard(gameBoard,"Epidemy Card", 1,"epidemy"));
         gameBoard.setMainAdventureDeck(deck);
 
     }

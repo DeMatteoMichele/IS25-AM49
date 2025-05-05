@@ -63,7 +63,7 @@ class PiratesCardTest {
         listEffects.add(new EffectCannonata("Cannonata1", 1, Orientation.NORTH));
         listEffects.add(new EffectCannonata("Cannonata2", 2, Orientation.SOUTH));
         listEffects.add(new EffectCannonata("Cannonata3", 1, Orientation.EAST));
-        card1 = new PiratesCard(gameBoard, "PiratesCardTest", 2, 1, 3, 100, listEffects);
+        card1 = new PiratesCard(gameBoard, "PiratesCardTest", 2, "pirates",1, 3, 100, listEffects);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
     }

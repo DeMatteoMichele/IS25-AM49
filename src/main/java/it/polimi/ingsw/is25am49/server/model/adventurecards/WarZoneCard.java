@@ -37,8 +37,8 @@ public class WarZoneCard extends AdventureCard {
     private List<Point> coordinatesOfActivable = new ArrayList<>();
 
 
-    public WarZoneCard(GameBoard gameBoard, String description, int level,int daysLost, int lostAstronauts, List<CardEffect> effects) {
-        super(gameBoard, description, level);
+    public WarZoneCard(GameBoard gameBoard, String description, int level, String  name,int daysLost, int lostAstronauts, List<CardEffect> effects) {
+        super(gameBoard, description, level,name);
         listEffects = new ArrayList<>();
         listEffects.add(new EffectModifyCrew("ModifyCrew", lostAstronauts));
         this.listEffects.addAll(effects);

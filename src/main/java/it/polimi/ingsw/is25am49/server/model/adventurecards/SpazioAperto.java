@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class SpazioAperto extends AdventureCard {
 
-    public SpazioAperto(GameBoard gameBoard, String description, int level) {
-        super(gameBoard, description, level);
+    public SpazioAperto(GameBoard gameBoard, String description, int level, String name) {
+        super(gameBoard, description, level,name);
 
     }
 

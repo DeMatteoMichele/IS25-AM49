@@ -6,8 +6,8 @@ import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 
 public class StarDustCard extends AdventureCard {
 
-    public StarDustCard(GameBoard gameBoard, String description, int level) {
-        super(gameBoard, description, level);
+    public StarDustCard(GameBoard gameBoard, String description, int level,String name) {
+        super(gameBoard, description, level,name);
     }
 
 

@@ -22,8 +22,8 @@ public class AbandonedShipCard extends AdventureCard {
     protected int daysLost;
     List<CardEffect> listEffects = new ArrayList<>();
 
-    public AbandonedShipCard(GameBoard gameBoard, String description, int level, int dayslost, int creditsEarned, int lostAstronauts) {
-        super(gameBoard, description, level);
+    public AbandonedShipCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int creditsEarned, int lostAstronauts) {
+        super(gameBoard, description, level,name);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         this.daysLost = dayslost;
@@ -98,6 +98,16 @@ public class AbandonedShipCard extends AdventureCard {
         System.out.println("You have earned " + creditsEarned + " credits");
         currentPlayer.setDaysThisTurn(-daysLost);
         update();
+    }
+
+    public int getDaysLost(){
+        return daysLost;
+    }
+    public int getCreditsEarned(){
+        return creditsEarned;
+    }
+    public int getLostAstronauts(){
+        return lostAstronauts;
     }
 
 }

@@ -46,7 +46,7 @@ class AbandonedShipCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
         gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
-        card1=new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, 1, 100, 3);
+        card1=new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, "abandoned ship",1, 100, 3);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 //        shipBoard1 = new ShipBoard(1,2);

@@ -53,7 +53,7 @@ class SlaverCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
         gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
-        card1 = new SlaverCard(gameBoard, "SlaverCardTest", 2, 1, 100, 3, 3);
+        card1 = new SlaverCard(gameBoard, "SlaverCardTest", 2,"slaver", 1, 100, 3, 3);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 

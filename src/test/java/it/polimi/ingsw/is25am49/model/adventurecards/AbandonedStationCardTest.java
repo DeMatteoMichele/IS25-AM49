@@ -69,8 +69,8 @@ class AbandonedStationCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player2, 8);
 
         adventureDeck = new AdventureCardDeck();
-        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2, 1, 2, 3,2,3,1));
-        adventureDeck.add(new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, 1, 100, 3));
+        adventureDeck.add(new AbandonedStationCard(gameBoard, "Abandoned Station", 2,"abandoned station", 1, 2, 3,2,3,1));
+        adventureDeck.add(new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, "abandoned station",1, 100, 3));
         gameBoard.setMainAdventureDeck(adventureDeck);
 
 

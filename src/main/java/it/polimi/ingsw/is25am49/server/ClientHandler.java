@@ -24,7 +24,7 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, DataOutputStream> outputStreams;
     private final ConcurrentMap<Integer, DataInputStream> inputStreams;
     private final ConcurrentMap<Integer, ArrayBlockingQueue<String>> InGoingStringQueues;
-    private final ArrayBlockingQueue<File> OutGoingFileQueue;
+    private final ConcurrentMap<Integer, ArrayBlockingQueue<File>> OutGoingFileQueue;
     private final int maxClients;
     private final Thread serverThread;
 
@@ -39,7 +39,7 @@ public class ClientHandler {
         connections = new ConcurrentHashMap<>();
         lastHeartBeats = new ConcurrentHashMap<>();
         InGoingStringQueues = new ConcurrentHashMap<>();
-        OutGoingFileQueue = new ArrayBlockingQueue<File>(1000, true);
+        OutGoingFileQueue = new ConcurrentHashMap<>();
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -62,7 +62,6 @@ public class ClientHandler {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
         startCentralHeartBeatMonitor();
-        startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
@@ -141,6 +140,7 @@ public class ClientHandler {
      */
     private void listenToClient(int clientId) {
         executors.submit(() -> processStringQueueToServerSerializer(clientId));
+        executors.submit(() -> processOutGoingFileQueue(clientId));
         DataInputStream clientInputStream = inputStreams.get(clientId);
         while (connections.get(clientId)) {
             try {
@@ -157,6 +157,68 @@ public class ClientHandler {
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the String in the queue for client " + clientId + " cause thread was interrupted");
             }
+        }
+    }
+
+    /**
+     * This method is called by serverserializer to put files in the OutGoingFileQueue specific to the client with id=clientid.
+     * It is executed by an executor for each client.
+     * It takes the file from the queue and sends it to the client.
+     * The method put() is blocking, so it blocks until there is space in the queue to put the file.
+     *
+     * @param filejson The file that has to be put in the OutGoingFileQueue.
+     * @param clientId The int corresponding to the specific client
+     */
+    public void putFileInTheOutGoingFileQueue(File filejson, int clientId) {
+        try {
+            if(OutGoingFileQueue.get(clientId) == null){
+                OutGoingFileQueue.put(clientId, new ArrayBlockingQueue<>(1000, true));
+            }
+            OutGoingFileQueue.get(clientId).put(filejson);
+        } catch (InterruptedException e) {
+            System.out.println("Error while putting the file in the OutGoingFileQueue, thread has been interrupted");
+        }
+    }
+
+    /**
+     * This method is used to process the OutGoingFileQueue.
+     * It is executed by an executor for each client.
+     * It takes the file from the queue and sends it to the client.
+     * The method take() is blocking, so it blocks until it finds an element in the queue to be taken.
+     *
+     * @param clientId The int corresponding to the specific client
+     */
+    private void processOutGoingFileQueue(int clientId) {
+        while (connections.get(clientId)) {
+            try {
+                File fileToSend = OutGoingFileQueue.get(clientId).take();
+                sendMessageToClient(clientId,fileToSend);
+            } catch (InterruptedException e) {
+                System.out.println("Error while taking the file from the Outgoing queue of the client " + clientId);
+            }
+        }
+    }
+
+    /**
+     * This method is used to send a file to the client with id=clientId.
+     * It takes the file, converts it to a string and sends it to the client.
+     * It uses the output stream of the client to send the file.
+     *
+     * @param clientId   The int of the client which we want to send the file.
+     * @param fileToSend The file that has to be sent in broadcast.
+     */
+    private void sendMessageToClient(int clientId, File fileToSend) {
+        try {
+            String jsonContent = Files.readString(fileToSend.toPath());
+            int length = jsonContent.length();
+            byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
+            DataOutputStream outputStream = outputStreams.get(clientId);
+            outputStream.writeInt(length);
+            outputStream.write(buffer);
+            outputStream.flush();
+        } catch (IOException e) {
+            System.out.println("Error while sending the file to client " + clientId + " shutting down his connection");
+            shutDownClientRelated(clientId);
         }
     }
 
@@ -184,68 +246,6 @@ public class ClientHandler {
         }
     }
 
-    /**
-     * This method is used to put files in the OutGoingFileQueue.
-     * It is called by the server serializer.
-     *
-     * @param filejson The file that has to be put in the OutGoingFileQueue.
-     */
-    public void putFileInTheOutGoingFileQueue(File filejson) {
-        try {
-            OutGoingFileQueue.put(filejson);
-        } catch (InterruptedException e) {
-            System.out.println("Error while putting the file in the OutGoingFileQueue, thread has been interrupted");
-        }
-    }
-
-
-    /**
-     * This method starts the outgoing broadcast service.
-     * It is executed by an executor and is functioning until the server dies.
-     * It uses the blocking method take() of the blockinqueue to take the file that has to be sent
-     * When it finds a file to be taken, it pass it to the sendMessageInBroadcast method
-     */
-    private void startBroadCastService() {
-        executors.submit(() -> {
-            while (true) {
-                try {
-                    File fileToSend = OutGoingFileQueue.take();
-                    sendMessageInBroadcast(fileToSend);
-                } catch (InterruptedException e) {
-                    System.out.println("Error while taking the file from the queue");
-                }
-            }
-        });
-    }
-
-    /**
-     * This method is used to send a file in broadcast to all the clients connected.
-     * It takes the file, converts it to a string and sends it to all the clients connected.
-     * It uses the output streams of the clients to send the file.
-     *
-     * @param fileToSend The file that has to be sent in broadcast.
-     */
-    private void sendMessageInBroadcast(File fileToSend) {
-        try {
-            String jsonContent = Files.readString(fileToSend.toPath());
-            int length = jsonContent.length();
-            byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
-            outputStreams.forEach((clientId, outputStream) -> {
-                try {
-                    if (connections.get(clientId)) {
-                        outputStream.writeInt(length);
-                        outputStream.write(buffer);
-                        outputStream.flush();
-                    }
-                } catch (IOException e) {
-                    System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);
-                    shutDownClientRelated(clientId);
-                }
-            });
-        } catch (IOException e) {
-            System.err.println("Error while converting the file in string to send in broadcast: " + e.getMessage());
-        }
-    }
 
     /**
      * This method is used to shut down all the network component of the client related to the given int.
@@ -265,6 +265,69 @@ public class ClientHandler {
             System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
         }
     }
+
+    //    /**
+//     * This method is used to put files in the OutGoingFileQueue.
+//     * It is called by the server serializer.
+//     *
+//     * @param filejson The file that has to be put in the OutGoingFileQueue.
+//     */
+//    public void putFileInTheOutGoingFileQueue(File filejson) {
+//        try {
+//            OutGoingFileQueue.put(filejson);
+//        } catch (InterruptedException e) {
+//            System.out.println("Error while putting the file in the OutGoingFileQueue, thread has been interrupted");
+//        }
+//    }
+//
+//
+//    /**
+//     * This method starts the outgoing broadcast service.
+//     * It is executed by an executor and is functioning until the server dies.
+//     * It uses the blocking method take() of the blockinqueue to take the file that has to be sent
+//     * When it finds a file to be taken, it pass it to the sendMessageInBroadcast method
+//     */
+//    private void startBroadCastService() {
+//        executors.submit(() -> {
+//            while (true) {
+//                try {
+//                    File fileToSend = OutGoingFileQueue.take();
+//                    sendMessageInBroadcast(fileToSend);
+//                } catch (InterruptedException e) {
+//                    System.out.println("Error while taking the file from the queue");
+//                }
+//            }
+//        });
+//    }
+//
+//    /**
+//     * This method is used to send a file in broadcast to all the clients connected.
+//     * It takes the file, converts it to a string and sends it to all the clients connected.
+//     * It uses the output streams of the clients to send the file.
+//     *
+//     * @param fileToSend The file that has to be sent in broadcast.
+//     */
+//    private void sendMessageInBroadcast(File fileToSend) {
+//        try {
+//            String jsonContent = Files.readString(fileToSend.toPath());
+//            int length = jsonContent.length();
+//            byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
+//            outputStreams.forEach((clientId, outputStream) -> {
+//                try {
+//                    if (connections.get(clientId)) {
+//                        outputStream.writeInt(length);
+//                        outputStream.write(buffer);
+//                        outputStream.flush();
+//                    }
+//                } catch (IOException e) {
+//                    System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);
+//                    shutDownClientRelated(clientId);
+//                }
+//            });
+//        } catch (IOException e) {
+//            System.err.println("Error while converting the file in string to send in broadcast: " + e.getMessage());
+//        }
+//    }
 
     public static void main(String[] args) {
         GameSession gameSession = new GameSession();

@@ -29,13 +29,8 @@ public class ServerController {
         this.serverSerializer = serverSerializer;
     }
 
-    public void passInformationToClientHandler(String method, List<Object> parameters) {
-        serverSerializer.serializeObjectFromServer(method, parameters);
-    }
-
-    public void registerClient(RemoteClient client, int playerId) {
-        players.put(players.size(), Optional.empty());
-
+    public void addPlayerToLobby(int playerId, Player player) {
+        players.put(playerId, Optional.of(player));
     }
 
     public void serverTestConnection(int playerId) {
@@ -65,6 +60,7 @@ public class ServerController {
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
 
     }
+
 
     public void userPickTile(int playerId, Point coordinates) {
 
@@ -105,11 +101,6 @@ public class ServerController {
     public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) {
 
     }
-
-    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) {
-
-    }
-
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
 
     }
@@ -123,7 +114,6 @@ public class ServerController {
     }
 
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
-
     }
 
     public void userStopFlight(int playerId) {

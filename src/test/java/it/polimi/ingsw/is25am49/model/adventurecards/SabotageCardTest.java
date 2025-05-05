@@ -66,7 +66,7 @@ class SabotageCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
         gameBoard.getLeaderBoard().modifyFlightDays(player3, +7);
         deck = new AdventureCardDeck();
-        deck.add(new SabotageCard(gameBoard,"Sabotage Card",1));
+        deck.add(new SabotageCard(gameBoard,"Sabotage Card",1,"sabotage"));
         gameBoard.setMainAdventureDeck(deck);
         ship1.completeShipBoard();
         ship2.completeShipBoard();

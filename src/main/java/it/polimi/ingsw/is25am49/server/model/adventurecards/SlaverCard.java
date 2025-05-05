@@ -15,8 +15,8 @@ public class SlaverCard extends Enemy {
     protected int lostAstronauts;
     protected int creditsEarned;
 
-    public SlaverCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
-        super(gameBoard, description, level, dayslost, minimumFirePower);
+    public SlaverCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
+        super(gameBoard, description, level, name,dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         listEffects.add(new EffectModifyCrew("LoseAstronauts", lostAstronauts));

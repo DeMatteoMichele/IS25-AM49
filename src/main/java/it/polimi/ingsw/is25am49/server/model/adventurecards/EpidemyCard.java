@@ -13,8 +13,8 @@ import java.util.List;
 
 public class EpidemyCard extends AdventureCard {
 
-    public EpidemyCard(GameBoard gameBoard, String description,int level) {
-        super(gameBoard,description, level);
+    public EpidemyCard(GameBoard gameBoard, String description,int level,String name) {
+        super(gameBoard,description, level,name);
     }
     List<Point> coordinatesOfAllCabins = new ArrayList<>();
 

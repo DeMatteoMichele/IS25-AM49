@@ -22,12 +22,14 @@ public abstract class AdventureCard {
     protected CardEffect currentEffect;
     protected AdventureStatesTypes currentState;
     protected GameBoard gameBoard;
+    protected String  name;
 
-    public AdventureCard(GameBoard gameBoard, String description, int level) {
+    public AdventureCard(GameBoard gameBoard, String description, int level, String name) {
         this.gameBoard = gameBoard;
         this.description = description;
         this.isFinished = false;
         this.level = level;
+        this.name = name;
     }
 
     public String getDescription() {
@@ -105,6 +107,10 @@ public abstract class AdventureCard {
         gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
         isFinished= true;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

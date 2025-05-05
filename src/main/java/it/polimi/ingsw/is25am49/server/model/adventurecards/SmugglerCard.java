@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class SmugglerCard extends Enemy {
 
-    public SmugglerCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
-        super(gameBoard, description, level, dayslost, minimumFirePower);
+    public SmugglerCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
+        super(gameBoard, description, level,name, dayslost, minimumFirePower);
         listEffects.add(new EffectWinGoods("WinGoods", redGoods, yellowGoods, greenGoods, blueGoods));
         listEffects.add(new EffectLoseGoods("LoseGoods", lostGoods));
     }

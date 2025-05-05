@@ -11,6 +11,7 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class SerializationObject {
@@ -84,7 +85,7 @@ public class SerializationObject {
                 case "userThrowDices" -> serverController.userThrowDices((int) parameters.get(0));
                 case "userDrawAdventureCard" -> serverController.userDrawAdventureCard((int) parameters.get(0));
                 case "userFinishDecisionActivating" ->
-                        serverController.userFinishDecisionActivating((int) parameters.get(0), (Set<Point>) parameters.get(1));
+                        serverController.userFinishDecisionActivating((int) parameters.get(0), (HashSet<Point>) parameters.get(1));
                 case "userFinishDecisionToken" ->
                         serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 case "userAcceptPrizes" ->

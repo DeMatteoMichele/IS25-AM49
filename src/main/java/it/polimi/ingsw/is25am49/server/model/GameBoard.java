@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
+
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -15,6 +16,7 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import javafx.scene.effect.Effect;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -52,6 +54,10 @@ public class GameBoard {
             throw new IllegalMethodOnThisStateException("It's not your turn");
     }
 
+
+
+
+
     //TODO da fare
     //Bisogna modificare la lunghezza del percorso, in base a flightMode e gameMode
     //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
@@ -79,7 +85,6 @@ public class GameBoard {
     }
 
     public void generateSmallDecks(GameMode gameMode) {
-        //TODO se il livello della carta coincide con quello della gamemode la aggiungo, altrimenti null
         List<AdventureCard> deckFlightMode = new ArrayList<>();
         List<AdventureCard> deckLevel1 = new ArrayList<>();
         List<AdventureCard> deckLevel2 = new ArrayList<>();
@@ -94,12 +99,12 @@ public class GameBoard {
                 AdventureCard card;
                 for (JsonNode node : rootNode) {
                     int level = node.get("level").asInt();
+                    String name = node.get("name").asText();
                     String description = node.get("description").asText();
-                    //TODO rifare il check
-                    card = switch (description) {
-                        case "SpazioAperto" -> new SpazioAperto(this, description, level);
-                        case "StarDustCard" -> new StarDustCard(this, description, level);
-                        case "PlanetCard" -> {
+                    card = switch (name) {
+                        case "SpazioAperto" -> new SpazioAperto(this, description, level,name);
+                        case "StarDustCard" -> new StarDustCard(this, description, level,name);
+                        case "PlanetCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             List<Planet> planets = new ArrayList<>();
                             JsonNode planetsNode = node.get("planets");
@@ -113,39 +118,39 @@ public class GameBoard {
                                     planets.add(planet);
                                 }
                             }
-                            yield new PlanetCard(this, description, level, daysLost, planets);
+                            yield new PlanetCard(this, description, level,name, daysLost, planets);
                         }
                         case "AbandonedShipCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new AbandonedShipCard(this, description, level, daysLost, creditsEarned, lostAstronauts);
+                            yield new AbandonedShipCard(this, description, level,name,daysLost,creditsEarned,lostAstronauts);
                         }
-                        case "AbandonedStationCard" -> {
+                        case "AbandonedStationCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumAstronauts = node.get("minimumAstronauts").asInt();
                             int redGoods = node.get("redGoods").asInt();
                             int yellowGoods = node.get("yellowGoods").asInt();
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
-                            yield new AbandonedStationCard(this, description, level, daysLost, minimumAstronauts, redGoods, yellowGoods, greenGoods, blueGoods);
+                            yield new AbandonedStationCard(this, description,level, name,daysLost,minimumAstronauts,redGoods,yellowGoods,greenGoods,blueGoods);
                         }
-                        case "SabotageCard" -> new SabotageCard(this, description, level);
-                        case "WarZoneCard" -> {
+                        case "SabotageCard" -> new SabotageCard(this, description, level,name);
+                        case "WarZoneCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int loseAstronauts = node.get("lostAstronauts").asInt();
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for (JsonNode effectNode : effectsNode) {
-                                String name = effectNode.get("name").asText();
+                            for(JsonNode effectNode : effectsNode) {
+                                String name2 = effectNode.get("name").asText();
                                 int power = effectNode.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
-                                effects.add(new EffectCannonata(name, power, orientation));
+                                effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new WarZoneCard(this, description, level, daysLost, loseAstronauts, effects);
+                            yield new WarZoneCard(this, description, level,name, daysLost, loseAstronauts,effects);
 
                         }
-                        case "SmugglerCard" -> {
+                        case "SmugglerCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int redGoods = node.get("redGoods").asInt();
@@ -153,19 +158,19 @@ public class GameBoard {
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
                             int lostGoods = node.get("number").asInt();
-                            yield new SmugglerCard(this, description, level, daysLost, minimumFirePower, redGoods, yellowGoods, greenGoods, blueGoods, lostGoods);
+                            yield new SmugglerCard(this, description,level,name, daysLost,minimumFirePower,redGoods,yellowGoods,greenGoods,blueGoods,lostGoods);
 
                         }
-                        case "MeteorRainCard" -> {
+                        case "MeteorRainCard"->{
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for (JsonNode effect : effectsNode) {
-                                String name = effect.get("name").asText();
+                            for(JsonNode effect : effectsNode) {
+                                String name2 = effect.get("name").asText();
                                 int power = effect.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effect.get("orientation").asText());
-                                effects.add(new EffectMeteoriti(name, power, orientation));
+                                effects.add(new EffectMeteoriti(name2, power, orientation));
                             }
-                            yield new MeteorRainCard(this, description, level, effects);
+                            yield new MeteorRainCard(this, description, level,name, effects);
 
                         }
                         case "PiratesCard" -> {
@@ -175,21 +180,21 @@ public class GameBoard {
                             List<CardEffect> effects = new ArrayList<>();
                             JsonNode effectsNode = node.get("effects");
                             for (JsonNode effectNode : effectsNode) {
-                                String name = effectNode.get("name").asText();
+                                String name2 = effectNode.get("name").asText();
                                 int power = effectNode.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
-                                effects.add(new EffectCannonata(name, power, orientation));
+                                effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new PiratesCard(this, description, level, daysLost, minimumFirePower, creditsEarned, effects);
+                            yield new PiratesCard(this, description, level, name,daysLost, minimumFirePower, creditsEarned, effects);
                         }
-                        case "SlaverCard" -> {
+                        case "SlaverCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new SlaverCard(this, description, level, daysLost, minimumFirePower, creditsEarned, lostAstronauts);
+                            yield new SlaverCard(this,description,level,name,daysLost,minimumFirePower,creditsEarned,lostAstronauts);
                         }
-                        case "EpidemyCard" -> new EpidemyCard(this, description, level);
+                        case "EpidemyCard"->new EpidemyCard(this,description,level,name);
                         default -> null;
                     };
 
@@ -238,6 +243,7 @@ public class GameBoard {
                 }
 
 
+
             }
         } catch (FileNotFoundException e) {
             System.err.println("Errore: Il file di configurazione non è stato trovato");
@@ -247,6 +253,24 @@ public class GameBoard {
 
     }
 
+
+    public void printCard(AdventureCard card){
+        System.out.println("|------------------------------------------------|");
+        System.out.println("|NAME:  " + card.getName() + "                   |");
+        System.out.println("|------------------------------------------------|");
+        System.out.println("|DESCRIPTION:  " + card.getDescription() + "     |");
+        System.out.println("|LEVEL:  " + card.getLevel() + "                |");
+        System.out.println("|------------------------------------------------|");
+
+        String name = card.getName();
+        switch (name){
+            case "AbandonedShipCard" -> {
+                System.out.println("| DaysLost:  " + ((AbandonedShipCard) card).getDaysLost());
+                System.out.println("| CreditsEarned:  " + ((AbandonedShipCard) card).getCreditsEarned());
+                System.out.println("| LostAstronauts:  " + ((AbandonedShipCard) card).getLostAstronauts());
+            }
+
+    }}
 
     public void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);

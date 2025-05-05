@@ -16,8 +16,8 @@ public class PiratesCard extends Enemy {
 
     protected int creditsEarned;
 
-    public PiratesCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
-        super(gameBoard, description, level, dayslost, minimumFirePower);
+    public PiratesCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
+        super(gameBoard, description, level, name, dayslost, minimumFirePower);
         this.listEffects.addAll(listEffects);
         this.creditsEarned = creditsEarned;
     }

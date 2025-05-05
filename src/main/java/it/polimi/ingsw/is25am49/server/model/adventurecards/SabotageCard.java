@@ -14,8 +14,8 @@ import java.util.Random;
 
 public class SabotageCard extends AdventureCard {
 
-    public SabotageCard(GameBoard gameBoard, String description, int level) {
-        super(gameBoard,description, level);
+    public SabotageCard(GameBoard gameBoard, String description, int level,String name) {
+        super(gameBoard,description, level,name);
     }
 
     //declare the row and column of the component to be removed and the counter of the dice roll

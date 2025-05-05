@@ -57,7 +57,7 @@ class StarDustCardTest {
         gameBoard.getLeaderBoard().modifyFlightDays(player3, 2);
         adventureDeck = new AdventureCardDeck();
 
-        card1 = new StarDustCard(gameBoard, "StardDust", 1);
+        card1 = new StarDustCard(gameBoard, "StardDust", 1, "stardust");
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 
