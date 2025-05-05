@@ -24,6 +24,9 @@ public class Player {
     private boolean isWatching;
     private boolean theCrewHasBeenPlaced;
 
+    public int getIdPlayer() {return idPlayer;}
+    public String GetUsername() {return username;}
+
     public Player(String username, Color color, int idPlayer) {
         this.username = username;
         this.color = color;

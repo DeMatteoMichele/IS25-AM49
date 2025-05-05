@@ -1,18 +1,13 @@
 package it.polimi.ingsw.is25am49.client;
 
 import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import it.polimi.ingsw.is25am49.client.model.*;
+import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.DefaultParser;
@@ -22,19 +17,26 @@ import org.jline.terminal.TerminalBuilder;
 
 public class TextualUserInterface implements UserInterface {
     private ClientController controller;
-    private GameSession session;
-    public int myID;
-    public String username;
-    HashMap<String, String> graphics;
+    private GameSession gameSession;
+    private int myID;
+    private String username;
+
+    public Terminal terminal;
+    public LineReader lineReader;
 
     public TextualUserInterface() {
-        session = new GameSession();
+        gameSession = new GameSession(this);
+        try {
+            terminal = TerminalBuilder.builder().system(true).build();
+            lineReader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .parser(new DefaultParser())
+                    .history(new DefaultHistory())
+                    .build();
+        }catch (IOException e){
+            System.err.println("errore creazione terminale TUI: "+e.getMessage());
+        }
     }
-
-    public void showUpdates(String updateString) {
-
-    }
-
     public static void main(String args[]) throws IOException {
         //Server settings:
         String serverIP = "localhost";
@@ -42,21 +44,15 @@ public class TextualUserInterface implements UserInterface {
         //---------------------------------------
 
         TextualUserInterface ui = new TextualUserInterface();
-
+        Terminal terminal=ui.terminal;
+        LineReader reader=ui.lineReader;
         String textInput = "";
-        Terminal terminal = TerminalBuilder.builder()
-                .system(true)
-                .build();
-        LineReader reader = LineReaderBuilder.builder()
-                .terminal(terminal)
-                .parser(new DefaultParser())
-                .history(new DefaultHistory())
-                .build();
 
-        boolean wrongInput = false;
+
+        boolean wrongInput=false;
         int numInput = 0;
-        String prompt = ">> ";
-        String error = "Err : ";
+        String prompt= ">> ";
+        String error="⚠ Error : ";
         terminal.writer().println("+------------------------------+");
         terminal.writer().println("| WELCOME TO GALAXY TRUCKER :) |");
         terminal.writer().println("+------------------------------+");
@@ -64,36 +60,36 @@ public class TextualUserInterface implements UserInterface {
         while (!wrongInput) {
             terminal.writer().println("Insert your username:");
             terminal.flush();
-            textInput = reader.readLine(prompt).trim();
-            wrongInput = textInput.length() <= 20 && !textInput.isEmpty();
+            textInput=reader.readLine(prompt).trim();
+            wrongInput= textInput.length() <= 20 && !textInput.isEmpty();
             if (!wrongInput) {
-                terminal.writer().println(error + "username non valid");
+                System.err.println(error+"username non valid");
+                //terminal.writer().println(error+"username non valid");
             }
-        }
-        wrongInput = false;
+        }wrongInput=false;
         ui.username = textInput;
-        terminal.writer().println("\nwelcome to the game " + ui.username + "!");
+        terminal.writer().println("\nwelcome to the game "+ ui.username+"!");
 
         while (!wrongInput) {
             terminal.writer().println("Which connection do you want to use:");
             terminal.writer().println("\t1) RMI");
             terminal.writer().println("\t2) Socket");
             terminal.flush();
-            numInput = Integer.parseInt(reader.readLine(prompt).trim());
-            wrongInput = numInput >= 1 && numInput <= 2;
+            numInput= Integer.parseInt(reader.readLine(prompt).trim());
+            wrongInput= numInput>=1 && numInput<=2;
             if (!wrongInput) {
-                terminal.writer().println(error + "invalid choice, retry");
+                System.err.println(error+"invalid choice, retry");
+                //terminal.writer().println(error+"invalid choice, retry");
             }
-        }
-        wrongInput = false;
+        }wrongInput=false;
         terminal.flush();
 
         //stabilisco la connessione todo gestione errori di connessione al server
-        ui.setupConnection(numInput, serverIP, serverPort);
+        ui.setupConnection(numInput,serverIP,serverPort);
 
         while (!wrongInput) {
             terminal.writer().println("+--------------------------------------------");
-            terminal.writer().println("| SERVER - " + serverIP + "\tstatus - connected");
+            terminal.writer().println("| SERVER - "+serverIP+"\tstatus - connected");
             terminal.writer().println("+--------------------------------------------");
             terminal.writer().println("| Aviable lobby:");
             terminal.writer().println("| 01) TestMatch - users 0/4");
@@ -103,44 +99,23 @@ public class TextualUserInterface implements UserInterface {
             terminal.writer().println("+--------------------------------------------");
             terminal.writer().println("which one do you want to join?");
             terminal.flush();
-            numInput = Integer.parseInt(reader.readLine(prompt).trim());
-            wrongInput = numInput == 1;
+            numInput= Integer.parseInt(reader.readLine(prompt).trim());
+            wrongInput= numInput==1;
             if (!wrongInput) {
-                terminal.writer().println(error + "invalid choice, retry");
+                terminal.writer().println(error+"invalid choice, retry");
             }
-        }
-        wrongInput = false;
+        }wrongInput=false;
+
         terminal.flush();
-
-        //ui.start();
-
-    }
-
-    public void start() {
-        System.out.println("Welcome to the game!");
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        executor.submit(() -> {
-            Scanner in = new Scanner(System.in);
-            while (true) {
-                String inputString;
-                inputString = in.nextLine();
-                if (inputString.equalsIgnoreCase("quit")) {
-                    System.out.println("Server: Sto chiudendo...");
-                    //todo non so come si spenga il server
-                    System.exit(0);
-                }
-                controller.handleInput(inputString.toLowerCase());
-            }
-        });
+        ui.gameSession.getState().userSelectColorAndUserName(Color.BLUE, ui.username);
+        ui.startGame();
     }
 
     public void setupConnection(int connectionType, String serverIP, int serverPort) {
-        controller = new ClientController(session);
+        controller= new ClientController(gameSession);
         switch (connectionType) {
             case 1 -> {
-                RemoteServer serverStub = null;
-
-                ClientRMI clientRMI = new ClientRMI(session);
+                ClientRMI clientRMI = new ClientRMI(gameSession);
                 try {
                     controller.setServerMethods(clientRMI.connect(serverIP, serverPort));
                 } catch (RemoteException e) {
@@ -157,16 +132,62 @@ public class TextualUserInterface implements UserInterface {
                 }
             }
             case 2 -> {
-                ClientSerializer clientSerializer = new ClientSerializer(session);
+                ClientSerializer clientSerializer = new ClientSerializer(gameSession);
                 ServerHandler serverHandler = new ServerHandler(serverIP, serverPort);
                 serverHandler.setClientSerializer(clientSerializer);
                 clientSerializer.setServerHandler(serverHandler);
                 controller.setServerMethods(clientSerializer);
                 //todo registraclient
+                //controller.registerClientSocket();
             }
         }
     }
 
+    public void startGame() throws IOException {
+        String prompt = ">> ";
+        String error="⚠ Error : ";
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        executor.submit(() -> {
+            String inputString;
+            while (true) {
+                inputString=lineReader.readLine(prompt).trim();
+                if (inputString.equalsIgnoreCase("quit")) {
+                    System.out.println("Server: Sto chiudendo...");
+                    //todo non so come si spenga il server
+                    System.exit(0);
+                }
+                handleInput(inputString.toLowerCase());
+            }
+        });
+    }
+
+    @Override
+    public void updateGameSessionNewPlayer(Object delta) {
+        terminal.writer().println("__________________________________________________________________\n");
+        terminal.writer().println("MENU gameSession - commands (only for admin): ");
+        terminal.writer().println("- start\n- bo\n- cicciogamer\n");
+        terminal.writer().println(gameSession.toString());
+        terminal.writer().println();
+        terminal.writer().println("__________________________________________________________________");
+        terminal.writer().println("insert a command from above menu:");
+        terminal.flush();
+    }
+
+    public void handleInput(String input) {
+        try{
+            switch (input.trim()){
+                case "start"->{
+                    System.out.println("comando start non ancora implementato");
+                }
+                case "stop"->{
+                    System.out.println("comando stop non ancora implementato");
+                }
+                default ->terminal.writer().println("⚠ Error : invalid command");
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
 }
 
 

@@ -16,19 +16,26 @@ public class Game {
     private int numPlayers;
     private boolean isFinished;
 
-    public Game(Optional<Player> admin, GameSession session) {
+    public Game(Player admin, GameSession session) {
         this.session = session;
         board = new GameBoard();
         players = new ArrayList<>();
         mode = GameMode.DEFAULT;
-        players.add(admin.orElse(null));
+        players.add(admin);
         winner = Optional.empty();
         timer = null;
         maxPlayers = 4;
         isFinished = false;
         numPlayers = 0;
     }
+    public GameMode getMode() {return mode;}
     public int numOfPlayers() {return players.size();}
+    public Player getPlayer(int i) {
+        for (Player p : players) {
+            if(p.getIdPlayer() == i) return p;
+        }
+        throw new IllegalArgumentException("Player not found");
+    }
     public boolean checkStatus(){
         return !mode.equals(GameMode.DEFAULT);
     }

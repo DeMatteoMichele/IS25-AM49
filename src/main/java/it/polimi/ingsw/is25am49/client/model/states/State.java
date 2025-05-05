@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model.states;
 
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
@@ -13,7 +14,10 @@ import java.util.Set;
 
 
 public abstract class State {
-    public State(GameSession gameSession){
+    protected UserInterface userInterface;
+    public State(GameSession gameSession) {this.gameSession = gameSession;}
+    public State(GameSession gameSession, UserInterface userInterface) {
+        this.userInterface = userInterface;
         this.gameSession = gameSession;
     }
     protected final GameSession gameSession;

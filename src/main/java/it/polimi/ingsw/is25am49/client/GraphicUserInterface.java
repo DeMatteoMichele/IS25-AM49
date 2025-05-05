@@ -11,4 +11,9 @@ public class GraphicUserInterface implements UserInterface {
     }
     public static void main(String args[]){
     }
+
+    @Override
+    public void updateGameSessionNewPlayer(Object delta) {
+
+    }
 }
