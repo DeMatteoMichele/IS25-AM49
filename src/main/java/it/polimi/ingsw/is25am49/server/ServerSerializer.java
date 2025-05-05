@@ -1,12 +1,8 @@
 package it.polimi.ingsw.is25am49.server;
 
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
@@ -21,7 +17,6 @@ import java.nio.file.Files;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -50,7 +45,7 @@ public class ServerSerializer implements RemoteClient {
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             if (typeOfMessage.equals("MSG")) {
                 String methodName = rootNode.get("methodName").asText();
-                SerializationObject serObject = new SerializationObject(methodName, serverController);
+                SerializationObjectServer serObject = new SerializationObjectServer(methodName, serverController, 0);
                 JsonNode params = rootNode.get("params");
                 for (JsonNode paramNode : params) {
                     ArrayList<Object> collectionList = null;
@@ -138,7 +133,7 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
-    public void serializeObjectFromServer(SerializationObject serObject) {
+    public void serializeObjectFromServer(SerializationObjectServer serObject) {
         File jsonFile = new File("commandToClient.json");
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();
@@ -187,7 +182,7 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        clientHandler.putFileInTheOutGoingFileQueue(jsonFile);
+        clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
     }
 
     @Override

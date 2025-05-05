@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SerializationObject {
+public class SerializationObjectClient {
     private final ServerController serverController;
     private final ClientController clientController;
     private final String methodName;
     private final ArrayList<Object> parameters;
     private boolean isServer;
 
-    public SerializationObject(String methodName, ServerController serverController) {
+    public SerializationObjectClient(String methodName, ServerController serverController) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.serverController = serverController;
@@ -29,7 +29,7 @@ public class SerializationObject {
         this.isServer = true;
     }
 
-    public SerializationObject(String methodName, ClientController clientController) {
+    public SerializationObjectClient(String methodName, ClientController clientController) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.clientController = clientController;
@@ -160,5 +160,4 @@ public class SerializationObject {
             return false;
         }
     }
-
 }

@@ -10,29 +10,33 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
-public class SerializationObject {
+public class SerializationObjectServer {
     private final ServerController serverController;
     private final ClientController clientController;
     private final String methodName;
     private final ArrayList<Object> parameters;
     private boolean isServer;
+    private int playerId;
 
-    public SerializationObject(String methodName, ServerController serverController) {
+    public SerializationObjectServer(String methodName, ServerController serverController, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.serverController = serverController;
         this.clientController = null;
         this.isServer = true;
+        this.playerId = playerId;
     }
 
-    public SerializationObject(String methodName, ClientController clientController) {
+    public SerializationObjectServer(String methodName, ClientController clientController, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.clientController = clientController;
         this.serverController = null;
         this.isServer = false;
+        this.playerId = playerId;
     }
 
     public boolean isThisOnServer() {
@@ -83,7 +87,7 @@ public class SerializationObject {
                 case "userThrowDices" -> serverController.userThrowDices((int) parameters.get(0));
                 case "userDrawAdventureCard" -> serverController.userDrawAdventureCard((int) parameters.get(0));
                 case "userFinishDecisionActivating" ->
-                        serverController.userFinishDecisionActivating((int) parameters.get(0), (Set<Point>) parameters.get(1));
+                        serverController.userFinishDecisionActivating((int) parameters.get(0), (HashSet<Point>) parameters.get(1));
                 case "userFinishDecisionToken" ->
                         serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 case "userAcceptPrizes" ->
@@ -158,5 +162,7 @@ public class SerializationObject {
             return false;
         }
     }
-
+    public int getPlayerId(){
+        return playerId;
+    }
 }

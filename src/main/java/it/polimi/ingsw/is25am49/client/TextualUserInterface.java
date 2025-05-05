@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import it.polimi.ingsw.is25am49.client.model.*;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -24,7 +25,7 @@ public class TextualUserInterface implements UserInterface {
     private GameSession session;
     public int myID;
     public String username;
-    HashMap<String,String> graphics;
+    HashMap<String, String> graphics;
 
     public TextualUserInterface() {
         session = new GameSession();
@@ -52,10 +53,10 @@ public class TextualUserInterface implements UserInterface {
                 .history(new DefaultHistory())
                 .build();
 
-        boolean wrongInput=false;
+        boolean wrongInput = false;
         int numInput = 0;
-        String prompt= ">> ";
-        String error="Err : ";
+        String prompt = ">> ";
+        String error = "Err : ";
         terminal.writer().println("+------------------------------+");
         terminal.writer().println("| WELCOME TO GALAXY TRUCKER :) |");
         terminal.writer().println("+------------------------------+");
@@ -63,34 +64,36 @@ public class TextualUserInterface implements UserInterface {
         while (!wrongInput) {
             terminal.writer().println("Insert your username:");
             terminal.flush();
-            textInput=reader.readLine(prompt).trim();
-            wrongInput= textInput.length() <= 20 && !textInput.isEmpty();
+            textInput = reader.readLine(prompt).trim();
+            wrongInput = textInput.length() <= 20 && !textInput.isEmpty();
             if (!wrongInput) {
-                terminal.writer().println(error+"username non valid");
+                terminal.writer().println(error + "username non valid");
             }
-        }wrongInput=false;
+        }
+        wrongInput = false;
         ui.username = textInput;
-        terminal.writer().println("\nwelcome to the game "+ ui.username+"!");
+        terminal.writer().println("\nwelcome to the game " + ui.username + "!");
 
         while (!wrongInput) {
             terminal.writer().println("Which connection do you want to use:");
             terminal.writer().println("\t1) RMI");
             terminal.writer().println("\t2) Socket");
             terminal.flush();
-            numInput= Integer.parseInt(reader.readLine(prompt).trim());
-            wrongInput= numInput>=1 && numInput<=2;
+            numInput = Integer.parseInt(reader.readLine(prompt).trim());
+            wrongInput = numInput >= 1 && numInput <= 2;
             if (!wrongInput) {
-                terminal.writer().println(error+"invalid choice, retry");
+                terminal.writer().println(error + "invalid choice, retry");
             }
-        }wrongInput=false;
+        }
+        wrongInput = false;
         terminal.flush();
 
         //stabilisco la connessione todo gestione errori di connessione al server
-        ui.setupConnection(numInput,serverIP,serverPort);
+        ui.setupConnection(numInput, serverIP, serverPort);
 
         while (!wrongInput) {
             terminal.writer().println("+--------------------------------------------");
-            terminal.writer().println("| SERVER - "+serverIP+"\tstatus - connected");
+            terminal.writer().println("| SERVER - " + serverIP + "\tstatus - connected");
             terminal.writer().println("+--------------------------------------------");
             terminal.writer().println("| Aviable lobby:");
             terminal.writer().println("| 01) TestMatch - users 0/4");
@@ -100,12 +103,13 @@ public class TextualUserInterface implements UserInterface {
             terminal.writer().println("+--------------------------------------------");
             terminal.writer().println("which one do you want to join?");
             terminal.flush();
-            numInput= Integer.parseInt(reader.readLine(prompt).trim());
-            wrongInput= numInput==1;
+            numInput = Integer.parseInt(reader.readLine(prompt).trim());
+            wrongInput = numInput == 1;
             if (!wrongInput) {
-                terminal.writer().println(error+"invalid choice, retry");
+                terminal.writer().println(error + "invalid choice, retry");
             }
-        }wrongInput=false;
+        }
+        wrongInput = false;
         terminal.flush();
 
         //ui.start();
@@ -131,7 +135,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     public void setupConnection(int connectionType, String serverIP, int serverPort) {
-        controller= new ClientController(session);
+        controller = new ClientController(session);
         switch (connectionType) {
             case 1 -> {
                 RemoteServer serverStub = null;

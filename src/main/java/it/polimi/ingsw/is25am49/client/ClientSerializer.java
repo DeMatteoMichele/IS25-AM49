@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.SerializationObject;
+import it.polimi.ingsw.is25am49.server.SerializationObjectServer;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -82,7 +81,7 @@ public class ClientSerializer implements RemoteServer {
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             if (typeOfMessage.equals("MSG")) {
                 String methodName = rootNode.get("methodName").asText();
-                it.polimi.ingsw.is25am49.server.SerializationObject serObject = new it.polimi.ingsw.is25am49.server.SerializationObject(methodName, clientController);
+                SerializationObjectClient serObject = new SerializationObjectClient(methodName, clientController);
                 JsonNode params = rootNode.get("params");
                 for (JsonNode paramNode : params) {
                     ArrayList<Object> collectionList = null;
@@ -170,7 +169,7 @@ public class ClientSerializer implements RemoteServer {
         }
     }
 
-    public void serializeObjectFromClient(SerializationObject serObject) {
+    public void serializeObjectFromClient(SerializationObjectClient serObject) {
         File jsonFile = new File("commandToServer.json");
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();
