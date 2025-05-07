@@ -26,6 +26,19 @@ public class EffectWinGoods extends CardEffect {
         this.greenGoods = greenGoods;
         this.blueGoods = blueGoods;
     }
+
+    public int getRedGoods() {
+        return redGoods;
+    }
+    public int getYellowGoods() {
+        return yellowGoods;
+    }
+    public int getGreenGoods() {
+        return greenGoods;
+    }
+    public int getBlueGoods() {
+        return blueGoods;
+    }
     public void action(Player player) {
         if(coordinates == null || coordinates.isEmpty()) {
             throw new IllegalMethodOnThisCardException("You have to set the coordinates before using this method");
@@ -122,6 +135,11 @@ private boolean addTokenToTile(Point coordinate, Token token, Player player) {
 
     @Override
     public void setCoordinate(Point coordinate) {
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
+    }
+
+    @Override
+    public int getLostCrew() {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 }

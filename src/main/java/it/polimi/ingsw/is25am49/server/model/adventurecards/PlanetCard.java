@@ -1,6 +1,8 @@
 package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
@@ -15,6 +17,8 @@ import java.util.List;
 public class PlanetCard extends AdventureCard {
 
     protected final List<Planet> planets=new ArrayList<Planet>();
+    protected Planet planet;
+
     private final int daysLost;
     public PlanetCard(GameBoard gameBoard, String description, int level,String name,int daysLost, List<Planet> planets) {
         super(gameBoard,description, level,name);
@@ -44,8 +48,9 @@ public class PlanetCard extends AdventureCard {
     }
 
     @Override
-    public void landingOnPlanet(boolean isLanded, Planet planet){
-        super.landingOnPlanet(isLanded, planet);
+    public void landingOnPlanet(boolean isLanded, int planetId){
+        planet = getPlanetById(planetId);
+        super.landingOnPlanet(isLanded, planetId);
         if(!planets.contains(planet)){
             throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
         }
@@ -65,6 +70,15 @@ public class PlanetCard extends AdventureCard {
 
         }
 
+
+    }
+    public Planet getPlanetById(int planetId){
+        for(Planet planet : planets){
+            if(planet.getPlanetId() == planetId){
+                return planet;
+            }
+        }
+        throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
     }
 
     private void checkNextPlayer() {
@@ -116,6 +130,40 @@ public class PlanetCard extends AdventureCard {
 
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        String daysLostText = "| DAYS LOST: " + daysLost;
+        str.append(daysLostText).append(" ".repeat(width - daysLostText.length() - 1)).append("|\n");
+        str.append(separator);
+        for(Planet planet : planets){
+            String planetText = "| PLANET: " + planet.getPlanetId();
+            str.append(planetText).append(" ".repeat(width - planetText.length() - 1)).append("|\n");
+            EffectWinGoods effect = (EffectWinGoods) planet.getEffect();
+            String redGoods = "| RED GOODS: " + effect.getRedGoods();
+            str.append(redGoods).append(" ".repeat(width - redGoods.length() - 1)).append("|\n");
+            String yellowGoods = "| YELLOW GOODS: " + effect.getYellowGoods();
+            str.append(yellowGoods).append(" ".repeat(width - yellowGoods.length() - 1)).append("|\n");
+            String blueGoods = "| BLUE GOODS: " + effect.getBlueGoods();
+            str.append(blueGoods).append(" ".repeat(width - blueGoods.length() - 1)).append("|\n");
+            String greenGoods = "| GREEN GOODS: " + effect.getGreenGoods();
+            str.append(greenGoods).append(" ".repeat(width - greenGoods.length() - 1)).append("|\n");
+            str.append(border);
+        }
+        return str.toString();
+    }
 
 
 

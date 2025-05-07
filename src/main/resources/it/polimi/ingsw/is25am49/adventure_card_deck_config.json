@@ -2,22 +2,22 @@
   {
     "level" : 1,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level" : 1,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level" : 1,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level" : 1,
     "name" : "MeteorRainCard",
-    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.A small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.A large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -49,7 +49,7 @@
   {
     "level" :1,
     "name" : "MeteorRainCard",
-    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.A small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.A large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -78,25 +78,29 @@
         "redGoods" : 1,
         "yellowGoods" : 0,
         "greenGoods" : 1,
-        "blueGoods" : 3
+        "blueGoods" : 3,
+        "planetId" : 1
       },
       {
         "redGoods" : 1,
         "yellowGoods" : 1,
         "greenGoods" : 0,
-        "blueGoods" : 1
+        "blueGoods" : 1,
+        "planetId" : 2
       },
       {
         "redGoods" : 1,
         "yellowGoods" : 0,
         "greenGoods" : 0,
-        "blueGoods" : 3
+        "blueGoods" : 3,
+        "planetId" : 3
       },
       {
         "redGoods" : 1,
         "yellowGoods" : 0,
         "greenGoods" : 1,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 4
       }
     ]
   },
@@ -110,19 +114,22 @@
         "redGoods" : 2,
         "yellowGoods" : 0,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 1
       },
       {
         "redGoods" : 1,
         "yellowGoods" : 0,
         "greenGoods" : 0,
-        "blueGoods" : 2
+        "blueGoods" : 2,
+        "planetId" : 2
       },
       {
         "redGoods" : 0,
         "yellowGoods" : 1,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 3
       }
     ]
   },
@@ -136,13 +143,15 @@
         "redGoods" : 0,
         "yellowGoods" : 1,
         "greenGoods" : 1,
-        "blueGoods" : 2
+        "blueGoods" : 2,
+        "planetId" : 1
       },
       {
         "redGoods" : 0,
         "yellowGoods" : 2,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 2
       }
     ]
   },
@@ -156,19 +165,22 @@
         "redGoods" : 0,
         "yellowGoods" : 0,
         "greenGoods" : 2,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 1
       },
       {
         "redGoods" : 0,
         "yellowGoods" : 1,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 2
       },
       {
         "redGoods" : 0,
         "yellowGoods" : 0,
         "greenGoods" : 0,
-        "blueGoods" : 3
+        "blueGoods" : 3,
+        "planetId" : 3
       }
     ]
   },
@@ -194,7 +206,7 @@
   {
     "level": 2,
     "name" : "SmugglerCard",
-    "description" : "Enemies attack in route order. The leader faces them first. If they win, they get the reward; if they lose, they suffer the penalty and the enemy attacks the next player. In case of a tie, the enemy moves on without consequences for the player. Players calculate their firepower and pay batteries for double cannons.",
+    "description" : "Enemies attack in route order. The leader faces them first. If they win, they get the reward; if they lose, they suffer the penalty and the enemy attacks the next player. In case of a tie, the enemy moves on without consequences for the player.Players calculate their firepower and pay batteries for double cannons.",
     "daysLost" : 1,
     "minimumFirepower" : 8,
     "redGoods" : 1,
@@ -206,12 +218,12 @@
   {
     "level": 2,
     "name" : "StarDustCard",
-    "description" : "Star Dust, which causes each player to lose 1 day of flight for each exposed connector (each exposed connector counts only once, regardless of whether it’s single, double, or universal). In reverse order of route, starting with the last player, each player counts their exposed connectors and moves their rocket back the corresponding number of spaces."
+    "description" : "Star Dust, which causes each player to lose 1 day of flight for each exposed connector. In reverse order of route, starting with the last player, each player counts their exposed connectors and moves their rocket back the corresponding number of spaces."
   },
   {
     "level" : 0,
     "name" : "SmugglerCard",
-    "description" : "Enemies attack in route order. The leader faces them first. If they win, they get the reward; if they lose, they suffer the penalty and the enemy attacks the next player. In case of a tie, the enemy moves on without consequences for the player. Players calculate their firepower and pay batteries for double cannons.",
+    "description" : "Enemies attack in route order. The leader faces them first. If they win,  they get the reward; if they lose, they suffer the penalty and the enemy attacks the next player. In case of a tie, the enemy moves on without consequences for the player Players calculate their firepower and pay batteries for double cannons.",
     "daysLost" : 1,
     "minimumFirepower" : 4,
     "redGoods" : 0,
@@ -223,22 +235,22 @@
   {
     "level": 2,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level": 2,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level": 2,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level": 2,
     "name" : "MeteorRainCard",
-    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.A small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.A large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -270,7 +282,7 @@
   {
     "level" : 2,
     "name" : "MeteorRainCard",
-    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.A small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.A large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -297,7 +309,7 @@
   {
     "level": 2,
     "name": "MeteorRainCard",
-    "description": "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
+    "description": "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.A small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.A large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects": [
       {
         "name": "effectMeteorRain",
@@ -336,19 +348,22 @@
         "redGoods": 3,
         "yellowGoods": 1,
         "greenGoods": 0,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 1
       },
       {
         "redGoods": 2,
         "yellowGoods": 0,
         "greenGoods": 2,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 2
       },
       {
         "redGoods": 1,
         "yellowGoods": 0,
         "greenGoods": 0,
-        "blueGoods": 4
+        "blueGoods": 4,
+        "planetId": 3
       }
     ]
   },
@@ -362,13 +377,15 @@
         "redGoods": 2,
         "yellowGoods": 0,
         "greenGoods": 0,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 1
       },
       {
         "redGoods": 0,
         "yellowGoods": 0,
         "greenGoods": 4,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 2
       }
     ]
   },
@@ -382,25 +399,29 @@
         "redGoods":1,
         "yellowGoods": 1,
         "greenGoods": 0,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 1
       },
       {
         "redGoods": 0,
         "yellowGoods": 1,
         "greenGoods": 1,
-        "blueGoods": 3
+        "blueGoods": 3,
+        "planetId": 2
       },
       {
         "redGoods": 0,
         "yellowGoods": 0,
         "greenGoods": 2,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 3
       },
       {
         "redGoods": 0,
         "yellowGoods": 1,
         "greenGoods": 0,
-        "blueGoods": 0
+        "blueGoods": 0,
+        "planetId": 4
       }
     ]
   },
@@ -414,19 +435,22 @@
         "redGoods" : 0,
         "yellowGoods" : 0,
         "greenGoods" : 4,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 1
       },
       {
         "redGoods" : 0,
         "yellowGoods" : 2,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 2
       },
         {
           "redGoods" : 0,
           "yellowGoods" : 0,
           "greenGoods" : 0,
-          "blueGoods" : 4
+          "blueGoods" : 4,
+          "planetId" : 3
         }
     ]
 
@@ -436,12 +460,12 @@
   {
     "level": 0,
     "name": "StarDustCard",
-    "description" : "Star Dust, which causes each player to lose 1 day of flight for each exposed connector (each exposed connector counts only once, regardless of whether it’s single, double, or universal). In reverse order of route, starting with the last player, each player counts their exposed connectors and moves their rocket back the corresponding number of spaces."
+    "description" : "Star Dust, which causes each player to lose 1 day of flight for each exposed connector. In reverse order of route, starting with the last player, each player  counts their exposed connectors and moves their rocket back the corresponding number of spaces."
   },
   {
     "level" : 0,
     "name" : "MeteorRainCard",
-    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship.\n\nA small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed.\n\nA large meteorite always causes damage unless shot down. It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
+    "description" : "Each meteorite is assigned to a row or column by rolling two dice. Each player checks if it hits their ship. A small meteorite bounces off unless it hits an exposed connector. If so, it can be blocked with a shield facing that side by spending 1 battery. Otherwise, the hit component is destroyed and removed. A large meteorite always causes damage unless shot down.It can be destroyed by a gun facing the impact column. A double cannon requires 1 battery to fire.",
     "effects" : [
       {
         "name" : "effectMeteorRain",
@@ -482,12 +506,12 @@
   {
     "level" : 0,
     "name" : "SpazioAperto",
-    "description" : "In turn, starting with the leader and continuing \nin order of course, each player declares the \nown motive power. \nWhen it is your turn, you must decide whether to spend the counters \nbattery for your possible double motors. \nImmediately after, advance your rocket along the course of a number \nof empty spaces equal to your engine power"
+    "description" : "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
   },
   {
     "level" : 0,
     "name" : "WarZoneCard",
-    "description" : "The War Zone card has 3 criteria with penalties for the weakest player:\n\n1 Least Crew: Loses 3 days of flight.\n2 Least Engine Power: Loses two crew members.\n3 Least Firepower: Faces light and heavy cannon attacks. Light can be defended with a shield (battery token), but heavy cannot be defended.\n\nIn ties, the player ahead on the route suffers the penalty.",
+    "description" : "The War Zone card has 3 criteria with penalties for the weakest player:1 Least Crew: Loses days of flight.2 Least Engine Power: Loses  crew members.3 Least Firepower: Faces light and heavy cannon attacks. Light can be defended with a shield (battery token), but heavy cannot be defended.In ties, the player ahead on the route suffers the penalty.",
     "daysLost" : 3,
     "lostAstronauts" : 2,
     "effects" : [
@@ -507,7 +531,7 @@
   {
     "level": 2,
     "name": "WarZoneCard",
-    "description" : "The War Zone card has 3 criteria with penalties for the weakest player:\n\n1 Least Crew: Loses 3 days of flight.\n2 Least Engine Power: Loses two crew members.\n3 Least Firepower: Faces light and heavy cannon attacks. Light can be defended with a shield (battery token), but heavy cannot be defended.\n\nIn ties, the player ahead on the route suffers the penalty.",
+    "description" : "The War Zone card has 3 criteria with penalties for the weakest player:1 Least Crew: Loses days of flight.2 Least Engine Power: Loses  crew members.3 Least Firepower: Faces light and heavy cannon attacks. Light can be defended with a shield (battery token), but heavy cannot be defended.In ties, the player ahead on the route suffers the penalty.",
     "daysLost" : 4,
     "lostAstronauts" : 3,
     "effects" : [
@@ -587,19 +611,22 @@
         "redGoods" : 2,
         "yellowGoods" : 0,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 1
       },
       {
         "redGoods" : 1,
         "yellowGoods" : 0,
         "greenGoods" : 0,
-        "blueGoods" : 2
+        "blueGoods" : 2,
+        "planetId" : 2
       },
       {
         "redGoods" : 0,
         "yellowGoods" : 1,
         "greenGoods" : 0,
-        "blueGoods" : 0
+        "blueGoods" : 0,
+        "planetId" : 3
       }
     ]
   },

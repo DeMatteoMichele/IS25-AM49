@@ -58,7 +58,9 @@ public class ServerController {
     }
 
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
-
+        players.get(playerId).ifPresent(player -> {
+            gameSession.getState().userPlaceTile(player, coordinates);
+        });
     }
 
 

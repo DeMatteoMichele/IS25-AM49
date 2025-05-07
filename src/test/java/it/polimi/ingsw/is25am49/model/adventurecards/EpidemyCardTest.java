@@ -94,7 +94,11 @@ class EpidemyCardTest {
     @Test
     void checkRequirements() {
     }
-
+    @Test
+    void testToString(){
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
+    }
     @Test
     void applyEffect() {
     }

@@ -207,5 +207,11 @@ class PiratesCardTest {
         assertEquals(-1, player1.getDaysThisTurn());
     }
 
+    @Test
+    void testToString() {
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
+    }
+
 
 }

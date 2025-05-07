@@ -151,4 +151,12 @@ class MeteorRainCardTest {
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
     }
 
+    @Test
+    void testToString() {
+        adventureDeck.add(card1);
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+
+        System.out.println(gameBoard.getCurrentCard().toString());
+    }
+
 }

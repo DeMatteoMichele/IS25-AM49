@@ -201,4 +201,11 @@ class SmugglerCardTest {
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState()); // verifica lo stato finale
     }
 
+
+    @Test
+    void testToString() {
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
+    }
+
 }

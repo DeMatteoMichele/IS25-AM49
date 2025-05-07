@@ -109,4 +109,9 @@ class AbandonedShipCardTest {
         assertEquals(2,gameBoard.getCurrentPlayer().getDaysThisTurn());
     }
 
+    @Test
+    void ToStringTest(){
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
+    }
 }

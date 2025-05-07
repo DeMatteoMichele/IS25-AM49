@@ -99,15 +99,29 @@ public class AbandonedShipCard extends AdventureCard {
         currentPlayer.setDaysThisTurn(-daysLost);
         update();
     }
-
-    public int getDaysLost(){
-        return daysLost;
-    }
-    public int getCreditsEarned(){
-        return creditsEarned;
-    }
-    public int getLostAstronauts(){
-        return lostAstronauts;
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        String lostAstronautsText = "| LOST ASTRONAUTS: " + lostAstronauts;
+        str.append(lostAstronautsText).append(" ".repeat(width - lostAstronautsText.length() - 1)).append("|\n");
+        String creditsText = "| CREDITS EARNED: " + creditsEarned;
+        str.append(creditsText).append(" ".repeat(width - creditsText.length() - 1)).append("|\n");
+        String daysLostText = "| DAYS LOST: " + daysLost;
+        str.append(daysLostText).append(" ".repeat(width - daysLostText.length() - 1)).append("|\n");
+        str.append(border);
+        return str.toString();
     }
 
 }
