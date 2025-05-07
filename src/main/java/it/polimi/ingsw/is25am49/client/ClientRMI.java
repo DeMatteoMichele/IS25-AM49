@@ -45,7 +45,7 @@ public class ClientRMI implements RemoteClient {
     }
 
     @Override
-    public void registerClientCallback(RemoteClient client, int playerId) throws RemoteException {
+    public void registerClientCallback(int playerId) throws RemoteException {
 
     }
 
