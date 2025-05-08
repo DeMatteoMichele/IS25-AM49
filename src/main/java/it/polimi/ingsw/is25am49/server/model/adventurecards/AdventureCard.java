@@ -23,6 +23,7 @@ public abstract class AdventureCard {
     protected AdventureStatesTypes currentState;
     protected GameBoard gameBoard;
     protected String  name;
+    protected Random random;
 
     public AdventureCard(GameBoard gameBoard, String description, int level, String name) {
         this.gameBoard = gameBoard;
@@ -30,6 +31,7 @@ public abstract class AdventureCard {
         this.isFinished = false;
         this.level = level;
         this.name = name;
+        random = new Random(gameBoard.getSeedForGeneration());
     }
 
     public String getDescription() {
@@ -65,7 +67,6 @@ public abstract class AdventureCard {
     public void rollDices() throws IllegalMethodOnThisStateException {
         if (currentState != AdventureStatesTypes.ROLL_DICES)
             throw new IllegalMethodOnThisStateException("Wrong state");
-        Random random = new Random();
         int firstDice = random.nextInt(6) + 1;
         int secondDice = random.nextInt(6) + 1;
         dicesResult = firstDice + secondDice;

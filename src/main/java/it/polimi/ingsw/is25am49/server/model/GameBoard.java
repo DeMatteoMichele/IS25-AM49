@@ -38,6 +38,7 @@ public class GameBoard {
     private Player currentPlayer;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
+    private long seedForGeneration;
 
 
     public GameBoard() {
@@ -49,14 +50,15 @@ public class GameBoard {
         landedPlayers = new ArrayList<>();
     }
 
+    public GameBoard(long seedForGeneration) {
+        this();
+        this.seedForGeneration = seedForGeneration;
+    }
+
     private void isYourTurn(Player player) {
         if (!player.equals(currentPlayer))
             throw new IllegalMethodOnThisStateException("It's not your turn");
     }
-
-
-
-
 
     //TODO da fare
     //Bisogna modificare la lunghezza del percorso, in base a flightMode e gameMode
@@ -77,7 +79,7 @@ public class GameBoard {
 
     public void initialize(GameMode gameMode) {
         generateSmallDecks(gameMode);
-        mainAdventureDeck.shuffle();
+        //mainAdventureDeck.shuffle(); la shuffle viene fatta nel mergedecks
     }
 
     public AdventureCardDeck getMainAdventureDeck() {
@@ -219,9 +221,8 @@ public class GameBoard {
                 }
                 if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
-                    // Mescolo per distribuire casualmente
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel1);
+                        //Collections.shuffle(deckLevel1);
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
                         smallDeck.add(deckLevel1.remove(i));
@@ -230,10 +231,9 @@ public class GameBoard {
                 }
                 if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
-                    //mescolo per distribuire casualmente
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel2);
-                        Collections.shuffle(deckLevel1);
+                        //Collections.shuffle(deckLevel2);
+                        //Collections.shuffle(deckLevel1);
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel2.remove(i));
                         smallDeck.add(deckLevel2.remove(i));
@@ -241,9 +241,6 @@ public class GameBoard {
                         mapSmallAdventureDecks.put(i, smallDeck);
                     }
                 }
-
-
-
             }
         } catch (FileNotFoundException e) {
             System.err.println("Errore: Il file di configurazione non è stato trovato");
@@ -288,7 +285,7 @@ public class GameBoard {
             mapSmallAdventureDecks.clear();
             setMainAdventureDeck(bufferDeck);
         }
-        mainAdventureDeck.shuffle();
+        mainAdventureDeck.shuffle(new Random(seedForGeneration));
     }
 
     public LeaderBoard getLeaderBoard() {
@@ -537,5 +534,13 @@ public class GameBoard {
                         playersWithZeroAstronauts.add(player);
                 });
         playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
+    }
+
+    public void setSeedForGeneration(long seed) {
+        this.seedForGeneration = seed;
+    }
+
+    public long getSeedForGeneration() {
+        return seedForGeneration;
     }
 }

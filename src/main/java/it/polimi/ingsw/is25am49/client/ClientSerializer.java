@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.server.SerializationObjectServer;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -17,7 +16,6 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -231,28 +229,31 @@ public class ClientSerializer implements RemoteServer {
 
     }
 
-    /*************************************************************************
-     * THIS METHOD IS ONLY A PROTOTYPE, DOESNT FOLLOW THE SERIALIZING PROTOCOL
-     * *******************************************************************
-     *
+//    /*************************************************************************
+//     * THIS METHOD IS ONLY A PROTOTYPE, DOESNT FOLLOW THE SERIALIZING PROTOCOL
+//     * *******************************************************************
+//     *
+    /**
      * This method is used to register the client socket on the server.
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
      * @param playerId the id of the player
-     * @throws RemoteException if there is an error during the remote call
+//     * @throws RemoteException if there is an error during the remote call
      */
     @Override
     public void registerClientSocket(int playerId) throws RemoteException {
-        try {
-            // Crea un file temporaneo con il contenuto effettivo
-            String jsonString = String.valueOf(playerId);
-            File fileJson = new File("first_client_handshake.json");
-            Files.writeString(fileJson.toPath(), jsonString);
-            // Mette il file nella coda
+//        try {
+//            // Crea un file temporaneo con il contenuto effettivo
+//            String jsonString = String.valueOf(playerId);
+//            File fileJson = new File("first_client_handshake.json");
+//            Files.writeString(fileJson.toPath(), jsonString);
+//            // Mette il file nella coda
+            SerializationObjectClient serializationObjectClient = new SerializationObjectClient("registerClientSocket", clientController);
+            serializationObjectClient.addParameter(playerId);
+            serializeObjectFromClient(serializationObjectClient);
             serverHandler.connectCommand();
-            serverHandler.putInTheOutGoingFileQueue(fileJson);
-        } catch (IOException e) {
-            System.out.println("Errore durante la creazione del file di handshake: " + e.getMessage());
-        }
+//        } catch (IOException e) {
+//            System.out.println("Errore durante la creazione del file di handshake: " + e.getMessage());
+//        }
     }
 
 

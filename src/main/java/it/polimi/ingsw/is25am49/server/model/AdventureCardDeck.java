@@ -36,8 +36,8 @@ public class AdventureCardDeck {
     public void add(AdventureCard card){
         deck.add(card);
     }
-    public void shuffle(){
-        Collections.shuffle(deck);
+    public void shuffle(Random random) {
+        Collections.shuffle(deck,random);
     }
     public int size() {
         return deck.size();
