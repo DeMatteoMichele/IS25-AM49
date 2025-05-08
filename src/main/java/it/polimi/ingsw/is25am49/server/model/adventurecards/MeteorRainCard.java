@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
@@ -194,6 +195,46 @@ public class MeteorRainCard extends AdventureCard {
         currentEffect.action(gameBoard.getCurrentPlayer());
         deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
         tryNextPlayerDefeated();
+    }
+
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        str.append("| METEREORS:").append(" ".repeat(width - "| METEREORS:".length() - 1)).append("|\n");
+        // Se c'è un effetto corrente, mostralo per primo
+        if (currentEffect != null) {
+            EffectMeteoriti meteoriti = (EffectMeteoriti) currentEffect;
+            String levelMetereor = "|   - Meteor Level: " + meteoriti.getLevel();
+            str.append(levelMetereor).append(" ".repeat(width - levelMetereor.length() - 1)).append("|\n");
+            String orientationMetereor = "|   - Meteor Orientation: " + meteoriti.getOrientation();
+            str.append(orientationMetereor).append(" ".repeat(width - orientationMetereor.length() - 1)).append("|\n");
+            str.append(separator);
+        }
+        // Poi mostra gli effetti rimanenti
+        for (CardEffect effect : listEffects) {
+            EffectMeteoriti meteoriti = (EffectMeteoriti) effect;
+            String levelMetereor = "|   - Meteor Level: " + meteoriti.getLevel();
+            str.append(levelMetereor).append(" ".repeat(width - levelMetereor.length() - 1)).append("|\n");
+            String orientationMetereor = "|   - Meteor Orientation: " + meteoriti.getOrientation();
+            str.append(orientationMetereor).append(" ".repeat(width - orientationMetereor.length() - 1)).append("|\n");
+            str.append(separator);
+        }
+
+
+        return str.toString();
     }
 
 }

@@ -25,6 +25,7 @@ public class Player {
     private boolean isWatching;
     private boolean theCrewHasBeenPlaced;
 
+
     public Player(String username, Color color, int idPlayer) {
         this.username = username;
         this.color = color;
@@ -38,6 +39,7 @@ public class Player {
         this.idPlayer = idPlayer;
         isWatching = false;
     }
+
     private void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");

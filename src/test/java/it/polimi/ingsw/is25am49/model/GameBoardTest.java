@@ -104,11 +104,8 @@ class GameBoardTest {
 
     }
 
-    @Test
-    void printCard(){
-        AdventureCard card = new AbandonedShipCard(gameBoard, "AbandonedShip", 2, "AbandonedShipCard", 1, 100, 3);
-        gameBoard.printCard(card);
-    }
+
+
     @Test
     void configurateFlight() {
     }
@@ -219,7 +216,7 @@ class GameBoardTest {
         assertEquals(12,gameBoard.getMainAdventureDeck().size());
         for(int i = 0; i < gameBoard.getMainAdventureDeck().size(); i++) {
             AdventureCard card = gameBoard.getMainAdventureDeck().getCard(i);
-            System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+            System.out.println(card.toString());
             System.out.println("\n");
         }
         gameBoard.drawAdventureCard(gameBoard.getLeader());
@@ -231,7 +228,7 @@ class GameBoardTest {
 
         for(int i = 0; i < gameBoard.getMainAdventureDeck().size(); i++) {
             AdventureCard card = gameBoard.getMainAdventureDeck().getCard(i);
-            System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+            System.out.println(card.toString());
             System.out.println("\n");
         }
     }
@@ -246,7 +243,7 @@ class GameBoardTest {
             System.out.println("Small Deck "+i);
             for(int j=0;j<gameBoard.getSmallAdventureDeck(i).size();j++){
                 AdventureCard card = gameBoard.getSmallAdventureDeck(i).getCard(j);
-                System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+                System.out.println(card.toString());
                 System.out.println("\n");
             }
         }
@@ -264,7 +261,7 @@ class GameBoardTest {
             System.out.println("Small Deck "+i);
             for(int j=0;j<gameBoard.getSmallAdventureDeck(i).size();j++){
                 AdventureCard card = gameBoard.getSmallAdventureDeck(i).getCard(j);
-                System.out.println("Name: "+ card.getName()+ "\nDescription: " + card.getDescription() + " \nLevel: " + card.getLevel());
+                System.out.println(card.toString());
                 System.out.println("\n");
             }
         }

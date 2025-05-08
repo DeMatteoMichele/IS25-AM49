@@ -131,5 +131,42 @@ public class AbandonedStationCard extends AdventureCard {
         player.setDaysThisTurn(-daysLost);
         update();
     }
+    @Override
+    public String toString() {
 
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        String astronautText = "| MINIMUM ASTRONAUTS: " + lostAstronauts;
+        str.append(astronautText).append(" ".repeat(width - astronautText.length() - 1)).append("|\n");
+        String daysText = "| DAYS LOST: " + daysLost;
+        str.append(daysText).append(" ".repeat(width - daysText.length() - 1)).append("|\n");
+        str.append(separator);
+        str.append("| WIN GOODS:").append(" ".repeat(width - "| WIN GOODS:".length() - 1)).append("|\n");
+        if (!listEffects.isEmpty() && listEffects.get(0) instanceof EffectWinGoods) {
+            EffectWinGoods goodsEffect = (EffectWinGoods) listEffects.get(0);
+            String redText = "|   - Red goods: " + goodsEffect.getRedGoods();
+            str.append(redText).append(" ".repeat(width - redText.length() - 1)).append("|\n");
+            String yellowText = "|   - Yellow goods: " + goodsEffect.getYellowGoods();
+            str.append(yellowText).append(" ".repeat(width - yellowText.length() - 1)).append("|\n");
+            String greenText = "|   - Green goods: " + goodsEffect.getGreenGoods();
+            str.append(greenText).append(" ".repeat(width - greenText.length() - 1)).append("|\n");
+            String blueText = "|   - Blue goods: " + goodsEffect.getBlueGoods();
+            str.append(blueText).append(" ".repeat(width - blueText.length() - 1)).append("|\n");
+            str.append(border);
+        }
+
+
+        return str.toString();
+    }
 }

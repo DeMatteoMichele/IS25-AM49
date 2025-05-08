@@ -40,7 +40,9 @@ public class GameBoard {
     private final ArrayList<Player> landedPlayers;
     private long seedForGeneration;
 
-
+    /**
+     * Constructor of the GameBoard class.
+     */
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
@@ -55,14 +57,22 @@ public class GameBoard {
         this.seedForGeneration = seedForGeneration;
     }
 
+    /**
+     * This method is used to check if the player is the current player
+     * @param player the player to check
+     * @throws IllegalMethodOnThisStateException if the player is not the current player
+     */
     private void isYourTurn(Player player) {
         if (!player.equals(currentPlayer))
             throw new IllegalMethodOnThisStateException("It's not your turn");
     }
 
-    //TODO da fare
-    //Bisogna modificare la lunghezza del percorso, in base a flightMode e gameMode
-    //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
+
+    /**
+     * This method is used to configurate the flight of the game
+     * @param gameMode the game mode
+     * @param players the players of the game
+     */
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
         int level;
         if (gameMode == GameMode.LEVEL_1)
@@ -77,15 +87,29 @@ public class GameBoard {
         setLeaderBoard(gameMode);
     }
 
+    /**
+     * This method is used to initialize the game
+     * @param gameMode the game mode
+     */
     public void initialize(GameMode gameMode) {
         generateSmallDecks(gameMode);
         //mainAdventureDeck.shuffle(); la shuffle viene fatta nel mergedecks
     }
 
+    /**
+     * This method is used to get the main adventure deck
+     * @return the main adventure deck
+     */
     public AdventureCardDeck getMainAdventureDeck() {
         return mainAdventureDeck;
     }
 
+    /**
+     * This method is used to generate the small decks
+     * If the game mode is FLIGHT_MODE, it generates a main deck with all the cards
+     * @param gameMode the game mode
+     * @throws RuntimeException if the file is not found
+     */
     public void generateSmallDecks(GameMode gameMode) {
         List<AdventureCard> deckFlightMode = new ArrayList<>();
         List<AdventureCard> deckLevel1 = new ArrayList<>();
@@ -116,7 +140,8 @@ public class GameBoard {
                                     int yellowGoods = planetNode.get("yellowGoods").asInt();
                                     int greenGoods = planetNode.get("greenGoods").asInt();
                                     int blueGoods = planetNode.get("blueGoods").asInt();
-                                    Planet planet = new Planet(redGoods, yellowGoods, greenGoods, blueGoods);
+                                    int planetId = planetNode.get("planetId").asInt();
+                                    Planet planet = new Planet(redGoods, yellowGoods, greenGoods, blueGoods,planetId);
                                     planets.add(planet);
                                 }
                             }
@@ -251,33 +276,27 @@ public class GameBoard {
     }
 
 
-    public void printCard(AdventureCard card){
-        System.out.println("|------------------------------------------------|");
-        System.out.println("|NAME:  " + card.getName() + "                   |");
-        System.out.println("|------------------------------------------------|");
-        System.out.println("|DESCRIPTION:  " + card.getDescription() + "     |");
-        System.out.println("|LEVEL:  " + card.getLevel() + "                |");
-        System.out.println("|------------------------------------------------|");
-
-        String name = card.getName();
-        switch (name){
-            case "AbandonedShipCard" -> {
-                System.out.println("| DaysLost:  " + ((AbandonedShipCard) card).getDaysLost());
-                System.out.println("| CreditsEarned:  " + ((AbandonedShipCard) card).getCreditsEarned());
-                System.out.println("| LostAstronauts:  " + ((AbandonedShipCard) card).getLostAstronauts());
-            }
-
-    }}
-
+    /**
+     * This method is used to set the leaderboard
+     * @param gameMode the game mode
+     */
     public void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
 
-
+    /**
+     * This method is used to get the small adventure deck
+     * @param index
+     * @return AdventureCardDeck the small adventure deck
+     */
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
 
+    /**
+     * This method is used to merge the small adventure decks into the main adventure deck
+     * Then it shuffles the main adventure deck
+     */
     public void mergeDecks() {
         if (!mapSmallAdventureDecks.isEmpty()) {
             AdventureCardDeck bufferDeck = new AdventureCardDeck();
@@ -288,14 +307,23 @@ public class GameBoard {
         mainAdventureDeck.shuffle(new Random(seedForGeneration));
     }
 
+    /**
+     * This method is used to get the leaderboard
+     * @return the leaderboard
+     */
     public LeaderBoard getLeaderBoard() {
         return leaderBoard;
     }
 
-    public void setCurrentCard(AdventureCard card) {
-        currentCard = card;
-    }
 
+//    public void setCurrentCard(AdventureCard card) {
+//        currentCard = card;
+//    }
+
+    /**
+     * This method is used to get the current card
+     * @return the current card (AdventureCard)
+     */
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
@@ -305,6 +333,13 @@ public class GameBoard {
         return landedPlayers;
     }
 
+    /**
+     * This method is used to remove a player from the leaderboard
+     * and add it to the landed players
+     * It's called when a player choose or is forced to land
+     * @param player the player to check
+     * @throws GameSettingsException if the player is already landed
+     */
     public void playerNoMoreInFlight(Player player) {
         if (landedPlayers.contains(player))
             throw new GameSettingsException("This player is already landed");
@@ -314,6 +349,12 @@ public class GameBoard {
         }
     }
 
+    /**
+     * This method is used to draw an adventure card
+     * @param player the player who is drawing the card
+     * @throws IllegalMethodOnThisStateException if the player is not the leader
+     * @throws GameSettingsException if the card is not finished
+     */
     public void drawAdventureCard(Player player) {
         if (player.equals(leaderBoard.getLeader())) {
             if (isFirstCard || currentCard.getIsFinished()) {
@@ -327,6 +368,10 @@ public class GameBoard {
             throw new GameSettingsException("You are not the leader of this turn");
     }
 
+    /**
+     * This method is used to roll the dices on the current card
+     * @param player the player who roll the dices
+     */
     public void userThrowDices(Player player) {
         isYourTurn(player);
         currentCard.rollDices();
@@ -359,6 +404,10 @@ public class GameBoard {
 
     }
 
+    /**
+     * This method is used to add a player to the leaderboard
+     * @param player the player to add
+     */
     public void addPlayerToLeaderboard(Player player) {
         if (leaderBoard.isEmpty()) {
             leaderBoard.add(player);
@@ -373,14 +422,31 @@ public class GameBoard {
         newTile.ifPresent(tile -> tilesDeck.addDiscardTile(tile, player));
     }
 
+    /**
+     * This method is used to draw a tile from the tiles deck
+     * @param index the index of the tile to draw
+     * @param player the player who is drawing the tile
+     * @return the tile drawn
+     */
     public Tile drawTile(int index, Player player) {
         return tilesDeck.draw(index, player);
     }
 
+    /**
+     * This method is used to get the leader of the game
+     * @return the player who is the leader
+     */
     public Player getLeader() {
         return leaderBoard.getLeader();
     }
 
+    /**
+     * This method is used to calculate the final credits of the players
+     * It is used at the end of the game
+     * For each player, it calculates the credits based on the position in the leaderboard,
+     * the number of lost components, the score of goods and if the player has the minimum exposed components
+     * Then it stores the value in credits of the player
+     */
     public void calculateFinalCredits() {
 
         leaderBoard.stream().forEach(entry -> {
@@ -410,6 +476,13 @@ public class GameBoard {
         });
     }
 
+
+    /**
+     * This method is used to get the players with the minimum exposed components
+     * First it calculates the minimum value of exposed components
+     * Then it filters the players with the same value
+     * @return the list of players with the minimum exposed components
+     */
     public List<Player> minimumExposedComponents() {
         int minValue = leaderBoard.
                 stream()
@@ -429,6 +502,11 @@ public class GameBoard {
 
     }
 
+    /**
+     * This method is used to get the next player in the leaderboard
+     * @return the next player
+     * @throws IllegalSetOfNextPlayerException if the current player is the last player
+     */
     private Player getNextPlayer() {
         int currentPos = leaderBoard.getPos(currentPlayer);
         if (currentPos == leaderBoard.size())
@@ -437,6 +515,10 @@ public class GameBoard {
             return leaderBoard.getPlayerInPosition(currentPos + 1);
     }
 
+    /**
+     * This method is used to get the current player in the game
+     * @return the current player
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -446,16 +528,31 @@ public class GameBoard {
         setCurrentPlayer(getNextPlayer());
     }
 
+    /**
+     * This method is used to set the current player
+     * @param currentPlayer the current player
+     */
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
-
+    /**
+     * This method is used when we are in update in the card
+     * It updates the leaderboard with the day lost or earned for each player
+     * Then it checks if someone is lapped
+     */
     public void finishUpdateLeaderboard() {
         updateLeaderboard();
         checkIfIsLapped();
     }
 
+    /**
+     * This method is used to update the leaderboard
+     * It modifies the flight days of each player with the days of this turn
+     * The days of this turn are based on the effect of the card
+     * Then it sets the days this turn to 0 for each player
+     * It starts from the last player to the first player
+     */
     public void updateLeaderboard() {
 
         //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
@@ -474,6 +571,11 @@ public class GameBoard {
     }
 
 
+    /**
+     * This method is used to check if someone is lapped
+     * For each player, it checks if they are lapped, if yes it adds them to the lappedPlayers list
+     * Then it calls playerNoMoreInFlight that removes them from the leaderboard and adds them to the landedPlayers list
+     */
     public void checkIfIsLapped() {
         List<Player> lappedPlayers = new ArrayList<>();
         //per ogni player controllo se è stato doppiato, se si lo aggiungo alla lista
@@ -490,16 +592,34 @@ public class GameBoard {
         lappedPlayers.forEach(this::playerNoMoreInFlight);
     }
 
+    /**
+     * This method is used to set the main adventure deck
+     * @param mainAdventureDeck the main adventure deck
+     */
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
         this.mainAdventureDeck = mainAdventureDeck;
     }
 
+    /**
+     * This method is used when the player finish the shipboard
+     * It adds the player to the leaderboard
+     * @param player the player who finish the shipboard
+     * @return the size of the leaderboard
+     */
     public int userFinishShipboard(Player player) {
         player.completeShipboard();
         addPlayerToLeaderboard(player);
         return leaderBoard.size();
     }
 
+    /**
+     * This method is used to look at small adventure card deck
+     * It's synchronized to avoid concurrent access
+     * @param player the player who wanna look at the deck
+     * @param index the index of the deck
+     * @throws GameSettingsException if any player is already watching a deck
+     * @throws OutOfDeckExceptions if the deck does not exist
+     */
     public void userLookSmallAdventureCardDeck(Player player, int index) {
         synchronized (mapSmallAdventureDecks.get(index)) {
             if (mapSmallAdventureDecks.containsKey(index)) {
@@ -514,6 +634,12 @@ public class GameBoard {
         }
     }
 
+    /**
+     * This method is used to stop looking at small adventure card deck
+     * @param player the player who is stopping to look at the deck
+     * @param index the index of the deck
+     * @throws OutOfDeckExceptions if the deck does not exist
+     */
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {
         if (mapSmallAdventureDecks.containsKey(index)) {
             if (player.isWatching() && mapSmallAdventureDecks.get(index).equals(player.getSmallAdventureDeck())) {
@@ -525,6 +651,11 @@ public class GameBoard {
             throw new OutOfDeckExceptions("This deck does not exist");
     }
 
+    /**
+     * This method is used to check if someone has zero astronauts
+     * If yes it adds them to the playersWithZeroAstronauts list
+     * Then it calls playerNoMoreInFlight that removes them from the leaderboard and adds them to the landedPlayers list
+     */
     public void checkIfSomeoneHasZeroAstronauts() {
         List<Player> playersWithZeroAstronauts = new ArrayList<>();
         leaderBoard.stream()

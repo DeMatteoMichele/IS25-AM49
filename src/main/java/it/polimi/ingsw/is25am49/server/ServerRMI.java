@@ -2,11 +2,11 @@ package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.client.RemoteServer;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import javafx.util.Pair;
 
 import java.awt.*;

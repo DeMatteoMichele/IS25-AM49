@@ -42,8 +42,12 @@ public class EffectModifyCrew extends CardEffect {
     public void setListOfCoordinates(List<Pair<Point,Token>> coordinates) {
         this.coordinates = coordinates;
     }
+//    @Override
+//    public List<Pair<Point,Token>> getCoordinates() {
+//        return coordinates;
+//    }
     @Override
-    public List<Pair<Point,Token>> getCoordinates() {
-        return coordinates;
+    public int getLostCrew() {
+        return lostCrew;
     }
 }

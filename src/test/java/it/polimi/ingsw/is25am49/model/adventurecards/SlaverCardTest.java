@@ -6,10 +6,8 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.SlaverCard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
-import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
@@ -45,6 +43,7 @@ class SlaverCardTest {
     void init() {
         // Initialize the game board and player1
         gameBoard = new GameBoard();
+        gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
 //        player1.setShipBoard(shipMock1);
@@ -126,6 +125,12 @@ class SlaverCardTest {
         astronautsCoordinates.add(new Pair<>(new Point(3, 3), Token.ASTRONAUT));
         gameBoard.getCurrentCard().finishDecision(astronautsCoordinates);
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
+    }
+
+    @Test
+    void testToString() {
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
     }
 
 

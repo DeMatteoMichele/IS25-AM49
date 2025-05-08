@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -133,7 +134,7 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
-    public void serializeObjectFromServer(SerializationObjectServer serObject) {
+    public File serializeObjectFromServer(SerializationObjectServer serObject) {
         File jsonFile = new File("commandToClient.json");
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();
@@ -150,9 +151,20 @@ public class ServerSerializer implements RemoteClient {
                 HashSet set = (HashSet) param;
                 for (Object elem : set) {
                     ObjectNode elemNode = mapper.createObjectNode();
-                    ObjectNode valueNode = mapper.valueToTree(elem);
-                    elemNode.put("className", elem.getClass().getName());
-                    elemNode.set("content", valueNode);
+                    String className = elem.getClass().getName();
+                    elemNode.put("className", className);
+                    if(className.equals("int")){
+                        int intElem = (int) elem;
+                        elemNode.put("content", intElem);
+                    }
+                    else if( className.equals("boolean")){
+                        boolean boolElem = (boolean) elem;
+                        elemNode.put("content", boolElem);
+                    }
+                    else {
+                        ObjectNode valueNode = mapper.valueToTree(param);
+                        elemNode.set("content", valueNode);
+                    }
                     contentNode.add(elemNode);
                 }
             } else if (param instanceof ArrayList) {
@@ -162,17 +174,50 @@ public class ServerSerializer implements RemoteClient {
                 ArrayList list = (ArrayList) param;
                 for (Object elem : list) {
                     ObjectNode elemNode = mapper.createObjectNode();
-                    ObjectNode valueNode = mapper.valueToTree(elem);
-                    elemNode.put("className", elem.getClass().getName());
-                    elemNode.set("content", valueNode);
+                    String className = elem.getClass().getName();
+                    elemNode.put("className", className);
+                    if(className.equals("int")){
+                        int intElem = (int) elem;
+                        elemNode.put("content", intElem);
+                    }
+                    else if( className.equals("boolean")){
+                        boolean boolElem = (boolean) elem;
+                        elemNode.put("content", boolElem);
+                    }
+                    else {
+                        ObjectNode valueNode = mapper.valueToTree(param);
+                        elemNode.set("content", valueNode);
+                    }
                     contentNode.add(elemNode);
                 }
             } else {
                 ObjectNode contentNode = mapper.createObjectNode();
                 paramNode.put("typeOfCollection", "");
-                contentNode.put("className", param.getClass().getName());
-                ObjectNode valueNode = mapper.valueToTree(param);
-                contentNode.set("content", valueNode);
+                String className = param.getClass().getName();
+                contentNode.put("className", className);
+                if(className.equals("java.lang.Integer")){
+                    int intParam = (int) param;
+                    contentNode.put("content", intParam);
+                }
+                else if(className.equals("java.lang.Boolean")){
+                    boolean boolParam = (boolean) param;
+                    contentNode.put("content", boolParam);
+                }
+                else if(className.equals("java.lang.String")){
+                    String stringParam = (String) param;
+                    contentNode.put("content", stringParam);
+                }
+                else {
+                    if(className.contains("it.polimi.ingsw.is25am49.server.model.enums")){
+                        TextNode valueNode = mapper.valueToTree(param);
+                        contentNode.set("content", valueNode);
+                    }
+                    else {
+                        ObjectNode valueNode = mapper.valueToTree(param);
+                        contentNode.set("content", valueNode);
+                    }
+
+                }
                 paramNode.set("content", contentNode);
             }
             params.add(paramNode);
@@ -182,7 +227,8 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
+        //clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
+        return jsonFile;
     }
 
     @Override
@@ -191,7 +237,7 @@ public class ServerSerializer implements RemoteClient {
     }
 
     @Override
-    public void registerClientCallback(RemoteClient client, int playerId) throws RemoteException {
+    public void registerClientCallback(int playerId) throws RemoteException {
 
     }
 

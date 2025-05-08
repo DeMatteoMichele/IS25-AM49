@@ -15,7 +15,7 @@ public interface RemoteClient extends Remote {
     void notifyClient(String msg) throws RemoteException;
 
     // Metodi InitState !!!!!!!!! ZIOPORCO
-    void registerClientCallback(RemoteClient client, int playerId) throws RemoteException;
+    void registerClientCallback(int playerId) throws RemoteException;
     void playerJoinCallback(int playerId) throws RemoteException;
     void gameStartedCallback() throws RemoteException;
 

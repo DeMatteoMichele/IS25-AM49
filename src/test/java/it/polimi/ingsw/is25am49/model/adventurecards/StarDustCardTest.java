@@ -80,4 +80,10 @@ class StarDustCardTest {
     void applyEffect() {
 
     }
+
+    @Test
+    void testToString(){
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
+    }
 }

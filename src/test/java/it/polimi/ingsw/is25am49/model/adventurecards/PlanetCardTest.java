@@ -51,9 +51,9 @@ class PlanetCardTest {
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.getLeaderBoard().modifyFlightDays(player1, -2);
         gameBoard.getLeaderBoard().modifyFlightDays(player2, +3);
-        planet1 = new Planet(1,0,0,0);
-        planet2 = new Planet(0,2,0,0);
-        planet3 = new Planet(0,0,1,0);
+        planet1 = new Planet(1,0,0,0,1);
+        planet2 = new Planet(0,2,0,0,2);
+        planet3 = new Planet(0,0,1,0,3);
         component1 = new ContainerComponent(ComponentType.SPECIAL_STORAGE,3);
         tile1 = new Tile(2, component1);
         component2 = new ContainerComponent(ComponentType.STORAGE,2);
@@ -102,7 +102,7 @@ class PlanetCardTest {
     void landingOnPlanet() {
 
         gameBoard.drawAdventureCard(gameBoard.getLeader());
-        gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
+        gameBoard.getCurrentCard().landingOnPlanet(true, 1);
         assertEquals(AdventureStatesTypes.DECISION_GOODS,gameBoard.getCurrentCard().getCurrentState());
         assertEquals(player2,gameBoard.getCurrentPlayer());
         assertEquals(player2.getPlayerNumber(),planet1.getPlayernumber());
@@ -112,7 +112,7 @@ class PlanetCardTest {
     @Test
     void finishDecision() {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
-        gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
+        gameBoard.getCurrentCard().landingOnPlanet(true, 1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
         assertEquals(0,gameBoard.getCurrentPlayer().getDaysThisTurn());
@@ -125,9 +125,9 @@ class PlanetCardTest {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().setFinished(true);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
-        gameBoard.getCurrentCard().landingOnPlanet(true, planet1);
+        gameBoard.getCurrentCard().landingOnPlanet(true, 1);
         gameBoard.getCurrentCard().finishDecision(coordinates);
-        gameBoard.getCurrentCard().landingOnPlanet(true, planet2);
+        gameBoard.getCurrentCard().landingOnPlanet(true, 2);
         gameBoard.getCurrentCard().finishDecision(coordinates2);
         assertEquals(player1,gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE,gameBoard.getCurrentCard().getCurrentState());
@@ -138,5 +138,13 @@ class PlanetCardTest {
     }
     @Test
     void applyEffect() {
+    }
+
+    @Test
+    void testToString() {
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        gameBoard.getCurrentCard().setFinished(true);
+        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        System.out.println(gameBoard.getCurrentCard().toString());
     }
 }
