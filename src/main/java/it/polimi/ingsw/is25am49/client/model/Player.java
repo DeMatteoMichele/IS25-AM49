@@ -40,7 +40,7 @@ public class Player {
         this.idPlayer = idPlayer;
         isWatching = false;
     }
-
+//michele gay
     private void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");

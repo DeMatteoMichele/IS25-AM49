@@ -32,7 +32,7 @@ public class GameSession {
         checkIsAdmin(player);
         if(!game.isPresent()) {
             game = Optional.of(new Game(admin.get(), this));
-        }else throw new GameSettingsException("Game already exists");
+        }else throw new GameSettingsException("Game already exists!");
     }
     public void setGameMode(Player player, GameMode mode) {
         checkIsAdmin(player);
