@@ -31,6 +31,14 @@ public class Game {
         isFinished = false;
         numPlayers = 0;
     }
+    public GameMode getMode() {return mode;}
+    public int numOfPlayers() {return numPlayers;}
+    public Player getPlayer(int i) throws IllegalArgumentException{
+        for (Player p : players) {
+            if(p.getIdPlayer() == i) return p;
+        }
+        throw new IllegalArgumentException("Player not found");
+    }
     public boolean checkStatus(){
         return !mode.equals(GameMode.DEFAULT);
     }
@@ -47,7 +55,6 @@ public class Game {
         numPlayers++;
     }
     public ArrayList<Player> getListPlayers() { return players; }
-    //TODO: da fare
     public void calculateScore(Player player) {
         if(winner.isEmpty()){
                 board.calculateFinalCredits();
