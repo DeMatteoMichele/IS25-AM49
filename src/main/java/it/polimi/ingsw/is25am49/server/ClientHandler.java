@@ -192,8 +192,10 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     private void processOutGoingFileQueue(int clientId) {
+        System.out.println("Starting to process the OutGoingFileQueue for client " + clientId);
         while (connections.get(clientId)) {
             try {
+                System.out.println("Waiting for a file to be sent to client " + clientId);
                 File fileToSend = OutGoingFileQueue.get(clientId).take();
                 sendMessageToClient(clientId,fileToSend);
             } catch (InterruptedException e) {

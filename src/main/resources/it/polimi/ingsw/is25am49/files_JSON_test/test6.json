@@ -1,0 +1,13 @@
+{
+  "typeOfMessage": "HSK",
+  "methodName": "registerClientSocket",
+  "params": [
+    {
+      "typeOfCollection" : "",
+      "content" : {
+        "className": "java.lang.Integer",
+        "content": -1
+      }
+    }
+  ]
+}

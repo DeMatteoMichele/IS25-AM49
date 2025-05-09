@@ -25,7 +25,7 @@ public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     private final BlockingQueue<File> filesFromSocketQueue;
-    private int i = -1;
+    private int idCounter = -1;
 
 
     public ServerSerializer(ServerController serverController) {
@@ -39,15 +39,16 @@ public class ServerSerializer implements RemoteClient {
     }
 
     //se cambiano i parametri dei metodi bisogna modificare questo codice
-    public void deSerializeStringFromClient(File fileJson) {
+    public SerializationObjectServer deSerializeStringFromClient(File fileJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            mapper.addMixIn(Pair.class, PairMixIn.class);
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
+            String methodName = rootNode.get("methodName").asText();
+            SerializationObjectServer serObject = new SerializationObjectServer(methodName, serverController, -1);
+            ArrayNode params = (ArrayNode) rootNode.get("params");
             if (typeOfMessage.equals("MSG")) {
-                String methodName = rootNode.get("methodName").asText();
-                SerializationObjectServer serObject = new SerializationObjectServer(methodName, serverController, 0);
-                JsonNode params = rootNode.get("params");
                 for (JsonNode paramNode : params) {
                     ArrayList<Object> collectionList = null;
                     HashSet<Object> collectionSet = null;
@@ -61,20 +62,47 @@ public class ServerSerializer implements RemoteClient {
                     };
                     if (collection instanceof ArrayList) {
                         collectionList = (ArrayList<Object>) collection;
-                        JsonNode content = paramNode.get("content");
+                        ArrayNode content = (ArrayNode) paramNode.get("content");
                         for (JsonNode contentNode : content) {
                             String className = contentNode.get("className").asText();
-                            String contentObject = contentNode.get("contentObject").asText();
                             Object value = switch (className) {
-                                case "Pair" -> mapper.readValue(contentObject, Pair.class);
-                                case "Token" -> mapper.readValue(contentObject, Token.class);
-                                case "Color" -> mapper.readValue(contentObject, Color.class);
-                                case "int" -> mapper.readValue(contentObject, int.class);
-                                case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
-                                case "String" -> mapper.readValue(contentObject, String.class);
-                                case "Point" -> mapper.readValue(contentObject, Point.class);
-                                case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
-                                case "boolean" -> mapper.readValue(contentObject, boolean.class);
+                                case "javafx.util.Pair" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Pair.class);
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.Token" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Token.class);
+
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.color" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Color.class);
+                                }
+                                case "java.lang.Integer" -> {
+                                    String contentObject = contentNode.get("content").asText();
+                                    yield mapper.readValue(contentObject, int.class);
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.GameMode" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), GameMode.class);
+                                }
+                                case "java.lang.String" -> {
+                                    String contentObject = contentNode.get("content").asText();
+                                    yield mapper.readValue(contentObject, String.class);
+                                }
+                                case "java.awt.Point" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Point.class);
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.Orientation" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Orientation.class);
+                                }
+                                case "java.lang.Boolean" -> {
+                                    String contentObject = contentNode.get("content").asText();
+                                    yield mapper.readValue(contentObject, boolean.class);
+                                }
                                 default -> new Object();
                             };
                             collectionList.add(value);
@@ -82,20 +110,47 @@ public class ServerSerializer implements RemoteClient {
                         serObject.addParameter(collectionList);
                     } else if (collection instanceof HashSet) {
                         collectionSet = (HashSet<Object>) collection;
-                        JsonNode content = paramNode.get("content");
+                        ArrayNode content = (ArrayNode) paramNode.get("content");
                         for (JsonNode contentNode : content) {
                             String className = contentNode.get("className").asText();
-                            String contentObject = contentNode.get("contentObject").asText();
                             Object value = switch (className) {
-                                case "Pair" -> mapper.readValue(contentObject, Pair.class);
-                                case "Token" -> mapper.readValue(contentObject, Token.class);
-                                case "Color" -> mapper.readValue(contentObject, Color.class);
-                                case "int" -> mapper.readValue(contentObject, int.class);
-                                case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
-                                case "String" -> mapper.readValue(contentObject, String.class);
-                                case "Point" -> mapper.readValue(contentObject, Point.class);
-                                case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
-                                case "boolean" -> mapper.readValue(contentObject, boolean.class);
+                                case "javafx.util.Pair" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Pair.class);
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.Token" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Token.class);
+
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.color" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Color.class);
+                                }
+                                case "java.lang.Integer" -> {
+                                    String contentObject = contentNode.get("content").asText();
+                                    yield mapper.readValue(contentObject, int.class);
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.GameMode" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), GameMode.class);
+                                }
+                                case "java.lang.String" -> {
+                                    String contentObject = contentNode.get("content").asText();
+                                    yield mapper.readValue(contentObject, String.class);
+                                }
+                                case "java.awt.Point" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Point.class);
+                                }
+                                case "it.polimi.ingsw.is25am49.server.model.enums.Orientation" -> {
+                                    JsonNode contentObject = contentNode.get("content");
+                                    yield mapper.readValue(contentObject.traverse(), Orientation.class);
+                                }
+                                case "java.lang.Boolean" -> {
+                                    String contentObject = contentNode.get("content").asText();
+                                    yield mapper.readValue(contentObject, boolean.class);
+                                }
                                 default -> new Object();
                             };
                             collectionSet.add(value);
@@ -104,42 +159,81 @@ public class ServerSerializer implements RemoteClient {
                     } else {
                         object = collection;
                         JsonNode content = paramNode.get("content");
-                        for (JsonNode contentNode : content) {
-                            String className = contentNode.get("className").asText();
-                            String contentObject = contentNode.get("contentObject").asText();
-                            object = switch (className) {
-                                case "Pair" -> mapper.readValue(contentObject, Pair.class);
-                                case "Token" -> mapper.readValue(contentObject, Token.class);
-                                case "Color" -> mapper.readValue(contentObject, Color.class);
-                                case "int" -> mapper.readValue(contentObject, int.class);
-                                case "GameMode" -> mapper.readValue(contentObject, GameMode.class);
-                                case "String" -> mapper.readValue(contentObject, String.class);
-                                case "Point" -> mapper.readValue(contentObject, Point.class);
-                                case "Orientation" -> mapper.readValue(contentObject, Orientation.class);
-                                case "boolean" -> mapper.readValue(contentObject, boolean.class);
-                                default -> new Object();
-                            };
-                        }
+                        String className = content.get("className").asText();
+                        object = switch (className) {
+                            case "javafx.util.Pair" -> {
+                                JsonNode contentObject = content.get("content");
+                                yield mapper.readValue(contentObject.traverse(), Pair.class);
+                            }
+                            case "it.polimi.ingsw.is25am49.server.model.enums.Token" -> {
+                                JsonNode contentObject = content.get("content");
+                                yield mapper.readValue(contentObject.traverse(), Token.class);
+
+                            }
+                            case "it.polimi.ingsw.is25am49.server.model.enums.color" -> {
+                                JsonNode contentObject = content.get("content");
+                                yield mapper.readValue(contentObject.traverse(), Color.class);
+                            }
+                            case "java.lang.Integer" -> {
+                                String contentObject = content.get("content").asText();
+                                yield mapper.readValue(contentObject, int.class);
+                            }
+                            case "it.polimi.ingsw.is25am49.server.model.enums.GameMode" -> {
+                                JsonNode contentObject = content.get("content");
+                                yield mapper.readValue(contentObject.traverse(), GameMode.class);
+                            }
+                            case "java.lang.String" -> {
+                                String contentObject = content.get("content").asText();
+                                yield mapper.readValue(contentObject, String.class);
+                            }
+                            case "java.awt.Point" -> {
+                                JsonNode contentObject = content.get("content");
+                                yield mapper.readValue(contentObject.traverse(), Point.class);
+                            }
+                            case "it.polimi.ingsw.is25am49.server.model.enums.Orientation" -> {
+                                JsonNode contentObject = content.get("content");
+                                yield mapper.readValue(contentObject.traverse(), Orientation.class);
+                            }
+                            case "java.lang.Boolean" -> {
+                                String contentObject = content.get("content").asText();
+                                yield mapper.readValue(contentObject, boolean.class);
+                            }
+                            default -> new Object();
+                        };
                         serObject.addParameter(object);
                     }
                 }
-                serObject.callServerMethod();
             }
-            // HandShake ?, HeartBeat ?, dipende dalla gestione nel Layer di Rete
-            else {
-
+            else if (typeOfMessage.equals("HSK")) {
+                //System.out.println("Sono in HSK");
+                for(JsonNode paramNode : params){
+                    System.out.println("Sono nel for");
+                    String typeOfCollection = paramNode.get("typeOfCollection").asText();
+                    int contentObject = paramNode.get("content").asInt();
+                    if(contentObject==-1) {
+                        idCounter++;
+                        int id = idCounter;
+                    }
+                    serObject.addParameter(idCounter);
+                    serObject.setPlayerId(idCounter);
+                    System.out.println(serObject.toString());
+                }
             }
+            //TODO serObject.callServerMethod();
+            return serObject;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public File serializeObjectFromServer(SerializationObjectServer serObject) {
         File jsonFile = new File("commandToClient.json");
         ObjectMapper mapper = new ObjectMapper();
+        mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode params = mapper.createArrayNode();
-        rootNode.put("typeOfMessage", "MSG");
+        rootNode.put("typeOfMessage", serObject.getTypeOfMessage());
         rootNode.put("methodName", serObject.getMethodName());
         rootNode.set("params", params);
         for (Object param : serObject.getParameters()) {
@@ -153,17 +247,23 @@ public class ServerSerializer implements RemoteClient {
                     ObjectNode elemNode = mapper.createObjectNode();
                     String className = elem.getClass().getName();
                     elemNode.put("className", className);
-                    if(className.equals("int")){
+                    if (className.equals("java.lang.Integer")) {
                         int intElem = (int) elem;
                         elemNode.put("content", intElem);
-                    }
-                    else if( className.equals("boolean")){
+                    } else if (className.equals("java.lang.Boolean")) {
                         boolean boolElem = (boolean) elem;
                         elemNode.put("content", boolElem);
-                    }
-                    else {
-                        ObjectNode valueNode = mapper.valueToTree(param);
-                        elemNode.set("content", valueNode);
+                    } else if (className.equals("java.lang.String")) {
+                        String stringElem = (String) elem;
+                        elemNode.put("content", stringElem);
+                    } else {
+                        if (className.contains("it.polimi.ingsw.is25am49.server.model.enums")) {
+                            TextNode valueNode = mapper.valueToTree(elem);
+                            elemNode.set("content", valueNode);
+                        } else {
+                            ObjectNode valueNode = mapper.valueToTree(elem);
+                            elemNode.set("content", valueNode);
+                        }
                     }
                     contentNode.add(elemNode);
                 }
@@ -176,17 +276,23 @@ public class ServerSerializer implements RemoteClient {
                     ObjectNode elemNode = mapper.createObjectNode();
                     String className = elem.getClass().getName();
                     elemNode.put("className", className);
-                    if(className.equals("int")){
+                    if (className.equals("java.lang.Integer")) {
                         int intElem = (int) elem;
                         elemNode.put("content", intElem);
-                    }
-                    else if( className.equals("boolean")){
+                    } else if (className.equals("java.lang.Boolean")) {
                         boolean boolElem = (boolean) elem;
                         elemNode.put("content", boolElem);
-                    }
-                    else {
-                        ObjectNode valueNode = mapper.valueToTree(param);
-                        elemNode.set("content", valueNode);
+                    } else if (className.equals("java.lang.String")) {
+                        String stringElem = (String) elem;
+                        elemNode.put("content", stringElem);
+                    } else {
+                        if (className.contains("it.polimi.ingsw.is25am49.server.model.enums")) {
+                            TextNode valueNode = mapper.valueToTree(elem);
+                            elemNode.set("content", valueNode);
+                        } else {
+                            ObjectNode valueNode = mapper.valueToTree(elem);
+                            elemNode.set("content", valueNode);
+                        }
                     }
                     contentNode.add(elemNode);
                 }
@@ -195,24 +301,20 @@ public class ServerSerializer implements RemoteClient {
                 paramNode.put("typeOfCollection", "");
                 String className = param.getClass().getName();
                 contentNode.put("className", className);
-                if(className.equals("java.lang.Integer")){
+                if (className.equals("java.lang.Integer")) {
                     int intParam = (int) param;
                     contentNode.put("content", intParam);
-                }
-                else if(className.equals("java.lang.Boolean")){
+                } else if (className.equals("java.lang.Boolean")) {
                     boolean boolParam = (boolean) param;
                     contentNode.put("content", boolParam);
-                }
-                else if(className.equals("java.lang.String")){
+                } else if (className.equals("java.lang.String")) {
                     String stringParam = (String) param;
                     contentNode.put("content", stringParam);
-                }
-                else {
-                    if(className.contains("it.polimi.ingsw.is25am49.server.model.enums")){
+                } else {
+                    if (className.contains("it.polimi.ingsw.is25am49.server.model.enums")) {
                         TextNode valueNode = mapper.valueToTree(param);
                         contentNode.set("content", valueNode);
-                    }
-                    else {
+                    } else {
                         ObjectNode valueNode = mapper.valueToTree(param);
                         contentNode.set("content", valueNode);
                     }
@@ -227,7 +329,13 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
+        if (serObject.getTypeOfMessage().equals("MSG")) {
+            clientHandler.putFileInTheBroadcastQueue(jsonFile);
+        }
+        else if(serObject.getTypeOfMessage().equals("HSK")){
+            System.out.println("Sto aggiungendo il file alla coda");
+            clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
+        }
         return jsonFile;
     }
 
@@ -375,24 +483,13 @@ public class ServerSerializer implements RemoteClient {
     }
 
     public int deserializeHandshake(File fileJson) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootNode = mapper.readTree(fileJson);
-            int clientId = rootNode.get("clientId").asInt();
-            if (clientId == -1) {
-                i++;
-                clientId = i;
-            }
-            ObjectNode responseNode = mapper.createObjectNode();
-            responseNode.put("typeOfMessage", "HSK");
-            responseNode.put("clientId", clientId);
-            File fileJsonResponse = new File("handshake_response.json");
-            mapper.writerWithDefaultPrettyPrinter().writeValue(fileJsonResponse, responseNode);
-            clientHandler.putFileInTheOutGoingFileQueue(fileJsonResponse, clientId);
-            return clientId;
-        } catch (Exception e) {
-            System.err.println("Errore nella deserializzazione dell'handshake: " + e.getMessage());
-            return -1;
-        }
+        // ritorna id del client e mette il pacchetto nella coda outgoing unicast
+        //System.out.println("sono in deserialize handkshake");
+        SerializationObjectServer serObjectTemp;
+        serObjectTemp = deSerializeStringFromClient(fileJson);
+        serObjectTemp.setMethodName("registerClientCallback");
+        serializeObjectFromServer(serObjectTemp);
+        System.out.println("Ho finito di deserializzare");
+        return serObjectTemp.getPlayerId();
     }
 }

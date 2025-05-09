@@ -131,13 +131,12 @@ public class TextualUserInterface implements UserInterface {
                 }
             }
             case 2 -> {
-                ClientSerializer clientSerializer = new ClientSerializer(gameSession);
+                ClientSerializer clientSerializer = new ClientSerializer(gameSession,controller);
                 ServerHandler serverHandler = new ServerHandler(serverIP, serverPort);
                 serverHandler.setClientSerializer(clientSerializer);
                 clientSerializer.setServerHandler(serverHandler);
                 controller.setServerMethods(clientSerializer);
-                //todo registraclient
-                //controller.registerClientSocket();
+                controller.registerClientSocket();
             }
         }
     }
