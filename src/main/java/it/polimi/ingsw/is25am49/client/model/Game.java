@@ -17,17 +17,17 @@ public class Game {
     private boolean isFinished;
     private final long seedForGeneration;
 
-    public Game(Optional<Player> admin, GameSession session) {
+    public Game(Player admin, GameSession session) {
         this.session = session;
         seedForGeneration= System.currentTimeMillis();
         board = new GameBoard(seedForGeneration);
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
         mode = GameMode.DEFAULT;
-        players.add(admin.orElse(null));
+        players.add(admin);
         winner = Optional.empty();
         timer = null;
-        maxPlayers = 4;
+        maxPlayers = 0;
         isFinished = false;
         numPlayers = 0;
     }

@@ -25,6 +25,8 @@ public class Player {
     private boolean theCrewHasBeenPlaced;
 
 
+    public int getIdPlayer() {return idPlayer;}
+
     public Player(String username, Color color, int idPlayer) {
         this.username = username;
         this.color = color;

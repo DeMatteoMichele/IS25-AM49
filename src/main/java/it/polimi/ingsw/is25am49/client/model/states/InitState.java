@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model.states;
 
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
@@ -14,8 +15,11 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class InitState extends State {
-    public InitState(GameSession gameSession){
+    public InitState(GameSession gameSession ){
         super(gameSession);
+    }
+    public InitState(GameSession gameSession, UserInterface userInterface) {
+        super(gameSession, userInterface);
     }
 
     //To change
@@ -23,10 +27,12 @@ public class InitState extends State {
         gameSession.setGameMode(player, gamemode);
     }
     public void userSelectColorAndUserName(Color playerColor, String username) {
-        if(gameSession.checkPlayers())
+        if(gameSession.getAdmin().isEmpty())gameSession.userSelectColorAndUserName(playerColor, username);
+        else if(gameSession.checkPlayers())
             gameSession.userSelectColorAndUserName(playerColor, username);
         else
             throw new GameSettingsException("You cannot join the game");
+        userInterface.updateGameSessionNewPlayer(new Object());
     }
     public void adminCreateGame(Player player) {
             gameSession.createNewGame(player);
@@ -36,7 +42,7 @@ public class InitState extends State {
             if(!gameSession.checkStatus())
                 throw new GameSettingsException("You cannot start the game yet, settings are not active");
             else{
-                if(gameSession.getGame().map(g -> g.getListPlayers().size() < 2).orElse(false)){
+                if(gameSession.getGame().numOfPlayers() < 2){
                     throw new GameSettingsException("You cannot start the game yet, not enough players");
                 }
                 else{
