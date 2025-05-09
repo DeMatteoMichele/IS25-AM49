@@ -76,4 +76,11 @@ public class EffectLoseGoods extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
     }
 
+    public int getLooseGoods() {
+        return numberOfTokensToLose;
+    }
+    public int getLostCrew() {
+        throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
+    }
+
 }

@@ -41,7 +41,8 @@ public class GameBoard {
     private long seedForGeneration;
 
     /**
-     * Constructor of the GameBoard class.
+     * *********EXISTS ONLY FOR NOT BREAKING SOME TESTS*********************
+     * Secondary Constructor of the GameBoard class
      */
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
@@ -52,6 +53,9 @@ public class GameBoard {
         landedPlayers = new ArrayList<>();
     }
 
+    /**
+     * New main constructor of the GameBoard class, uses a seed for the generation od dices, decks and tiles
+     */
     public GameBoard(long seedForGeneration) {
         this();
         this.seedForGeneration = seedForGeneration;
@@ -247,7 +251,7 @@ public class GameBoard {
                 if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
                     for (int i = 0; i < 4; i++) {
-                        //Collections.shuffle(deckLevel1);
+                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
                         smallDeck.add(deckLevel1.remove(i));
@@ -257,8 +261,8 @@ public class GameBoard {
                 if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
                     for (int i = 0; i < 4; i++) {
-                        //Collections.shuffle(deckLevel2);
-                        //Collections.shuffle(deckLevel1);
+                        Collections.shuffle(deckLevel2,new Random(seedForGeneration));
+                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel2.remove(i));
                         smallDeck.add(deckLevel2.remove(i));

@@ -15,8 +15,8 @@ public class SlaverCard extends Enemy {
     protected int lostAstronauts;
     protected int creditsEarned;
 
-    public SlaverCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
-        super(gameBoard, description, level, dayslost, minimumFirePower);
+    public SlaverCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
+        super(gameBoard, description, level, name,dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         listEffects.add(new EffectModifyCrew("LoseAstronauts", lostAstronauts));
@@ -88,6 +88,33 @@ public class SlaverCard extends Enemy {
     @Override
     protected int getMaxActivatableComponents(ShipBoard shipBoard) {
         return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(separator);
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        String daysLostText = "| DAYS LOST: " + daysLost;
+        str.append(daysLostText).append(" ".repeat(width - daysLostText.length() - 1)).append("|\n");
+        String creditsEarnedText = "| CREDITS EARNED: " + creditsEarned;
+        str.append(creditsEarnedText).append(" ".repeat(width - creditsEarnedText.length() - 1)).append("|\n");
+        String lostAstronautsText = "| LOST ASTRONAUTS: " + lostAstronauts;
+        str.append(lostAstronautsText).append(" ".repeat(width - lostAstronautsText.length() - 1)).append("|\n");
+        String minimumFirePowerText = "| MINIMUM FIREPOWER: " + minimumFirePower;
+        str.append(minimumFirePowerText).append(" ".repeat(width - minimumFirePowerText.length() - 1)).append("|\n");
+        str.append(border);
+        return str.toString();
     }
 
 }

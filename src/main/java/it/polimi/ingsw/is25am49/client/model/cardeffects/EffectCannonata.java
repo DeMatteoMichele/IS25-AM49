@@ -21,6 +21,13 @@ public class EffectCannonata extends CardEffect {
         this.level = level;
         this.direction = direction;
     }
+
+    /**
+     * This method applies the cannon effect to the player.
+     * It depends on the level of the cannonade
+     * It destroys the tile in the position of the cannonade
+     * @param player the player to which the effect is applied
+     */
     public void action(Player player) {
         // Implementazione per cannonata di livello 1
         if (level == 1) {
@@ -46,6 +53,11 @@ public class EffectCannonata extends CardEffect {
             }
     }}
 
+    /**
+     * This method sets the position where the cannonade hits
+     * It sets the number of row or column (it depend on the orientation) where the cannonade hits
+     * @param position the position of the cannonade
+     */
     public void setPosition(int position) {
         this.position = position;
         //indica dove colpisce il cannone
@@ -61,5 +73,14 @@ public class EffectCannonata extends CardEffect {
     @Override
     public int getLevel() {
         return level;
+    }
+
+    @Override
+    public int getLostCrew() {
+        throw new IllegalMethodOnThisCardException("Illegal Method On Effect LostCrew");
+    }
+
+    public Orientation getOrientation() {
+        return direction;
     }
 }

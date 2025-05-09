@@ -7,9 +7,11 @@ public class Planet {
     private boolean isOccupied;
     private int playernumber;
     private CardEffect effect;
-    public Planet(int redGoods, int yellowGoods, int greenGoods, int blueGoods) {
+    private int planetId;
+    public Planet(int redGoods, int yellowGoods, int greenGoods, int blueGoods,int planetID) {
         this.isOccupied = false;
         this.effect = new EffectWinGoods("Win goods", redGoods, yellowGoods, greenGoods, blueGoods);
+        this.planetId = planetID;
     }
 
     public boolean isOccupied() {
@@ -18,7 +20,13 @@ public class Planet {
 
     public void setOccupied(boolean occupied) {
         isOccupied = occupied;
+
     }
+
+    public int getPlanetId() {
+        return planetId;
+    }
+
     public CardEffect getEffect(){
         return effect;
     }

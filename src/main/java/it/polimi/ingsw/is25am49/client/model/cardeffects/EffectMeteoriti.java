@@ -19,6 +19,7 @@ public class EffectMeteoriti extends CardEffect {
     private int position;
 
 
+
     public EffectMeteoriti(String name_effect, int level, Orientation direction) {
         super(name_effect);
         this.level = level;
@@ -131,4 +132,14 @@ public class EffectMeteoriti extends CardEffect {
     public int getLevel() {
         return level;
     }
+
+    @Override
+    public int getLostCrew() {
+        throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
+    }
+
+    public Orientation getOrientation() {
+        return direction;
+    }
+
 }

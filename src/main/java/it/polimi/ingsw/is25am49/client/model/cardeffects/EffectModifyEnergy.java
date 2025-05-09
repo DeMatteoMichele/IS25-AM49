@@ -39,6 +39,11 @@ public class EffectModifyEnergy extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
+    @Override
+    public int getLostCrew() {
+        throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
+    }
+
     public void setListOfCoordinates(List<Pair<Point, Token>> coordinates) {
         this.coordinates = coordinates;
     }

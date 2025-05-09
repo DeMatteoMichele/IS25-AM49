@@ -15,26 +15,21 @@ public class Game {
     private int maxPlayers;
     private int numPlayers;
     private boolean isFinished;
+    private final long seedForGeneration;
 
-    public Game(Player admin, GameSession session) {
+    public Game(Optional<Player> admin, GameSession session) {
         this.session = session;
-        board = new GameBoard();
+        seedForGeneration= System.currentTimeMillis();
+        board = new GameBoard(seedForGeneration);
+        board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
         mode = GameMode.DEFAULT;
-        players.add(admin);
+        players.add(admin.orElse(null));
         winner = Optional.empty();
         timer = null;
         maxPlayers = 4;
         isFinished = false;
         numPlayers = 0;
-    }
-    public GameMode getMode() {return mode;}
-    public int numOfPlayers() {return players.size();}
-    public Player getPlayer(int i) {
-        for (Player p : players) {
-            if(p.getIdPlayer() == i) return p;
-        }
-        throw new IllegalArgumentException("Player not found");
     }
     public boolean checkStatus(){
         return !mode.equals(GameMode.DEFAULT);
@@ -47,7 +42,10 @@ public class Game {
         timer = new Timer(mode, session);
     }
     public boolean checkPlayers(){ return players.size() < maxPlayers; }
-    public void addPlayer(Player player) { players.add(player); }
+    public void addPlayer(Player player) {
+        players.add(player);
+        numPlayers++;
+    }
     public ArrayList<Player> getListPlayers() { return players; }
     //TODO: da fare
     public void calculateScore(Player player) {
