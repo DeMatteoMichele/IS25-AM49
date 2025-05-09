@@ -36,6 +36,7 @@ class AbandonedShipCardTest {
     void init(){
         // Initialize the game board and player1
         gameBoard = new GameBoard();
+
         player1 = new Player("TestPlayer", Color.RED, 1);
         player1.setShipBoard(shipMock1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
@@ -68,9 +69,9 @@ class AbandonedShipCardTest {
 
     @Test
     void drawCard() {
+        assertEquals(gameBoard.getLeader(),player2);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
         assertEquals(player1, gameBoard.getCurrentPlayer());
     }
 
@@ -90,7 +91,7 @@ class AbandonedShipCardTest {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(false);
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
-        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
+        assertEquals(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(0, adventureDeck.size());
         assertEquals(gameBoard.getCurrentCard(),card1);
         assertEquals(gameBoard.getCurrentPlayer(),player1);
@@ -106,7 +107,9 @@ class AbandonedShipCardTest {
         gameBoard.getCurrentCard().finishDecision(new ArrayList<Pair<Point, Token>>());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
         assertEquals(100, gameBoard.getCurrentPlayer().getCredits());
-        assertEquals(2,gameBoard.getCurrentPlayer().getDaysThisTurn());
+        assertEquals(player2, gameBoard.getCurrentPlayer());
+        assertEquals(5,gameBoard.getLeaderBoard().getDays(player2));
+        assertEquals(1, gameBoard.getLeaderBoard().getPos(player2));
     }
 
     @Test

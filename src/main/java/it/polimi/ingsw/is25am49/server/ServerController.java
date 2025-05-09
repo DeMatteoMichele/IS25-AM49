@@ -19,6 +19,7 @@ public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
     private final HashMap<Integer, Optional<Player>> players;
+    private RemoteClient remoteClient;
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
@@ -46,22 +47,35 @@ public class ServerController {
     }
 
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
-
+//        players.get(playerId).ifPresent(player -> {
+//            gameSession.getState().adminSelectGameMode(player, mode);
+//            gameSession.getState().adminCreateGame(player);
+//            gameSession.getState().adminStartGame(player);
+//        });
     }
 
     public void playerJoin(int playerId, String username, Color color) {
-
+        players.get(playerId).ifPresent(player -> {
+            gameSession.getState().userSelectColorAndUserName(color, username);
+        });
     }
 
     public void userDrawTile(int playerId, int tileId) {
-
+        players.get(playerId).ifPresent(player -> {
+            gameSession.getState().userDrawTile(player, tileId);
+        });
     }
 
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
         players.get(playerId).ifPresent(player -> {
             gameSession.getState().userPlaceTile(player, coordinates);
         });
-    }
+        try {
+            remoteClient.userPlaceTileCallback(playerId, coordinates,orientation);
+        } catch (RemoteException e) {
+            System.err.println("Error during the notification to the client: " + e.getMessage());
+
+    }}
 
 
     public void userPickTile(int playerId, Point coordinates) {

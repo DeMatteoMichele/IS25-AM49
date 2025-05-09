@@ -589,6 +589,7 @@ public class GameBoard {
                 });
         //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
         lappedPlayers.forEach(this::playerNoMoreInFlight);
+
     }
 
     /**
