@@ -9,12 +9,11 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesExcept
 
 import java.awt.*;
 import java.util.Map;
-import java.util.Random;
 
 public class SabotageCard extends AdventureCard {
 
-    public SabotageCard(GameBoard gameBoard, String description, int level) {
-        super(gameBoard,description, level);
+    public SabotageCard(GameBoard gameBoard, String description, int level, String name) {
+        super(gameBoard,description, level,name);
     }
 
     //declare the row and column of the component to be removed and the counter of the dice roll
@@ -71,28 +70,18 @@ public class SabotageCard extends AdventureCard {
         if(currentState != AdventureStatesTypes.ROLL_DICES)
             throw new IllegalMethodOnThisStateException("Wrong state");
 
+        diceRollCount++;
+        int firstDice = random.nextInt(6) + 1;
+        int secondDice = random.nextInt(6) + 1;
+        dicesResult = firstDice + secondDice;
         //se è pari lancio i dadi e setto la colonna da cui rimuovere il componente e poi rilancio i dadi
         if(diceRollCount%2==0){
-            System.out.println("Roll the dices to determine the column of the component to be removed");
-            diceRollCount++;
-            Random random = new Random();
-            int firstDice = random.nextInt(6) + 1;
-            int secondDice = random.nextInt(6) + 1;
-            dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
             column = dicesResult;
             System.out.println("you have set the column to: " + column + ", now roll the dices again to set the row");
-
-
         }
         else{
             //se è dispari lancio i dadi e setto la riga da cui rimuovere il componente e passo a apply effect
-            System.out.println("Roll the dices to determine the row of the component to be removed");
-            diceRollCount++;
-            Random random = new Random();
-            int firstDice = random.nextInt(6) + 1;
-            int secondDice = random.nextInt(6) + 1;
-            dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Row: " + dicesResult);
             row = dicesResult;
             currentState= AdventureStatesTypes.EFFECT;
@@ -133,6 +122,24 @@ public class SabotageCard extends AdventureCard {
         }
 
 
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(border);
+        return str.toString();
     }
 
 }

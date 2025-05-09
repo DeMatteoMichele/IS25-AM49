@@ -72,28 +72,18 @@ public class SabotageCard extends AdventureCard {
         if(currentState != AdventureStatesTypes.ROLL_DICES)
             throw new IllegalMethodOnThisStateException("Wrong state");
 
+        diceRollCount++;
+        int firstDice = random.nextInt(6) + 1;
+        int secondDice = random.nextInt(6) + 1;
+        dicesResult = firstDice + secondDice;
         //se è pari lancio i dadi e setto la colonna da cui rimuovere il componente e poi rilancio i dadi
         if(diceRollCount%2==0){
-            System.out.println("Roll the dices to determine the column of the component to be removed");
-            diceRollCount++;
-            Random random = new Random();
-            int firstDice = random.nextInt(6) + 1;
-            int secondDice = random.nextInt(6) + 1;
-            dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
             column = dicesResult;
             System.out.println("you have set the column to: " + column + ", now roll the dices again to set the row");
-
-
         }
         else{
             //se è dispari lancio i dadi e setto la riga da cui rimuovere il componente e passo a apply effect
-            System.out.println("Roll the dices to determine the row of the component to be removed");
-            diceRollCount++;
-            Random random = new Random();
-            int firstDice = random.nextInt(6) + 1;
-            int secondDice = random.nextInt(6) + 1;
-            dicesResult = firstDice + secondDice;
             System.out.println("The dices have been rolled: " + firstDice + " and " + secondDice + ". Row: " + dicesResult);
             row = dicesResult;
             currentState= AdventureStatesTypes.EFFECT;

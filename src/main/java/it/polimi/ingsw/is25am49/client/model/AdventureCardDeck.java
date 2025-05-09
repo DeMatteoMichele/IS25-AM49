@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.FinishDeckExceptions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 
@@ -30,8 +31,8 @@ public class AdventureCardDeck {
     public void add(AdventureCard card){
         deck.add(card);
     }
-    public void shuffle(){
-        Collections.shuffle(deck);
+    public void shuffle(Random random) {
+        Collections.shuffle(deck,random);
     }
     public int size() {
         return deck.size();

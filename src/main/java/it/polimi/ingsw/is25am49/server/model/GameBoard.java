@@ -38,9 +38,11 @@ public class GameBoard {
     private Player currentPlayer;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
+    private long seedForGeneration;
 
     /**
-     * Constructor of the GameBoard class.
+     * *********EXISTS ONLY FOR NOT BREAKING SOME TESTS*********************
+     * Secondary Constructor of the GameBoard class
      */
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
@@ -50,6 +52,15 @@ public class GameBoard {
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
     }
+
+    /**
+     * New main constructor of the GameBoard class, uses a seed for the generation od dices, decks and tiles
+     */
+    public GameBoard(long seedForGeneration) {
+        this();
+        this.seedForGeneration = seedForGeneration;
+    }
+
     /**
      * This method is used to check if the player is the current player
      * @param player the player to check
@@ -86,7 +97,7 @@ public class GameBoard {
      */
     public void initialize(GameMode gameMode) {
         generateSmallDecks(gameMode);
-        mainAdventureDeck.shuffle();
+        //mainAdventureDeck.shuffle(); la shuffle viene fatta nel mergedecks
     }
 
     /**
@@ -239,9 +250,8 @@ public class GameBoard {
                 }
                 if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
-                    // Mescolo per distribuire casualmente
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel1);
+                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
                         smallDeck.add(deckLevel1.remove(i));
@@ -250,10 +260,9 @@ public class GameBoard {
                 }
                 if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
-                    //mescolo per distribuire casualmente
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel2);
-                        Collections.shuffle(deckLevel1);
+                        Collections.shuffle(deckLevel2,new Random(seedForGeneration));
+                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel2.remove(i));
                         smallDeck.add(deckLevel2.remove(i));
@@ -261,9 +270,6 @@ public class GameBoard {
                         mapSmallAdventureDecks.put(i, smallDeck);
                     }
                 }
-
-
-
             }
         } catch (FileNotFoundException e) {
             System.err.println("Errore: Il file di configurazione non è stato trovato");
@@ -272,7 +278,6 @@ public class GameBoard {
         }
 
     }
-
 
 
     /**
@@ -303,7 +308,7 @@ public class GameBoard {
             mapSmallAdventureDecks.clear();
             setMainAdventureDeck(bufferDeck);
         }
-        mainAdventureDeck.shuffle();
+        mainAdventureDeck.shuffle(new Random(seedForGeneration));
     }
 
     /**
@@ -376,7 +381,6 @@ public class GameBoard {
         currentCard.rollDices();
     }
 
-
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         isYourTurn(player);
         currentCard.finishDecision(coordinates);
@@ -415,6 +419,7 @@ public class GameBoard {
         } else if (!leaderBoard.contains(player))
             leaderBoard.add(player);
     }
+
 
     public void addDiscardedTile(Player player) {
         Optional<Tile> newTile = player.discardTile();
@@ -665,5 +670,13 @@ public class GameBoard {
                         playersWithZeroAstronauts.add(player);
                 });
         playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
+    }
+
+    public void setSeedForGeneration(long seed) {
+        this.seedForGeneration = seed;
+    }
+
+    public long getSeedForGeneration() {
+        return seedForGeneration;
     }
 }

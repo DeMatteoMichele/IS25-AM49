@@ -13,8 +13,8 @@ import java.util.List;
 
 public class EpidemyCard extends AdventureCard {
 
-    public EpidemyCard(GameBoard gameBoard, String description, int level) {
-        super(gameBoard,description, level);
+    public EpidemyCard(GameBoard gameBoard, String description, int level, String name) {
+        super(gameBoard,description, level,name);
     }
     List<Point> coordinatesOfAllCabins = new ArrayList<>();
 
@@ -91,6 +91,24 @@ public class EpidemyCard extends AdventureCard {
         });
         coordinatesOfAllCabins.clear();
         checkNextPlayer();
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(border);
+        return str.toString();
     }
 
 }

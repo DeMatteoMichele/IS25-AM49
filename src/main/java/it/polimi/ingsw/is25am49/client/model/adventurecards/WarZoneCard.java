@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
@@ -21,7 +22,6 @@ import java.util.Set;
 public class WarZoneCard extends AdventureCard {
 
 
-
     Player playerWithMinimumEnginePower;
     Player playerWithMinimumFirePower;
     private int minimumEnginePower;
@@ -29,15 +29,15 @@ public class WarZoneCard extends AdventureCard {
     private List<Pair<Point, Token>> batteries;
     private List<Point> cannons;
     private List<Point> motors;
-    private int number=0;
+    private int number = 0;
     private final int daysLost;
     private double minimumFirePower = 1;
     private static final int BIG_CANNONBALL_LEVEL = 1;
     private List<Point> coordinatesOfActivable = new ArrayList<>();
 
 
-    public WarZoneCard(GameBoard gameBoard, String description, int level, int daysLost, int lostAstronauts, List<CardEffect> effects) {
-        super(gameBoard, description, level);
+    public WarZoneCard(GameBoard gameBoard, String description, int level, String name, int daysLost, int lostAstronauts, List<CardEffect> effects) {
+        super(gameBoard, description, level, name);
         listEffects = new ArrayList<>();
         listEffects.add(new EffectModifyCrew("ModifyCrew", lostAstronauts));
         this.listEffects.addAll(effects);
@@ -150,9 +150,8 @@ public class WarZoneCard extends AdventureCard {
                     System.out.println("Now you have to choose which motors you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_MOTOR;
 
-                }
-                else if (number==1){
-                    if(coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
+                } else if (number == 1) {
+                    if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
                         throw new IllegalArgumentException("you have chosen more batteries than you have");
                     }
                     System.out.println("you have chosen " + coordinates.size() + " batteries");
@@ -160,9 +159,8 @@ public class WarZoneCard extends AdventureCard {
                     System.out.println("Now you have to choose which cannons you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_CANNON;
 
-                }
-                else{
-                    if(coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
+                } else {
+                    if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
                         throw new IllegalArgumentException("you have chosen more batteries than you have");
                     }
                     System.out.println("you have chosen " + coordinates.size() + " batteries to activate your shield");
@@ -188,12 +186,13 @@ public class WarZoneCard extends AdventureCard {
 
         }
     }
+
     public void checkRequirements3() {
         System.out.println("now i check which player has the minimum fire power");
         System.out.println("i check if " + gameBoard.getCurrentPlayer().getUsername() + " has enough batteries to activate double cannons");
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
-        if(totalNumberOfBatteries>0 && ship.getActivatableComponents(ComponentType.DOUBLE_CANNON).size()>0){
+        if (totalNumberOfBatteries > 0 && ship.getActivatableComponents(ComponentType.DOUBLE_CANNON).size() > 0) {
             System.out.println("you have enough batteries to activate your double Cannons. One battery activates one cannon. " +
                     "You can activate up to " + totalNumberOfBatteries + " double cannon");
             //I change state to decison batteries to decide how much to activate
@@ -278,17 +277,17 @@ public class WarZoneCard extends AdventureCard {
             case DECISION_CANNON -> {
                 System.out.println("You have decided the coordinates of the cannons you wanna activate");
                 cannons = new ArrayList<>(coordinates);
-                for(int i=0; i<coordinates.size(); i++){
+                for (int i = 0; i < coordinates.size(); i++) {
                     ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
                     System.out.println("turning on the cannon at " + cannons.get(i).x + ", " + cannons.get(i).y);
                 }
                 double firePower = ship.getTotalFirePower();
-                if(firePower < minimumFirePower){
+                if (firePower < minimumFirePower) {
                     minimumFirePower = firePower;
                     playerWithMinimumFirePower = gameBoard.getCurrentPlayer();
                 }
                 //turn off the cannons
-                for(int i=0; i<coordinates.size(); i++){
+                for (int i = 0; i < coordinates.size(); i++) {
                     ship.turnOff(cannons.get(i));
                     System.out.println("turning off the cannon at " + cannons.get(i).x + ", " + cannons.get(i).y);
                 }
@@ -324,6 +323,7 @@ public class WarZoneCard extends AdventureCard {
             default -> throw new IllegalArgumentException("wrong state");
         }
     }
+
     @Override
     public void rollDices() {
         super.rollDices();
@@ -372,10 +372,10 @@ public class WarZoneCard extends AdventureCard {
             shipBoard.turnOnComponent(coordinatesOfActivable.get(i), batteries.get(i).getKey());
         }
     }
+
     protected void deactivateComponents(ShipBoard shipBoard) {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
     }
-
 
 
     @Override
@@ -385,8 +385,8 @@ public class WarZoneCard extends AdventureCard {
         tryAgain();
 
 
-
     }
+
     private void tryAgain() {
         if (listEffects.isEmpty()) {
             System.out.println("You have finished the effects of the card");
@@ -399,5 +399,41 @@ public class WarZoneCard extends AdventureCard {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        String daysLostText = "| DAYS LOST: " + daysLost;
+        String lostAstronautsText = "| LOST ASTRONAUTS: " + ((EffectModifyCrew) listEffects.get(0)).getLostCrew();
+        str.append(lostAstronautsText).append(" ".repeat(width - lostAstronautsText.length() - 1)).append("|\n");
+        str.append(separator);
+        str.append("| CANNONADE EFFECTS: ").append(" ".repeat(width - "| CANNONADE EFFECTS: ".length() - 1)).append("|\n");
 
+        // Skip the first effect (ModifyCrew) as it's already displayed
+        for (int i = 1; i < listEffects.size(); i++) {
+            CardEffect effect = listEffects.get(i);
+            if (effect instanceof EffectCannonata cannonata) {
+                String effectLevel = "|   -EFFECT LEVEL: " + cannonata.getLevel();
+                str.append(effectLevel).append(" ".repeat(width - effectLevel.length() - 1)).append("|\n");
+                String effectOrientation = "|   -EFFECT ORIENTATION: " + cannonata.getOrientation();
+                str.append(effectOrientation).append(" ".repeat(width - effectOrientation.length() - 1)).append("|\n");
+            }
+            // Qui puoi aggiungere altri tipi di effetti se necessario
+            str.append(separator);
+        }
+        return str.toString();
+
+
+    }
 }

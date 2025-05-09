@@ -231,28 +231,31 @@ public class ClientSerializer implements RemoteServer {
 
     }
 
-    /*************************************************************************
-     * THIS METHOD IS ONLY A PROTOTYPE, DOESNT FOLLOW THE SERIALIZING PROTOCOL
-     * *******************************************************************
-     *
+//    /*************************************************************************
+//     * THIS METHOD IS ONLY A PROTOTYPE, DOESNT FOLLOW THE SERIALIZING PROTOCOL
+//     * *******************************************************************
+//     *
+    /**
      * This method is used to register the client socket on the server.
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
      * @param playerId the id of the player
-     * @throws RemoteException if there is an error during the remote call
+//     * @throws RemoteException if there is an error during the remote call
      */
     @Override
     public void registerClientSocket(int playerId) throws RemoteException {
-        try {
-            // Crea un file temporaneo con il contenuto effettivo
-            String jsonString = String.valueOf(playerId);
-            File fileJson = new File("first_client_handshake.json");
-            Files.writeString(fileJson.toPath(), jsonString);
-            // Mette il file nella coda
+//        try {
+//            // Crea un file temporaneo con il contenuto effettivo
+//            String jsonString = String.valueOf(playerId);
+//            File fileJson = new File("first_client_handshake.json");
+//            Files.writeString(fileJson.toPath(), jsonString);
+//            // Mette il file nella coda
+            SerializationObjectClient serializationObjectClient = new SerializationObjectClient("registerClientSocket", clientController);
+            serializationObjectClient.addParameter(playerId);
+            serializeObjectFromClient(serializationObjectClient);
             serverHandler.connectCommand();
-            serverHandler.putInTheOutGoingFileQueue(fileJson);
-        } catch (IOException e) {
-            System.out.println("Errore durante la creazione del file di handshake: " + e.getMessage());
-        }
+//        } catch (IOException e) {
+//            System.out.println("Errore durante la creazione del file di handshake: " + e.getMessage());
+//        }
     }
 
 

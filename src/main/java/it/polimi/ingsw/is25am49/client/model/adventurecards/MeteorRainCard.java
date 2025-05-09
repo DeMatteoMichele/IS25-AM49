@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectMeteoriti;
 import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -21,8 +22,8 @@ public class MeteorRainCard extends AdventureCard {
 
     List<CardEffect> listEffects = new ArrayList<>();
 
-    public MeteorRainCard(GameBoard gameBoard, String description, int level, List<CardEffect> ListEffects) {
-        super(gameBoard, description, level);
+    public MeteorRainCard(GameBoard gameBoard, String description, int level, String name, List<CardEffect> ListEffects) {
+        super(gameBoard, description, level,name);
         listEffects.addAll(ListEffects);
     }
 
@@ -193,6 +194,46 @@ public class MeteorRainCard extends AdventureCard {
         currentEffect.action(gameBoard.getCurrentPlayer());
         deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
         tryNextPlayerDefeated();
+    }
+
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        str.append("| METEREORS:").append(" ".repeat(width - "| METEREORS:".length() - 1)).append("|\n");
+        // Se c'è un effetto corrente, mostralo per primo
+        if (currentEffect != null) {
+            EffectMeteoriti meteoriti = (EffectMeteoriti) currentEffect;
+            String levelMetereor = "|   - Meteor Level: " + meteoriti.getLevel();
+            str.append(levelMetereor).append(" ".repeat(width - levelMetereor.length() - 1)).append("|\n");
+            String orientationMetereor = "|   - Meteor Orientation: " + meteoriti.getOrientation();
+            str.append(orientationMetereor).append(" ".repeat(width - orientationMetereor.length() - 1)).append("|\n");
+            str.append(separator);
+        }
+        // Poi mostra gli effetti rimanenti
+        for (CardEffect effect : listEffects) {
+            EffectMeteoriti meteoriti = (EffectMeteoriti) effect;
+            String levelMetereor = "|   - Meteor Level: " + meteoriti.getLevel();
+            str.append(levelMetereor).append(" ".repeat(width - levelMetereor.length() - 1)).append("|\n");
+            String orientationMetereor = "|   - Meteor Orientation: " + meteoriti.getOrientation();
+            str.append(orientationMetereor).append(" ".repeat(width - orientationMetereor.length() - 1)).append("|\n");
+            str.append(separator);
+        }
+
+
+        return str.toString();
     }
 
 }

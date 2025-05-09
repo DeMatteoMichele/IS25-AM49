@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -16,8 +17,8 @@ public class PiratesCard extends Enemy {
 
     protected int creditsEarned;
 
-    public PiratesCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
-        super(gameBoard, description, level, dayslost, minimumFirePower);
+    public PiratesCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
+        super(gameBoard, description, level, name, dayslost, minimumFirePower);
         this.listEffects.addAll(listEffects);
         this.creditsEarned = creditsEarned;
     }
@@ -179,5 +180,47 @@ public class PiratesCard extends Enemy {
     @Override
     public List<Player> getDefeatedPlayers() {
         return defeatedPlayers;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        String creditsText = "| CREDITS: " + creditsEarned;
+        str.append(creditsText).append(" ".repeat(width - creditsText.length() - 1)).append("|\n");
+        String daysText = "| DAYS LOST: " + daysLost;
+        str.append(daysText).append(" ".repeat(width - daysText.length() - 1)).append("|\n");
+        String minFireText = "| MINIMUM FIREPOWER: " + minimumFirePower;
+        str.append(minFireText).append(" ".repeat(width - minFireText.length() - 1)).append("|\n");
+        str.append(separator);
+        str.append("| CANNONADES:").append(" ".repeat(width - "| CANNONADES:".length() - 1)).append("|\n");
+        if(currentEffect!=null){
+            EffectCannonata cannonata = (EffectCannonata) currentEffect;
+            String levelCannonata = "| LEVEL: " + cannonata.getLevel();
+            str.append(levelCannonata).append(" ".repeat(width - levelCannonata.length() - 1)).append("|\n");
+            String orientationCannonata = "| ORIENTATION: " + cannonata.getOrientation();
+            str.append(orientationCannonata).append(" ".repeat(width - orientationCannonata.length() - 1)).append("|\n");
+            str.append(border);
+        }
+        for (CardEffect effect : listEffects){
+            EffectCannonata cannonata = (EffectCannonata) effect;
+            String levelCannonata = "| LEVEL: " + cannonata.getLevel();
+            str.append(levelCannonata).append(" ".repeat(width - levelCannonata.length() - 1)).append("|\n");
+            String orientationCannonata = "| ORIENTATION: " + cannonata.getOrientation();
+            str.append(orientationCannonata).append(" ".repeat(width - orientationCannonata.length() - 1)).append("|\n");
+            str.append(border);
+        }
+        return str.toString();
     }
 }

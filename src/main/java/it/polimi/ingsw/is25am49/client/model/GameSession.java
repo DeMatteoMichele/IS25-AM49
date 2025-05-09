@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.client.model;
 
-import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -12,17 +11,19 @@ import java.awt.*;
 import java.util.Optional;
 
 public class GameSession {
-    private final UserInterface ui;
-    private Game game;
+    private RemoteClient view;
+    private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
-    public GameSession(UserInterface ui) {
-        this.ui=ui;
+    public GameSession() {
+        game = Optional.empty();
         admin = Optional.empty();
-        currentState = new InitState(this,ui);
+        currentState = new InitState(this);
     }
-
-    public Game getGame() { return game; }
+    public void setView(RemoteClient view) {
+        this.view = view;
+    }
+    public Optional<Game> getGame() { return game; }
     private void checkIsAdmin(Player player){
         if(admin.isEmpty())
             throw new GameSettingsException("There is no admin");
@@ -34,52 +35,60 @@ public class GameSession {
     }
     public void createNewGame(Player player){
         checkIsAdmin(player);
-        game = new Game(admin.get(), this);
+        game = Optional.of(new Game(admin, this));
     }
     public Optional<Player> getAdmin(){
         return admin;
     }
     public void setGameMode(Player player, GameMode mode) {
         checkIsAdmin(player);
-        game.setGameMode(mode);
+        game.ifPresent(g->g.setGameMode(mode));
     }
     public void userSelectColorAndUserName(Color playerColor, String username) {
-        if(admin.isEmpty()){
-            Player tempPlayer = new Player(username, playerColor, 1);
+        Player tempPlayer = new Player(username, playerColor, game.map(g -> g.getListPlayers().size()).orElse(0));
+        if(game.map(Game::getListPlayers).isEmpty()){
             admin = Optional.of(tempPlayer);
-            game=new Game(admin.get(), this);
-        }else {
-            Player tempPlayer = new Player(username, playerColor, game.getListPlayers().size()+1);
-            game.addPlayer(tempPlayer);
         }
+        game.ifPresent(g -> g.addPlayer(tempPlayer));
     }
-    public boolean checkPlayers(){ return game.checkPlayers(); }
-    public boolean checkStatus(){return game.checkStatus();}
+    public boolean checkPlayers(){ return game.map(Game::checkPlayers).orElse(false); }
+    public boolean checkStatus(){
+        if(game.isPresent())
+            return game.map(Game::checkStatus).orElse(false);
+        else
+            return false;
+    }
     public State getState() {
         return currentState;
     }
-    public void userDiscardTile(Player player){game.discardTile(player);}
-    public void userDrawTile(Player player, int idTile ){game.userDrawTile(player, idTile);}
-
-    //se è l'ultimo player si passa ad AdventureState
-    public boolean userFinishShipboard(Player player){return game.userFinishShipboard(player);}
-    public void userLookSmallAdventureCardDeck(Player player, int index){
-        game.userLookSmallAdventureCardDeck(player, index);
+    public void userDiscardTile(Player player){
+        game.ifPresent(g  -> g.discardTile(player));
     }
+    public void userDrawTile(Player player, int idTile ){
+        game.ifPresent(g -> g.userDrawTile(player, idTile));
+    }
+    //se è l'ultimo player si passa ad AdventureState
+    public boolean userFinishShipboard(Player player){
+        return game.map(value -> value.userFinishShipboard(player)).orElse(false);
+    }
+    public void userLookSmallAdventureCardDeck(Player player, int index){
+        game.ifPresent(g -> g.userLookSmallAdventureCardDeck(player, index));
+    }
+
     public void userStopLookSmallAdventureCardDeck(Player player, int index){
-        game.userStopLookSmallAdventureCardDeck(player, index);
+        game.ifPresent(g -> g.userStopLookSmallAdventureCardDeck(player, index));
     }
 
     public void userPlaceTimer(Player player){
-        game.userPlaceTimer(player);
+        game.ifPresent(g -> g.userPlaceTimer(player));
     }
 
     public void userThrowDices(Player player){
-        game.userThrowDices(player);
+        game.ifPresent(g -> g.userThrowDices(player));
     }
 
     public void userDrawAdventureCard(Player player){
-        game.userDrawAdventureCard(player);
+        game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
 
     public void userPlayAdventureCard(Player player){
@@ -98,15 +107,16 @@ public class GameSession {
     }
     public void calculateScore(Player player) {
         checkIsAdmin(player);
-        game.calculateScore(player);
+        game.ifPresent(g -> g.calculateScore(player));
     }
     public void configurateFlight(){
-        game.configurateFlight();
+        game.ifPresent(Game::configurateFlight);
     }
 
     public void userEndGame(Player player){
-        if(game.gameIsFinished()){
+        if(game.map(Game::gameIsFinished).orElse(false)){
             checkIsAdmin(player);
+            game = Optional.empty();
             setState(new InitState(this));
         }
         else
@@ -114,23 +124,10 @@ public class GameSession {
     }
     public Optional<Player> userShowWinner(Player player) {
         checkIsAdmin(player);
-        return game.userShowWinner();
+        return game.flatMap(Game::userShowWinner);
     }
-    public void addPlayersToLeaderBoard(){ game.addPlayersToLeaderBoard() ;}
+    public void addPlayersToLeaderBoard(){ game.ifPresent(Game::addPlayersToLeaderBoard) ;}
     public void mergeSmallDecks(){
-        game.mergeSmallDecks();
-    }
-
-    @Override
-    public String toString(){
-        StringBuilder str = new StringBuilder();
-        str.append("+----------------------------------------------\n");
-        str.append("| LOBBY : Players - ").append(game.getListPlayers().size());
-        str.append("/4 \tMode: ").append(game.getMode()).append("\n");
-        for(Player player : game.getListPlayers()){
-            str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername()).append("\n");
-        }
-        str.append("+----------------------------------------------");
-        return str.toString();
+        game.ifPresent(Game::mergeSmallDecks);
     }
 }

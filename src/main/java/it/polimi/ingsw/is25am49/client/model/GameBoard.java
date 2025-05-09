@@ -36,8 +36,12 @@ public class GameBoard {
     private Player currentPlayer;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
+    private long seedForGeneration;
 
-
+    /**
+     * *********EXISTS ONLY FOR NOT BREAKING SOME TESTS*********************
+     * Secondary Constructor of the GameBoard class
+     */
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
@@ -47,14 +51,30 @@ public class GameBoard {
         landedPlayers = new ArrayList<>();
     }
 
+    /**
+     * New main constructor of the GameBoard class, uses a seed for the generation od dices, decks and tiles
+     */
+    public GameBoard(long seedForGeneration) {
+        this();
+        this.seedForGeneration = seedForGeneration;
+    }
+
+    /**
+     * This method is used to check if the player is the current player
+     * @param player the player to check
+     * @throws IllegalMethodOnThisStateException if the player is not the current player
+     */
     private void isYourTurn(Player player) {
         if (!player.equals(currentPlayer))
             throw new IllegalMethodOnThisStateException("It's not your turn");
     }
 
-    //TODO da fare
-    //Bisogna modificare la lunghezza del percorso, in base a flightMode e gameMode
-    //Andrà anche a inizializzare la Shipboard della dimensione giusta in base alla GameMode, ( serve la lista di player)
+
+    /**
+     * This method is used to configurate the flight of the game
+     * @param gameMode the game mode
+     * @param players the players of the game
+     */
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
         int level;
         if (gameMode == GameMode.LEVEL_1)
@@ -69,17 +89,30 @@ public class GameBoard {
         setLeaderBoard(gameMode);
     }
 
+    /**
+     * This method is used to initialize the game
+     * @param gameMode the game mode
+     */
     public void initialize(GameMode gameMode) {
         generateSmallDecks(gameMode);
-        mainAdventureDeck.shuffle();
+        //mainAdventureDeck.shuffle(); la shuffle viene fatta nel mergedecks
     }
 
+    /**
+     * This method is used to get the main adventure deck
+     * @return the main adventure deck
+     */
     public AdventureCardDeck getMainAdventureDeck() {
         return mainAdventureDeck;
     }
 
+    /**
+     * This method is used to generate the small decks
+     * If the game mode is FLIGHT_MODE, it generates a main deck with all the cards
+     * @param gameMode the game mode
+     * @throws RuntimeException if the file is not found
+     */
     public void generateSmallDecks(GameMode gameMode) {
-        //TODO se il livello della carta coincide con quello della gamemode la aggiungo, altrimenti null
         List<AdventureCard> deckFlightMode = new ArrayList<>();
         List<AdventureCard> deckLevel1 = new ArrayList<>();
         List<AdventureCard> deckLevel2 = new ArrayList<>();
@@ -94,12 +127,12 @@ public class GameBoard {
                 AdventureCard card;
                 for (JsonNode node : rootNode) {
                     int level = node.get("level").asInt();
+                    String name = node.get("name").asText();
                     String description = node.get("description").asText();
-                    //TODO rifare il check
-                    card = switch (description) {
-                        case "SpazioAperto" -> new SpazioAperto(this, description, level);
-                        case "StarDustCard" -> new StarDustCard(this, description, level);
-                        case "PlanetCard" -> {
+                    card = switch (name) {
+                        case "SpazioAperto" -> new SpazioAperto(this, description, level,name);
+                        case "StarDustCard" -> new StarDustCard(this, description, level,name);
+                        case "PlanetCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             List<Planet> planets = new ArrayList<>();
                             JsonNode planetsNode = node.get("planets");
@@ -109,43 +142,44 @@ public class GameBoard {
                                     int yellowGoods = planetNode.get("yellowGoods").asInt();
                                     int greenGoods = planetNode.get("greenGoods").asInt();
                                     int blueGoods = planetNode.get("blueGoods").asInt();
-                                    Planet planet = new Planet(redGoods, yellowGoods, greenGoods, blueGoods);
+                                    int planetId = planetNode.get("planetId").asInt();
+                                    Planet planet = new Planet(redGoods, yellowGoods, greenGoods, blueGoods,planetId);
                                     planets.add(planet);
                                 }
                             }
-                            yield new PlanetCard(this, description, level, daysLost, planets);
+                            yield new PlanetCard(this, description, level,name, daysLost, planets);
                         }
                         case "AbandonedShipCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new AbandonedShipCard(this, description, level, daysLost, creditsEarned, lostAstronauts);
+                            yield new AbandonedShipCard(this, description, level,name,daysLost,creditsEarned,lostAstronauts);
                         }
-                        case "AbandonedStationCard" -> {
+                        case "AbandonedStationCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumAstronauts = node.get("minimumAstronauts").asInt();
                             int redGoods = node.get("redGoods").asInt();
                             int yellowGoods = node.get("yellowGoods").asInt();
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
-                            yield new AbandonedStationCard(this, description, level, daysLost, minimumAstronauts, redGoods, yellowGoods, greenGoods, blueGoods);
+                            yield new AbandonedStationCard(this, description,level, name,daysLost,minimumAstronauts,redGoods,yellowGoods,greenGoods,blueGoods);
                         }
-                        case "SabotageCard" -> new SabotageCard(this, description, level);
-                        case "WarZoneCard" -> {
+                        case "SabotageCard" -> new SabotageCard(this, description, level,name);
+                        case "WarZoneCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int loseAstronauts = node.get("lostAstronauts").asInt();
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for (JsonNode effectNode : effectsNode) {
-                                String name = effectNode.get("name").asText();
+                            for(JsonNode effectNode : effectsNode) {
+                                String name2 = effectNode.get("name").asText();
                                 int power = effectNode.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
-                                effects.add(new EffectCannonata(name, power, orientation));
+                                effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new WarZoneCard(this, description, level, daysLost, loseAstronauts, effects);
+                            yield new WarZoneCard(this, description, level,name, daysLost, loseAstronauts,effects);
 
                         }
-                        case "SmugglerCard" -> {
+                        case "SmugglerCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int redGoods = node.get("redGoods").asInt();
@@ -153,19 +187,19 @@ public class GameBoard {
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
                             int lostGoods = node.get("number").asInt();
-                            yield new SmugglerCard(this, description, level, daysLost, minimumFirePower, redGoods, yellowGoods, greenGoods, blueGoods, lostGoods);
+                            yield new SmugglerCard(this, description,level,name, daysLost,minimumFirePower,redGoods,yellowGoods,greenGoods,blueGoods,lostGoods);
 
                         }
-                        case "MeteorRainCard" -> {
+                        case "MeteorRainCard"->{
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for (JsonNode effect : effectsNode) {
-                                String name = effect.get("name").asText();
+                            for(JsonNode effect : effectsNode) {
+                                String name2 = effect.get("name").asText();
                                 int power = effect.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effect.get("orientation").asText());
-                                effects.add(new EffectMeteoriti(name, power, orientation));
+                                effects.add(new EffectMeteoriti(name2, power, orientation));
                             }
-                            yield new MeteorRainCard(this, description, level, effects);
+                            yield new MeteorRainCard(this, description, level,name, effects);
 
                         }
                         case "PiratesCard" -> {
@@ -175,21 +209,21 @@ public class GameBoard {
                             List<CardEffect> effects = new ArrayList<>();
                             JsonNode effectsNode = node.get("effects");
                             for (JsonNode effectNode : effectsNode) {
-                                String name = effectNode.get("name").asText();
+                                String name2 = effectNode.get("name").asText();
                                 int power = effectNode.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
-                                effects.add(new EffectCannonata(name, power, orientation));
+                                effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new PiratesCard(this, description, level, daysLost, minimumFirePower, creditsEarned, effects);
+                            yield new PiratesCard(this, description, level, name,daysLost, minimumFirePower, creditsEarned, effects);
                         }
-                        case "SlaverCard" -> {
+                        case "SlaverCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new SlaverCard(this, description, level, daysLost, minimumFirePower, creditsEarned, lostAstronauts);
+                            yield new SlaverCard(this,description,level,name,daysLost,minimumFirePower,creditsEarned,lostAstronauts);
                         }
-                        case "EpidemyCard" -> new EpidemyCard(this, description, level);
+                        case "EpidemyCard"->new EpidemyCard(this,description,level,name);
                         default -> null;
                     };
 
@@ -214,9 +248,8 @@ public class GameBoard {
                 }
                 if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
-                    // Mescolo per distribuire casualmente
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel1);
+                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
                         smallDeck.add(deckLevel1.remove(i));
@@ -225,10 +258,9 @@ public class GameBoard {
                 }
                 if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
-                    //mescolo per distribuire casualmente
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel2);
-                        Collections.shuffle(deckLevel1);
+                        Collections.shuffle(deckLevel2,new Random(seedForGeneration));
+                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel2.remove(i));
                         smallDeck.add(deckLevel2.remove(i));
@@ -236,8 +268,6 @@ public class GameBoard {
                         mapSmallAdventureDecks.put(i, smallDeck);
                     }
                 }
-
-
             }
         } catch (FileNotFoundException e) {
             System.err.println("Errore: Il file di configurazione non è stato trovato");
@@ -248,15 +278,27 @@ public class GameBoard {
     }
 
 
+    /**
+     * This method is used to set the leaderboard
+     * @param gameMode the game mode
+     */
     public void setLeaderBoard(GameMode gameMode) {
         leaderBoard = new LeaderBoard(gameMode);
     }
 
-
+    /**
+     * This method is used to get the small adventure deck
+     * @param index
+     * @return AdventureCardDeck the small adventure deck
+     */
     public AdventureCardDeck getSmallAdventureDeck(Integer index) {
         return mapSmallAdventureDecks.get(index);
     }
 
+    /**
+     * This method is used to merge the small adventure decks into the main adventure deck
+     * Then it shuffles the main adventure deck
+     */
     public void mergeDecks() {
         if (!mapSmallAdventureDecks.isEmpty()) {
             AdventureCardDeck bufferDeck = new AdventureCardDeck();
@@ -264,17 +306,26 @@ public class GameBoard {
             mapSmallAdventureDecks.clear();
             setMainAdventureDeck(bufferDeck);
         }
-        mainAdventureDeck.shuffle();
+        mainAdventureDeck.shuffle(new Random(seedForGeneration));
     }
 
+    /**
+     * This method is used to get the leaderboard
+     * @return the leaderboard
+     */
     public LeaderBoard getLeaderBoard() {
         return leaderBoard;
     }
 
-    public void setCurrentCard(AdventureCard card) {
-        currentCard = card;
-    }
 
+//    public void setCurrentCard(AdventureCard card) {
+//        currentCard = card;
+//    }
+
+    /**
+     * This method is used to get the current card
+     * @return the current card (AdventureCard)
+     */
     public AdventureCard getCurrentCard() {
         return currentCard;
     }
@@ -284,6 +335,13 @@ public class GameBoard {
         return landedPlayers;
     }
 
+    /**
+     * This method is used to remove a player from the leaderboard
+     * and add it to the landed players
+     * It's called when a player choose or is forced to land
+     * @param player the player to check
+     * @throws GameSettingsException if the player is already landed
+     */
     public void playerNoMoreInFlight(Player player) {
         if (landedPlayers.contains(player))
             throw new GameSettingsException("This player is already landed");
@@ -293,6 +351,12 @@ public class GameBoard {
         }
     }
 
+    /**
+     * This method is used to draw an adventure card
+     * @param player the player who is drawing the card
+     * @throws IllegalMethodOnThisStateException if the player is not the leader
+     * @throws GameSettingsException if the card is not finished
+     */
     public void drawAdventureCard(Player player) {
         if (player.equals(leaderBoard.getLeader())) {
             if (isFirstCard || currentCard.getIsFinished()) {
@@ -306,6 +370,10 @@ public class GameBoard {
             throw new GameSettingsException("You are not the leader of this turn");
     }
 
+    /**
+     * This method is used to roll the dices on the current card
+     * @param player the player who roll the dices
+     */
     public void userThrowDices(Player player) {
         isYourTurn(player);
         currentCard.rollDices();
@@ -338,6 +406,10 @@ public class GameBoard {
 
     }
 
+    /**
+     * This method is used to add a player to the leaderboard
+     * @param player the player to add
+     */
     public void addPlayerToLeaderboard(Player player) {
         if (leaderBoard.isEmpty()) {
             leaderBoard.add(player);
@@ -352,14 +424,31 @@ public class GameBoard {
         newTile.ifPresent(tile -> tilesDeck.addDiscardTile(tile, player));
     }
 
+    /**
+     * This method is used to draw a tile from the tiles deck
+     * @param index the index of the tile to draw
+     * @param player the player who is drawing the tile
+     * @return the tile drawn
+     */
     public Tile drawTile(int index, Player player) {
         return tilesDeck.draw(index, player);
     }
 
+    /**
+     * This method is used to get the leader of the game
+     * @return the player who is the leader
+     */
     public Player getLeader() {
         return leaderBoard.getLeader();
     }
 
+    /**
+     * This method is used to calculate the final credits of the players
+     * It is used at the end of the game
+     * For each player, it calculates the credits based on the position in the leaderboard,
+     * the number of lost components, the score of goods and if the player has the minimum exposed components
+     * Then it stores the value in credits of the player
+     */
     public void calculateFinalCredits() {
 
         leaderBoard.stream().forEach(entry -> {
@@ -389,6 +478,13 @@ public class GameBoard {
         });
     }
 
+
+    /**
+     * This method is used to get the players with the minimum exposed components
+     * First it calculates the minimum value of exposed components
+     * Then it filters the players with the same value
+     * @return the list of players with the minimum exposed components
+     */
     public List<Player> minimumExposedComponents() {
         int minValue = leaderBoard.
                 stream()
@@ -408,6 +504,11 @@ public class GameBoard {
 
     }
 
+    /**
+     * This method is used to get the next player in the leaderboard
+     * @return the next player
+     * @throws IllegalSetOfNextPlayerException if the current player is the last player
+     */
     private Player getNextPlayer() {
         int currentPos = leaderBoard.getPos(currentPlayer);
         if (currentPos == leaderBoard.size())
@@ -416,6 +517,10 @@ public class GameBoard {
             return leaderBoard.getPlayerInPosition(currentPos + 1);
     }
 
+    /**
+     * This method is used to get the current player in the game
+     * @return the current player
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -425,16 +530,31 @@ public class GameBoard {
         setCurrentPlayer(getNextPlayer());
     }
 
+    /**
+     * This method is used to set the current player
+     * @param currentPlayer the current player
+     */
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
-
+    /**
+     * This method is used when we are in update in the card
+     * It updates the leaderboard with the day lost or earned for each player
+     * Then it checks if someone is lapped
+     */
     public void finishUpdateLeaderboard() {
         updateLeaderboard();
         checkIfIsLapped();
     }
 
+    /**
+     * This method is used to update the leaderboard
+     * It modifies the flight days of each player with the days of this turn
+     * The days of this turn are based on the effect of the card
+     * Then it sets the days this turn to 0 for each player
+     * It starts from the last player to the first player
+     */
     public void updateLeaderboard() {
 
         //faccio modify flight days con i daysthisturn del player partendo AL CONTRARIO
@@ -453,6 +573,11 @@ public class GameBoard {
     }
 
 
+    /**
+     * This method is used to check if someone is lapped
+     * For each player, it checks if they are lapped, if yes it adds them to the lappedPlayers list
+     * Then it calls playerNoMoreInFlight that removes them from the leaderboard and adds them to the landedPlayers list
+     */
     public void checkIfIsLapped() {
         List<Player> lappedPlayers = new ArrayList<>();
         //per ogni player controllo se è stato doppiato, se si lo aggiungo alla lista
@@ -469,16 +594,34 @@ public class GameBoard {
         lappedPlayers.forEach(this::playerNoMoreInFlight);
     }
 
+    /**
+     * This method is used to set the main adventure deck
+     * @param mainAdventureDeck the main adventure deck
+     */
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
         this.mainAdventureDeck = mainAdventureDeck;
     }
 
+    /**
+     * This method is used when the player finish the shipboard
+     * It adds the player to the leaderboard
+     * @param player the player who finish the shipboard
+     * @return the size of the leaderboard
+     */
     public int userFinishShipboard(Player player) {
         player.completeShipboard();
         addPlayerToLeaderboard(player);
         return leaderBoard.size();
     }
 
+    /**
+     * This method is used to look at small adventure card deck
+     * It's synchronized to avoid concurrent access
+     * @param player the player who wanna look at the deck
+     * @param index the index of the deck
+     * @throws GameSettingsException if any player is already watching a deck
+     * @throws OutOfDeckExceptions if the deck does not exist
+     */
     public void userLookSmallAdventureCardDeck(Player player, int index) {
         synchronized (mapSmallAdventureDecks.get(index)) {
             if (mapSmallAdventureDecks.containsKey(index)) {
@@ -493,6 +636,12 @@ public class GameBoard {
         }
     }
 
+    /**
+     * This method is used to stop looking at small adventure card deck
+     * @param player the player who is stopping to look at the deck
+     * @param index the index of the deck
+     * @throws OutOfDeckExceptions if the deck does not exist
+     */
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {
         if (mapSmallAdventureDecks.containsKey(index)) {
             if (player.isWatching() && mapSmallAdventureDecks.get(index).equals(player.getSmallAdventureDeck())) {
@@ -504,6 +653,11 @@ public class GameBoard {
             throw new OutOfDeckExceptions("This deck does not exist");
     }
 
+    /**
+     * This method is used to check if someone has zero astronauts
+     * If yes it adds them to the playersWithZeroAstronauts list
+     * Then it calls playerNoMoreInFlight that removes them from the leaderboard and adds them to the landedPlayers list
+     */
     public void checkIfSomeoneHasZeroAstronauts() {
         List<Player> playersWithZeroAstronauts = new ArrayList<>();
         leaderBoard.stream()
@@ -513,5 +667,13 @@ public class GameBoard {
                         playersWithZeroAstronauts.add(player);
                 });
         playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
+    }
+
+    public void setSeedForGeneration(long seed) {
+        this.seedForGeneration = seed;
+    }
+
+    public long getSeedForGeneration() {
+        return seedForGeneration;
     }
 }

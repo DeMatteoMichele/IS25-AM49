@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class SmugglerCard extends Enemy {
 
-    public SmugglerCard(GameBoard gameBoard, String description, int level, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
-        super(gameBoard, description, level, dayslost, minimumFirePower);
+    public SmugglerCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
+        super(gameBoard, description, level,name, dayslost, minimumFirePower);
         listEffects.add(new EffectWinGoods("WinGoods", redGoods, yellowGoods, greenGoods, blueGoods));
         listEffects.add(new EffectLoseGoods("LoseGoods", lostGoods));
     }
@@ -90,4 +90,49 @@ public class SmugglerCard extends Enemy {
         return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
     }
 
-}
+
+    /**
+     * Override toString method to print the card in a box format
+     * @return a string representation of the card
+     */
+
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        final int width = 90;  // Larghezza standard del box
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String nameText = "| NAME: " + name;
+        str.append(nameText).append(" ".repeat(width - nameText.length() - 1)).append("|\n");
+        str.append(separator);
+        String descText = "| DESCRIPTION: " + description;
+        appendTextWithWrapping(str, descText, width);
+        String levelText = "| LEVEL: " + level;
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        str.append(separator);
+        String daysLostText = "| DAYS LOST: " + daysLost;
+        str.append(daysLostText).append(" ".repeat(width - daysLostText.length() - 1)).append("|\n");
+        String minFirePowerText = "| MINIMUM FIREPOWER: " + minimumFirePower;
+        str.append(minFirePowerText).append(" ".repeat(width - minFirePowerText.length() - 1)).append("|\n");
+        str.append(separator);
+        String redGoodsText = "| RED GOODS: " + ((EffectWinGoods) listEffects.get(WIN_GOODS_INDEX)).getRedGoods();
+        str.append(redGoodsText).append(" ".repeat(width - redGoodsText.length() - 1)).append("|\n");
+        String yellowGoodsText = "| YELLOW GOODS: " + ((EffectWinGoods) listEffects.get(WIN_GOODS_INDEX)).getYellowGoods();
+        str.append(yellowGoodsText).append(" ".repeat(width - yellowGoodsText.length() - 1)).append("|\n");
+        String greenGoodsText = "| GREEN GOODS: " + ((EffectWinGoods) listEffects.get(WIN_GOODS_INDEX)).getGreenGoods();
+        str.append(greenGoodsText).append(" ".repeat(width - greenGoodsText.length() - 1)).append("|\n");
+        String blueGoodsText = "| BLUE GOODS: " + ((EffectWinGoods) listEffects.get(WIN_GOODS_INDEX)).getBlueGoods();
+        str.append(blueGoodsText).append(" ".repeat(width - blueGoodsText.length() - 1)).append("|\n");
+        str.append(separator);
+        String lostGoodsText = "| LOST GOODS: " + ((EffectLoseGoods) listEffects.get(LOSE_GOODS_INDEX)).getLooseGoods();
+        str.append(lostGoodsText).append(" ".repeat(width - lostGoodsText.length() - 1)).append("|\n");
+        str.append(border);
+        return str.toString();
+
+        }
+
+
+
+
+    }

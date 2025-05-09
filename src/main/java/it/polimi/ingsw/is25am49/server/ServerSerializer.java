@@ -375,18 +375,20 @@ public class ServerSerializer implements RemoteClient {
     }
 
     public int deserializeHandshake(File fileJson) {
-        // ritorna id del client e mette il pacchetto nella coda outgoing unicast
         try {
-            String stringa = Files.readString(fileJson.toPath()).trim();
-            int clientId = Integer.parseInt(stringa);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(fileJson);
+            int clientId = rootNode.get("clientId").asInt();
             if (clientId == -1) {
                 i++;
                 clientId = i;
             }
-            String stringResponse = String.valueOf(clientId);
+            ObjectNode responseNode = mapper.createObjectNode();
+            responseNode.put("typeOfMessage", "HSK");
+            responseNode.put("clientId", clientId);
             File fileJsonResponse = new File("handshake_response.json");
-            Files.writeString(fileJsonResponse.toPath(), stringResponse);
-            clientHandler.putFileInTheOutGoingFileQueue(fileJsonResponse,clientId);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(fileJsonResponse, responseNode);
+            clientHandler.putFileInTheOutGoingFileQueue(fileJsonResponse, clientId);
             return clientId;
         } catch (Exception e) {
             System.err.println("Errore nella deserializzazione dell'handshake: " + e.getMessage());
