@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model.states;
 
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
@@ -13,14 +14,14 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class BuildState extends State {
-    public BuildState(GameSession gameSession){
-        super(gameSession);
+    public BuildState(GameSession gameSession, UserInterface ui){
+        super(gameSession, ui);
     }
     //illegal
     public void adminSelectGameMode(Player admin, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) {
+    public void userJoinLobby(Color playerColor, String username, int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void adminCreateGame(Player player) {

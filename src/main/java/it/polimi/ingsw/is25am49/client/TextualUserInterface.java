@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.client;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import it.polimi.ingsw.is25am49.client.model.*;
@@ -107,7 +106,7 @@ public class TextualUserInterface implements UserInterface {
         }wrongInput=false;
 
         terminal.flush();
-        ui.gameSession.getState().userSelectColorAndUserName(Color.BLUE, ui.username);
+        ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username,1);
         ui.startGame();
     }
 
@@ -165,7 +164,7 @@ public class TextualUserInterface implements UserInterface {
     public void updateGameSessionNewPlayer(Object delta) {
         terminal.writer().println("__________________________________________________________________\n");
         terminal.writer().println("MENU gameSession - commands (only for admin): ");
-        terminal.writer().println("- start\n- bo\n- cicciogamer\n");
+        terminal.writer().println("- start\n- createGame\n- cicciogamer\n");
         terminal.writer().println(gameSession.toString());
         terminal.writer().println();
         terminal.writer().println("__________________________________________________________________");
@@ -181,6 +180,9 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "stop"->{
                     System.out.println("comando stop non ancora implementato");
+                }
+                case "creategame"->{
+                    gameSession.getState().adminCreateGame(gameSession.getAdmin().orElse(null));
                 }
                 default ->terminal.writer().println("⚠ Error : invalid command");
             }

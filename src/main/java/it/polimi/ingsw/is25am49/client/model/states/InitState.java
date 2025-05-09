@@ -26,35 +26,35 @@ public class InitState extends State {
     public void adminSelectGameMode(Player player, GameMode gamemode) {
         gameSession.setGameMode(player, gamemode);
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) {
-        if(gameSession.getAdmin().isEmpty())gameSession.userSelectColorAndUserName(playerColor, username);
-        else if(gameSession.checkPlayers())
-            gameSession.userSelectColorAndUserName(playerColor, username);
-        else
-            throw new GameSettingsException("You cannot join the game");
+
+    public void userJoinLobby(Color playerColor, String username, int playerId) {
+        gameSession.userJoinLobby(playerColor, username, playerId);
         userInterface.updateGameSessionNewPlayer(new Object());
     }
     public void adminCreateGame(Player player) {
-            gameSession.createNewGame(player);
+        gameSession.createNewGame(player);
+        userInterface.updateGameSessionNewPlayer(new Object());
     }
     public void adminStartGame(Player player) {
         if(player.equals(gameSession.getAdmin().orElse(null))){
-            if(!gameSession.checkStatus())
-                throw new GameSettingsException("You cannot start the game yet, settings are not active");
+            if(!gameSession.checkGameMode())
+                throw new GameSettingsException("You cannot start the game yet, set gameMode");
             else{
-                if(gameSession.getGame().numOfPlayers() < 2){
+                if(gameSession.getGame().map(g -> g.numOfPlayers() < 2).orElse(false)){
                     throw new GameSettingsException("You cannot start the game yet, not enough players");
                 }
                 else{
                     gameSession.configurateFlight();
-                    transition(new BuildState(gameSession));
+                    transition(new BuildState(gameSession, userInterface));
                 }
             }
         }
         else
             throw new GameSettingsException("You are not the admin of this game");
     }
-    //Illegal
+
+
+    //Illegal Methods
     public void userPlaceTile(Player player, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
@@ -89,7 +89,6 @@ public class InitState extends State {
     public void userThrowDices(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-
 
     public void userDrawAdventureCard(Player player) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");

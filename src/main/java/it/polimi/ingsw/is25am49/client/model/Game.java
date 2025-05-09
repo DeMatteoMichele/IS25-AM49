@@ -27,24 +27,21 @@ public class Game {
         players.add(admin);
         winner = Optional.empty();
         timer = null;
-        maxPlayers = 0;
+        maxPlayers = 4;
         isFinished = false;
         numPlayers = 0;
     }
     public GameMode getMode() {return mode;}
-    public int numOfPlayers() {return numPlayers;}
-    public Player getPlayer(int i) throws IllegalArgumentException{
+    public Player getPlayer(int id) throws IllegalArgumentException{
         for (Player p : players) {
-            if(p.getIdPlayer() == i) return p;
+            if(p.getIdPlayer() == id) return p;
         }
         throw new IllegalArgumentException("Player not found");
     }
-    public boolean checkStatus(){
-        return !mode.equals(GameMode.DEFAULT);
-    }
-    public GameBoard getGameboard() {
-        return board;
-    }
+    public GameBoard getGameboard() {return board;}
+    public int getMaxPlayers() {return maxPlayers;}
+    public int numOfPlayers() {return numPlayers;}
+
     public void setGameMode(GameMode mode) {
         this.mode = mode;
         timer = new Timer(mode, session);
@@ -60,8 +57,7 @@ public class Game {
                 board.calculateFinalCredits();
                 winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
         }
-        else
-            throw new GameSettingsException("Final score already calculated");
+        else throw new GameSettingsException("Final score already calculated");
     }
     public void configurateFlight(){
         board.configurateFlight(mode, players);

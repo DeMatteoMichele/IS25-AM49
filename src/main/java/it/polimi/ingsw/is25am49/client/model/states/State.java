@@ -16,6 +16,7 @@ import java.util.Set;
 public abstract class State {
     protected UserInterface userInterface;
     protected final GameSession gameSession;
+
     public State(GameSession gameSession) {
         this.gameSession = gameSession;
     }
@@ -29,7 +30,7 @@ public abstract class State {
     }
 
     public abstract void adminSelectGameMode(Player player, GameMode gamemode);
-    public abstract void userSelectColorAndUserName(Color playerColor, String username);
+    public abstract void userJoinLobby(Color playerColor, String username, int playerID);
     public abstract void adminCreateGame(Player player);
     public abstract void adminStartGame(Player player);
 
