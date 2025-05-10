@@ -19,35 +19,35 @@ public class InitState extends State {
         super(gameSession, userInterface);
     }
 
-    //To change
+    //probabilmente inutile
     public void adminSelectGameMode(Player player, GameMode gamemode) {
-        gameSession.setGameMode(player, gamemode);
+        gameSession.checkIsAdmin(player);
+        gameSession.setGameMode(gamemode);
+        userInterface.updateGameSessionSettings(gamemode, 4);
     }
 
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         gameSession.userJoinLobby(playerColor, username, playerId);
-        userInterface.updateGameSessionNewPlayer(new Object());
+        userInterface.updateGameSessionNewPlayer(2000);
     }
-    public void adminCreateGame(Player player) {
-        gameSession.createNewGame(player);
-        userInterface.updateGameSessionNewPlayer(new Object());
+    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
+        gameSession.checkIsAdmin(player);
+        gameSession.createNewGame(gamemode, maxPlayers);
+        userInterface.updateGameSessionNewPlayer(200);
     }
     public void adminStartGame(Player player) {
-        if(player.equals(gameSession.getAdmin().orElse(null))){
-            if(!gameSession.checkGameMode())
-                throw new GameSettingsException("You cannot start the game yet, set gameMode");
+        gameSession.checkIsAdmin(player);
+        if(!gameSession.checkGameMode())
+            throw new GameSettingsException("You cannot start the game yet, set gameMode");
+        else{
+            if(gameSession.getGame().map(g -> g.numOfPlayers() < 2).orElse(false)){
+                throw new GameSettingsException("You cannot start the game yet, not enough players");
+            }
             else{
-                if(gameSession.getGame().map(g -> g.numOfPlayers() < 2).orElse(false)){
-                    throw new GameSettingsException("You cannot start the game yet, not enough players");
-                }
-                else{
-                    gameSession.configurateFlight();
-                    transition(new BuildState(gameSession, userInterface));
-                }
+                gameSession.configurateFlight();
+                transition(new BuildState(gameSession, userInterface));
             }
         }
-        else
-            throw new GameSettingsException("You are not the admin of this game");
     }
 
 

@@ -14,12 +14,10 @@ import java.util.Set;
 
 
 public abstract class State {
+    protected int stateIndex=0;
     protected UserInterface userInterface;
     protected final GameSession gameSession;
 
-    public State(GameSession gameSession) {
-        this.gameSession = gameSession;
-    }
     public State(GameSession gameSession, UserInterface userInterface) {
         this.gameSession = gameSession;
         this.userInterface = userInterface;
@@ -27,11 +25,13 @@ public abstract class State {
 
     public void transition(State nextState) {
         gameSession.setState(nextState);
+        stateIndex++;
     }
 
+    public int getStateIndex(){return stateIndex;}
     public abstract void adminSelectGameMode(Player player, GameMode gamemode);
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void adminCreateGame(Player player);
+    public abstract void adminCreateGame(Player player, GameMode gamemode,int maxPlayers);
     public abstract void adminStartGame(Player player);
 
     public abstract void userPlaceTile(Player player, Point coordinates);

@@ -28,17 +28,16 @@ public class GameSession {
     public void setState(State nextState){
         currentState = nextState;
     }
-    public void createNewGame(Player player){
-        checkIsAdmin(player);
-        if(!game.isPresent()) {
-            game = Optional.of(new Game(admin.get(), this));
+    public void createNewGame(GameMode gameMode,int maxPlayers) {
+        if(game.isEmpty()) {
+            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers));
         }else throw new GameSettingsException("Game already exists!");
     }
-    public void setGameMode(Player player, GameMode mode) {
-        checkIsAdmin(player);
+    //probabilmente non serve
+    public void setGameMode(GameMode mode) {
         game.ifPresent(g->g.setGameMode(mode));
     }
-    private void checkIsAdmin(Player player){
+    public void checkIsAdmin(Player player){
         if(admin.isEmpty())
             throw new GameSettingsException("There is no admin");
         if(!admin.get().equals(player))
@@ -134,7 +133,9 @@ public class GameSession {
                     append(game.get().getMaxPlayers()).append(" \tMode: ").
                     append(game.get().getMode()).append("\n");
             for (Player player : game.get().getListPlayers()) {
-                str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername()).append("\n");
+                str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername());
+                if(player.getIdPlayer()==0) str.append(" - ADMIN\n");
+                else str.append("\n");
             }
             str.append("+----------------------------------------------");
         }else {

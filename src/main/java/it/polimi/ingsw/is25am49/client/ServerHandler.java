@@ -298,7 +298,7 @@ public class ServerHandler {
         try {
             connection();
         } catch (IOException e) {
-            System.out.println("Error while trying to connect to the server: " + e.getMessage());
+            throw new RuntimeException("Error while trying to connect to the server - " + e.getMessage());
         }
     }
 }

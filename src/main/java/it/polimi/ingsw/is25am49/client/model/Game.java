@@ -17,20 +17,20 @@ public class Game {
     private boolean isFinished;
     private final long seedForGeneration;
 
-    public Game(Player admin, GameSession session) {
+    public Game(Player admin, GameSession session, GameMode mode, int maxPlayers) {
         this.session = session;
         seedForGeneration= System.currentTimeMillis();
         board = new GameBoard(seedForGeneration);
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
-        mode = GameMode.DEFAULT;
+        this.mode = mode;
         winner = Optional.empty();
         timer = null;
         isFinished = false;
 
         players.add(admin);
         numPlayers = 1;
-        maxPlayers = 4;
+        this.maxPlayers = maxPlayers;
     }
     public GameMode getMode() {return mode;}
     public Player getPlayer(int id) throws IllegalArgumentException{

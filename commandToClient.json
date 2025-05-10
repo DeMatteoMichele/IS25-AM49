@@ -1,11 +1,11 @@
 {
   "typeOfMessage" : "HSK",
-  "methodName" : "registerClientCallback",
+  "methodName" : "registerClientSocket",
   "params" : [ {
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.Integer",
-      "content" : 0
+      "content" : -1
     }
   } ]
 }
