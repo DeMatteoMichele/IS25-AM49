@@ -28,6 +28,11 @@ public class ClientController {
         playerID = -1;  //non ancora assegnato
         this.gameSession = gameSession;
     }
+    public ClientController(GameSession gameSession, UserInterface ui) {
+        playerID = -1;  //non ancora assegnato
+        this.gameSession = gameSession;
+        this.ui = ui;
+    }
 
     public void registerClientSocket(){
         try {

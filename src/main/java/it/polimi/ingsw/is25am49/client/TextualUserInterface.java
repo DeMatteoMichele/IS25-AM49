@@ -70,7 +70,7 @@ public class TextualUserInterface implements UserInterface {
         terminal.writer().println("\nwelcome to the game "+ ui.username+"!");
 
         //stabilisco la connessione todo gestione errori di connessione al server
-        ui.setupConnection(numInput,serverIP,serverPort);
+        ui.setupConnection(serverIP,serverPort);
 
         ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username, 23);
         //ui.controller.playerJoin(ui.username);
@@ -79,8 +79,8 @@ public class TextualUserInterface implements UserInterface {
         ui.startGame();
     }
 
-    public void setupConnection(int connectionType, String serverIP, int serverPort) {
-        controller= new ClientController(gameSession);
+    public void setupConnection(String serverIP, int serverPort) {
+        controller= new ClientController(gameSession,this);
         int numInput = 0;
         String prompt= ">> ";
         String error="⚠ Error : ";
@@ -100,9 +100,9 @@ public class TextualUserInterface implements UserInterface {
         terminal.flush();
 
         try {
-            switch (connectionType) {
+            switch (numInput) {
                 case 1 -> {
-                    ClientRMI clientRMI = new ClientRMI(gameSession); //todo da aggiungere setter ui
+                    ClientRMI clientRMI = new ClientRMI(gameSession);
                     try {
                         controller.setServerMethods(clientRMI.connect(serverIP, serverPort));
                         try {
@@ -115,7 +115,7 @@ public class TextualUserInterface implements UserInterface {
                             System.out.println("⚠ Error : client failed logging on server RMI --> " + e.getMessage());
                             //se voglio riprovare a connettermi
                             System.out.println("\nwanna retry? Y");
-                            if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(connectionType,serverIP,serverPort);
+                            if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(serverIP,serverPort);
                             else {
                                 System.exit(0);
                                 System.out.println("Server: closing...");
@@ -125,7 +125,7 @@ public class TextualUserInterface implements UserInterface {
                         System.err.println("⚠ Error : something went wrong during the connection tio the server RMI");
                         //se voglio riprovare a connettermi
                         System.out.println("\nwanna retry? Y");
-                        if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(connectionType,serverIP,serverPort);
+                        if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(serverIP,serverPort);
                         else {
                             System.exit(0);
                             System.out.println("Server: closing...");
@@ -145,7 +145,7 @@ public class TextualUserInterface implements UserInterface {
             System.err.println("⚠ Error : errore durante la connessione al server");
             //se voglio riprovare a connettermi
             System.out.println("\nwanna retry? Y");
-            if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(connectionType,serverIP,serverPort);
+            if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(serverIP,serverPort);
             else {
                 System.exit(0);
                 System.out.println("Server: closing...");
