@@ -1402,5 +1402,14 @@
     "c2": "DOUBLE",
     "c3": "DOUBLE",
     "c4": "UNIVERSAL"
+  },
+  {
+    "idTile": 157,
+    "component" : "SKY",
+    "level" : 0,
+    "c1" : "FLAT",
+    "c2" : "FLAT",
+    "c3" : "FLAT",
+    "c4" : "FLAT"
   }
 ]

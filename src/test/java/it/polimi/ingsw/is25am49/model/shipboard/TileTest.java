@@ -34,8 +34,14 @@ class TileTest {
         t23= new Tile(1, new ContainerComponent(ComponentType.STORAGE,5));
         t3= new Tile(3, new SpecialComponent(ComponentType.SHIELD,1));
 
-        t11.setConnectors(ConnectorType.FLAT, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
+        t11.setConnectors(ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
         t11.setTileOrientation(Orientation.NORTH);
+        t12.setConnectors(ConnectorType.FLAT,ConnectorType.SINGLE,ConnectorType.SINGLE,ConnectorType.DOUBLE);
+        t12.setTileOrientation(Orientation.EAST);
+        t21.setConnectors(ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
+        t21.setTileOrientation(Orientation.NORTH);
+        t22.setConnectors(ConnectorType.DOUBLE, ConnectorType.UNIVERSAL, ConnectorType.DOUBLE, ConnectorType.SINGLE);
+        t22.setTileOrientation(Orientation.NORTH);
     }
 
     @Test
@@ -118,6 +124,15 @@ class TileTest {
             System.out.println("\tconnectors: "+t.getConnector(0)+" "+t.getConnector(1)+" "+t.getConnector(2)+" "+t.getConnector(3)+"\n");
         }
         System.out.println(tiles.size());
+    }
+
+    @Test
+    void testToString(){
+        System.out.println(t11.toString());
+        System.out.println(t12.toString());
+        System.out.println(t21.toString());
+        System.out.println(t22.toString());
+
     }
 
 }

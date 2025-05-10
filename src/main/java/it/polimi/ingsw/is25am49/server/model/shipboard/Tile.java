@@ -146,7 +146,9 @@ public class Tile {
     public void uncoverTile() {
         isCovered = false;
     }
-
+    public boolean getIsCovered() {
+        return isCovered;
+    }
     public void setConnectors(ConnectorType c1, ConnectorType c2, ConnectorType c3, ConnectorType c4) {
         connectors.put(0,c1);
         connectors.put(1,c2);
@@ -200,9 +202,112 @@ public class Tile {
         }
         return null;
     }
+
+
     public String toString(){
-        String tileString = "";
-        tileString = tileString + Integer.toString(idTile);
-        return tileString;
+        StringBuilder str = new StringBuilder();
+        final int width = 32;
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        String separator = "|" + "-".repeat(width - 2) + "|\n";
+        str.append(border);
+        String idTileText = "| ID TILE: " + idTile;
+        str.append(idTileText).append(" ".repeat(width - idTileText.length() - 1)).append("|\n");
+        str.append(separator);
+
+        String levelText = "| LEVEL: " + component.getLevel();
+        str.append(levelText).append(" ".repeat(width - levelText.length() - 1)).append("|\n");
+        String OrientationText = "| ORIENTATION: " + tileOrientation;
+        str.append(OrientationText).append(" ".repeat(width - OrientationText.length() - 1)).append("|\n");
+        str.append(separator);
+        String space = "| ";
+
+        String northConnector = switch(connectors.get(0)){
+            case FLAT -> "";
+            case SINGLE -> "↑";
+            case DOUBLE -> "⇈";
+            case UNIVERSAL -> "U";
+        };
+        // calcolo degli spazi per centrare il componente
+        int availableSpace = width - 2;
+        int symbolLength = northConnector.length();
+        int leftPadding = (availableSpace - symbolLength) / 2;
+        int rightPadding = availableSpace - symbolLength - leftPadding;
+
+        str.append("|").append(" ".repeat(leftPadding))
+                .append(northConnector)
+                .append(" ".repeat(rightPadding)).append("|\n");
+        str.append(space).append(" ".repeat(width-space.length()-1)).append("|\n");
+        String eastConnector = switch(connectors.get(1)){
+            case FLAT -> "";
+            case SINGLE -> "→";
+            case DOUBLE -> "⇉";
+            case UNIVERSAL -> "⊂";
+        };
+        String westConnector = switch(connectors.get(3)){
+            case FLAT -> "";
+            case SINGLE -> "←";
+            case DOUBLE -> "⇇";
+            case UNIVERSAL -> "⊃";
+        };
+        String componentSymbol = switch (component.getType()){
+           case CABINE -> "\uD83D\uDEDE";
+           case BATTERY -> "\uD83D\uDD0B";
+           case SKY -> "⬛";
+           case STORAGE -> "\uD83D\uDCE6";
+           case SPECIAL_STORAGE -> "\uD83E\uDDF0";
+           case SHIELD -> "\uD83D\uDEE1️";
+           case CANNON -> "\uD83D\uDD95";
+           case DOUBLE_CANNON -> "\uD83E\uDD18";
+           case ENGINE -> "E";
+           case DOUBLE_ENGINE -> "DE";
+           case BROWN_ALIEN_MODULE -> "\uD83E\uDD0E";
+           case PURPLE_ALIEN_MODULE -> "\uD83D\uDC9C";
+           case FRAME_SECTION -> "\uD83E\uDDF1";// calcolo degli spazi considerando connettori est e ovest
+           default -> "\uD83D\uDFE6";
+       };
+
+        availableSpace = width - 2 - westConnector.length() - eastConnector.length();
+        symbolLength = componentSymbol.length();
+        leftPadding = (availableSpace - symbolLength) / 2;
+        rightPadding = availableSpace - symbolLength - leftPadding;
+
+        str.append("|")
+                .append("  ")
+                .append(westConnector)
+                .append(" ".repeat(Math.max(0, leftPadding-2)))
+                .append(componentSymbol)
+                .append(" ".repeat(Math.max(0, rightPadding-2)))
+                .append(eastConnector)
+                .append("  ")
+                .append("|\n");
+        String southConnector = switch(connectors.get(2)) {
+            case FLAT -> "";
+            case SINGLE -> "↓";
+            case DOUBLE -> "⇊";
+            case UNIVERSAL -> "∩";
+        };
+
+        String componentText = "" + component.getType();
+        availableSpace = width - 2;
+        symbolLength = componentText.length();
+        leftPadding = (availableSpace - symbolLength) / 2;
+        rightPadding = availableSpace - symbolLength - leftPadding;
+        str.append("|").append(" ".repeat(leftPadding))
+                .append(componentText)
+                .append(" ".repeat(rightPadding)).append("|\n");
+        str.append(space).append(" ".repeat(width-space.length()-1)).append("|\n");
+        str.append(space).append(" ".repeat(width-space.length()-1)).append("|\n");
+        availableSpace = width - 2;
+        symbolLength = southConnector.length();
+        leftPadding = (availableSpace - symbolLength) / 2;
+        rightPadding = availableSpace - symbolLength - leftPadding;
+        str.append("|").append(" ".repeat(leftPadding))
+                .append(southConnector)
+                .append(" ".repeat(rightPadding)).append("|\n");
+        str.append(border);
+        return str.toString();
     }
+
+
+
 }

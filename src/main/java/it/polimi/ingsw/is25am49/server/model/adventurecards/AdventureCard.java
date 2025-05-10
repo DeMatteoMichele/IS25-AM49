@@ -9,6 +9,7 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisState
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -24,6 +25,8 @@ public abstract class AdventureCard {
     protected GameBoard gameBoard;
     protected String  name;
     protected Random random;
+
+
 
     public AdventureCard(GameBoard gameBoard, String description, int level, String name) {
         this.gameBoard = gameBoard;
@@ -102,11 +105,17 @@ public abstract class AdventureCard {
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
-    //TODO a fine update bisogna rimuovere i player in landedPlayers dalla leaderboard, ATTENZIONE: GUARDA CODICE LEADERBOARD
+
+
     protected void update(){
         currentState = AdventureStatesTypes.UPDATE;
         gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
+        if(!gameBoard.getQuitPlayers().isEmpty()){
+            for(Player player : gameBoard.getQuitPlayers()){
+                gameBoard.playerNoMoreInFlight(player);
+            }
+        }
         isFinished= true;
     }
 
@@ -115,7 +124,7 @@ public abstract class AdventureCard {
     }
 
     /**
-     if description is longer than the width, it will be split into multiple lines
+     If description is longer than the width, it will be split into multiple lines
      @param sb the StringBuilder to append the text to
      @param text the text to append
      @param width the width of the box

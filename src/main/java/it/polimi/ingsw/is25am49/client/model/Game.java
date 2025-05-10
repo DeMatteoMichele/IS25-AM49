@@ -34,9 +34,9 @@ public class Game {
     public GameMode getMode() {return mode;}
     public int numOfPlayers() {return numPlayers;}
     public Player getPlayer(int i) throws IllegalArgumentException{
-        for (Player p : players) {
-            if(p.getIdPlayer() == i) return p;
-        }
+//        for (Player p : players) {
+//            if(p.getIdPlayer() == i) return p;
+//        }
         throw new IllegalArgumentException("Player not found");
     }
     public boolean checkStatus(){

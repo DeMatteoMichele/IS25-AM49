@@ -83,7 +83,12 @@ public class ShipBoard {
      * Locks the last tile placed in the shipboard
      */
     public void lockLastTile(){
-        grid.get(lastPlacedPoint).ifPresent(Tile::lockTile);
+
+        if (lastPlacedPoint != null) {
+            grid.get(lastPlacedPoint).ifPresent(Tile::lockTile);
+        }
+
+//        grid.get(lastPlacedPoint).ifPresent(Tile::lockTile);
     }
     public Point getLastPlacedPoint() {return lastPlacedPoint;}
     public boolean isCompleted() {return isCompleted;}

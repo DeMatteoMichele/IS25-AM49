@@ -39,6 +39,7 @@ public class GameBoard {
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
     private long seedForGeneration;
+    private final List<Player> quitPlayers;
 
     /**
      * *********EXISTS ONLY FOR NOT BREAKING SOME TESTS*********************
@@ -47,18 +48,25 @@ public class GameBoard {
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
-        tilesDeck = new TileCardDeck();
+        tilesDeck = new TileCardDeck(42L); //TODO HARDCODATO IL SEED PER NON ROMPERE NULLA, DA NON USARE QUESTO COSTRUTTORE PER CLASSI FUTURE
         mainAdventureDeck = new AdventureCardDeck();
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
+        quitPlayers = new ArrayList<>();
     }
 
     /**
-     * New main constructor of the GameBoard class, uses a seed for the generation od dices, decks and tiles
+     * New main constructor of the GameBoard class, uses a seed for the generation of dices, decks and tiles
      */
     public GameBoard(long seedForGeneration) {
-        this();
         this.seedForGeneration = seedForGeneration;
+        mapSmallAdventureDecks = new ConcurrentHashMap<>();
+        // Nel costruttore è presente la generate() e lo shuffle() integrati.
+        tilesDeck = new TileCardDeck(seedForGeneration);
+        mainAdventureDeck = new AdventureCardDeck();
+        isFirstCard = true;
+        landedPlayers = new ArrayList<>();
+        quitPlayers = new ArrayList<>();
     }
 
     /**
@@ -433,7 +441,7 @@ public class GameBoard {
      * @return the tile drawn
      */
     public Tile drawTile(int index, Player player) {
-        return tilesDeck.draw(index, player);
+        return tilesDeck.drawByTileId(index, player);
     }
 
     /**
@@ -678,5 +686,22 @@ public class GameBoard {
 
     public long getSeedForGeneration() {
         return seedForGeneration;
+    }
+
+    public void quit(Player player){
+        if(currentCard.getIsFinished()){
+            playerNoMoreInFlight(player);
+        }
+        else{
+            quitPlayers.add(player);
+        }
+    }
+
+    public List<Player> getQuitPlayers(){
+        return quitPlayers;
+    }
+
+    public TileCardDeck getTilesDeck(){
+        return tilesDeck;
     }
 }
