@@ -24,12 +24,13 @@ public class Game {
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
         mode = GameMode.DEFAULT;
-        players.add(admin);
         winner = Optional.empty();
         timer = null;
-        maxPlayers = 4;
         isFinished = false;
-        numPlayers = 0;
+
+        players.add(admin);
+        numPlayers = 1;
+        maxPlayers = 4;
     }
     public GameMode getMode() {return mode;}
     public Player getPlayer(int id) throws IllegalArgumentException{

@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import it.polimi.ingsw.is25am49.client.model.*;
@@ -47,7 +48,6 @@ public class TextualUserInterface implements UserInterface {
         LineReader reader=ui.lineReader;
         String textInput = "";
 
-
         boolean wrongInput=false;
         int numInput = 0;
         String prompt= ">> ";
@@ -69,24 +69,90 @@ public class TextualUserInterface implements UserInterface {
         ui.username = textInput;
         terminal.writer().println("\nwelcome to the game "+ ui.username+"!");
 
-        while (!wrongInput) {
+        //stabilisco la connessione todo gestione errori di connessione al server
+        ui.setupConnection(numInput,serverIP,serverPort);
+
+        ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username, 23);
+        //ui.controller.playerJoin(ui.username);
+        terminal.flush();
+
+        ui.startGame();
+    }
+
+    public void setupConnection(int connectionType, String serverIP, int serverPort) {
+        controller= new ClientController(gameSession);
+        int numInput = 0;
+        String prompt= ">> ";
+        String error="⚠ Error : ";
+        while (true) {
             terminal.writer().println("Which connection do you want to use:");
             terminal.writer().println("\t1) RMI");
             terminal.writer().println("\t2) Socket");
             terminal.flush();
-            numInput= Integer.parseInt(reader.readLine(prompt).trim());
-            wrongInput= numInput>=1 && numInput<=2;
-            if (!wrongInput) {
+            try {
+                numInput = Integer.parseInt(lineReader.readLine(prompt).trim());
+            }catch (NumberFormatException _){}
+            if (numInput<1 || numInput>2) {
                 System.err.println(error+"invalid choice, retry");
-                //terminal.writer().println(error+"invalid choice, retry");
-            }
-        }wrongInput=false;
+            }else break;
+        }
+
         terminal.flush();
 
-        //stabilisco la connessione todo gestione errori di connessione al server
-        ui.setupConnection(numInput,serverIP,serverPort);
+        try {
+            switch (connectionType) {
+                case 1 -> {
+                    ClientRMI clientRMI = new ClientRMI(gameSession); //todo da aggiungere setter ui
+                    try {
+                        controller.setServerMethods(clientRMI.connect(serverIP, serverPort));
+                        try {
+                            //todo registerClientRmi con settaggio dell'id
+                            System.out.println("trying to log in to the server ...");
+                            UnicastRemoteObject.exportObject(clientRMI, 0);
+                            controller.registerClientRMI(clientRMI);
+                            System.out.println("client logged");
+                        } catch (RemoteException e) {
+                            System.out.println("⚠ Error : client failed logging on server RMI --> " + e.getMessage());
+                            //se voglio riprovare a connettermi
+                            System.out.println("\nwanna retry? Y");
+                            if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(connectionType,serverIP,serverPort);
+                            else {
+                                System.exit(0);
+                                System.out.println("Server: closing...");
+                            }
+                        }
+                    } catch (RemoteException e) {
+                        System.err.println("⚠ Error : something went wrong during the connection tio the server RMI");
+                        //se voglio riprovare a connettermi
+                        System.out.println("\nwanna retry? Y");
+                        if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(connectionType,serverIP,serverPort);
+                        else {
+                            System.exit(0);
+                            System.out.println("Server: closing...");
+                        }
+                    }
+                }
+                case 2 -> {
+                    ClientSerializer clientSerializer = new ClientSerializer(gameSession,controller);
+                    ServerHandler serverHandler = new ServerHandler(serverIP, serverPort);
+                    serverHandler.setClientSerializer(clientSerializer);
+                    clientSerializer.setServerHandler(serverHandler);
+                    controller.setServerMethods(clientSerializer);
+                    controller.registerClientSocket();
+                }
+            }
+        }catch (Exception e){
+            System.err.println("⚠ Error : errore durante la connessione al server");
+            //se voglio riprovare a connettermi
+            System.out.println("\nwanna retry? Y");
+            if (lineReader.readLine(prompt).trim().equals("Y"))setupConnection(connectionType,serverIP,serverPort);
+            else {
+                System.exit(0);
+                System.out.println("Server: closing...");
+            }
+        }
 
-        while (!wrongInput) {
+        while (true) {
             terminal.writer().println("+--------------------------------------------");
             terminal.writer().println("| SERVER - "+serverIP+"\tstatus - connected");
             terminal.writer().println("+--------------------------------------------");
@@ -98,46 +164,10 @@ public class TextualUserInterface implements UserInterface {
             terminal.writer().println("+--------------------------------------------");
             terminal.writer().println("which one do you want to join?");
             terminal.flush();
-            numInput= Integer.parseInt(reader.readLine(prompt).trim());
-            wrongInput= numInput==1;
-            if (!wrongInput) {
-                terminal.writer().println(error+"invalid choice, retry");
-            }
-        }wrongInput=false;
-
-        terminal.flush();
-        ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username,1);
-        ui.startGame();
-    }
-
-    public void setupConnection(int connectionType, String serverIP, int serverPort) {
-        controller= new ClientController(gameSession);
-        switch (connectionType) {
-            case 1 -> {
-                ClientRMI clientRMI = new ClientRMI(gameSession);
-                try {
-                    controller.setServerMethods(clientRMI.connect(serverIP, serverPort));
-                } catch (RemoteException e) {
-                    System.out.println("Errore durante la connessione al server");
-                }
-                try {
-                    //todo registerClientRmi con settaggio dell'id
-                    System.out.println("trying to log in to the server ...");
-                    UnicastRemoteObject.exportObject(clientRMI, 0);
-                    //controller.playerID=clientRMI.getServerStub().registerClientRMI(clientRMI);
-                    System.out.println("client logged");
-                } catch (RemoteException e) {
-                    System.out.println("errore client si registra su server: " + e.getMessage());
-                }
-            }
-            case 2 -> {
-                ClientSerializer clientSerializer = new ClientSerializer(gameSession,controller);
-                ServerHandler serverHandler = new ServerHandler(serverIP, serverPort);
-                serverHandler.setClientSerializer(clientSerializer);
-                clientSerializer.setServerHandler(serverHandler);
-                controller.setServerMethods(clientSerializer);
-                controller.registerClientSocket();
-            }
+            numInput= Integer.parseInt(lineReader.readLine(">> ").trim());
+            if (numInput!=1) {
+                terminal.writer().println("⚠ Error : invalid choice, retry");
+            }else break;
         }
     }
 
@@ -150,7 +180,7 @@ public class TextualUserInterface implements UserInterface {
             while (true) {
                 inputString=lineReader.readLine(prompt).trim();
                 if (inputString.equalsIgnoreCase("quit")) {
-                    System.out.println("Server: Sto chiudendo...");
+                    System.out.println("Server: closing...");
                     //todo non so come si spenga il server
                     System.exit(0);
                 }
