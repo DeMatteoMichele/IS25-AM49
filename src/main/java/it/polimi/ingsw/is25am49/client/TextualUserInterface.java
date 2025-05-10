@@ -72,10 +72,30 @@ public class TextualUserInterface implements UserInterface {
         //stabilisco la connessione todo gestione errori di connessione al server
         ui.setupConnection(serverIP,serverPort);
 
-        ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username, 23);
-        //ui.controller.playerJoin(ui.username);
+        while (true) {
+            terminal.writer().println("+--------------------------------------------");
+            terminal.writer().println("| SERVER - "+serverIP+"\tstatus - connected");
+            terminal.writer().println("+--------------------------------------------");
+            terminal.writer().println("| Aviable lobby:");
+            terminal.writer().println("| 01) TestMatch - users 0/4");
+//            terminal.writer().print("| 01) TestMatch - users "+ui.session.getGame().get().numOfPlayers()+"/4"); //todo se game non fosse optional
+//            if(ui.session.getGame().get().numOfPlayers()>=4) terminal.writer().println(" full");
+//            else terminal.writer().println("");
+            terminal.writer().println("+--------------------------------------------");
+            terminal.writer().println("which one do you want to join?");
+            terminal.flush();
+            numInput= Integer.parseInt(reader.readLine(">> ").trim());
+            if (numInput!=1) {
+                terminal.writer().println("⚠ Error : invalid choice, retry");
+            }else try {
+                //ui.controller.playerJoin(ui.username);
+                ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username, 23);
+                break;
+            }catch (Exception e){
+                System.err.println(error+e.getMessage());
+            }
+        }
         terminal.flush();
-
         ui.startGame();
     }
 
@@ -151,24 +171,6 @@ public class TextualUserInterface implements UserInterface {
                 System.out.println("Server: closing...");
             }
         }
-
-        while (true) {
-            terminal.writer().println("+--------------------------------------------");
-            terminal.writer().println("| SERVER - "+serverIP+"\tstatus - connected");
-            terminal.writer().println("+--------------------------------------------");
-            terminal.writer().println("| Aviable lobby:");
-            terminal.writer().println("| 01) TestMatch - users 0/4");
-//            terminal.writer().print("| 01) TestMatch - users "+ui.session.getGame().get().numOfPlayers()+"/4"); //todo se game non fosse optional
-//            if(ui.session.getGame().get().numOfPlayers()>=4) terminal.writer().println(" full");
-//            else terminal.writer().println("");
-            terminal.writer().println("+--------------------------------------------");
-            terminal.writer().println("which one do you want to join?");
-            terminal.flush();
-            numInput= Integer.parseInt(lineReader.readLine(">> ").trim());
-            if (numInput!=1) {
-                terminal.writer().println("⚠ Error : invalid choice, retry");
-            }else break;
-        }
     }
 
     public void startGame() throws IOException {
@@ -181,7 +183,6 @@ public class TextualUserInterface implements UserInterface {
                 inputString=lineReader.readLine(prompt).trim();
                 if (inputString.equalsIgnoreCase("quit")) {
                     System.out.println("Server: closing...");
-                    //todo non so come si spenga il server
                     System.exit(0);
                 }
                 handleInput(inputString.toLowerCase());
