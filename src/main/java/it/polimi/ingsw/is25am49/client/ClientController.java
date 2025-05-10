@@ -2,12 +2,13 @@ package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.states.*;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -20,19 +21,17 @@ public class ClientController {
     public int playerID;
     private GameSession gameSession;
     private RemoteServer serverMethods;
+    private UserInterface ui;
 
 
     public ClientController(GameSession gameSession) {
         playerID = -1;  //non ancora assegnato
+        this.gameSession = gameSession;
     }
-
-    public ClientController(int connectionType){
-        //this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
-
-    }
-
-    public void clientLogin(){
-        //todo playerID= setto l'id con il register client assegnato dal server switch con i due tipi di connessione
+    public ClientController(GameSession gameSession, UserInterface ui) {
+        playerID = -1;  //non ancora assegnato
+        this.gameSession = gameSession;
+        this.ui = ui;
     }
 
     public void registerClientSocket(){
@@ -75,8 +74,9 @@ public class ClientController {
 
     }
 
-    public void registerClientCallback(RemoteClient client, int playerId)  {
+    public void registerClientCallback(int playerId)  {
         this.playerID = playerId;
+        System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
     }
 
     public void playerJoinCallback(int playerId)  {
@@ -176,7 +176,22 @@ public class ClientController {
     }
 
     public void changeState(String state)  {
-
+        State currentState;
+        if (state.equals("InitState")) {
+            currentState = new InitState(gameSession,ui);
+        }
+        else if(state.equals("BuildState")) {
+            currentState = new BuildState(gameSession,ui);
+        }
+        else if(state.equals("AdventureState")) {
+            currentState = new AdventureState(gameSession,ui);
+        }
+        else if(state.equals("FinishScoreState")) {
+            currentState = new FinishScoreState(gameSession,ui);
+        }
+        else {
+            throw new IllegalArgumentException("Invalid state: " + state);
+        }
     }
 
 
@@ -190,16 +205,11 @@ public class ClientController {
 
     }
 
-    public void registerClientSocket(int playerId)  {
-
-    }
-
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode)  {
 
     }
 
     public void playerJoin(String username)  {
-
         try {
             serverMethods.playerJoin(playerID, username, Color.values()[playerID]);
         } catch (RemoteException e) {
@@ -281,5 +291,9 @@ public class ClientController {
 
     public void userEndGame(int playerId)  {
 
+    }
+
+    public int getPlayerID(){
+        return playerID;
     }
 }

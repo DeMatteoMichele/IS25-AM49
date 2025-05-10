@@ -80,7 +80,7 @@ public class ServerHandler {
                     outputStream.writeInt(HeartBeat.length());
                     outputStream.writeBytes(HeartBeat);
                     outputStream.flush();
-                    System.out.println("Client still alive");
+                    //System.out.println("Client still alive");
                 } catch (IOException e) {
                     disconnectAndTryToReconnect();
                 }
@@ -250,7 +250,7 @@ public class ServerHandler {
                 outputStream.writeInt(jsonContent.length());
                 outputStream.write(jsonContent.getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();
-                System.out.println("Message sent: " + jsonContent);
+                //System.out.println("Message sent: " + jsonContent);
             } catch (IOException e) {
                 System.out.println("Error while sending message to server, disconnecting");
                 disconnectAndTryToReconnect();
@@ -298,7 +298,7 @@ public class ServerHandler {
         try {
             connection();
         } catch (IOException e) {
-            System.out.println("Error while trying to connect to the server: " + e.getMessage());
+            throw new RuntimeException("Error while trying to connect to the server - " + e.getMessage());
         }
     }
 }

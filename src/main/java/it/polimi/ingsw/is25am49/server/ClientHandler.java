@@ -71,12 +71,14 @@ public class ClientHandler {
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             int clientId = handleFirstMessage(socket, inputStream, outputStream);
             if ((clientSockets.size() < maxClients) || (clientSockets.size() == maxClients && connections.containsKey(clientId))) {
-                System.out.println("Client connected: " + clientId);
+                System.out.println("Client connected with id: " + clientId);
                 connectClient(socket, inputStream, outputStream, clientId);
                 System.out.println("size: " + clientSockets.size());
             } else {
                 System.out.println("Unwanted connection");
                 socket.close();
+                inputStream.close();
+                outputStream.close();
             }
         }
     }
@@ -89,8 +91,7 @@ public class ClientHandler {
             String jsonString = new String(buffer, StandardCharsets.UTF_8);
             File fileJson = new File("first_received.json");
             Files.writeString(fileJson.toPath(), jsonString);
-            int clientId = serverSerializer.deserializeHandshake(fileJson);
-            return clientId;
+            return serverSerializer.deserializeHandshake(fileJson);
         } catch (IOException e) {
             System.err.println("Error while reading the first message from new client ");
         }
@@ -192,6 +193,7 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     private void processOutGoingFileQueue(int clientId) {
+        System.out.println("Starting to process the OutGoingFileQueue for client " + clientId);
         while (connections.get(clientId)) {
             try {
                 File fileToSend = OutGoingFileQueue.get(clientId).take();
@@ -239,7 +241,6 @@ public class ClientHandler {
                 String jsonString = InGoingStringQueues.get(clientId).take();
                 File fileJson = new File(clientId + "_received.json");
                 Files.writeString(fileJson.toPath(), jsonString);
-                System.out.println("Json Received from client:" + clientId);
                 serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the String from the queue for client " + clientId + " cause thread was interrupted");
