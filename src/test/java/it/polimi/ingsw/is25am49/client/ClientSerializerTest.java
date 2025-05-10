@@ -38,7 +38,7 @@ class ClientSerializerTest {
         clientController.setServerMethods(clientSerializer);
 
         SerializationObjectClient serObject1;
-        serObject1 = new SerializationObjectClient("userPlaceTile", clientController);
+        serObject1 = new SerializationObjectClient("userPlaceTileCallback", clientController);
         serObject1.addParameter(0);
         Point point = new Point(6, 6);
         Orientation orientation = Orientation.NORTH;
@@ -47,7 +47,7 @@ class ClientSerializerTest {
         serObjectArray.add(serObject1);
 
         SerializationObjectClient serObject2;
-        serObject2 = new SerializationObjectClient("userFinishDecisionToken", clientController);
+        serObject2 = new SerializationObjectClient("userFinishDecisionTokenCallback", clientController);
         serObject2.addParameter(0);
         ArrayList<Pair<Point, Token>> listOfTokens = new ArrayList<>();
         Pair<Point, Token> pair;
@@ -60,7 +60,7 @@ class ClientSerializerTest {
         serObjectArray.add(serObject2);
 
         SerializationObjectClient serObject3;
-        serObject3 = new SerializationObjectClient("registerClientSocket", clientController);
+        serObject3 = new SerializationObjectClient("registerClientCallback", clientController);
         serObject3.addParameter(-1);
         serObjectArray.add(serObject3);
 
@@ -105,7 +105,7 @@ class ClientSerializerTest {
             serProva1 = clientSerializer.deSerializeStringFromServer(clientSerializer.serializeObjectFromClient(serOb));
             System.out.println(serProva1);
             System.out.println(serOb);
-            System.out.println(serProva1.getParameters().get(2).getClass().getName());
+            //System.out.println(serProva1.getParameters().get(2).getClass().getName());
             serProva2 = clientSerializer.deSerializeStringFromServer(clientSerializer.serializeObjectFromClient(serProva1));
             System.out.println(serProva2);
             System.out.println(serProva1);

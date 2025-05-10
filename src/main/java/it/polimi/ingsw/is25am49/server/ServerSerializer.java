@@ -20,18 +20,40 @@ import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     private final BlockingQueue<File> filesFromSocketQueue;
-    private int idCounter = -1;
+    private final ExecutorService executorService;
+    private int idCounter;
 
 
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
+        this.idCounter = -1;
         filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
+        executorService= Executors.newFixedThreadPool(10);
+        executorService.submit(this::processFilesFromSocketQueue);
+    }
 
+    /**
+     * This method is used to process the files from the socket queue.
+     * It takes the file from the queue and deserializes it.
+     * Method take() is blocking, so it will wait until a file is available in the queue.
+     */
+    private void processFilesFromSocketQueue() {
+        while(true){
+            try{
+                File json = filesFromSocketQueue.take();
+                deSerializeStringFromClient(json);
+            }
+            catch (InterruptedException e){
+                System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
+            }
+        }
     }
 
     public void setClientHandler(ClientHandler clientHandler) {
@@ -341,132 +363,199 @@ public class ServerSerializer implements RemoteClient {
 
     @Override
     public void registerClientCallback(int playerId) throws RemoteException {
-
+        //QUESTO METODO NON VIENE USATO, DA CAPIRE
+        //NON SI PASSA DAL MODEL IN QUESTO CASO
     }
 
     @Override
     public void playerJoinCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp= new SerializationObjectServer("playerJoinCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void gameStartedCallback() throws RemoteException {
-
+        //HARDCODATO IL PLAYERID SICCOME NON È UN INFORMAZIONE RILEVANTE
+        SerializationObjectServer serObjectTemp= new SerializationObjectServer("gameStartedCallback", serverController, -99);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userDrawTileCallback(int playerId, int tileId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userDrawTileCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(tileId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userErrorDrawTileCallback(int playerId, int tileId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userErrorDrawTileCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(tileId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userPlaceTileCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(coordinates);
+        serObjectTemp.addParameter(orientation);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userPickTileCallback(int playerId, Point coordinates) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userPickTileCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(coordinates);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userDiscardTileCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userDiscardTileCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userFinishShipboardCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userFinishShipboardCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userLookSmallAdventureCardDeckCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(smallDeckIndex);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userErrorLookSmallAdventureCardDeckCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(smallDeckIndex);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userStopLookSmallAdventureCardDeckCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(smallDeckIndex);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userPlaceTimerCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userPlaceTimerCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userErrorPlaceTimerCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userErrorPlaceTimerCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userSelectTypeOfTokenCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(token);
+        serObjectTemp.addParameter(coordinates);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userThrowDicesCallback(int playerId, int result) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userThrowDicesCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(result);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userDrawAdventureCardCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userDrawAdventureCardCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userFinishDecisionActivatingCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(coordinates);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userFinishDecisionTokenCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(listOfTokens);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userAcceptPrizesCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userAcceptPrizesCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userLandOnPlanetCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(isLanded);
+        serObjectTemp.addParameter(planet);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userLandOnStationOrShipCallback(int playerId, boolean isLanded) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userLandOnStationOrShipCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(isLanded);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userStopFlightCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userStopFlightCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void adminCalculateScoreCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("adminCalculateScoreCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void userEndGameCallback(int playerId) throws RemoteException {
-
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("userEndGameCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void changeState(String state) throws RemoteException {
-
+        //HARDCODATO IL PLAYERID SICCOME NON È UN INFORMAZIONE RILEVANTE
+        SerializationObjectServer serObjectTemp= new SerializationObjectServer("changeState", serverController, -99);
+        serializeObjectFromServer(serObjectTemp);
     }
 
     public void putFileFromClientSocketInQueue(File fileJson) {

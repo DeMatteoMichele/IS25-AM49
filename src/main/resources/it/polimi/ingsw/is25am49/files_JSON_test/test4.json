@@ -1,6 +1,6 @@
 {
   "typeOfMessage": "MSG",
-  "methodName": "userPlaceTile",
+  "methodName": "userPlaceTileCallback",
   "params": [
     {
       "typeOfCollection": "",

@@ -77,6 +77,8 @@ public class ClientHandler {
             } else {
                 System.out.println("Unwanted connection");
                 socket.close();
+                inputStream.close();
+                outputStream.close();
             }
         }
     }

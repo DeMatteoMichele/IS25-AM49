@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model.states;
 
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
@@ -13,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class FinishScoreState extends State {
-    public FinishScoreState(GameSession gameSession){
-        super(gameSession);
+    public FinishScoreState(GameSession gameSession, UserInterface ui) {
+        super(gameSession,ui);
     }
     public void adminSelectGameMode(Player player, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
