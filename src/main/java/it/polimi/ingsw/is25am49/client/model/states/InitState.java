@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class InitState extends State {
-    public InitState(GameSession gameSession ){
-        super(gameSession);
-    }
     public InitState(GameSession gameSession, UserInterface userInterface) {
         super(gameSession, userInterface);
     }

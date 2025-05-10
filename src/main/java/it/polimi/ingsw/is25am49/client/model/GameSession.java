@@ -110,7 +110,7 @@ public class GameSession {
         if(game.map(Game::gameIsFinished).orElse(false)){
             checkIsAdmin(player);
             game = Optional.empty();
-            setState(new InitState(this));
+            setState(new InitState(this,ui));
         }
         else
             throw new GameSettingsException("The game is not finished yet");

@@ -50,7 +50,7 @@ public class ClientSerializer implements RemoteServer {
         this.clientController = clientController;
     }
 
-    private void processFilesFromSocketQueue() {    // TODO: implementare il metodo
+    private void processFilesFromSocketQueue() {
         while (true) {
             try {
                 File json = filesFromSocketQueue.take();
@@ -391,107 +391,167 @@ public class ClientSerializer implements RemoteServer {
 
     @Override
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("adminSetup", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(numberOfPlayers);
+        serializationObjectClient.addParameter(mode);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void playerJoin(int playerId, String username, Color color) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("playerJoin", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(username);
+        serializationObjectClient.addParameter(color);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userDrawTile(int playerId, int tileId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userDrawTile", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(tileId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userPlaceTile", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(coordinates);
+        serializationObjectClient.addParameter(orientation);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userPickTile(int playerId, Point coordinates) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userPickTile", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(coordinates);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userDiscardTile(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userDiscardTile", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userFinishShipboard(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userFinishShipboard", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userLookSmallAdventureCardDeck", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(smallDeckIndex);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userStopLookSmallAdventureCardDeck", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(smallDeckIndex);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userPlaceTimer(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userPlaceTimer", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userSelectTypeOfToken", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(token);
+        serializationObjectClient.addParameter(coordinates);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userThrowDices(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userThrowDices", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userDrawAdventureCard(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userDrawAdventureCard", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userFinishDecisionActivating", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(coordinates);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userFinishDecisionToken", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(listOfTokens);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userAcceptPrizes", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(wantsRewards);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userLandOnPlanet", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(isLanded);
+        serializationObjectClient.addParameter(planet);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userLandOnStationOrShip", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializationObjectClient.addParameter(isLanded);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userStopFlight(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userStopFlight", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void adminCalculateScore(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("adminCalculateScore", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     @Override
     public void userEndGame(int playerId) throws RemoteException {
-
+        SerializationObjectClient serializationObjectClient = new SerializationObjectClient("userEndGame", clientController);
+        serializationObjectClient.addParameter(playerId);
+        serializeObjectFromClient(serializationObjectClient);
     }
 
     public void setServerHandler(ServerHandler serverHandler) {

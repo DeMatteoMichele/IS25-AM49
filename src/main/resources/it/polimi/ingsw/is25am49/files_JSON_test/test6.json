@@ -1,6 +1,6 @@
 {
   "typeOfMessage": "HSK",
-  "methodName": "registerClientSocket",
+  "methodName": "registerClientCallback",
   "params": [
     {
       "typeOfCollection" : "",

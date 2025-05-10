@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.states.*;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
@@ -20,19 +21,12 @@ public class ClientController {
     public int playerID;
     private GameSession gameSession;
     private RemoteServer serverMethods;
+    private UserInterface ui;
 
 
     public ClientController(GameSession gameSession) {
         playerID = -1;  //non ancora assegnato
-    }
-
-    public ClientController(int connectionType){
-        //this.playerID = playerID;//TODO playerID viene assegnato dal server in qualche modo
-
-    }
-
-    public void clientLogin(){
-        //todo playerID= setto l'id con il register client assegnato dal server switch con i due tipi di connessione
+        this.gameSession = gameSession;
     }
 
     public void registerClientSocket(){
@@ -177,7 +171,22 @@ public class ClientController {
     }
 
     public void changeState(String state)  {
-
+        State currentState;
+        if (state.equals("InitState")) {
+            currentState = new InitState(gameSession,ui);
+        }
+        else if(state.equals("BuildState")) {
+            currentState = new BuildState(gameSession,ui);
+        }
+        else if(state.equals("AdventureState")) {
+            currentState = new AdventureState(gameSession,ui);
+        }
+        else if(state.equals("FinishScoreState")) {
+            currentState = new FinishScoreState(gameSession,ui);
+        }
+        else {
+            throw new IllegalArgumentException("Invalid state: " + state);
+        }
     }
 
 
