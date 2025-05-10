@@ -205,18 +205,14 @@ public class ServerSerializer implements RemoteClient {
                 }
             }
             else if (typeOfMessage.equals("HSK")) {
-                //System.out.println("Sono in HSK");
                 for(JsonNode paramNode : params){
-                    System.out.println("Sono nel for");
                     String typeOfCollection = paramNode.get("typeOfCollection").asText();
-                    int contentObject = paramNode.get("content").asInt();
+                    int contentObject = paramNode.get("content").get("content").asInt();
                     if(contentObject==-1) {
                         idCounter++;
-                        int id = idCounter;
                     }
                     serObject.addParameter(idCounter);
                     serObject.setPlayerId(idCounter);
-                    System.out.println(serObject.toString());
                 }
             }
             //TODO serObject.callServerMethod();
@@ -333,7 +329,6 @@ public class ServerSerializer implements RemoteClient {
             clientHandler.putFileInTheBroadcastQueue(jsonFile);
         }
         else if(serObject.getTypeOfMessage().equals("HSK")){
-            System.out.println("Sto aggiungendo il file alla coda");
             clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
         }
         return jsonFile;
@@ -484,12 +479,10 @@ public class ServerSerializer implements RemoteClient {
 
     public int deserializeHandshake(File fileJson) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
-        //System.out.println("sono in deserialize handkshake");
         SerializationObjectServer serObjectTemp;
         serObjectTemp = deSerializeStringFromClient(fileJson);
         serObjectTemp.setMethodName("registerClientCallback");
         serializeObjectFromServer(serObjectTemp);
-        System.out.println("Ho finito di deserializzare");
         return serObjectTemp.getPlayerId();
     }
 }

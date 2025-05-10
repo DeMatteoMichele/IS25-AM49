@@ -65,15 +65,12 @@ public class SerializationObjectClient {
 
     public boolean callClientMethod() {
         if (!isServer) {
-            System.out.println("Sono in callclientmethod nel ramo !isserver");
             assert clientController != null;
             switch (methodName) {
                 case "notifyClient" -> clientController.notifyClient((String) parameters.get(0));
                 case "registerClientCallback" -> {
-                    System.out.println("Sono nel metodo corretto");
                     try {
                         clientController.registerClientCallback((int) parameters.get(0));
-                        System.out.println("HO chiamato il metodo sul controller");
                     } catch (Exception e) {
                         System.err.println("Errore durante registerClientCallback: " + e.getMessage());
                         e.printStackTrace();
