@@ -307,6 +307,7 @@ public class ClientHandler {
     /**
      * This method is used to send a file in broadcast to all the clients connected.
      * It takes the file, converts it to a string and sends it to all the clients connected.
+     * If the client is disconnected, it puts the file in the specific OutGoingFileQueue of that client.
      * It uses the output streams of the clients to send the file.
      *
      * @param fileToSend The file that has to be sent in broadcast.
@@ -322,6 +323,9 @@ public class ClientHandler {
                         outputStream.writeInt(length);
                         outputStream.write(buffer);
                         outputStream.flush();
+                    }
+                    else {
+                        putFileInTheOutGoingFileQueue(fileToSend, clientId);
                     }
                 } catch (IOException e) {
                     System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);

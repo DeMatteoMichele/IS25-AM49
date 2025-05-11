@@ -77,7 +77,7 @@ public class ClientController {
 
     public void registerClientCallback(int playerId)  {
         this.playerID = playerId;
-        System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
+        //System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
     }
 
     public void playerJoinCallback(int playerId, int seedForGeneration)  {
