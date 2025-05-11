@@ -5,19 +5,19 @@
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.Integer",
-      "content" : 0
+      "content" : 1
     }
   }, {
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.String",
-      "content" : "michele gay"
+      "content" : "pollo"
     }
   }, {
     "typeOfCollection" : "",
     "content" : {
       "className" : "it.polimi.ingsw.is25am49.client.model.enums.Color",
-      "content" : "GREEN"
+      "content" : "BLUE"
     }
   } ]
 }

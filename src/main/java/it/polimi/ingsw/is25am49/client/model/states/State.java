@@ -29,7 +29,6 @@ public abstract class State {
     }
 
     public int getStateIndex(){return stateIndex;}
-    public abstract void adminSelectGameMode(Player player, GameMode gamemode);
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
     public abstract void adminCreateGame(Player player, GameMode gamemode,int maxPlayers);
     public abstract void adminStartGame(Player player);

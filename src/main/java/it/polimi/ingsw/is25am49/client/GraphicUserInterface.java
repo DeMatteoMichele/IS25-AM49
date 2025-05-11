@@ -14,12 +14,17 @@ public class GraphicUserInterface implements UserInterface{
     }
 
     @Override
+    public void setClientId(int myId) {
+
+    }
+
+    @Override
     public void updateGameSessionNewPlayer(int playerId) {
 
     }
 
     @Override
-    public void updateGameSessionSettings(GameMode gameMode, int maxPlayers) {
+    public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
 
     }
 

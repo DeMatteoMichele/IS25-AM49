@@ -1,0 +1,23 @@
+{
+  "typeOfMessage" : "MSG",
+  "methodName" : "playerJoin",
+  "params" : [ {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "java.lang.Integer",
+      "content" : 2
+    }
+  }, {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "java.lang.String",
+      "content" : "fwef"
+    }
+  }, {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "it.polimi.ingsw.is25am49.client.model.enums.Color",
+      "content" : "YELLOW"
+    }
+  } ]
+}

@@ -19,21 +19,13 @@ public class InitState extends State {
         super(gameSession, userInterface);
     }
 
-    //probabilmente inutile
-        public void adminSelectGameMode(Player player, GameMode gamemode) {
-        gameSession.checkIsAdmin(player);
-        gameSession.setGameMode(gamemode);
-        userInterface.updateGameSessionSettings(gamemode, 4);
-    }
-
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         gameSession.userJoinLobby(playerColor, username, playerId);
-        userInterface.updateGameSessionNewPlayer(2000);
     }
     public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
         gameSession.checkIsAdmin(player);
         gameSession.createNewGame(gamemode, maxPlayers);
-        userInterface.updateGameSessionNewPlayer(200);
+        userInterface.updateGameSessionCreateGame(player.getIdPlayer(), gamemode, maxPlayers);
     }
     public void adminStartGame(Player player) {
         gameSession.checkIsAdmin(player);

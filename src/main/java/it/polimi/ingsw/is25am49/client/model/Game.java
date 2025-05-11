@@ -30,7 +30,7 @@ public class Game {
 
         players.add(admin);
         numPlayers = 1;
-        this.maxPlayers = maxPlayers; //TODO maxplayers va toppato a 4
+        this.maxPlayers = Math.max(Math.min(4,maxPlayers),2);
     }
     public GameMode getMode() {return mode;}
     public Player getPlayer(int id) throws IllegalArgumentException{

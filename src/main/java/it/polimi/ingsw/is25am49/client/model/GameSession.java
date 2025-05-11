@@ -25,6 +25,16 @@ public class GameSession {
     public Optional<Game> getGame() { return game; }
     public State getState() {return currentState;}
     public Optional<Player> getAdmin(){return admin;}
+    public Optional<Player> getPlayer(int id) { //TODO sus
+        if (game.isEmpty()) {
+            if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;
+        } else try {
+            return Optional.of(game.get().getPlayer(id));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+        return Optional.empty();
+    }
     public void setState(State nextState){
         currentState = nextState;
     }
