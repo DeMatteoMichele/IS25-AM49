@@ -22,4 +22,9 @@ public class GraphicUserInterface implements UserInterface{
     public void updateGameSessionSettings(GameMode gameMode, int maxPlayers) {
 
     }
+
+    @Override
+    public void printUpdateMessage(String msg) {
+
+    }
 }

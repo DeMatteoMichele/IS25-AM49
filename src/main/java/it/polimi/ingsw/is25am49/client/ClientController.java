@@ -22,6 +22,7 @@ public class ClientController {
     private GameSession gameSession;
     private RemoteServer serverMethods;
     private UserInterface ui;
+    private String username; //todo da togliere, bisogna aggiungere username al playerjoin
 
 
     public ClientController(GameSession gameSession) {
@@ -80,11 +81,11 @@ public class ClientController {
     }
 
     public void playerJoinCallback(int playerId, int seedForGeneration)  {
-
+        gameSession.getState().userJoinLobby(Color.values()[playerID],username,playerId);
     }
 
     public void playerErrorJoinCallback(int playerId, String typeOfError)  {
-
+        ui.printUpdateMessage(typeOfError);
     }
 
     public void gameStartedCallback()  {
@@ -209,12 +210,13 @@ public class ClientController {
 
     }
 
-    public void adminSetup(int playerId, int numberOfPlayers, GameMode mode)  {
+    public void adminSetup(int numberOfPlayers, GameMode mode)  {
 
     }
 
     public void playerJoin(String username)  {
         try {
+            this.username = username; //todo da togliere
             serverMethods.playerJoin(playerID, username, Color.values()[playerID]);
         } catch (RemoteException e) {
             throw new RuntimeException(e);

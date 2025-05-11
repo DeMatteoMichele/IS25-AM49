@@ -46,19 +46,29 @@ public class ServerController {
     }
 
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
-//        players.get(playerId).ifPresent(player -> {
-//            gameSession.getState().adminSelectGameMode(player, mode);
-//            gameSession.getState().adminCreateGame(player);
-//            gameSession.getState().adminStartGame(player);
-//        });
+        try {
+            try {
+                gameSession.getState().adminCreateGame(gameSession.getPlayer(playerId).get(),mode,numberOfPlayers);
+                //serverSerializer.admin Todo manca callbak
+            }catch (GameSettingsException e) {
+                serverSerializer.playerErrorJoinCallback(playerId,e.getMessage()); //todo manca callback error
+            }
+        } catch (RemoteException _) {
+        }
+
     }
 
     public void playerJoin(int playerId, String username, Color color) {
         addPlayerToLobby(playerId);
         try {
-            gameSession.getState().userJoinLobby(color, username, playerId);
-        } catch (GameSettingsException e) {
-            serverSerializer.playerErrorJoinCallback();
+            try {
+                gameSession.getState().userJoinLobby(color, username, playerId);
+                serverSerializer.playerJoinCallback(playerId,3);
+            } catch (GameSettingsException e) {
+                serverSerializer.playerErrorJoinCallback(playerId,e.getMessage());
+            }
+        } catch (RemoteException _) {
+            //todo sus per RMI
         }
 
     }

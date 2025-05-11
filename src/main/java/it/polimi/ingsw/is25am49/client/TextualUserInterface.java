@@ -96,8 +96,8 @@ public class TextualUserInterface implements UserInterface {
                 terminal.writer().println();
                 System.err.println("⚠ Error : invalid choice, retry\n");
             } else try {
-                //ui.controller.playerJoin(ui.username);
-                ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username, 23);
+                ui.controller.playerJoin(ui.username);
+                //ui.gameSession.getState().userJoinLobby(Color.BLUE, ui.username, 23);
                 break;
             } catch (Exception e) {
                 terminal.writer().println();
@@ -218,6 +218,11 @@ public class TextualUserInterface implements UserInterface {
         updateGameSessionNewPlayer(999);
     }
 
+    @Override
+    public void printUpdateMessage(String msg) {
+        System.err.println("⚠ Error : "+msg);
+    }
+
     /**
      *
      * @param input string
@@ -237,7 +242,7 @@ public class TextualUserInterface implements UserInterface {
                     } catch (NumberFormatException _) {
                     }
                     if (mode >= 0 && mode < 3 && max>0)
-                        gameSession.getState().adminCreateGame(gameSession.getAdmin().orElse(null),GameMode.values()[mode] ,max );
+                        controller.adminSetup(max ,GameMode.values()[mode] );
                     else {
                         terminal.writer().println("⚠ Error : invalid settings");
                         updateGameSessionSettings(GameMode.DEFAULT,999);
