@@ -13,7 +13,7 @@ public class TileCardDeck {
     private final ConcurrentHashMap<Player, Integer> lastRemovedTile;
     private final int numOfTiles;
 
-    public TileCardDeck(long seedForGeneration) {
+    public TileCardDeck(int seedForGeneration) {
         lastRemovedTile = new ConcurrentHashMap<>();
         numOfTiles = 157;
         tileDeck = new ConcurrentHashMap<>();

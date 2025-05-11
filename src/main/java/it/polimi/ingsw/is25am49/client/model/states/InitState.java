@@ -20,7 +20,7 @@ public class InitState extends State {
     }
 
     //probabilmente inutile
-    public void adminSelectGameMode(Player player, GameMode gamemode) {
+        public void adminSelectGameMode(Player player, GameMode gamemode) {
         gameSession.checkIsAdmin(player);
         gameSession.setGameMode(gamemode);
         userInterface.updateGameSessionSettings(gamemode, 4);
