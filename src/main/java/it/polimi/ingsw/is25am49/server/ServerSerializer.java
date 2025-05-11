@@ -14,7 +14,6 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.File;
-import java.nio.file.Files;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -225,6 +224,7 @@ public class ServerSerializer implements RemoteClient {
                         serObject.addParameter(object);
                     }
                 }
+                serObject.callServerMethod();
             }
             else if (typeOfMessage.equals("HSK")) {
                 for(JsonNode paramNode : params){
@@ -237,7 +237,6 @@ public class ServerSerializer implements RemoteClient {
                     serObject.setPlayerId(idCounter);
                 }
             }
-            //TODO serObject.callServerMethod();
             return serObject;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -368,9 +367,18 @@ public class ServerSerializer implements RemoteClient {
     }
 
     @Override
-    public void playerJoinCallback(int playerId) throws RemoteException {
+    public void playerJoinCallback(int playerId, int seedForGeneration) throws RemoteException {
         SerializationObjectServer serObjectTemp= new SerializationObjectServer("playerJoinCallback", serverController, playerId);
         serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(seedForGeneration);
+        serializeObjectFromServer(serObjectTemp);
+    }
+
+    @Override
+    public void playerErrorJoinCallback(int playerId, String typeOfError) throws RemoteException {
+        SerializationObjectServer serObjectTemp= new SerializationObjectServer("playerErrorJoinCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(typeOfError);
         serializeObjectFromServer(serObjectTemp);
     }
 

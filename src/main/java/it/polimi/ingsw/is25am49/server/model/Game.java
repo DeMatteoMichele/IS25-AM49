@@ -15,11 +15,11 @@ public class Game {
     private int maxPlayers;
     private int numPlayers;
     private boolean isFinished;
-    private final long seedForGeneration;
+    private final int seedForGeneration;
 
     public Game(Optional<Player> admin, GameSession session) {
         this.session = session;
-        seedForGeneration= System.currentTimeMillis();
+        seedForGeneration= (int) System.currentTimeMillis();
         board = new GameBoard(seedForGeneration);
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();

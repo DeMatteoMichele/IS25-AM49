@@ -79,7 +79,11 @@ public class ClientController {
         System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
     }
 
-    public void playerJoinCallback(int playerId)  {
+    public void playerJoinCallback(int playerId, int seedForGeneration)  {
+
+    }
+
+    public void playerErrorJoinCallback(int playerId, String typeOfError)  {
 
     }
 

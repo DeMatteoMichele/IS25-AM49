@@ -50,9 +50,15 @@ public class ClientRMI implements RemoteClient {
     }
 
     @Override
-    public void playerJoinCallback(int playerId) throws RemoteException {
+    public void playerJoinCallback(int playerId, int seedForGeneration) throws RemoteException {
 
     }
+
+    @Override
+    public void playerErrorJoinCallback(int playerId, String typeOfError) throws RemoteException {
+
+    }
+
     @Override
     public void gameStartedCallback() throws RemoteException {
 
