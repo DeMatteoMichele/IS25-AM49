@@ -350,6 +350,5 @@ public class ClientHandler {
         catch (RemoteException e){
             System.out.println("errore lato Skeleton: "+e.getMessage());
         }
-        gameSession.setView(serverSerializer);
     }
 }

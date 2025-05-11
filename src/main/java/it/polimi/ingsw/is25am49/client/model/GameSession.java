@@ -132,10 +132,12 @@ public class GameSession {
             str.append("/").
                     append(game.get().getMaxPlayers()).append(" \tMode: ").
                     append(game.get().getMode()).append("\n");
+            int i=0;
             for (Player player : game.get().getListPlayers()) {
                 str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername());
-                if(player.getIdPlayer()==0) str.append(" - ADMIN\n");
+                if(i==0) str.append(" - ADMIN\n");
                 else str.append("\n");
+                i++;
             }
             str.append("+----------------------------------------------");
         }else {

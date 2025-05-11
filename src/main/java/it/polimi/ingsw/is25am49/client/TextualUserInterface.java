@@ -72,7 +72,6 @@ public class TextualUserInterface implements UserInterface {
         ui.username = textInput;
         terminal.writer().println("\nwelcome to the game " + ui.username + "!");
 
-        //stabilisco la connessione todo gestione errori di connessione al server
         ui.setupConnection(serverIP, serverPort);
 
         while (true) {
@@ -103,8 +102,6 @@ public class TextualUserInterface implements UserInterface {
             } catch (Exception e) {
                 terminal.writer().println();
                 System.err.println(error + e.getMessage());
-                System.out.println("closing...");
-                System.exit(0);
             }
         }
         terminal.flush();
@@ -221,6 +218,10 @@ public class TextualUserInterface implements UserInterface {
         updateGameSessionNewPlayer(999);
     }
 
+    /**
+     *
+     * @param input string
+     */
     public void handleInput(String input) {
         try {
             switch (input.trim() + ":" + gameSession.getState().getStateIndex()) {
@@ -235,7 +236,7 @@ public class TextualUserInterface implements UserInterface {
                         max = Integer.parseInt(lineReader.readLine("\ninsert max players:\n>> ").trim());
                     } catch (NumberFormatException _) {
                     }
-                    if (mode >= 0 && mode < 3)
+                    if (mode >= 0 && mode < 3 && max>0)
                         gameSession.getState().adminCreateGame(gameSession.getAdmin().orElse(null),GameMode.values()[mode] ,max );
                     else {
                         terminal.writer().println("⚠ Error : invalid settings");

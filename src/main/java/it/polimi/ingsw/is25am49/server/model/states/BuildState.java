@@ -20,10 +20,10 @@ public class BuildState extends State {
     public void adminSelectGameMode(Player admin, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) {
+    public void userJoinLobby(Color playerColor, String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void adminCreateGame(Player player) {
+    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
     public void adminStartGame(Player player) {

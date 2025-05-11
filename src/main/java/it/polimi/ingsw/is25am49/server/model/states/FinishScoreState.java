@@ -19,10 +19,10 @@ public class FinishScoreState extends State {
     public void adminSelectGameMode(Player player,GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) {
+    public void userJoinLobby(Color playerColor, String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void adminCreateGame(Player player) {
+    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void adminStartGame(Player player) {

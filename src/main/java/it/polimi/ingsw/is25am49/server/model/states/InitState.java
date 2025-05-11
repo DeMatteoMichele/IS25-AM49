@@ -1,11 +1,12 @@
 package it.polimi.ingsw.is25am49.server.model.states;
 
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.server.model.states.BuildState;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -20,33 +21,29 @@ public class InitState extends State {
 
     //To change
     public void adminSelectGameMode(Player player, GameMode gamemode) {
-        gameSession.setGameMode(player, gamemode);
+        gameSession.checkIsAdmin(player);
+        gameSession.setGameMode(gamemode);
     }
-    public void userSelectColorAndUserName(Color playerColor, String username) {
-        if(gameSession.checkPlayers())
-            gameSession.userSelectColorAndUserName(playerColor, username);
-        else
-            throw new GameSettingsException("You cannot join the game");
+    public void userJoinLobby(Color playerColor, String username, int playerId) {
+        gameSession.userJoinLobby(playerColor, username, playerId);
     }
-    public void adminCreateGame(Player player) {
-            gameSession.createNewGame(player);
+    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
+        gameSession.checkIsAdmin(player);
+        gameSession.createNewGame(gamemode, maxPlayers);
     }
     public void adminStartGame(Player player) {
-        if(player.equals(gameSession.getAdmin().orElse(null))){
-            if(!gameSession.checkStatus())
-                throw new GameSettingsException("You cannot start the game yet, settings are not active");
+        gameSession.checkIsAdmin(player);
+        if(!gameSession.checkGameMode())
+            throw new it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException("You cannot start the game yet, set gameMode");
+        else{
+            if(gameSession.getGame().map(g -> g.numOfPlayers() < 2).orElse(false)){
+                throw new GameSettingsException("You cannot start the game yet, not enough players");
+            }
             else{
-                if(gameSession.getGame().map(g -> g.getListPlayers().size() < 2).orElse(false)){
-                    throw new GameSettingsException("You cannot start the game yet, not enough players");
-                }
-                else{
-                    gameSession.configurateFlight();
-                    transition(new BuildState(gameSession));
-                }
+                gameSession.configurateFlight();
+                transition(new BuildState(gameSession));
             }
         }
-        else
-            throw new GameSettingsException("You are not the admin of this game");
     }
     //Illegal
     public void userPlaceTile(Player player, Point coordinates) {

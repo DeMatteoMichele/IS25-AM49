@@ -1,6 +1,6 @@
 package it.polimi.ingsw.is25am49.server;
 
-import it.polimi.ingsw.is25am49.client.RemoteServer;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
@@ -13,25 +13,24 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.List;
 
 public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
-    private final HashMap<Integer, Optional<Player>> players;
+    private final ArrayList<Integer> players;
     private RemoteClient remoteClient;
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
-        this.players = new HashMap<>();
+        this.players = new ArrayList<>();
     }
 
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
 
-    public void addPlayerToLobby(int playerId, Player player) {
-        players.put(playerId, Optional.of(player));
+    public void addPlayerToLobby(int playerId) {
+        players.add(playerId);
     }
 
     public void serverTestConnection(int playerId) {
@@ -55,27 +54,29 @@ public class ServerController {
     }
 
     public void playerJoin(int playerId, String username, Color color) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().userSelectColorAndUserName(color, username);
-        });
+        addPlayerToLobby(playerId);
+        try {
+            gameSession.getState().userJoinLobby(color, username, playerId);
+        } catch (GameSettingsException e) {
+            serverSerializer.playerErrorJoinCallback();
+        }
+
     }
 
     public void userDrawTile(int playerId, int tileId) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().userDrawTile(player, tileId);
-        });
+            //gameSession.getState().userDrawTile(player, tileId);
     }
 
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().userPlaceTile(player, coordinates);
-        });
-        try {
-            remoteClient.userPlaceTileCallback(playerId, coordinates,orientation);
-        } catch (RemoteException e) {
-            System.err.println("Error during the notification to the client: " + e.getMessage());
-
-    }}
+//        players.get(playerId).ifPresent(player -> {
+//            gameSession.getState().userPlaceTile(player, coordinates);
+//        });
+//        try {
+//            remoteClient.userPlaceTileCallback(playerId, coordinates,orientation);
+//        } catch (RemoteException e) {
+//            System.err.println("Error during the notification to the client: " + e.getMessage());
+//        }
+    }
 
 
     public void userPickTile(int playerId, Point coordinates) {
