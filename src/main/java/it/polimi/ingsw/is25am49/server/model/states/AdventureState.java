@@ -71,7 +71,7 @@ public class AdventureState extends State {
     public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){
 
     }
-    public void userLandOnPlanet(Player player) {
+    public void userLandOnPlanet(Player player, boolean isLanded, int planetId) {
 
     }
     public void userLandOnStationOrShip(Player player) {

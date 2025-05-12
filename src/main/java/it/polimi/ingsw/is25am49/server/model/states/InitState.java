@@ -96,7 +96,7 @@ public class InitState extends State {
 
     }
 
-    public void userLandOnPlanet(Player player) {
+    public void userLandOnPlanet(Player player, boolean isLanded, int planetId) {
 
     }
     public void userLandOnStationOrShip(Player player) {
