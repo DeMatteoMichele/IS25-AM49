@@ -95,7 +95,7 @@ public class SerializationObjectServer {
             case "userAcceptPrizes" ->
                     serverController.userAcceptPrizes((int) parameters.get(0), (boolean) parameters.get(1));
             case "userLandOnPlanet" ->
-                    serverController.userLandOnPlanet((int) parameters.get(0), (boolean) parameters.get(1), (Planet) parameters.get(2));
+                    serverController.userLandOnPlanet((int) parameters.get(0), (boolean) parameters.get(1), (int) parameters.get(2));
             case "userLandOnStationOrShip" ->
                     serverController.userLandOnStationOrShip((int) parameters.get(0), (boolean) parameters.get(1));
             case "userStopFlight" -> serverController.userStopFlight((int) parameters.get(0));

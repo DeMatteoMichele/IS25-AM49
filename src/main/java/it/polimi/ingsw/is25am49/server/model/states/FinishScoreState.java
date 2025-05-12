@@ -86,7 +86,7 @@ public class FinishScoreState extends State {
     }
 
 
-    public void userLandOnStationOrShip(Player player) {
+    public void userLandOnStationOrShip(Player player, boolean isLanded) {
 
     }
 

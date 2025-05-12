@@ -57,7 +57,7 @@ public class TextualUserInterface implements UserInterface {
     public static void main(String args[]) throws IOException {
         //Server settings:
         String serverIP = "localhost";
-        int serverPort = 8080;
+        int serverPort = 8081;
         //---------------------------------------
 
         TextualUserInterface ui = new TextualUserInterface();
