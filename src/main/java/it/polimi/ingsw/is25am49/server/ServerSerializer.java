@@ -227,7 +227,7 @@ public class ServerSerializer implements RemoteClient {
                 for(JsonNode paramNode : params){
                     String typeOfCollection = paramNode.get("typeOfCollection").asText();
                     int contentObject = paramNode.get("content").get("content").asInt();
-                    if(contentObject==-1) {
+                    if(contentObject == -1) {
                         idCounter++;
                     }
                     serObject.addParameter(idCounter);
