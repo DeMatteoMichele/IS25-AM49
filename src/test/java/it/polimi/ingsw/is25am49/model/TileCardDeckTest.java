@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.server.model.*;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ class TileCardDeckTest {
         player4 = new Player("Cefa", Color.YELLOW, 4);
         ship1 = new ShipBoard(1,1);
         player1.setShipBoard(ship1);
-        game = new Game(Optional.of(player1), gameSession);
+        game = new Game(player1, gameSession, GameMode.DEFAULT,999);
         deck = game.getGameboard().getTilesDeck();
     }
     @Test

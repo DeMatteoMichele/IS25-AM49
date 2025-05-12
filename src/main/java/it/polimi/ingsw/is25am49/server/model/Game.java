@@ -15,28 +15,34 @@ public class Game {
     private int maxPlayers;
     private int numPlayers;
     private boolean isFinished;
-    private final long seedForGeneration;
+    private final int seedForGeneration;
 
-    public Game(Optional<Player> admin, GameSession session) {
+    public Game(Player admin, GameSession session, GameMode mode, int maxPlayers) {
         this.session = session;
-        seedForGeneration= System.currentTimeMillis();
+        seedForGeneration= (int) System.currentTimeMillis();
         board = new GameBoard(seedForGeneration);
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
-        mode = GameMode.DEFAULT;
-        players.add(admin.orElse(null));
+        this.mode = mode;
         winner = Optional.empty();
         timer = null;
-        maxPlayers = 4;
         isFinished = false;
-        numPlayers = 0;
+
+        players.add(admin);
+        numPlayers = 1;
+        this.maxPlayers = maxPlayers; //TODO maxplayers va toppato a 4
     }
-    public boolean checkStatus(){
-        return !mode.equals(GameMode.DEFAULT);
+    public GameMode getMode() {return mode;}
+    public Player getPlayer(int id) throws IllegalArgumentException{
+        for (Player p : players) {
+            if(p.getIdPlayer() == id) return p;
+        }
+        throw new IllegalArgumentException("Player not found");
     }
-    public GameBoard getGameboard() {
-        return board;
-    }
+    public GameBoard getGameboard() {return board;}
+    public int getMaxPlayers() {return maxPlayers;}
+    public int numOfPlayers() {return numPlayers;}
+
     public void setGameMode(GameMode mode) {
         this.mode = mode;
         timer = new Timer(mode, session);
@@ -47,14 +53,12 @@ public class Game {
         numPlayers++;
     }
     public ArrayList<Player> getListPlayers() { return players; }
-    //TODO: da fare
     public void calculateScore(Player player) {
         if(winner.isEmpty()){
-                board.calculateFinalCredits();
-                winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
+            board.calculateFinalCredits();
+            winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
         }
-        else
-            throw new GameSettingsException("Final score already calculated");
+        else throw new GameSettingsException("Final score already calculated");
     }
     public void configurateFlight(){
         board.configurateFlight(mode, players);
@@ -64,8 +68,8 @@ public class Game {
         return isFinished;
     }
     public Optional<Player> userShowWinner() {
-            isFinished = true;
-            return winner;
+        isFinished = true;
+        return winner;
     }
     public boolean isTestFlight() {
         return mode == GameMode.FLIGHT_MODE;

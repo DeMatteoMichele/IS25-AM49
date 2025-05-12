@@ -25,7 +25,7 @@ public class SerializationObjectClient {
         this.parameters = new ArrayList<>();
         this.clientController = clientController;
         this.isServer = false;
-        if (methodName.equals("registerClientSocket")) {
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
             typeOfMessage = "HSK";
         } else {
             typeOfMessage = "MSG";
@@ -76,7 +76,8 @@ public class SerializationObjectClient {
                         e.printStackTrace();
                     }
                 }
-                case "playerJoinCallback" -> clientController.playerJoinCallback((int) parameters.get(0));
+                case "playerJoinCallback" -> clientController.playerJoinCallback((int) parameters.get(0), (int) parameters.get(1));
+                case "playerErrorJoinCallback" -> clientController.playerErrorJoinCallback((int) parameters.get(0), parameters.get(1).toString());
                 case "gameStartedCallback" -> clientController.gameStartedCallback();
                 case "userDrawTileCallback" ->
                         clientController.userDrawTileCallback((int) parameters.get(0), (int) parameters.get(1));

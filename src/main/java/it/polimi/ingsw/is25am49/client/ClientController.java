@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.states.*;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.model.Player;
@@ -22,6 +23,7 @@ public class ClientController {
     private GameSession gameSession;
     private RemoteServer serverMethods;
     private UserInterface ui;
+    private String username; //todo da togliere, bisogna aggiungere username al playerjoin
 
 
     public ClientController(GameSession gameSession) {
@@ -76,11 +78,17 @@ public class ClientController {
 
     public void registerClientCallback(int playerId)  {
         this.playerID = playerId;
-        System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
+        ui.setClientId(playerID);
+        //System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
     }
 
-    public void playerJoinCallback(int playerId)  {
+    public void playerJoinCallback(int playerId, int seedForGeneration)  {
+        if(playerId!=this.playerID)gameSession.getState().userJoinLobby(Color.values()[playerID], username, playerID);
+        ui.updateGameSessionNewPlayer(playerId);
+    }
 
+    public void playerErrorJoinCallback(int playerId, String typeOfError)  {
+        ui.printUpdateMessage(typeOfError+" manca un modo per ripristinare il clientModel");
     }
 
     public void gameStartedCallback()  {
@@ -205,14 +213,16 @@ public class ClientController {
 
     }
 
-    public void adminSetup(int playerId, int numberOfPlayers, GameMode mode)  {
+    public void adminSetup(int numberOfPlayers, GameMode mode)  {
 
     }
 
     public void playerJoin(String username)  {
         try {
+            this.username = username;//todo da togliere
+            gameSession.getState().userJoinLobby(Color.values()[playerID], username, playerID);
             serverMethods.playerJoin(playerID, username, Color.values()[playerID]);
-        } catch (RemoteException e) {
+        } catch (RemoteException | GameSettingsException e) {
             throw new RuntimeException(e);
         }
     }

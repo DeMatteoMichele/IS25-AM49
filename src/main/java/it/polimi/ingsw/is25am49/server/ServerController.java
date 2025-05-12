@@ -1,10 +1,9 @@
 package it.polimi.ingsw.is25am49.server;
 
-import it.polimi.ingsw.is25am49.client.RemoteServer;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.PlanetCard;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
@@ -14,25 +13,24 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.List;
 
 public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
-    private final HashMap<Integer, Optional<Player>> players;
+    private final ArrayList<Integer> players;
     private RemoteClient remoteClient;
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
-        this.players = new HashMap<>();
+        this.players = new ArrayList<>();
     }
 
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
 
-    public void addPlayerToLobby(int playerId, Player player) {
-        players.put(playerId, Optional.of(player));
+    public void addPlayerToLobby(int playerId) {
+        players.add(playerId);
     }
 
     public void serverTestConnection(int playerId) {
@@ -44,38 +42,50 @@ public class ServerController {
     }
 
     public void registerClientSocket(int playerId) {
-        //TODO problema da risolvere, come inserire il player nella mappa
-        if (!players.containsKey(playerId)) {
-            players.put(playerId, Optional.empty());
-        }
-        System.out.println("Client [ID:" + playerId + "] registrato via socket");
+
     }
 
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().adminSelectGameMode(player, mode);
-            gameSession.getState().adminCreateGame(player);
-            gameSession.getState().adminStartGame(player);
-        });
+        try {
+            try {
+                gameSession.getState().adminCreateGame(gameSession.getPlayer(playerId).get(),mode,numberOfPlayers);
+                //serverSerializer.admin Todo manca callbak
+            }catch (GameSettingsException e) {
+                serverSerializer.playerErrorJoinCallback(playerId,e.getMessage()); //todo manca callback error
+            }
+        } catch (RemoteException _) {
+        }
+
     }
 
     public void playerJoin(int playerId, String username, Color color) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().userSelectColorAndUserName(color, username);
-        });
+        addPlayerToLobby(playerId);
+        try {
+            try {
+                gameSession.getState().userJoinLobby(color, username, playerId);
+                serverSerializer.playerJoinCallback(playerId,3);
+            } catch (GameSettingsException e) {
+                serverSerializer.playerErrorJoinCallback(playerId,e.getMessage());
+            }
+        } catch (RemoteException _) {
+            //todo sus per RMI
+        }
+
     }
 
     public void userDrawTile(int playerId, int tileId) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().userDrawTile(player, tileId);
-        });
+            //gameSession.getState().userDrawTile(player, tileId);
     }
 
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
-        players.get(playerId).ifPresent(player -> {
-            gameSession.getState().userPlaceTile(player, coordinates);
-        });
-
+//        players.get(playerId).ifPresent(player -> {
+//            gameSession.getState().userPlaceTile(player, coordinates);
+//        });
+//        try {
+//            remoteClient.userPlaceTileCallback(playerId, coordinates,orientation);
+//        } catch (RemoteException e) {
+//            System.err.println("Error during the notification to the client: " + e.getMessage());
+//        }
     }
 
 

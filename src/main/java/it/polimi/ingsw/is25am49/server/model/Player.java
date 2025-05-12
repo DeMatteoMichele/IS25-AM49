@@ -40,6 +40,9 @@ public class Player {
         isWatching = false;
     }
 
+    public int getIdPlayer() {
+        return idPlayer;
+    }
     private void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");
@@ -166,5 +169,6 @@ public class Player {
         smallAdventureDeckLooked = null;
         isWatching = false;
     }
+
 
 }

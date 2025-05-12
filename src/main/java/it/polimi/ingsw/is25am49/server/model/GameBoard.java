@@ -38,7 +38,7 @@ public class GameBoard {
     private Player currentPlayer;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
-    private long seedForGeneration;
+    private int seedForGeneration;
     private final List<Player> quitPlayers;
 
     /**
@@ -48,7 +48,7 @@ public class GameBoard {
     public GameBoard() {
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
-        tilesDeck = new TileCardDeck(42L); //TODO HARDCODATO IL SEED PER NON ROMPERE NULLA, DA NON USARE QUESTO COSTRUTTORE PER CLASSI FUTURE
+        tilesDeck = new TileCardDeck(42); //TODO HARDCODATO IL SEED PER NON ROMPERE NULLA, DA NON USARE QUESTO COSTRUTTORE PER CLASSI FUTURE
         mainAdventureDeck = new AdventureCardDeck();
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
@@ -58,7 +58,7 @@ public class GameBoard {
     /**
      * New main constructor of the GameBoard class, uses a seed for the generation of dices, decks and tiles
      */
-    public GameBoard(long seedForGeneration) {
+    public GameBoard(int seedForGeneration) {
         this.seedForGeneration = seedForGeneration;
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
@@ -680,7 +680,7 @@ public class GameBoard {
         playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
     }
 
-    public void setSeedForGeneration(long seed) {
+    public void setSeedForGeneration(int seed) {
         this.seedForGeneration = seed;
     }
 

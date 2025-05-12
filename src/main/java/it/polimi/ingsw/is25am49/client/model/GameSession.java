@@ -25,6 +25,16 @@ public class GameSession {
     public Optional<Game> getGame() { return game; }
     public State getState() {return currentState;}
     public Optional<Player> getAdmin(){return admin;}
+    public Optional<Player> getPlayer(int id) { //TODO sus
+        if (game.isEmpty()) {
+            if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;
+        } else try {
+            return Optional.of(game.get().getPlayer(id));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+        return Optional.empty();
+    }
     public void setState(State nextState){
         currentState = nextState;
     }
@@ -132,10 +142,12 @@ public class GameSession {
             str.append("/").
                     append(game.get().getMaxPlayers()).append(" \tMode: ").
                     append(game.get().getMode()).append("\n");
+            int i=0;
             for (Player player : game.get().getListPlayers()) {
                 str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername());
-                if(player.getIdPlayer()==0) str.append(" - ADMIN\n");
+                if(i==0) str.append(" - ADMIN\n");
                 else str.append("\n");
+                i++;
             }
             str.append("+----------------------------------------------");
         }else {

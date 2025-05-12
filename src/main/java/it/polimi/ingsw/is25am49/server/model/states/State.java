@@ -22,8 +22,8 @@ public abstract class State {
     }
 
     public abstract void adminSelectGameMode(Player player, GameMode gamemode);
-    public abstract void userSelectColorAndUserName(Color playerColor, String username);
-    public abstract void adminCreateGame(Player player);
+    public abstract void userJoinLobby(Color playerColor, String username, int playerId);
+    public abstract void adminCreateGame(Player player, GameMode gamemode, int maxPlayers);
     public abstract void adminStartGame(Player player);
 
     public abstract void userPlaceTile(Player player, Point coordinates);

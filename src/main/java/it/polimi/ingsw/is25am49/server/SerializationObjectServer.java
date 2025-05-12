@@ -25,7 +25,7 @@ public class SerializationObjectServer {
         this.parameters = new ArrayList<>();
         this.serverController = serverController;
         this.playerId = playerId;
-        if (methodName.equals("registerClientSocket")) {
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
             typeOfMessage = "HSK";
         } else {
             typeOfMessage = "MSG";

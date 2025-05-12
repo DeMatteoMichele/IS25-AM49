@@ -1,11 +1,23 @@
 {
-  "typeOfMessage" : "HSK",
-  "methodName" : "registerClientSocket",
+  "typeOfMessage" : "MSG",
+  "methodName" : "playerJoin",
   "params" : [ {
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.Integer",
-      "content" : -1
+      "content" : 0
+    }
+  }, {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "java.lang.String",
+      "content" : "Cefa"
+    }
+  }, {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "it.polimi.ingsw.is25am49.client.model.enums.Color",
+      "content" : "GREEN"
     }
   } ]
 }
