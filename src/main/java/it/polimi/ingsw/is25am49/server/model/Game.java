@@ -1,14 +1,18 @@
 package it.polimi.ingsw.is25am49.server.model;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class Game {
     private GameSession session;
     private GameMode mode;
     private final GameBoard board;
+
     private final ArrayList<Player> players;
     private Optional<Player> winner;
     private Timer timer;

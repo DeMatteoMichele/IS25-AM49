@@ -48,7 +48,7 @@ public class ServerController {
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
-                gameSession.getState().adminCreateGame(gameSession.getPlayer(playerId).get(),mode,numberOfPlayers);
+                gameSession.getState().adminCreateGame(playerId,mode,numberOfPlayers);
                 //serverSerializer.admin Todo manca callbak
             }catch (GameSettingsException e) {
                 serverSerializer.playerErrorJoinCallback(playerId,e.getMessage()); //todo manca callback error
@@ -75,6 +75,7 @@ public class ServerController {
 
     public void userDrawTile(int playerId, int tileId) {
             //gameSession.getState().userDrawTile(player, tileId);
+        gameSession.getState().userDrawTile(playerId, tileId);
     }
 
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
@@ -86,6 +87,7 @@ public class ServerController {
 //        } catch (RemoteException e) {
 //            System.err.println("Error during the notification to the client: " + e.getMessage());
 //        }
+        gameSession.getState().userPlaceTile(playerId,coordinates);
     }
 
 
@@ -93,65 +95,76 @@ public class ServerController {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userPickTile(player, coordinates);
 //        });
+        gameSession.getState().userPickTile(playerId, coordinates);
     }
 
     public void userDiscardTile(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userDiscardTile(player);
 //        });
+        gameSession.getState().userDiscardTile(playerId);
     }
 
     public void userFinishShipboard(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userFinishShipboard(player);
 //        });
+        gameSession.getState().userFinishShipboard(playerId);
     }
 
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userLookSmallAdventureCardDeck(player, smallDeckIndex);
 //        });
+        gameSession.getState().userLookSmallAdventureCardDeck(playerId, smallDeckIndex);
     }
 
     public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userStopLookSmallAdventureCardDeck(player, smallDeckIndex);
 //        });
+        gameSession.getState().userStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
     }
 
     public void userPlaceTimer(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userPlaceTimer(player);
 //        });
+        gameSession.getState().userPlaceTimer(playerId);
     }
 
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userSelectTypeOfToken(player, token, coordinates);
 //        });
+        gameSession.getState().userSelectTypeOfToken(playerId, token, coordinates);
     }
 
     public void userThrowDices(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userThrowDices(player);
 //        });
+        gameSession.getState().userThrowDices(playerId);
     }
 
     public void userDrawAdventureCard(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userDrawAdventureCard(player);
 //        });
+        gameSession.getState().userDrawAdventureCard(playerId);
     }
 
     public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userFinishDecisionActivating(player, coordinates);
 //        });
+        gameSession.getState().userFinishDecisionActivating(playerId, coordinates);
     }
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userFinishDecisionToken(player, listOfTokens);
 //        });
+        gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
     }
 
     public void userAcceptPrizes(int playerId, boolean wantsRewards) {
@@ -162,31 +175,34 @@ public class ServerController {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userLandOnPlanet(player, isLanded, planetId);
 //        });
-
+        gameSession.getState().userLandOnPlanet(playerId, isLanded, planetId);
     }
 
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userLandOnStationOrShip(player, isLanded);
 //        });
+        gameSession.getState().userLandOnStationOrShip(playerId, isLanded);
     }
 
     public void userStopFlight(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userStopFlight(player);
 //        });
-
+        gameSession.getState().userStopFlight(playerId);
     }
 
     public void adminCalculateScore(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().adminCalculateScore(player);
 //        });
+        gameSession.getState().adminCalculateScore(playerId);
     }
 
     public void userEndGame(int playerId) {
 //        players.get(playerId).ifPresent(player -> {
 //            gameSession.getState().userEndGame(player);
 //        });
+        gameSession.getState().userEndGame(playerId);
     }
 }
