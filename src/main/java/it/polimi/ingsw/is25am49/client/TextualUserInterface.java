@@ -26,7 +26,8 @@ public class TextualUserInterface implements UserInterface {
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
-    private final int graphicLength = 20;
+    private final int boxWidth = 30;
+    String border = "+" + "-".repeat(boxWidth - 2) + "+\n";
 
     public Terminal terminal;
     public LineReader lineReader;
@@ -195,17 +196,17 @@ public class TextualUserInterface implements UserInterface {
     public void joinLobby(String serverIP) {
         int numInput = 0;
         StringBuilder str = new StringBuilder();
-        str.append("+--------------------------------------------\n");
+        str.append("+-----------------------------------------------\n");
         str.append("| SERVER - ").append(serverIP).append("\tstatus - connected\n");
-        str.append("+--------------------------------------------\n");
+        str.append("+-----------------------------------------------\n");
         str.append("| Aviable lobby:\n");
         if (gameSession.getGame().isPresent()) {
             terminal.writer().print("| 01) TestMatch - users " + gameSession.getGame().get().
                     numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
             if (!gameSession.checkPlayers()) str.append(" - full\n");
         } else if (gameSession.getAdmin().isPresent()) str.append("| 01) TestMatch - users 1/4\n");
-        else str.append("| 01) TestMatch - users 0/4 CREATE LOBBY\n");
-        str.append("+--------------------------------------------\n");
+        else str.append("| 01) TestMatch - users 0/4 - CREATE LOBBY\n");
+        str.append("+-----------------------------------------------\n");
         str.append("which one do you want to join?\n");
         lineReader.printAbove(str.toString());
         try {
