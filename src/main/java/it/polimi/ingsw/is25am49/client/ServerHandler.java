@@ -258,22 +258,6 @@ public class ServerHandler {
         }
     }
 
-    /**
-     * This method is used to pass the information to the client serializer.
-     * It is called by the listenToServer method after receiving a message from the server.
-     */
-    public void passInformationToClientSerializer(File fileJson) {
-        clientSerializer.deSerializeStringFromServer(fileJson);
-    }
-
-    public Socket getClientSocket() {
-        return clientSocket;
-    }
-
-    public DataOutputStream getOutputStream() {
-        return outputStream;
-    }
-
     public void setClientSerializer(ClientSerializer clientSerializer) {
         this.clientSerializer = clientSerializer;
     }

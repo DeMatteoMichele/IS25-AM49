@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import javafx.util.Pair;
@@ -16,8 +17,9 @@ public interface RemoteClient extends Remote {
 
     // Metodi InitState !!!!!!!!! ZIOPORCO
     void registerClientCallback(int playerId) throws RemoteException;
-    void playerJoinCallback(int playerId, int seedForGeneration) throws RemoteException;
+    void playerJoinCallback(int playerId, String username, int seedForGeneration) throws RemoteException;
     void playerErrorJoinCallback(int playerId, String tipoErrore) throws RemoteException;
+    void adminSetupCallback(int playerId, int maxPlayers, GameMode mode) throws RemoteException;
     void gameStartedCallback() throws RemoteException;
 
     // Metodi BuildState !!!!!!!!! ZIOPORCO

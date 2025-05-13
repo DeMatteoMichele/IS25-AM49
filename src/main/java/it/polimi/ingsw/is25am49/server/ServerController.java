@@ -49,7 +49,7 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().adminCreateGame(gameSession.getPlayer(playerId).get(),mode,numberOfPlayers);
-                //serverSerializer.admin Todo manca callbak
+                serverSerializer.adminSetupCallback(playerId, numberOfPlayers, mode);
             }catch (GameSettingsException e) {
                 serverSerializer.playerErrorJoinCallback(playerId,e.getMessage()); //todo manca callback error
             }
@@ -63,7 +63,7 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(color, username, playerId);
-                serverSerializer.playerJoinCallback(playerId,3);
+                serverSerializer.playerJoinCallback(playerId, username,3);
             } catch (GameSettingsException e) {
                 serverSerializer.playerErrorJoinCallback(playerId,e.getMessage());
             }

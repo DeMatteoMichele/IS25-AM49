@@ -330,6 +330,7 @@ public class ClientHandler {
                 } catch (IOException e) {
                     System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);
                     shutDownClientRelated(clientId);
+                    putFileInTheOutGoingFileQueue(fileToSend, clientId);
                 }
             });
         } catch (IOException e) {

@@ -15,6 +15,7 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -34,7 +35,7 @@ public class ServerSerializer implements RemoteClient {
         this.serverController = serverController;
         this.idCounter = -1;
         filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
-        executorService= Executors.newFixedThreadPool(10);
+        executorService = Executors.newFixedThreadPool(10);
         executorService.submit(this::processFilesFromSocketQueue);
     }
 
@@ -44,12 +45,11 @@ public class ServerSerializer implements RemoteClient {
      * Method take() is blocking, so it will wait until a file is available in the queue.
      */
     private void processFilesFromSocketQueue() {
-        while(true){
-            try{
+        while (true) {
+            try {
                 File json = filesFromSocketQueue.take();
                 deSerializeStringFromClient(json);
-            }
-            catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
             }
         }
@@ -222,12 +222,11 @@ public class ServerSerializer implements RemoteClient {
                     }
                 }
                 serObject.callServerMethod();
-            }
-            else if (typeOfMessage.equals("HSK")) {
-                for(JsonNode paramNode : params){
+            } else if (typeOfMessage.equals("HSK")) {
+                for (JsonNode paramNode : params) {
                     String typeOfCollection = paramNode.get("typeOfCollection").asText();
                     int contentObject = paramNode.get("content").get("content").asInt();
-                    if(contentObject == -1) {
+                    if (contentObject == -1) {
                         idCounter++;
                     }
                     serObject.addParameter(idCounter);
@@ -245,12 +244,13 @@ public class ServerSerializer implements RemoteClient {
     }
 
     public File serializeObjectFromServer(SerializationObjectServer serObject) {
-        File jsonFile=null;
+        File jsonFile = null;
         try {
-             jsonFile = File.createTempFile("message_", ".json");
+            jsonFile = File.createTempFile("server_response", ".json");
         } catch (IOException e) {
-            System.err.println("Creazione file temporaneo in serializeObjectFromServer fallita: " + e.getMessage());
+            System.out.println("Error creating temp file: " + e.getMessage());
         }
+        jsonFile.deleteOnExit();
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
@@ -353,8 +353,7 @@ public class ServerSerializer implements RemoteClient {
         }
         if (serObject.getTypeOfMessage().equals("MSG")) {
             clientHandler.putFileInTheBroadcastQueue(jsonFile);
-        }
-        else if(serObject.getTypeOfMessage().equals("HSK")){
+        } else if (serObject.getTypeOfMessage().equals("HSK")) {
             clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
         }
         return jsonFile;
@@ -372,25 +371,35 @@ public class ServerSerializer implements RemoteClient {
     }
 
     @Override
-    public void playerJoinCallback(int playerId, int seedForGeneration) throws RemoteException {
-        SerializationObjectServer serObjectTemp= new SerializationObjectServer("playerJoinCallback", serverController, playerId);
+    public void playerJoinCallback(int playerId, String username, int seedForGeneration) throws RemoteException {
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("playerJoinCallback", serverController, playerId);
         serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(username);
         serObjectTemp.addParameter(seedForGeneration);
         serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
     public void playerErrorJoinCallback(int playerId, String typeOfError) throws RemoteException {
-        SerializationObjectServer serObjectTemp= new SerializationObjectServer("playerErrorJoinCallback", serverController, playerId);
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("playerErrorJoinCallback", serverController, playerId);
         serObjectTemp.addParameter(playerId);
         serObjectTemp.addParameter(typeOfError);
         serializeObjectFromServer(serObjectTemp);
     }
 
     @Override
+    public void adminSetupCallback(int playerId, int maxPlayers, GameMode mode) throws RemoteException {
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("adminSetupCallback", serverController, playerId);
+        serObjectTemp.addParameter(playerId);
+        serObjectTemp.addParameter(maxPlayers);
+        serObjectTemp.addParameter(mode);
+        serializeObjectFromServer(serObjectTemp);
+    }
+
+    @Override
     public void gameStartedCallback() throws RemoteException {
         //HARDCODATO IL PLAYERID SICCOME NON È UN INFORMAZIONE RILEVANTE
-        SerializationObjectServer serObjectTemp= new SerializationObjectServer("gameStartedCallback", serverController, -99);
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("gameStartedCallback", serverController, -99);
         serializeObjectFromServer(serObjectTemp);
     }
 
@@ -567,7 +576,7 @@ public class ServerSerializer implements RemoteClient {
     @Override
     public void changeState(String state) throws RemoteException {
         //HARDCODATO IL PLAYERID SICCOME NON È UN INFORMAZIONE RILEVANTE
-        SerializationObjectServer serObjectTemp= new SerializationObjectServer("changeState", serverController, -99);
+        SerializationObjectServer serObjectTemp = new SerializationObjectServer("changeState", serverController, -99);
         serializeObjectFromServer(serObjectTemp);
     }
 
