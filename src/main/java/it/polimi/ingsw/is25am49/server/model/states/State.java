@@ -41,8 +41,8 @@ public abstract class State {
     public abstract void userDrawAdventureCard(Player player);
     public abstract void userFinishDecisionActivating(Player player, Set<Point> coordinates);
     public abstract void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens);
-    public abstract void userLandOnPlanet(Player player);
-    public abstract void userLandOnStationOrShip(Player player);
+    public abstract void userLandOnPlanet(Player player, boolean isLanded, int planetId);
+    public abstract void userLandOnStationOrShip(Player player, boolean isLanded);
     public abstract void userQuitGame(Player player);
     public abstract void userStopFlight(Player player);
 
