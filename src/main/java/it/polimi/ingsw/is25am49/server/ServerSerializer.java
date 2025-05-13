@@ -250,7 +250,7 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             System.out.println("Error creating temp file: " + e.getMessage());
         }
-        jsonFile.deleteOnExit();
+        //jsonFile.deleteOnExit();
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();

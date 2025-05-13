@@ -22,73 +22,78 @@ public class AdventureState extends State {
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
+    public void adminSelectGameMode(int playerId, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void adminStartGame(Player player) {
+    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userPlaceTile(Player player, Point coordinates) {
+   public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userPickTile(Player player, Point coordinates){
+    public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userDiscardTile(Player player){
+    public void userPickTile(int playerId, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userDrawTile(Player player, int idTIle) {
+    public void userDiscardTile(int playerId){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userFinishShipboard(Player player) {
+    public void userDrawTile(int playerId, int idTIle) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userFinishShipboard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
-    public void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex){
+    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userStopLookSmallAdventureCardDeck(Player player,int smallDeckIndex){
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userPlaceTimer(Player player) {
+    public void userPlaceTimer(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userSelectTypeOfToken(Player player, Token token, Point coordinates){
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userThrowDices(Player player){
+    public void userThrowDices(int playerId){
+        Player player = getPlayerById(playerId);
         gameSession.userThrowDices(player);
     }
-    public void userDrawAdventureCard(Player player) {
+    public void userDrawAdventureCard(int playerId) {
+        Player player = getPlayerById(playerId);
         gameSession.userDrawAdventureCard(player);
     }
-    public void userFinishDecisionActivating(Player player, Set<Point> coordinates){
+    public void userFinishDecisionActivating(int playerId, Set<Point> coordinates){
 
     }
-    public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens){
+    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens){
 
     }
-    public void userLandOnPlanet(Player player, boolean isLanded, int planetId) {
+    public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
 
     }
-    public void userLandOnStationOrShip(Player player, boolean isLanded) {
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
 
     }
-    public void userQuitGame(Player player){
-
-    }
-
-    public void userStopFlight(Player player) {
+    public void userQuitGame(int playerId){
 
     }
 
-    public void adminCalculateScore(Player player) {
+    public void userStopFlight(int playerId) {
+
+    }
+
+    public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userEndGame(Player player) {
+    public void userEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }

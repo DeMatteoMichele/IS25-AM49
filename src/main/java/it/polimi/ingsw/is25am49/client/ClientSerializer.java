@@ -258,7 +258,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     public File serializeObjectFromClient(SerializationObjectClient serObject) {
-        File jsonFile = new File("commandToClient.json");
+        File jsonFile = new File("commandToServer.json");
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();

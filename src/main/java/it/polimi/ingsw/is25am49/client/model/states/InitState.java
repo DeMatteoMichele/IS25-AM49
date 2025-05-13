@@ -21,7 +21,6 @@ public class InitState extends State {
 
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         gameSession.userJoinLobby(playerColor, username, playerId);
-        userInterface.updateGameSessionNewPlayer(playerId);
     }
     public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
         gameSession.checkIsAdmin(player);
