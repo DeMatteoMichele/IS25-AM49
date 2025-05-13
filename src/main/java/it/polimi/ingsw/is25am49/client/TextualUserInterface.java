@@ -214,7 +214,6 @@ public class TextualUserInterface implements UserInterface {
         } catch (NumberFormatException _) {
         }
         if (numInput != 1) {
-            terminal.writer().println();
             printUpdateMessage(error + "invalid choice, retry");
             joinLobby(serverIP);
         } else try {
@@ -318,7 +317,7 @@ public class TextualUserInterface implements UserInterface {
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            printUpdateMessage(error+"(errore switch) "+e.getMessage());
         }
     }
 }
