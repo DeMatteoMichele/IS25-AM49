@@ -1,11 +1,11 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.states.*;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ClientController {
-    public int playerID;
+    public int playerId;
     private GameSession gameSession;
     private RemoteServer serverMethods;
     private UserInterface ui;
@@ -27,40 +27,42 @@ public class ClientController {
 
 
     public ClientController(GameSession gameSession) {
-        playerID = -1;  //non ancora assegnato
+        playerId = -1;  //non ancora assegnato
         this.gameSession = gameSession;
     }
+
     public ClientController(GameSession gameSession, UserInterface ui) {
-        playerID = -1;  //non ancora assegnato
+        playerId = -1;  //non ancora assegnato
         this.gameSession = gameSession;
         this.ui = ui;
     }
 
-    public void registerClientSocket(){
+    public void registerClientSocket() {
         try {
-            serverMethods.registerClientSocket(playerID);
+            serverMethods.registerClientSocket(playerId);
         } catch (RemoteException e) {
             System.out.println("registerClientSocket failed --> " + e.getMessage());
         }
     }
 
-    public void clientTestConnection(){
+    public void clientTestConnection() {
         try {
-            serverMethods.serverTestConnection(playerID);
+            serverMethods.serverTestConnection(playerId);
         } catch (RemoteException e) {
             System.out.println("clientTestConnection failed --> " + e.getMessage());
         }
     }
 
-    public void handleInput(String inputString){
-        switch (inputString){
+    public void handleInput(String inputString) {
+        switch (inputString) {
             case "placetile"://esempio
                 //serverMethods.userPlaceTile();
 
-        };
+        }
+        ;
     }
 
-    public void userPlaceTile(){
+    public void userPlaceTile() {
         //metodo chiamato dal callback, che aggiorna il model lato client
         //clientModel.placeTile
     }
@@ -68,6 +70,7 @@ public class ClientController {
     public void setServerMethods(RemoteServer serverMethods) {
         this.serverMethods = serverMethods;
     }
+
     public RemoteServer getServerMethods() {
         return serverMethods;
     }
@@ -76,234 +79,234 @@ public class ClientController {
 
     }
 
-    public void registerClientCallback(int playerId)  {
-        this.playerID = playerId;
-        ui.setClientId(playerID);
-        //System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerID);
+    public void registerClientCallback(int playerId) {
+        this.playerId = playerId;
+        ui.setClientId(playerId);
+        //System.out.println("CONNESSIONE RIUSCTIA. IL TUO PLAYER ID È " + playerId);
     }
 
-    public void playerJoinCallback(int playerId, int seedForGeneration)  {
-        if(playerId!=this.playerID)gameSession.getState().userJoinLobby(Color.values()[playerID], username, playerID);
-        ui.updateGameSessionNewPlayer(playerId);
+    public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
+        gameSession.getState().adminCreateGame(gameSession.getAdmin().get(), mode, numberOfPlayers);
     }
 
-    public void playerErrorJoinCallback(int playerId, String typeOfError)  {
-        ui.printUpdateMessage(typeOfError+" manca un modo per ripristinare il clientModel");
+    public void playerJoinCallback(int playerId, String username,int seedForGeneration) {
+        gameSession.getState().userJoinLobby(Color.values()[playerId], username, playerId);
     }
 
-    public void gameStartedCallback()  {
-
+    public void playerErrorJoinCallback(int playerId, String typeOfError) {
+        ui.printUpdateMessage(typeOfError + " manca un modo per ripristinare il clientModel");
     }
 
-    public void userDrawTileCallback(int playerId, int tileId)  {
-
-    }
-
-    public void userErrorDrawTileCallback(int playerId, int tileId)  {
+    public void gameStartedCallback() {
 
     }
 
-    public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation)  {
+    public void userDrawTileCallback(int playerId, int tileId) {
 
     }
 
-    public void userPickTileCallback(int playerId, Point coordinates)  {
+    public void userErrorDrawTileCallback(int playerId, int tileId) {
 
     }
 
-    public void userDiscardTileCallback(int playerId)  {
+    public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) {
 
     }
 
-    public void userFinishShipboardCallback(int playerId)  {
+    public void userPickTileCallback(int playerId, Point coordinates) {
 
     }
 
-    public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex)  {
+    public void userDiscardTileCallback(int playerId) {
 
     }
 
-    public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex)  {
+    public void userFinishShipboardCallback(int playerId) {
 
     }
 
-    public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex)  {
+    public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userPlaceTimerCallback(int playerId)  {
+    public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userErrorPlaceTimerCallback(int playerId)  {
+    public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates)  {
+    public void userPlaceTimerCallback(int playerId) {
 
     }
 
-    public void userThrowDicesCallback(int playerId, int result)  {
+    public void userErrorPlaceTimerCallback(int playerId) {
 
     }
 
-    public void userDrawAdventureCardCallback(int playerId)  {
+    public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates) {
 
     }
 
-    public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates)  {
+    public void userThrowDicesCallback(int playerId, int result) {
 
     }
 
-    public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens)  {
+    public void userDrawAdventureCardCallback(int playerId) {
 
     }
 
-    public void userAcceptPrizesCallback(int playerId)  {
+    public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates) {
 
     }
 
-    public void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet)  {
+    public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
 
     }
 
-    public void userLandOnStationOrShipCallback(int playerId, boolean isLanded)  {
+    public void userAcceptPrizesCallback(int playerId) {
 
     }
 
-    public void userStopFlightCallback(int playerId)  {
+    public void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet) {
 
     }
 
-    public void adminCalculateScoreCallback(int playerId)  {
+    public void userLandOnStationOrShipCallback(int playerId, boolean isLanded) {
 
     }
 
-    public void userEndGameCallback(int playerId)  {
+    public void userStopFlightCallback(int playerId) {
 
     }
 
-    public void changeState(String state)  {
+    public void adminCalculateScoreCallback(int playerId) {
+
+    }
+
+    public void userEndGameCallback(int playerId) {
+
+    }
+
+    public void changeState(String state) {
         State currentState;
         if (state.equals("InitState")) {
-            currentState = new InitState(gameSession,ui);
-        }
-        else if(state.equals("BuildState")) {
-            currentState = new BuildState(gameSession,ui);
-        }
-        else if(state.equals("AdventureState")) {
-            currentState = new AdventureState(gameSession,ui);
-        }
-        else if(state.equals("FinishScoreState")) {
-            currentState = new FinishScoreState(gameSession,ui);
-        }
-        else {
+            currentState = new InitState(gameSession, ui);
+        } else if (state.equals("BuildState")) {
+            currentState = new BuildState(gameSession, ui);
+        } else if (state.equals("AdventureState")) {
+            currentState = new AdventureState(gameSession, ui);
+        } else if (state.equals("FinishScoreState")) {
+            currentState = new FinishScoreState(gameSession, ui);
+        } else {
             throw new IllegalArgumentException("Invalid state: " + state);
         }
     }
 
 
-
-
-    public void serverTestConnection(int playerId)  {
+    public void serverTestConnection(int playerId) {
 
     }
 
-    public void registerClientRMI(RemoteClient client)  {
+    public void registerClientRMI(RemoteClient client) {
 
     }
 
-    public void adminSetup(int numberOfPlayers, GameMode mode)  {
-        gameSession.getState().adminCreateGame(gameSession.getAdmin().get(),mode,numberOfPlayers);
+    public void adminSetup(int numberOfPlayers, GameMode mode) {
+        try {
+            serverMethods.adminSetup(playerId, numberOfPlayers, mode);
+        } catch (RemoteException e) {
+            ui.printUpdateMessage(e.getMessage());
+        }
     }
 
-    public void playerJoin(String username)  {
+    public void playerJoin(String username) {
         try {
             this.username = username;//todo da togliere
-            gameSession.getState().userJoinLobby(Color.values()[playerID], username, playerID);
-            serverMethods.playerJoin(playerID, username, Color.values()[playerID]);
+            serverMethods.playerJoin(playerId, username, Color.values()[playerId]);
         } catch (RemoteException | GameSettingsException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void userDrawTile(int playerId, int tileId)  {
+    public void userDrawTile(int playerId, int tileId) {
 
     }
 
-    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation)  {
+    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
 
     }
 
-    public void userPickTile(int playerId, Point coordinates)  {
+    public void userPickTile(int playerId, Point coordinates) {
 
     }
 
-    public void userDiscardTile(int playerId)  {
+    public void userDiscardTile(int playerId) {
 
     }
 
-    public void userFinishShipboard(int playerId)  {
+    public void userFinishShipboard(int playerId) {
 
     }
 
-    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex)  {
+    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex)  {
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
 
     }
 
-    public void userPlaceTimer(int playerId)  {
+    public void userPlaceTimer(int playerId) {
 
     }
 
-    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates)  {
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
 
     }
 
-    public void userThrowDices(int playerId)  {
+    public void userThrowDices(int playerId) {
 
     }
 
-    public void userDrawAdventureCard(int playerId)  {
+    public void userDrawAdventureCard(int playerId) {
 
     }
 
-    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates)  {
+    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) {
 
     }
 
-    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens)  {
+    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
 
     }
 
-    public void userAcceptPrizes(int playerId, boolean wantsRewards)  {
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) {
 
     }
 
-    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet)  {
+    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) {
 
     }
 
-    public void userLandOnStationOrShip(int playerId, boolean isLanded)  {
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
 
     }
 
-    public void userStopFlight(int playerId)  {
+    public void userStopFlight(int playerId) {
 
     }
 
-    public void adminCalculateScore(int playerId)  {
+    public void adminCalculateScore(int playerId) {
 
     }
 
-    public void userEndGame(int playerId)  {
+    public void userEndGame(int playerId) {
 
     }
 
-    public int getPlayerID(){
-        return playerID;
+    public int getplayerId() {
+        return playerId;
     }
 }

@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import javafx.util.Pair;
@@ -50,12 +51,17 @@ public class ClientRMI implements RemoteClient {
     }
 
     @Override
-    public void playerJoinCallback(int playerId, int seedForGeneration) throws RemoteException {
+    public void playerJoinCallback(int playerId, String username, int seedForGeneration) throws RemoteException {
 
     }
 
     @Override
     public void playerErrorJoinCallback(int playerId, String typeOfError) throws RemoteException {
+
+    }
+
+    @Override
+    public void adminSetupCallback(int playerId, int maxPlayers, GameMode mode) throws RemoteException {
 
     }
 

@@ -76,7 +76,8 @@ public class SerializationObjectClient {
                         e.printStackTrace();
                     }
                 }
-                case "playerJoinCallback" -> clientController.playerJoinCallback((int) parameters.get(0), (int) parameters.get(1));
+                case "adminSetupCallback" -> clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
+                case "playerJoinCallback" -> clientController.playerJoinCallback((int) parameters.get(0), (String) parameters.get(1), (int) parameters.get(2));
                 case "playerErrorJoinCallback" -> clientController.playerErrorJoinCallback((int) parameters.get(0), parameters.get(1).toString());
                 case "gameStartedCallback" -> clientController.gameStartedCallback();
                 case "userDrawTileCallback" ->
