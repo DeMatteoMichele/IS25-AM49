@@ -19,6 +19,12 @@ import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
+    //Server settings:
+    private final String serverIP = "localhost";
+    private final int serverPort = 8081;
+    private int connectionType;
+    //---------------------------------------
+
     private ClientController controller;
     private GameSession gameSession;
     private String username;
@@ -26,7 +32,8 @@ public class TextualUserInterface implements UserInterface {
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
-    private final int graphicLength = 20;
+    private final int boxWidth = 30;
+    String border = "+" + "-".repeat(boxWidth - 2) + "+\n";
 
     public Terminal terminal;
     public LineReader lineReader;
@@ -50,16 +57,12 @@ public class TextualUserInterface implements UserInterface {
         this.myId = myId;
     }
 
+//----------------------------------------------------------------------------------------------------
 
     /**
      * IL MAIN DI GALAGY TRUCKER TUI
      */
     public static void main(String args[]) throws IOException {
-        //Server settings:
-        String serverIP = "localhost";
-        int serverPort = 8081;
-        //---------------------------------------
-
         TextualUserInterface ui = new TextualUserInterface();
         Terminal terminal = ui.terminal;
         LineReader reader = ui.lineReader;
@@ -70,45 +73,29 @@ public class TextualUserInterface implements UserInterface {
         terminal.writer().println("| WELCOME TO GALAXY TRUCKER :) |");
         terminal.writer().println("+------------------------------+");
 
-        //Utente inserisce Username
-        while (true) {
-            reader.printAbove("Insert your username:");
-            textInput = reader.readLine(ui.prompt).trim();
-            if (textInput.length() > 20 || textInput.isEmpty()) {
-                ui.printUpdateMessage(ui.error + "username non valid");
-                //terminal.writer().println(error+"username non valid");
-            } else break;
-        }
-        ui.username = textInput;
-        //---------------------------------------
-
+        //stabilisco connessione al server
+        ui.setupConnection();
         terminal.writer().println("\nwelcome to the game " + ui.username + "!");
-
-        ui.setupConnection(serverIP, serverPort);
-        ui.joinLobby(serverIP);
-        terminal.flush();
+        ui.updateGameSessionNewPlayer(ui.myId);
         ui.startGame();
     }
 
 
 //    ----------------------------------------------------------------------------------------------------------
-//    MAIN  ↑
+//    MAIN ↑
 //    inizio metodi TUI:
 //    - setupConnection
-//    - joinLobby
+//    - registerClient
 //    - startGame
 //    ----------------------------------------------------------------------------------------------------------
 
     /**
      * Method used from the TUI to register the client to the server via (Socket/RMI)
-     *
-     * @param serverIP   IP of the server
-     * @param serverPort port of the server
      */
-    public void setupConnection(String serverIP, int serverPort) {
+    public void setupConnection() {
         controller = new ClientController(gameSession, this);
 
-        int numInput = 0;
+        int n = 0;
         StringBuilder str = new StringBuilder();
         str.append("Which connection do you want to use:\n").
                 append("\t1) RMI\n").
@@ -117,20 +104,34 @@ public class TextualUserInterface implements UserInterface {
         while (true) {
             lineReader.printAbove(str.toString());
             try {
-                numInput = Integer.parseInt(lineReader.readLine(prompt).trim());
+                n = Integer.parseInt(lineReader.readLine(prompt).trim());
             } catch (NumberFormatException _) {
             }
-            if (numInput < 1 || numInput > 2) {
+            if (n < 1 || n > 2) {
                 printUpdateMessage(error + "invalid choice, retry");
             } else break;
         }
+        connectionType = n;
+        //registrazione user al server
+        registerClient();
+    }
 
-        terminal.flush();
-
+    /**
+     * Method used from the setupConnection method to register the client to the server.
+     * To register you must insert your Username that has to be unique!
+     */
+    public void registerClient(){
+        //Utente inserisce Username
+        while (true) {
+            lineReader.printAbove("Insert your username:");
+            username = lineReader.readLine(prompt).trim();
+            if (username.length() > 20 || username.isEmpty()) {
+                printUpdateMessage(error + "username non valid");
+            } else break;
+        }
 //      CONNESSIONE AL SERVER + registrazione client
         try {
-            switch (numInput) {
-
+            switch (connectionType) {
                 //CONNESSIONE RMI
                 case 1 -> {
                     ClientRMI clientRMI = new ClientRMI(gameSession);
@@ -146,7 +147,7 @@ public class TextualUserInterface implements UserInterface {
                             System.out.println("client failed logging on server RMI --> " + e.getMessage());
                             //se voglio riprovare a connettermi
                             System.out.println("\nwanna retry? Y");
-                            if (lineReader.readLine(prompt).trim().equals("Y")) setupConnection(serverIP, serverPort);
+                            if (lineReader.readLine(prompt).trim().equals("Y")) setupConnection();
                             else {
                                 printUpdateMessage("Server: closing...");
                                 System.exit(0);
@@ -156,7 +157,7 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage("⚠ Error : something went wrong during the connection tio the server RMI --> " + e.getMessage());
                         //se voglio riprovare a connettermi
                         printUpdateMessage("\nwanna retry? Y");
-                        if (lineReader.readLine(prompt).trim().equals("Y")) setupConnection(serverIP, serverPort);
+                        if (lineReader.readLine(prompt).trim().equals("Y")) setupConnection();
                         else {
                             System.exit(0);
                             printUpdateMessage("closing...");
@@ -179,7 +180,7 @@ public class TextualUserInterface implements UserInterface {
             printUpdateMessage(error + e.getMessage());
             //se voglio riprovare a connettermi
             printUpdateMessage("\nwanna retry? Y");
-            if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection(serverIP, serverPort);
+            if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
             else {
                 printUpdateMessage("closing...");
                 System.exit(0);
@@ -187,43 +188,6 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
-
-    /**
-     * Method used to from the client to join the game lobby if possible
-     *
-     * @param serverIP
-     */
-    public void joinLobby(String serverIP) {
-        int numInput = 0;
-        StringBuilder str = new StringBuilder();
-        str.append("+--------------------------------------------\n");
-        str.append("| SERVER - ").append(serverIP).append("\tstatus - connected\n");
-        str.append("+--------------------------------------------\n");
-        str.append("| Aviable lobby:\n");
-        if (gameSession.getGame().isPresent()) {
-            terminal.writer().print("| 01) TestMatch - users " + gameSession.getGame().get().
-                    numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
-            if (!gameSession.checkPlayers()) str.append(" - full\n");
-        } else if (gameSession.getAdmin().isPresent()) str.append("| 01) TestMatch - users 1/4\n");
-        else str.append("| 01) TestMatch - users 0/4 CREATE LOBBY\n");
-        str.append("+--------------------------------------------\n");
-        str.append("which one do you want to join?\n");
-        lineReader.printAbove(str.toString());
-        try {
-            numInput = Integer.parseInt(lineReader.readLine(prompt).trim());
-        } catch (NumberFormatException _) {
-        }
-        if (numInput != 1) {
-            terminal.writer().println();
-            printUpdateMessage(error + "invalid choice, retry");
-            joinLobby(serverIP);
-        } else try {
-            controller.playerJoin(username);
-        } catch (Exception e) {
-            printUpdateMessage(error + e.getMessage());
-            joinLobby(serverIP);
-        }
-    }
 
     public void startGame() throws IOException {
         ExecutorService executor = Executors.newFixedThreadPool(5);
@@ -248,28 +212,6 @@ public class TextualUserInterface implements UserInterface {
 //    ----------------------------------------------------------------------------------------------------------
 
     @Override
-    public void updateGameSessionNewPlayer(int playerId) {
-        StringBuilder str = new StringBuilder();
-        str.append("__________________________________________________________________\n\n").
-                append("MENU gameSession - commands (only for admin): \n").
-                append("- create game\n- set gamemode\n- set maxplayers\n").
-                append(gameSession.toString()).append("\n");
-        str.append("__________________________________________________________________\n");
-        str.append("insert a command from above menu:");
-        if (gameSession.getGame().isEmpty() && playerId == myId) {
-            lineReader.printAbove(str.toString());
-        }
-        if (gameSession.getGame().isPresent()) {
-            lineReader.printAbove(str.toString());
-        }
-    }
-
-    @Override
-    public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
-        updateGameSessionNewPlayer(myId);
-    }
-
-    @Override
     public void printUpdateMessage(String msg) {
         AttributedString block;
         if (msg.contains(error))
@@ -277,6 +219,45 @@ public class TextualUserInterface implements UserInterface {
         else
             block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.BOLD.foreground(AttributedStyle.CYAN)).toAttributedString();
         lineReader.printAbove(block.toAnsi());
+    }
+
+    @Override
+    public void updateGameSessionNewPlayer(int playerId) {
+        if(gameSession.getPlayer(playerId).isEmpty()) {
+            StringBuilder str = new StringBuilder();
+            str.append(gameSession).append("\n");
+            str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
+            str.append("choose an option:");
+            lineReader.printAbove(str.toString());
+        }
+    }
+
+    @Override
+    public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
+        updateGameNewPlayer(playerId);
+    }
+
+    @Override
+    public void updateGameNewPlayer(int playerId) {
+        StringBuilder str = new StringBuilder();
+        if(gameSession.getAdmin().map(a->a.getIdPlayer() == playerId).orElse(false) && gameSession.getGame().isEmpty()) {
+            str.append("__________________________________________________________________\n\n");
+            str.append("+----------------------------------------------\n");
+            str.append("| LOBBY : Config\tmaxPlayers - 4\tgameMode - DEFAULT\n");
+            str.append("+----------------------------------------------\n\n");
+            str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
+            str.append("\n__________________________________________________________________\n");
+            str.append("choose an option:");
+            lineReader.printAbove(str.toString());
+        }else if(gameSession.getPlayer(playerId).isPresent()){ //TODO SUS
+            str.append("__________________________________________________________________\n\n").
+                    append(" SERVER - ").append(serverIP).append("\tstatus - connected\n").
+                    append(gameSession.getGame().get()).append("\n");
+            str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
+            str.append("__________________________________________________________________\n");
+            str.append("choose an option:");
+            lineReader.printAbove(str.toString());
+        }
     }
 
 //    ----------------------------------------------------------------------------------------------------------
@@ -294,9 +275,12 @@ public class TextualUserInterface implements UserInterface {
     public void handleInput(String input) {
         try {
             switch (input.trim() + ":" + gameSession.getState().getStateIndex()) {
-                case "create game:0" -> {
+                case "1:0" -> { //JOIN LOBBY
+                    controller.playerJoin(username);
+                }
+                case "2:0" -> { //SETUP GAME
                     int mode = 0, max = 0;
-                    lineReader.printAbove("\nSETTINGS\nSelect gamemode:\n\t0) FLIGHT_MODE\n\t1) LEVEL_1\n\t2) LEVEL_2\n");
+                    lineReader.printAbove("\nSETTINGS\nSelect gamemode:\n\t0. flight mode\n\t1. level 1\n\t2. level 2\n");
                     try {
                         mode = Integer.parseInt(lineReader.readLine(">> ").trim());
                     } catch (NumberFormatException _) {
@@ -312,13 +296,11 @@ public class TextualUserInterface implements UserInterface {
                         updateGameSessionCreateGame(myId, GameMode.DEFAULT, max);
                     }
                 }
-                case "set maxplayers:0" -> {
-                    printUpdateMessage("comando non ancora implementato");
-                }
+
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            printUpdateMessage(error+"(errore switch) "+e.getMessage());
         }
     }
 }

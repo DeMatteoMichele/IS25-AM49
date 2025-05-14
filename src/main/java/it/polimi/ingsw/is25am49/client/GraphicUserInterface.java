@@ -29,6 +29,12 @@ public class GraphicUserInterface implements UserInterface{
     }
 
     @Override
+    public void updateGameNewPlayer(int playerId) {
+
+    }
+
+
+    @Override
     public void printUpdateMessage(String msg) {
 
     }

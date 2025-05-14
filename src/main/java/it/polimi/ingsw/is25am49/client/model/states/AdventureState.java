@@ -21,10 +21,10 @@ public class AdventureState extends State {
     public void userJoinLobby(Color playerColor, String username, int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
+    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void adminStartGame(Player player) {
+    public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userPlaceTile(Player player, Point coordinates) {
@@ -84,10 +84,10 @@ public class AdventureState extends State {
 
     }
 
-    public void adminCalculateScore(Player player) {
+    public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userEndGame(Player player) {
+    public void userEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }

@@ -106,4 +106,23 @@ public class Game {
     public void userThrowDices(Player player){
         board.userThrowDices(player);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("+----------------------------------------------\n");
+        str.append("| LOBBY : Players - ").append(numOfPlayers());
+        str.append("/").
+                append(getMaxPlayers()).append(" \tMode: ").
+                append(getMode()).append("\n");
+        int i=0;
+        for (Player player : getListPlayers()) {
+            str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername());
+            if(i==0) str.append(" - ADMIN\n");
+            else str.append("\n");
+            i++;
+        }
+        str.append("+----------------------------------------------");
+        return str.toString();
+    }
 }
