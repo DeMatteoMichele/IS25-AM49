@@ -87,6 +87,7 @@ public class ClientController {
 
     public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
         gameSession.getState().adminCreateGame(gameSession.getAdmin().get(), mode, numberOfPlayers);
+        ui.printUpdateMessage("ADMIN SETUP"); //TODO non va il callback
     }
 
     public void playerJoinCallback(int playerId, String username,int seedForGeneration) {

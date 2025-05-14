@@ -30,8 +30,8 @@ public abstract class State {
 
     public int getStateIndex(){return stateIndex;}
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void adminCreateGame(Player player, GameMode gamemode,int maxPlayers);
-    public abstract void adminStartGame(Player player);
+    public abstract void adminCreateGame(int playerId, GameMode gamemode,int maxPlayers);
+    public abstract void adminStartGame(int playerId);
 
     public abstract void userPlaceTile(Player player, Point coordinates);
     public abstract void userPickTile(Player player, Point coordinates);
@@ -53,7 +53,7 @@ public abstract class State {
     public abstract void userQuitGame(Player player);
     public abstract void userStopFlight(Player player);
 
-    public abstract void adminCalculateScore(Player player);
-    public abstract void userEndGame(Player player);
+    public abstract void adminCalculateScore(int playerId);
+    public abstract void userEndGame(int playerId);
 }
 

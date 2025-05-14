@@ -21,10 +21,10 @@ public class FinishScoreState extends State {
     public void userJoinLobby(Color playerColor, String username, int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void adminCreateGame(Player player, GameMode gamemode, int maxPlayers) {
+    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void adminStartGame(Player player) {
+    public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userPlaceTile(Player player, Point coordinates) {
@@ -97,10 +97,10 @@ public class FinishScoreState extends State {
 
     }
 
-    public void adminCalculateScore(Player player) {
-        gameSession.calculateScore(player);
+    public void adminCalculateScore(int playerId) {
+        gameSession.calculateScore(playerId);
     }
-    public void userEndGame(Player player) {
-        gameSession.userEndGame(player);
+    public void userEndGame(int playerId) {
+        gameSession.userEndGame(playerId);
     }
 }

@@ -48,7 +48,7 @@ public class ServerController {
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
-                gameSession.getState().adminCreateGame(gameSession.getPlayer(playerId).get(),mode,numberOfPlayers);
+                gameSession.getState().adminCreateGame(playerId,mode,numberOfPlayers);
                 serverSerializer.adminSetupCallback(playerId, numberOfPlayers, mode);
             }catch (GameSettingsException e) {
                 serverSerializer.playerErrorJoinCallback(playerId,e.getMessage()); //todo manca callback error

@@ -25,7 +25,7 @@ public class GameSession {
     public Optional<Game> getGame() { return game; }
     public State getState() {return currentState;}
     public Optional<Player> getAdmin(){return admin;}
-    public Optional<Player> getPlayer(int id) { //TODO sus
+    public Optional<Player> getPlayer(int id) {
         if (game.isEmpty()) {
             if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;
         } else try {
@@ -47,10 +47,10 @@ public class GameSession {
     public void setGameMode(GameMode mode) {
         game.ifPresent(g->g.setGameMode(mode));
     }
-    public void checkIsAdmin(Player player){
+    public void checkIsAdmin(int playerId){
         if(admin.isEmpty())
             throw new GameSettingsException("There is no admin");
-        if(!admin.get().equals(player))
+        if(admin.get().getIdPlayer()!=playerId)
             throw new GameSettingsException("You are not the admin of this game");
     }
     public boolean checkPlayers(){ return game.map(Game::checkPlayers).orElse(false); }
@@ -107,25 +107,25 @@ public class GameSession {
 
     public void userQuitGame(Player player){
     }
-    public void calculateScore(Player player) {
-        checkIsAdmin(player);
-        game.ifPresent(g -> g.calculateScore(player));
+    public void calculateScore(int playerId) {
+        checkIsAdmin(playerId);
+        game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
     }
     public void configurateFlight(){
         game.ifPresent(Game::configurateFlight);
     }
 
-    public void userEndGame(Player player){
+    public void userEndGame(int playerId) {
         if(game.map(Game::gameIsFinished).orElse(false)){
-            checkIsAdmin(player);
+            checkIsAdmin(playerId);
             game = Optional.empty();
             setState(new InitState(this,ui));
         }
         else
             throw new GameSettingsException("The game is not finished yet");
     }
-    public Optional<Player> userShowWinner(Player player) {
-        checkIsAdmin(player);
+    public Optional<Player> userShowWinner(int playerId) {
+        checkIsAdmin(playerId);
         return game.flatMap(Game::userShowWinner);
     }
     public void addPlayersToLeaderBoard(){ game.ifPresent(Game::addPlayersToLeaderBoard) ;}

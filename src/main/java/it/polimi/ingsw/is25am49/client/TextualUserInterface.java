@@ -75,13 +75,9 @@ public class TextualUserInterface implements UserInterface {
 
         //stabilisco connessione al server
         ui.setupConnection();
-
-
-
         terminal.writer().println("\nwelcome to the game " + ui.username + "!");
-
-        ui.startGame();
         ui.updateGameSessionNewPlayer(ui.myId);
+        ui.startGame();
     }
 
 
@@ -226,8 +222,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
-        int numInput = 0;
-        if(gameSession.getGame().map(g->!g.getListPlayers().contains(playerId)).orElse(false)) {
+        if(gameSession.getPlayer(playerId).isEmpty()) {
             StringBuilder str = new StringBuilder();
             str.append(gameSession).append("\n");
             str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
@@ -238,8 +233,13 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
+        updateGameNewPlayer(playerId);
+    }
+
+    @Override
+    public void updateGameNewPlayer(int playerId) {
         StringBuilder str = new StringBuilder();
-        if (gameSession.getAdmin().map(a->a.getIdPlayer()==playerId).orElse(false)) {//TODO SUS
+        if(gameSession.getAdmin().map(a->a.getIdPlayer() == playerId).orElse(false) && gameSession.getGame().isEmpty()) {
             str.append("__________________________________________________________________\n\n");
             str.append("+----------------------------------------------\n");
             str.append("| LOBBY : Config\tmaxPlayers - 4\tgameMode - DEFAULT\n");
@@ -248,13 +248,7 @@ public class TextualUserInterface implements UserInterface {
             str.append("\n__________________________________________________________________\n");
             str.append("choose an option:");
             lineReader.printAbove(str.toString());
-        }
-    }
-
-    @Override
-    public void updateGameNewPlayer(int playerId) {
-        if(gameSession.getGame().map(g->g.getListPlayers().contains(playerId)).orElse(false)){ //TODO SUS
-            StringBuilder str = new StringBuilder();
+        }else if(gameSession.getPlayer(playerId).isPresent()){ //TODO SUS
             str.append("__________________________________________________________________\n\n").
                     append(" SERVER - ").append(serverIP).append("\tstatus - connected\n").
                     append(gameSession.getGame().get()).append("\n");
@@ -282,8 +276,6 @@ public class TextualUserInterface implements UserInterface {
             switch (input.trim() + ":" + gameSession.getState().getStateIndex()) {
                 case "1:0" -> { //JOIN LOBBY
                     controller.playerJoin(username);
-                    updateGameSessionNewPlayer(myId);
-                    updateGameNewPlayer(myId);
                 }
                 case "2:0" -> { //SETUP GAME
                     int mode = 0, max = 0;
