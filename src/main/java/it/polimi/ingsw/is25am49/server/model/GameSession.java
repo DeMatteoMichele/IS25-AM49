@@ -14,9 +14,10 @@ public class GameSession {
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
+    private final int seedForGeneration;
 
     public GameSession() {
-
+        seedForGeneration = (int) System.currentTimeMillis();
         game = Optional.empty();
         admin = Optional.empty();
         currentState = new InitState(this);
@@ -51,7 +52,7 @@ public class GameSession {
 
     public void createNewGame(GameMode gameMode, int maxPlayers) {
         if (game.isEmpty()) {
-            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers));
+            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
         } else throw new GameSettingsException("Game already exists!");
     }
 
@@ -168,4 +169,9 @@ public class GameSession {
     public void mergeSmallDecks() {
         game.ifPresent(Game::mergeSmallDecks);
     }
+
+    public int getSeedForGeneration() {
+        return seedForGeneration;
+    }
+
 }

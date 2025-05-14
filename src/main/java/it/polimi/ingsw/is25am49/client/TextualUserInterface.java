@@ -172,6 +172,7 @@ public class TextualUserInterface implements UserInterface {
                     serverHandler.setClientSerializer(clientSerializer);
                     clientSerializer.setServerHandler(serverHandler);
                     controller.setServerMethods(clientSerializer);
+                    controller.setServerHandler(serverHandler);
                     controller.registerClientSocket();
                 }
             }
