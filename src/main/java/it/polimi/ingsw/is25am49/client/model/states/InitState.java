@@ -24,7 +24,7 @@ public class InitState extends State {
         userInterface.updateGameSessionNewPlayer(playerId);
         userInterface.updateGameNewPlayer(playerId);
     }
-    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException {
         gameSession.checkIsAdmin(playerId);
         gameSession.createNewGame(gamemode, maxPlayers);
         userInterface.updateGameSessionCreateGame(playerId, gamemode, maxPlayers);
