@@ -136,25 +136,16 @@ public class GameSession {
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
-        if(game.isPresent()) {
-            str.append("+----------------------------------------------\n");
-            str.append("| LOBBY : Players - ").append(game.get().numOfPlayers());
-            str.append("/").
-                    append(game.get().getMaxPlayers()).append(" \tMode: ").
-                    append(game.get().getMode()).append("\n");
-            int i=0;
-            for (Player player : game.get().getListPlayers()) {
-                str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername());
-                if(i==0) str.append(" - ADMIN\n");
-                else str.append("\n");
-                i++;
-            }
-            str.append("+----------------------------------------------");
-        }else {
-            str.append("+----------------------------------------------\n");
-            str.append("| LOBBY : Config\tmaxPlayers - 4\tgameMode - DEFAULT\n");
-            str.append("+----------------------------------------------");
-        }
+        str.append("+-----------------------------------------------\n");
+        str.append("| Aviable lobby:\n");
+        if (getGame().isPresent()) {
+            str.append("| 01) TestMatch - users ").append(getGame().get().numOfPlayers()).
+                    append("/").append(getGame().get().getMaxPlayers());
+            if (!checkPlayers()) str.append(" - full\n");
+        } else if (getAdmin().isPresent()) str.append("| 01) TestMatch - users 1/4\n");
+        else str.append("| 01) TestMatch - users 0/4 - CREATE LOBBY\n");
+        str.append("+-----------------------------------------------\n");
+
         return str.toString();
     }
 }

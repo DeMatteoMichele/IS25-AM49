@@ -6,5 +6,6 @@ public interface UserInterface {
     public void setClientId(int myId);
     public void updateGameSessionNewPlayer(int playerId);
     public void updateGameSessionCreateGame(int playerId,GameMode gameMode, int maxPlayers);
+    public void updateGameNewPlayer(int playerId);
     public void printUpdateMessage(String msg);
 }
