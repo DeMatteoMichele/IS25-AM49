@@ -18,7 +18,7 @@ public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
     private final ArrayList<Integer> players;
-    private RemoteClient remoteClient;
+    private ServerRMI serverRMI;
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
@@ -33,23 +33,20 @@ public class ServerController {
         players.add(playerId);
     }
 
-    public void serverTestConnection(int playerId) {
-        System.out.println("server - trying to callback [ID:" + playerId + "] ...");
-    }
-
     public void registerClientRMI(RemoteClient client) {
-
-    }
-
-    public void registerClientSocket(int playerId) {
 
     }
 
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
-                gameSession.getState().adminCreateGame(gameSession.getPlayer(playerId).get(),mode,numberOfPlayers);
-                serverSerializer.adminSetupCallback(playerId, numberOfPlayers, mode);
+                gameSession.getState().adminCreateGame(playerId,mode,numberOfPlayers);
+                CommandServer serObjectTemp = new CommandServer("adminSetupCallback", this, playerId);
+                serObjectTemp.addParameter(playerId);
+                serObjectTemp.addParameter(numberOfPlayers);
+                serObjectTemp.addParameter(mode);
+                serverSerializer.sendCommand(serObjectTemp);
+                serverRMI.sendCommand(serObjectTemp);
             }catch (GameSettingsException e) {
                 serverSerializer.playerErrorJoinCallback(playerId,e.getMessage()); //todo manca callback error
             }
@@ -63,12 +60,17 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(color, username, playerId);
-                serverSerializer.playerJoinCallback(playerId, username,3);
+                CommandServer serObjectTemp = new CommandServer("playerJoinCallback", this, playerId);
+                serObjectTemp.addParameter(playerId);
+                serObjectTemp.addParameter(username);
+                serObjectTemp.addParameter(gameSession.getSeedForGeneration());
+                serverSerializer.sendCommand(serObjectTemp);
+                serverRMI.sendCommand(serObjectTemp);
             } catch (GameSettingsException e) {
                 serverSerializer.playerErrorJoinCallback(playerId,e.getMessage());
             }
         } catch (RemoteException _) {
-            //todo sus per RMI
+            System.out.println("Pippo");
         }
 
     }
@@ -204,5 +206,9 @@ public class ServerController {
 //            gameSession.getState().userEndGame(player);
 //        });
         gameSession.getState().userEndGame(playerId);
+    }
+
+    public void setServerRMI(ServerRMI serverRMI) {
+        this.serverRMI= serverRMI;
     }
 }

@@ -29,7 +29,6 @@ class TileCardDeckTest {
 
 
 
-
     @BeforeEach
     void init(){
 
@@ -44,12 +43,12 @@ class TileCardDeckTest {
         player4 = new Player("Cefa", Color.YELLOW, 4);
         ship1 = new ShipBoard(1,1);
         player1.setShipBoard(ship1);
-        game = new Game(player1, gameSession, GameMode.FLIGHT_MODE,999);
+        game = new Game(player1, gameSession, GameMode.DEFAULT,999,400);
+        deck = game.getGameboard().getTilesDeck();
         gameSession.userJoinLobby(player1.getColor(),player1.getUsername(),player1.getIdPlayer());
         gameSession.createNewGame(GameMode.FLIGHT_MODE, 999);
         //deck = game.getGameboard().getTilesDeck();
         deck = gameSession.getGame().map(g->g.getGameboard().getTilesDeck()).orElse(null);
-
     }
     @Test
     void DrawAndAddDiscardTile() {

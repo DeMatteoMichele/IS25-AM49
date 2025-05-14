@@ -1,26 +1,25 @@
 package it.polimi.ingsw.is25am49.client;
 
-import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.ServerController;
 import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
-public class SerializationObjectClient {
+public class CommandClient {
     private final ClientController clientController;
+    private ServerController serverController;
     private final String methodName;
     private final String typeOfMessage;
     private final ArrayList<Object> parameters;
     private boolean isServer;
 
-    public SerializationObjectClient(String methodName, ClientController clientController) {
+    public CommandClient(String methodName, ClientController clientController) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.clientController = clientController;

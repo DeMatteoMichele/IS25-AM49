@@ -18,13 +18,11 @@ public class Game {
     private int maxPlayers;
     private int numPlayers;
     private boolean isFinished;
-    private final int seedForGeneration;
+    private int seedForGeneration;
 
-    public Game(Player admin, GameSession session, GameMode mode, int maxPlayers) {
+    public Game(Player admin, GameSession session, GameMode mode, int maxPlayers, int seedForGeneration) {
         this.session = session;
-        seedForGeneration= (int) System.currentTimeMillis();
         board = new GameBoard(seedForGeneration);
-        board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
         this.mode = mode;
         winner = Optional.empty();

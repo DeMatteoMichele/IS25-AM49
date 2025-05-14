@@ -10,28 +10,25 @@ import it.polimi.ingsw.is25am49.server.model.states.State;
 import javafx.util.Pair;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Set;
 
 public class GameSession {
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
-    private Map<Integer,Player> players;
+    private final int seedForGeneration;
 
     public GameSession() {
-
+        seedForGeneration = (int) System.currentTimeMillis();
         game = Optional.empty();
         admin = Optional.empty();
         currentState = new InitState(this);
-        players = new HashMap<>();
     }
 
     public Optional<Game> getGame() {
         return game;
-    }
-
-    public Map<Integer,Player> getPlayers() {
-        return players;
     }
 
     public State getState() {
@@ -59,7 +56,7 @@ public class GameSession {
 
     public void createNewGame(GameMode gameMode, int maxPlayers) {
         if (game.isEmpty()) {
-            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers));
+            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
         } else throw new GameSettingsException("Game already exists!");
     }
 
@@ -90,8 +87,6 @@ public class GameSession {
 
     public void userJoinLobby(Color playerColor, String username, int playerID) {
         Player tempPlayer = new Player(username, playerColor, playerID);
-        players.put(playerID,tempPlayer);
-        System.out.println("player aggiunto");
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
         } else if (game.isPresent()) {
@@ -132,7 +127,6 @@ public class GameSession {
     public void userDrawAdventureCard(Player player) {
         game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
-
 
     public void userPlayAdventureCard(Player player) {
     }
@@ -193,4 +187,9 @@ public class GameSession {
     public void mergeSmallDecks() {
         game.ifPresent(Game::mergeSmallDecks);
     }
+
+    public int getSeedForGeneration() {
+        return seedForGeneration;
+    }
+
 }
