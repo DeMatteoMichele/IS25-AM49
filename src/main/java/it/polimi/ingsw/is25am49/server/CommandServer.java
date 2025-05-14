@@ -1,7 +1,5 @@
 package it.polimi.ingsw.is25am49.server;
 
-import it.polimi.ingsw.is25am49.client.ClientController;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
@@ -11,16 +9,15 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
-public class SerializationObjectServer {
+public class CommandServer {
     private final ServerController serverController;
     private String methodName;
     private final String typeOfMessage;
     private final ArrayList<Object> parameters;
     private int playerId;
 
-    public SerializationObjectServer(String methodName, ServerController serverController, int playerId) {
+    public CommandServer(String methodName, ServerController serverController, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.serverController = serverController;
@@ -36,7 +33,7 @@ public class SerializationObjectServer {
         StringBuilder compactedJsonString = new StringBuilder();
         int i;
         for (i = 0; i < json.length(); i++) {
-            if(json.charAt(i) != '\n' && json.charAt(i) != '\t' && json.charAt(i) != ' ' && json.charAt(i) != '\r') {
+            if (json.charAt(i) != '\n' && json.charAt(i) != '\t' && json.charAt(i) != ' ' && json.charAt(i) != '\r') {
                 compactedJsonString.append(json.charAt(i));
             }
         }
@@ -46,6 +43,7 @@ public class SerializationObjectServer {
     public String getTypeOfMessage() {
         return typeOfMessage;
     }
+
     public void addParameter(Object parameter) {
         this.parameters.add(parameter);
     }
@@ -65,18 +63,27 @@ public class SerializationObjectServer {
     public boolean callServerMethod() {
         assert serverController != null;
         switch (methodName) {
-            case "serverTestConnection" -> serverController.serverTestConnection((int) parameters.get(0));
             case "registerClientRMI" -> serverController.registerClientRMI((RemoteClient) parameters.get(0));
-            case "registerClientSocket" -> serverController.registerClientSocket((int) parameters.get(0));
-            case "adminSetup" ->
+            case "adminSetup" -> {
+                try {
                     serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
-            case "playerJoin" ->
+                } catch (Exception e) {
+                    System.err.println("Errore in adminSetup: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            case "playerJoin" -> {
+                try {
                     serverController.playerJoin((int) parameters.get(0), parameters.get(1).toString(), (Color) parameters.get(2));
+                } catch (Exception e) {
+                    System.err.println("Errore in playerJoin: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
             case "userDrawTile" -> serverController.userDrawTile((int) parameters.get(0), (int) parameters.get(1));
             case "userPlaceTile" ->
                     serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (Orientation) parameters.get(2));
-            case "userPickTile" ->
-                    serverController.userPickTile((int) parameters.get(0), (Point) parameters.get(1));
+            case "userPickTile" -> serverController.userPickTile((int) parameters.get(0), (Point) parameters.get(1));
             case "userDiscardTile" -> serverController.userDiscardTile((int) parameters.get(0));
             case "userFinishShipboard" -> serverController.userFinishShipboard((int) parameters.get(0));
             case "userLookSmallAdventureCardDeck" ->
@@ -105,17 +112,20 @@ public class SerializationObjectServer {
         }
         return true;
     }
+
     public int getPlayerId() {
         return playerId;
     }
+
     public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
-    public void setPlayerId(int idPlayer){
+
+    public void setPlayerId(int idPlayer) {
         this.playerId = idPlayer;
     }
 
-    public String toString(){
+    public String toString() {
         return typeOfMessage + " " + methodName + " " + playerId + " (" + parameters.toString() + ")";
     }
 }

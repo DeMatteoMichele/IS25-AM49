@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.server.CommandServer;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
@@ -16,7 +17,7 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class ClientRMI implements RemoteClient {
+public class ClientRMI implements RemoteServer {
     public GameSession gameSession;
     private Integer playerID;
 
@@ -41,143 +42,7 @@ public class ClientRMI implements RemoteClient {
     }
 
     @Override
-    public void notifyClient(String msg) throws RemoteException {
-        System.out.println("server - "+msg);
-    }
-
-    @Override
-    public void registerClientCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void playerJoinCallback(int playerId, String username, int seedForGeneration) throws RemoteException {
-
-    }
-
-    @Override
-    public void playerErrorJoinCallback(int playerId, String typeOfError) throws RemoteException {
-
-    }
-
-    @Override
-    public void adminSetupCallback(int playerId, int maxPlayers, GameMode mode) throws RemoteException {
-
-    }
-
-    @Override
-    public void gameStartedCallback() throws RemoteException {
-
-    }
-
-    @Override
-    public void userDrawTileCallback(int playerId, int tileId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userErrorDrawTileCallback(int playerId, int tileId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-    }
-
-    @Override
-    public void userPickTileCallback(int playerId, Point coordinates) throws RemoteException {
-
-    }
-
-    @Override
-    public void userDiscardTileCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userFinishShipboardCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
-
-    }
-
-    @Override
-    public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
-
-    }
-
-    @Override
-    public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) throws RemoteException {
-
-    }
-
-    @Override
-    public void userPlaceTimerCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userErrorPlaceTimerCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates) throws RemoteException {
-
-    }
-
-    @Override
-    public void userThrowDicesCallback(int playerId, int result) throws RemoteException {
-
-    }
-
-    @Override
-    public void userDrawAdventureCardCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates) throws RemoteException {
-
-    }
-
-    @Override
-    public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
-
-    }
-
-    @Override
-    public void userAcceptPrizesCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet) throws RemoteException {
-
-    }
-
-    @Override
-    public void userLandOnStationOrShipCallback(int playerId, boolean isLanded) throws RemoteException {
-
-    }
-    @Override
-    public void userStopFlightCallback(int playerId) throws RemoteException {
-
-    }
-    @Override
-    public void adminCalculateScoreCallback(int playerId) throws RemoteException {
-
-    }
-    @Override
-    public void userEndGameCallback(int playerId) throws RemoteException {
-
-    }
-
-    @Override
-    public void changeState(String state) throws RemoteException {
+    public void sendCommand(CommandClient commandClient) throws RemoteException {
 
     }
 }

@@ -351,6 +351,7 @@ public class ClientHandler {
             Registry reg = LocateRegistry.createRegistry(1099);
             reg.rebind("ServerController", serverRMI);
             System.out.println("server RMI acceso!");
+            serverController.setServerRMI(serverRMI);
         }
         catch (RemoteException e){
             System.out.println("errore lato Skeleton: "+e.getMessage());
