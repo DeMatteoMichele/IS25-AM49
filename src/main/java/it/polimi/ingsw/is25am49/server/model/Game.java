@@ -1,12 +1,11 @@
 package it.polimi.ingsw.is25am49.server.model;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.awt.*;
+import java.util.*;
 
 public class Game {
     private GameSession session;
@@ -100,6 +99,19 @@ public class Game {
     public void addPlayersToLeaderBoard(){
         players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
+    }
+
+    public void userLandOnPlanet(boolean isLanded, int planetId){
+        board.getCurrentCard().landingOnPlanet(isLanded, planetId);
+    }
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
+        board.getCurrentCard().finishDecision(listOfTokens);
+    }
+    public void userLandOnStationOrShip(boolean isLanded){
+        board.getCurrentCard().landingOnStationOrShip(isLanded);
+    }
+    public void userFinishDecisionActivating(Set<Point> coordinates){
+        board.getCurrentCard().finishDecision(coordinates);
     }
     public void mergeSmallDecks(){
         board.mergeDecks();

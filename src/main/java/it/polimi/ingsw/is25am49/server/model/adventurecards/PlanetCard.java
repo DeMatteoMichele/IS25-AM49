@@ -55,7 +55,7 @@ public class PlanetCard extends AdventureCard {
             throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
         }
         if(isLanded && !planet.isOccupied()){
-            System.out.println("You have landed on the planet!");
+            System.out.println(gameBoard.getCurrentPlayer().getUsername() + " You have landed on the planet!");
             planet.setOccupied(true);
             planets.remove(planet);
             planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());

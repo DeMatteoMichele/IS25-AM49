@@ -54,5 +54,11 @@ public abstract class State {
                 .map(game -> game.getPlayer(playerId))
                 .orElseThrow(() -> new IllegalStateException("Game or Player not found"));
     }
+
+    public Player getCurrentPlayer(){
+        return gameSession.getGame()
+                .map(g->g.getGameboard().getCurrentPlayer())
+                .orElse(null);
+    }
 }
 

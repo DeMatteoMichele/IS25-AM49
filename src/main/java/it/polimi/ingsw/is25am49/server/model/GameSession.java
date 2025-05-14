@@ -3,27 +3,35 @@ package it.polimi.ingsw.is25am49.server.model;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.states.InitState;
 import it.polimi.ingsw.is25am49.server.model.states.State;
+import javafx.util.Pair;
 
 import java.awt.*;
-import java.util.Optional;
+import java.util.*;
 
 public class GameSession {
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
+    private Map<Integer,Player> players;
 
     public GameSession() {
 
         game = Optional.empty();
         admin = Optional.empty();
         currentState = new InitState(this);
+        players = new HashMap<>();
     }
 
     public Optional<Game> getGame() {
         return game;
+    }
+
+    public Map<Integer,Player> getPlayers() {
+        return players;
     }
 
     public State getState() {
@@ -82,6 +90,8 @@ public class GameSession {
 
     public void userJoinLobby(Color playerColor, String username, int playerID) {
         Player tempPlayer = new Player(username, playerColor, playerID);
+        players.put(playerID,tempPlayer);
+        System.out.println("player aggiunto");
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
         } else if (game.isPresent()) {
@@ -123,6 +133,7 @@ public class GameSession {
         game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
 
+
     public void userPlayAdventureCard(Player player) {
     }
 
@@ -135,6 +146,20 @@ public class GameSession {
     public void userActivateDaysUpdate() {
     }
 
+    public void userLandOnPlanet(boolean isLanded, int planetId) {
+        game.ifPresent(g -> g.userLandOnPlanet(isLanded, planetId));
+    }
+
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
+        game.ifPresent(game-> game.userFinishDecisionToken(listOfTokens));
+    }
+
+    public void userLandOnStationOrShip(boolean isLanded){
+        game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
+    }
+    public void userFinishDecisionActivating(Set<Point> coordinates){
+        game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
+    }
     public void userQuitGame(Player player) {
     }
 

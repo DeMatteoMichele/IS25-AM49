@@ -21,7 +21,7 @@ public class InitState extends State {
 
     //To change
     public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        Player player = getPlayerById(playerId);
+        Player player = gameSession.getPlayers().get(playerId);
         gameSession.checkIsAdmin(player);
         gameSession.setGameMode(gamemode);
     }
@@ -29,7 +29,7 @@ public class InitState extends State {
         gameSession.userJoinLobby(playerColor, username, playerId);
     }
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
-        Player player = getPlayerById(playerId);
+        Player player = gameSession.getPlayers().get(playerId);
         gameSession.checkIsAdmin(player);
         gameSession.createNewGame(gamemode, maxPlayers);
     }
