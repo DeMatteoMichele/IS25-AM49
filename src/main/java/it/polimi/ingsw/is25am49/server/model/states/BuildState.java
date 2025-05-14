@@ -101,7 +101,7 @@ public class BuildState extends State {
 
     @Override
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
+        throw  new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
     public void userActivateComponent(int playerId, Point coordinates) {

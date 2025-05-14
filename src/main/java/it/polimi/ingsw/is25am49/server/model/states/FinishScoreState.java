@@ -78,16 +78,16 @@ public class FinishScoreState extends State {
     }
 
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
 
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
-
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
     public void userQuitGame(int playerId) {
