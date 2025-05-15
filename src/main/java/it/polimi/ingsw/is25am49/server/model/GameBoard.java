@@ -85,7 +85,7 @@ public class GameBoard {
      * @param gameMode the game mode
      * @param players the players of the game
      */
-    public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
+    public void configurateFlight(GameMode gameMode, ArrayList<Player> players) throws GameSettingsException {
         int level;
         if (gameMode == GameMode.LEVEL_1)
             level = 1;
@@ -352,7 +352,7 @@ public class GameBoard {
      * @param player the player to check
      * @throws GameSettingsException if the player is already landed
      */
-    public void playerNoMoreInFlight(Player player) {
+    public void playerNoMoreInFlight(Player player) throws GameSettingsException {
         if (landedPlayers.contains(player))
             throw new GameSettingsException("This player is already landed");
         else {
@@ -367,7 +367,7 @@ public class GameBoard {
      * @throws IllegalMethodOnThisStateException if the player is not the leader
      * @throws GameSettingsException if the card is not finished
      */
-    public void drawAdventureCard(Player player) {
+    public void drawAdventureCard(Player player) throws GameSettingsException {
         if (player.equals(leaderBoard.getLeader())) {
             if (isFirstCard || currentCard.getIsFinished()) {
                 currentCard = mainAdventureDeck.getFirstCard();
@@ -408,7 +408,7 @@ public class GameBoard {
 
     }
 
-    public void userQuitGame(Player player) {
+    public void userQuitGame(Player player) throws GameSettingsException {
         if(currentCard.getIsFinished()){
             playerNoMoreInFlight(player);
         }
@@ -593,7 +593,7 @@ public class GameBoard {
      * For each player, it checks if they are lapped, if yes it adds them to the lappedPlayers list
      * Then it calls playerNoMoreInFlight that removes them from the leaderboard and adds them to the landedPlayers list
      */
-    public void checkIfIsLapped() {
+    public void checkIfIsLapped(){
         List<Player> lappedPlayers = new ArrayList<>();
         //per ogni player controllo se è stato doppiato, se si lo aggiungo alla lista
         leaderBoard.stream()
@@ -638,7 +638,7 @@ public class GameBoard {
      * @throws GameSettingsException if any player is already watching a deck
      * @throws OutOfDeckExceptions if the deck does not exist
      */
-    public void userLookSmallAdventureCardDeck(Player player, int index) {
+    public void userLookSmallAdventureCardDeck(Player player, int index) throws GameSettingsException{
         synchronized (mapSmallAdventureDecks.get(index)) {
             if (mapSmallAdventureDecks.containsKey(index)) {
                 if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
@@ -658,7 +658,7 @@ public class GameBoard {
      * @param index the index of the deck
      * @throws OutOfDeckExceptions if the deck does not exist
      */
-    public void userStopLookSmallAdventureCardDeck(Player player, int index) {
+    public void userStopLookSmallAdventureCardDeck(Player player, int index) throws GameSettingsException{
         if (mapSmallAdventureDecks.containsKey(index)) {
             if (player.isWatching() && mapSmallAdventureDecks.get(index).equals(player.getSmallAdventureDeck())) {
                 player.clearSmallDeck();

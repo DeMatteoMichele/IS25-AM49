@@ -107,11 +107,11 @@ public class GameSession {
         return game.map(value -> value.userFinishShipboard(player)).orElse(false);
     }
 
-    public void userLookSmallAdventureCardDeck(Player player, int index) {
+    public void userLookSmallAdventureCardDeck(Player player, int index) throws GameSettingsException {
         game.ifPresent(g -> g.userLookSmallAdventureCardDeck(player, index));
     }
 
-    public void userStopLookSmallAdventureCardDeck(Player player, int index) {
+    public void userStopLookSmallAdventureCardDeck(Player player, int index) throws GameSettingsException {
         game.ifPresent(g -> g.userStopLookSmallAdventureCardDeck(player, index));
     }
 
@@ -123,7 +123,7 @@ public class GameSession {
         game.ifPresent(g -> g.userThrowDices(player));
     }
 
-    public void userDrawAdventureCard(Player player) {
+    public void userDrawAdventureCard(Player player) throws GameSettingsException {
         game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
 
@@ -157,11 +157,11 @@ public class GameSession {
     public void userAcceptPrizes(boolean isAccepted){
         game.ifPresent(game->game.userAcceptPrizes(isAccepted));
     }
-    public void userQuitGame(Player player) {
+    public void userQuitGame(Player player)  {
         game.ifPresent(game->game.userQuitGame(player));
     }
 
-    public void calculateScore(int playerId) {
+    public void calculateScore(int playerId) throws GameSettingsException {
         checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
     }
@@ -179,7 +179,7 @@ public class GameSession {
             throw new GameSettingsException("The game is not finished yet");
     }
 
-    public Optional<Player> userShowWinner(int playerId) {
+    public Optional<Player> userShowWinner(int playerId) throws GameSettingsException {
         checkIsAdmin(playerId);
         return game.flatMap(Game::userShowWinner);
     }

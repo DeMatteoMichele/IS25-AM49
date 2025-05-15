@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -68,7 +69,7 @@ public class BuildState extends State {
         player.shipBoardIsNotCompletedYet();
         gameSession.userLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
-    public void userStopLookSmallAdventureCardDeck(int playerId,int smallDeckIndex) {
+    public void userStopLookSmallAdventureCardDeck(int playerId,int smallDeckIndex) throws GameSettingsException {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userStopLookSmallAdventureCardDeck(player, smallDeckIndex);

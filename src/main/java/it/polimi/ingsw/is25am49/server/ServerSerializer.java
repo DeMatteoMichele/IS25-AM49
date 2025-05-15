@@ -65,7 +65,7 @@ public class ServerSerializer implements RemoteClient {
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
-            Command serObject = new Command(methodName, serverController, -1);
+            Command command = new Command(methodName, serverController, -1);
             ArrayNode params = (ArrayNode) rootNode.get("params");
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
@@ -125,7 +125,7 @@ public class ServerSerializer implements RemoteClient {
                             };
                             collectionList.add(value);
                         }
-                        serObject.addParameter(collectionList);
+                        command.addParameter(collectionList);
                     } else if (collection instanceof HashSet) {
                         collectionSet = (HashSet<Object>) collection;
                         ArrayNode content = (ArrayNode) paramNode.get("content");
@@ -172,7 +172,7 @@ public class ServerSerializer implements RemoteClient {
                             };
                             collectionSet.add(value);
                         }
-                        serObject.addParameter(collectionSet);
+                        command.addParameter(collectionSet);
                     } else {
                         object = collection;
                         JsonNode content = paramNode.get("content");
@@ -216,10 +216,10 @@ public class ServerSerializer implements RemoteClient {
                             }
                             default -> new Object();
                         };
-                        serObject.addParameter(object);
+                        command.addParameter(object);
                     }
                 }
-                serObject.callServerMethod();
+                command.callMethod();
             } else if (typeOfMessage.equals("HSK")) {
                 for (JsonNode paramNode : params) {
                     String typeOfCollection = paramNode.get("typeOfCollection").asText();
@@ -227,11 +227,11 @@ public class ServerSerializer implements RemoteClient {
                     if (contentObject == -1) {
                         idCounter++;
                     }
-                    serObject.addParameter(idCounter);
-                    serObject.setPlayerId(idCounter);
+                    command.addParameter(idCounter);
+                    command.setPlayerId(idCounter);
                 }
             }
-            return serObject;
+            return command;
         } catch (IOException e) {
             System.err.println("Errore di I/O nella lettura del file: " + fileJson.getAbsolutePath());
             System.err.println("Messaggio di errore: " + e.getMessage());
@@ -241,7 +241,7 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
-    public File serializeObjectFromServer(Command serObject) {
+    public File serializeObjectFromServer(Command command) {
         File jsonFile = null;
         try {
             jsonFile = File.createTempFile("server_response", ".json");
@@ -253,10 +253,10 @@ public class ServerSerializer implements RemoteClient {
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode params = mapper.createArrayNode();
-        rootNode.put("typeOfMessage", serObject.getTypeOfMessage());
-        rootNode.put("methodName", serObject.getMethodName());
+        rootNode.put("typeOfMessage", command.getTypeOfMessage());
+        rootNode.put("methodName", command.getMethodName());
         rootNode.set("params", params);
-        for (Object param : serObject.getParameters()) {
+        for (Object param : command.getParameters()) {
             ObjectNode paramNode = mapper.createObjectNode();
             if (param instanceof HashSet) {
                 ArrayNode contentNode = mapper.createArrayNode();
@@ -349,10 +349,10 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if (serObject.getTypeOfMessage().equals("MSG")) {
+        if (command.getTypeOfMessage().equals("MSG")) {
             clientHandler.putFileInTheBroadcastQueue(jsonFile);
-        } else if (serObject.getTypeOfMessage().equals("HSK")) {
-            clientHandler.putFileInTheOutGoingFileQueue(jsonFile, serObject.getPlayerId());
+        } else if (command.getTypeOfMessage().equals("HSK")) {
+            clientHandler.putFileInTheOutGoingFileQueue(jsonFile, command.getPlayerId());
         }
         return jsonFile;
     }
@@ -367,11 +367,11 @@ public class ServerSerializer implements RemoteClient {
 
     public int deserializeHandshake(File fileJson) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
-        Command serObjectTemp;
-        serObjectTemp = deSerializeStringFromClient(fileJson);
-        serObjectTemp.setMethodName("registerClientCallback");
-        serializeObjectFromServer(serObjectTemp);
-        return serObjectTemp.getPlayerId();
+        Command commandTemp;
+        commandTemp = deSerializeStringFromClient(fileJson);
+        commandTemp.setMethodName("registerClientCallback");
+        serializeObjectFromServer(commandTemp);
+        return commandTemp.getPlayerId();
     }
 
     @Override

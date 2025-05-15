@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
@@ -74,7 +75,7 @@ public class AdventureState extends State {
             throw new IllegalMethodOnThisStateException("You are not the current player");
         }
     }
-    public void userDrawAdventureCard(int playerId) {
+    public void userDrawAdventureCard(int playerId) throws GameSettingsException {
         Player player = getPlayerById(playerId);
         gameSession.userDrawAdventureCard(player);
     }

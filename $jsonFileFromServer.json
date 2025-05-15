@@ -1,6 +1,6 @@
 {
   "typeOfMessage" : "MSG",
-  "methodName" : "adminSetupCallback",
+  "methodName" : "errorCallback",
   "params" : [ {
     "typeOfCollection" : "",
     "content" : {
@@ -10,14 +10,8 @@
   }, {
     "typeOfCollection" : "",
     "content" : {
-      "className" : "java.lang.Integer",
-      "content" : 4
-    }
-  }, {
-    "typeOfCollection" : "",
-    "content" : {
-      "className" : "it.polimi.ingsw.is25am49.server.model.enums.GameMode",
-      "content" : "LEVEL_2"
+      "className" : "java.lang.String",
+      "content" : "PlayerJoin hasn't worked in Server: too many players"
     }
   } ]
 }

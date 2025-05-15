@@ -54,14 +54,14 @@ public class Game {
         numPlayers++;
     }
     public ArrayList<Player> getListPlayers() { return players; }
-    public void calculateScore(Player player) {
+    public void calculateScore(Player player) throws GameSettingsException {
         if(winner.isEmpty()){
             board.calculateFinalCredits();
             winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
         }
         else throw new GameSettingsException("Final score already calculated");
     }
-    public void configurateFlight(){
+    public void configurateFlight() throws GameSettingsException {
         board.configurateFlight(mode, players);
         board.initialize(mode);
     }
@@ -75,7 +75,7 @@ public class Game {
     public boolean isTestFlight() {
         return mode == GameMode.FLIGHT_MODE;
     }
-    public void userPlaceTimer(Player player){
+    public void userPlaceTimer(Player player) throws GameSettingsException {
         if(!isTestFlight())
             timer.place(player);
         else
@@ -92,8 +92,8 @@ public class Game {
         player.setHandTile(board.drawTile(idTile, player));
     }
     public boolean userFinishShipboard(Player player){ return board.userFinishShipboard(player) == numPlayers;}
-    public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}
-    public void userStopLookSmallAdventureCardDeck(Player player, Integer index){ board.userStopLookSmallAdventureCardDeck(player, index);}
+    public void userLookSmallAdventureCardDeck(Player player, int index) throws GameSettingsException{ board.userLookSmallAdventureCardDeck(player, index);}
+    public void userStopLookSmallAdventureCardDeck(Player player, Integer index) throws GameSettingsException{ board.userStopLookSmallAdventureCardDeck(player, index);}
     public void addPlayersToLeaderBoard(){
         players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
@@ -115,13 +115,13 @@ public class Game {
         board.getCurrentCard().finishDecision(coordinates);
     }
 
-    public void userQuitGame(Player player){
+    public void userQuitGame(Player player) throws GameSettingsException {
         board.userQuitGame(player);
     }
     public void mergeSmallDecks(){
         board.mergeDecks();
     }
-    public void userDrawAdventureCard(Player player){
+    public void userDrawAdventureCard(Player player) throws GameSettingsException {
         board.drawAdventureCard(player);
     }
     public void userThrowDices(Player player){
