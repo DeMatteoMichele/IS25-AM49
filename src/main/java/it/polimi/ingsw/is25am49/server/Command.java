@@ -10,14 +10,14 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class CommandServer {
+public class Command {
     private final ServerController serverController;
     private String methodName;
     private final String typeOfMessage;
     private final ArrayList<Object> parameters;
     private int playerId;
 
-    public CommandServer(String methodName, ServerController serverController, int playerId) {
+    public Command(String methodName, ServerController serverController, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.serverController = serverController;

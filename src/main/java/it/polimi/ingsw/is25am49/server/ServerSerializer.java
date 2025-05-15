@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
@@ -59,14 +58,14 @@ public class ServerSerializer implements RemoteClient {
     }
 
     //se cambiano i parametri dei metodi bisogna modificare questo codice
-    public CommandServer deSerializeStringFromClient(File fileJson) {
+    public Command deSerializeStringFromClient(File fileJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, PairMixIn.class);
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
-            CommandServer serObject = new CommandServer(methodName, serverController, -1);
+            Command serObject = new Command(methodName, serverController, -1);
             ArrayNode params = (ArrayNode) rootNode.get("params");
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
@@ -242,7 +241,7 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
-    public File serializeObjectFromServer(CommandServer serObject) {
+    public File serializeObjectFromServer(Command serObject) {
         File jsonFile = null;
         try {
             jsonFile = File.createTempFile("server_response", ".json");
@@ -368,7 +367,7 @@ public class ServerSerializer implements RemoteClient {
 
     public int deserializeHandshake(File fileJson) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
-        CommandServer serObjectTemp;
+        Command serObjectTemp;
         serObjectTemp = deSerializeStringFromClient(fileJson);
         serObjectTemp.setMethodName("registerClientCallback");
         serializeObjectFromServer(serObjectTemp);
@@ -376,7 +375,7 @@ public class ServerSerializer implements RemoteClient {
     }
 
     @Override
-    public void sendCommand(CommandServer commandServer) throws RemoteException {
-        serializeObjectFromServer(commandServer);
+    public void sendCommand(Command command) throws RemoteException {
+        serializeObjectFromServer(command);
     }
 }
