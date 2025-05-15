@@ -54,8 +54,8 @@ public class ClientController {
         return serverMethods;
     }
 
-    public void notifyClient(String msg) {
-
+    public void errorCallback(int playerId, String errorMessage) {
+        ui.printUpdateMessage(errorMessage);
     }
 
     public void registerClientCallback(int playerId) {
@@ -67,7 +67,7 @@ public class ClientController {
     public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
-            ui.printUpdateMessage("ADMIN SETUP"); //TODO non va il callback
+            ui.printUpdateMessage("ADMIN SETUP");
         } catch (Exception e) {
             ui.printUpdateMessage("Errore durante la configurazione del gioco: " + e.getMessage());
         }
@@ -78,19 +78,11 @@ public class ClientController {
         gameSession.setSeedForGeneration(seedForGeneration);
     }
 
-    public void playerErrorJoinCallback(int playerId, String typeOfError) {
-        ui.printUpdateMessage(typeOfError + " manca un modo per ripristinare il clientModel");
-    }
-
     public void gameStartedCallback() {
 
     }
 
     public void userDrawTileCallback(int playerId, int tileId) {
-
-    }
-
-    public void userErrorDrawTileCallback(int playerId, int tileId) {
 
     }
 
@@ -114,19 +106,11 @@ public class ClientController {
 
     }
 
-    public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
-
-    }
-
     public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
 
     }
 
     public void userPlaceTimerCallback(int playerId) {
-
-    }
-
-    public void userErrorPlaceTimerCallback(int playerId) {
 
     }
 

@@ -66,7 +66,8 @@ public class CommandClient {
         if (!isServer) {
             assert clientController != null;
             switch (methodName) {
-                case "notifyClient" -> clientController.notifyClient((String) parameters.get(0));
+                case "errorCallback"->
+                    clientController.errorCallback((int) parameters.get(0), (String) parameters.get(0));
                 case "registerClientCallback" -> {
                     try {
                         clientController.registerClientCallback((int) parameters.get(0));
@@ -77,12 +78,9 @@ public class CommandClient {
                 }
                 case "adminSetupCallback" -> clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
                 case "playerJoinCallback" -> clientController.playerJoinCallback((int) parameters.get(0), (String) parameters.get(1), (int) parameters.get(2));
-                case "playerErrorJoinCallback" -> clientController.playerErrorJoinCallback((int) parameters.get(0), parameters.get(1).toString());
                 case "gameStartedCallback" -> clientController.gameStartedCallback();
                 case "userDrawTileCallback" ->
                         clientController.userDrawTileCallback((int) parameters.get(0), (int) parameters.get(1));
-                case "userErrorDrawTileCallback" ->
-                        clientController.userErrorDrawTileCallback((int) parameters.get(0), (int) parameters.get(1));
                 case "userPlaceTileCallback" ->
                         clientController.userPlaceTileCallback((int) parameters.get(0), (Point) parameters.get(1), (Orientation) parameters.get(2));
                 case "userPickTileCallback" ->
@@ -92,13 +90,9 @@ public class CommandClient {
                         clientController.userFinishShipboardCallback((int) parameters.get(0));
                 case "userLookSmallAdventureCardDeckCallback" ->
                         clientController.userLookSmallAdventureCardDeckCallback((int) parameters.get(0), (int) parameters.get(1));
-                case "userErrorLookSmallAdventureCardDeckCallback" ->
-                        clientController.userErrorLookSmallAdventureCardDeckCallback((int) parameters.get(0), (int) parameters.get(1));
                 case "userStopLookSmallAdventureCardDeckCallback" ->
                         clientController.userStopLookSmallAdventureCardDeckCallback((int) parameters.get(0), (int) parameters.get(1));
                 case "userPlaceTimerCallback" -> clientController.userPlaceTimerCallback((int) parameters.get(0));
-                case "userErrorPlaceTimerCallback" ->
-                        clientController.userErrorPlaceTimerCallback((int) parameters.get(0));
                 case "userSelectTypeOfTokenCallback" ->
                         clientController.userSelectTypeOfTokenCallback((int) parameters.get(0), (Token) parameters.get(1), (Point) parameters.get(2));
                 case "userThrowDicesCallback" ->
