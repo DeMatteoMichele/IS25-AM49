@@ -26,14 +26,14 @@ public class TextualUserInterface implements UserInterface {
     //---------------------------------------
 
     private ClientController controller;
-    private GameSession gameSession;
+    private final GameSession gameSession;
     private String username;
     private int myId;
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
-    private final int boxWidth = 30;
-    String border = "+" + "-".repeat(boxWidth - 2) + "+\n";
+    //private final int boxWidth = 30;
+    //String border = "+" + "-".repeat(boxWidth - 2) + "+\n";
 
     public Terminal terminal;
     public LineReader lineReader;
@@ -65,10 +65,7 @@ public class TextualUserInterface implements UserInterface {
     public static void main(String args[]) throws IOException {
         TextualUserInterface ui = new TextualUserInterface();
         Terminal terminal = ui.terminal;
-        LineReader reader = ui.lineReader;
-        String textInput = "";
 
-        int numInput = 0;
         terminal.writer().println("+------------------------------+");
         terminal.writer().println("| WELCOME TO GALAXY TRUCKER :) |");
         terminal.writer().println("+------------------------------+");
@@ -189,7 +186,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
 
-    public void startGame() throws IOException {
+    public void startGame() {
         ExecutorService executor = Executors.newFixedThreadPool(5);
         executor.submit(() -> {
             String inputString;

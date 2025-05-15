@@ -13,6 +13,7 @@ import java.util.Optional;
 public class ClientChecks {
     private Optional<GameSession> gameSession;
     private Optional<Player> admin;
+    private Optional<Player> Player;
     private Optional<Game> game;
     private Optional<ShipBoard> shipboard;
     private Optional<State> currentState;
@@ -30,6 +31,9 @@ public class ClientChecks {
     }
     public void setAdmin(Player player) {
         this.admin = Optional.of(player);
+    }
+    public void setPlayer(Player player) {
+        this.Player = Optional.of(player);
     }
     public void setGame(Game game) {
         this.game = Optional.of(game);
@@ -50,5 +54,6 @@ public class ClientChecks {
         else if(game.isEmpty())throw new GameSettingsException("JoinLobby: Game is not ready yet");
         else if(game.get().getListPlayers().size()>=game.get().getMaxPlayers())throw new GameSettingsException("JoinLobby: too many players");
     }
+
 
 }
