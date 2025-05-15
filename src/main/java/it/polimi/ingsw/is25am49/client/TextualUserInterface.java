@@ -123,9 +123,9 @@ public class TextualUserInterface implements UserInterface {
     public void registerClient() {
         //Utente inserisce Username
         lineReader.printAbove("Do you want to reconnect to a previous game? y/n");
-        String answer = lineReader.readLine(prompt).trim();
+        String risposta = lineReader.readLine(prompt).trim();
         while (true) {
-            if (answer.equalsIgnoreCase("y"))
+            if (risposta.equalsIgnoreCase("y"))
                 lineReader.printAbove("Insert your EXACT PREVIOUS username:");
             else
                 lineReader.printAbove("Insert your username:");
@@ -135,7 +135,7 @@ public class TextualUserInterface implements UserInterface {
             } else break;
         }
         controller.setUsername(username);
-        if (answer.equalsIgnoreCase("n"))
+        if (risposta.equalsIgnoreCase("n"))
             controller.createMyIdJson();
 
 //      CONNESSIONE AL SERVER + registrazione client
