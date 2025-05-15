@@ -424,25 +424,25 @@ public class ServerController {
     //????
     }
     //todo commentato, c'è da aggiungere userquitgame callback a commandclient
-//    public void userQuitGame(int playerId) {
-//        try{
-//            try{
-//                gameSession.getState().userQuitGame(playerId);
-//                CommandServer serObjectTemp = new CommandServer("userQuitGameCallback", this, playerId);
-//                serObjectTemp.addParameter(playerId);
-//                serverSerializer.sendCommand(serObjectTemp);
-//                serverRMI.sendCommand(serObjectTemp);
-//            } catch (Exception e) {
-//                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
-//                serObjectTemp.addParameter(playerId);
-//                serObjectTemp.addParameter("Quit game hasn't worked in Server: " + e.getMessage());
-//                serverSerializer.sendCommand(serObjectTemp);
-//                serverRMI.sendCommand(serObjectTemp);
-//            }
-//        }catch (RemoteException e){
-//            System.out.println("Error due to RemoteException in Server  in quitGame: " + e.getMessage());
-//        }
-//    }
+    public void userQuitGame(int playerId) {
+        try{
+            try{
+                gameSession.getState().userQuitGame(playerId);
+                CommandServer serObjectTemp = new CommandServer("userQuitGameCallback", this, playerId);
+                serObjectTemp.addParameter(playerId);
+                serverSerializer.sendCommand(serObjectTemp);
+                serverRMI.sendCommand(serObjectTemp);
+            } catch (Exception e) {
+                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                serObjectTemp.addParameter(playerId);
+                serObjectTemp.addParameter("Quit game hasn't worked in Server: " + e.getMessage());
+                serverSerializer.sendCommand(serObjectTemp);
+                serverRMI.sendCommand(serObjectTemp);
+            }
+        }catch (RemoteException e){
+            System.out.println("Error due to RemoteException in Server  in quitGame: " + e.getMessage());
+        }
+    }
     public void adminCalculateScore(int playerId) {
         try {
             try {

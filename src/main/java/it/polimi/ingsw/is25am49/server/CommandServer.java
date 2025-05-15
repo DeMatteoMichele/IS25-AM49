@@ -106,6 +106,7 @@ public class CommandServer {
             case "userLandOnStationOrShip" ->
                     serverController.userLandOnStationOrShip((int) parameters.get(0), (boolean) parameters.get(1));
             case "userStopFlight" -> serverController.userStopFlight((int) parameters.get(0));
+            case "userQuitGame" -> serverController.userQuitGame((int) parameters.get(0));
             case "adminCalculateScore" -> serverController.adminCalculateScore((int) parameters.get(0));
             case "userEndGame" -> serverController.userEndGame((int) parameters.get(0));
             default -> throw new IllegalArgumentException("Metodo non riconosciuto: " + methodName);
