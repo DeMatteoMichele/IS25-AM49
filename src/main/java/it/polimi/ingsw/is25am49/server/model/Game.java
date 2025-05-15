@@ -111,6 +111,10 @@ public class Game {
     public void userFinishDecisionActivating(Set<Point> coordinates){
         board.getCurrentCard().finishDecision(coordinates);
     }
+
+    public void userQuitGame(Player player){
+        board.userQuitGame(player);
+    }
     public void mergeSmallDecks(){
         board.mergeDecks();
     }

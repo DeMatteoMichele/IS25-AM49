@@ -6,9 +6,13 @@ import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.states.InitState;
 import it.polimi.ingsw.is25am49.client.model.states.State;
+import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 
 public class GameSession {
     private final UserInterface ui;
@@ -138,6 +142,7 @@ public class GameSession {
     }
 
     public void userQuitGame(Player player) {
+        game.ifPresent(game->game.userQuitGame(player));
     }
 
     public void calculateScore(int playerId) {
@@ -189,5 +194,21 @@ public class GameSession {
 
     public void setSeedForGeneration(int seedForGeneration) {
         this.seedForGeneration = seedForGeneration;
+    }
+
+
+    public void userLandOnPlanet(boolean isLanded, int planetId) {
+        game.ifPresent(g -> g.userLandOnPlanet(isLanded, planetId));
+    }
+
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
+        game.ifPresent(game-> game.userFinishDecisionToken(listOfTokens));
+    }
+
+    public void userLandOnStationOrShip(boolean isLanded){
+        game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
+    }
+    public void userFinishDecisionActivating(Set<Point> coordinates){
+        game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
     }
 }

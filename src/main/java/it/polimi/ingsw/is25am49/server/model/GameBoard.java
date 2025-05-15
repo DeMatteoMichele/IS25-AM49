@@ -409,7 +409,12 @@ public class GameBoard {
     }
 
     public void userQuitGame(Player player) {
-
+        if(currentCard.getIsFinished()){
+            playerNoMoreInFlight(player);
+        }
+        else{
+            quitPlayers.add(player);
+        }
     }
 
     public void userStopFlight(Player player) {
@@ -688,14 +693,7 @@ public class GameBoard {
         return seedForGeneration;
     }
 
-    public void quit(Player player){
-        if(currentCard.getIsFinished()){
-            playerNoMoreInFlight(player);
-        }
-        else{
-            quitPlayers.add(player);
-        }
-    }
+
 
     public List<Player> getQuitPlayers(){
         return quitPlayers;

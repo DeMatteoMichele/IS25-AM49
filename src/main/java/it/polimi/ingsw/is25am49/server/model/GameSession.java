@@ -154,6 +154,7 @@ public class GameSession {
         game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
     }
     public void userQuitGame(Player player) {
+        game.ifPresent(game->game.userQuitGame(player));
     }
 
     public void calculateScore(int playerId) {

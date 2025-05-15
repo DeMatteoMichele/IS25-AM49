@@ -4,9 +4,9 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -31,30 +31,48 @@ public abstract class State {
 
     public int getStateIndex(){return stateIndex;}
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void adminCreateGame(int playerId, GameMode gamemode,int maxPlayers) throws GameSettingsException;
+    public abstract void adminSelectGameMode(int playerId, GameMode gamemode);
+    public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
     public abstract void adminStartGame(int playerId);
 
-    public abstract void userPlaceTile(Player player, Point coordinates);
-    public abstract void userPickTile(Player player, Point coordinates);
-    public abstract void userDiscardTile(Player player);
-    public abstract void userDrawTile(Player player, int idTIle);
-    public abstract void userFinishShipboard(Player player);
-    public abstract void userLookSmallAdventureCardDeck(Player player, int smallDeckIndex);
-    public abstract void userStopLookSmallAdventureCardDeck(Player player, int smallDeckIndex);
-    public abstract void userPlaceTimer(Player player);
+    public abstract void userPlaceTile(int playerId, Point coordinates);
+    public abstract void userPickTile(int playerId, Point coordinates);
+    public abstract void userDiscardTile(int playerId);
+    public abstract void userDrawTile(int playerId, int idTIle);
+    public abstract void userFinishShipboard(int playerId);
+    public abstract void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+    public abstract void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+    public abstract void userPlaceTimer(int playerId);
     public abstract void timerIsDone();
-    public abstract void userSelectTypeOfToken(Player player, Token token, Point coordinates);
+    public abstract void userSelectTypeOfToken(int playerId, Token token, Point coordinates);
 
-    public abstract void userThrowDices(Player player);
-    public abstract void userDrawAdventureCard(Player player);
-    public abstract void userFinishDecisionActivating(Player player, Set<Point> coordinates);
-    public abstract void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens);
-    public abstract void userLandOnPlanet(Player player);
-    public abstract void userLandOnStationOrShip(Player player);
-    public abstract void userQuitGame(Player player);
-    public abstract void userStopFlight(Player player);
+    public abstract void userThrowDices(int playerId);
+    public abstract void userDrawAdventureCard(int playerId);
+    public abstract void userFinishDecisionActivating(int playerId, Set<Point> coordinates);
+    public abstract void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
+    public abstract void userLandOnPlanet(int playerId, boolean isLanded, int planetId);
+    public abstract void userLandOnStationOrShip(int playerId, boolean isLanded);
+    public void userQuitGame(int playerId){
+        Player player = getPlayerById(playerId);
+        gameSession.userQuitGame(player);
+    }
+    public abstract void userStopFlight(int playerId);
 
     public abstract void adminCalculateScore(int playerId);
     public abstract void userEndGame(int playerId);
+
+    public Player getPlayerById(int playerId) {
+        return gameSession.getGame()
+                .map(game -> game.getPlayer(playerId))
+                .orElseThrow(() -> new IllegalStateException("Game or Player not found"));
+    }
+
+    public Player getCurrentPlayer(){
+        return gameSession.getGame()
+                .map(g->g.getGameboard().getCurrentPlayer())
+                .orElse(null);
+    }
+
+
 }
 

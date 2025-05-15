@@ -66,7 +66,13 @@ public class AdventureState extends State {
     }
     public void userThrowDices(int playerId){
         Player player = getPlayerById(playerId);
-        gameSession.userThrowDices(player);
+        Player currentPlayer = getCurrentPlayer();
+        if(player.equals(currentPlayer)){
+            gameSession.userThrowDices(player);
+        }
+        else{
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
     }
     public void userDrawAdventureCard(int playerId) {
         Player player = getPlayerById(playerId);
@@ -113,9 +119,6 @@ public class AdventureState extends State {
         else{
             throw new IllegalMethodOnThisStateException("You are not the current player");
         }
-
-    }
-    public void userQuitGame(int playerId){
 
     }
 

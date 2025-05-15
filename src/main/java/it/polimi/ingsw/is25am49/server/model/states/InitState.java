@@ -92,27 +92,25 @@ public class InitState extends State {
     }
 
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
-    }
-
-    public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-
-    }
-    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
-
-    }
-    public void userQuitGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
-    public void userStopFlight(int playerId) {
+    public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
 
+
+    public void userStopFlight(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
     public void userEndGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 }

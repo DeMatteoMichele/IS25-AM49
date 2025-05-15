@@ -90,20 +90,15 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
-    public void userQuitGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
 
     public void userStopFlight(int playerId) {
 
     }
 
     public void adminCalculateScore(int playerId) {
-        Player player = getPlayerById(playerId);
         gameSession.calculateScore(playerId);
     }
     public void userEndGame(int playerId) {
-        Player player = getPlayerById(playerId);
         gameSession.userEndGame(playerId);
     }
 }
