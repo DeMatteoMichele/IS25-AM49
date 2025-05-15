@@ -42,10 +42,13 @@ public class ClientChecks {
     }
 
     public void checkIsAdmin(int playerId) {
-        if(admin.isEmpty())
-            throw new GameSettingsException("There is no admin");
-        if(admin.get().getIdPlayer()!=playerId)
-            throw new GameSettingsException("You are not the admin of this game");
+        if(admin.isEmpty()) throw new GameSettingsException("There is no admin");
+        if(admin.get().getIdPlayer()!=playerId) throw new GameSettingsException("You are not the admin of this game");
+    }
+    public void checkJoinLobby(){
+        if(admin.isEmpty())throw new GameSettingsException("JoinLobby: admin is null");
+        else if(game.isEmpty())throw new GameSettingsException("JoinLobby: Game is not ready yet");
+        else if(game.get().getListPlayers().size()>=game.get().getMaxPlayers())throw new GameSettingsException("JoinLobby: too many players");
     }
 
 }
