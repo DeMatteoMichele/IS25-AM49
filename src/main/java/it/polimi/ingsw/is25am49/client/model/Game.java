@@ -1,9 +1,13 @@
 package it.polimi.ingsw.is25am49.client.model;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import javafx.util.Pair;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 
 public class Game {
     private GameSession session;
@@ -124,5 +128,23 @@ public class Game {
         }
         str.append("+----------------------------------------------");
         return str.toString();
+    }
+
+
+    public void userLandOnPlanet(boolean isLanded, int planetId){
+        board.getCurrentCard().landingOnPlanet(isLanded, planetId);
+    }
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
+        board.getCurrentCard().finishDecision(listOfTokens);
+    }
+    public void userLandOnStationOrShip(boolean isLanded){
+        board.getCurrentCard().landingOnStationOrShip(isLanded);
+    }
+    public void userFinishDecisionActivating(Set<Point> coordinates){
+        board.getCurrentCard().finishDecision(coordinates);
+    }
+
+    public void userQuitGame(Player player){
+        board.userQuitGame(player);
     }
 }

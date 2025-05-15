@@ -45,6 +45,10 @@ class TileCardDeckTest {
         player1.setShipBoard(ship1);
         game = new Game(player1, gameSession, GameMode.DEFAULT,999,400);
         deck = game.getGameboard().getTilesDeck();
+        gameSession.userJoinLobby(player1.getColor(),player1.getUsername(),player1.getIdPlayer());
+        gameSession.createNewGame(GameMode.FLIGHT_MODE, 999);
+        //deck = game.getGameboard().getTilesDeck();
+        deck = gameSession.getGame().map(g->g.getGameboard().getTilesDeck()).orElse(null);
     }
     @Test
     void DrawAndAddDiscardTile() {
@@ -68,27 +72,27 @@ class TileCardDeckTest {
     @Test
     void testToString(){
         System.out.println(deck.toString());
-        game.userDrawTile(player1, 95);
+        gameSession.userDrawTile(player1, 95);
         //TODO se chiamo questo metodo lancia eccezzione perche non può pescare una carta che ha già pescato un altro
 //        game.userDrawTile(player2, 95);
         player1.getHandTile().ifPresent(System.out::println);
         System.out.println(deck.toString());
-        game.userDrawTile(player1,34);
-        game.userDrawTile(player2,95);
+        gameSession.userDrawTile(player1,34);
+        gameSession.userDrawTile(player2,95);
         player1.getHandTile().ifPresent(System.out::println);
 
         System.out.println(deck.toString());
-        game.userDrawTile(player1, 78);
-        game.userDrawTile(player2, 98);
-        game.userDrawTile(player3, 11);
+        gameSession.userDrawTile(player1, 78);
+        gameSession.userDrawTile(player2, 98);
+        gameSession.userDrawTile(player3, 11);
         System.out.println(deck.toString());
         player1.getHandTile().ifPresent(tile -> deck.addDiscardTile(tile, player1));
         System.out.println(deck.toString());
-        game.userDrawTile(player1, 23);
-        game.userDrawTile(player2, 13);
-        game.userDrawTile(player3, 67);
+        gameSession.userDrawTile(player1, 23);
+        gameSession.userDrawTile(player2, 13);
+        gameSession.userDrawTile(player3, 67);
         System.out.println(deck.toString());
         System.out.println(deck.getTileById(95).toString());
-        System.out.println(deck.getTileById(139).toString());
+        //System.out.println(deck.getTileById(139).toString());
     }
 }

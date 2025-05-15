@@ -76,20 +76,39 @@ public class ServerController {
     }
 
     public void userDrawTile(int playerId, int tileId) {
-            //gameSession.getState().userDrawTile(player, tileId);
-        gameSession.getState().userDrawTile(playerId, tileId);
+        try{
+            try{
+                gameSession.getState().userDrawTile(playerId, tileId);
+                CommandServer serObjectTemp = new CommandServer("userDrawTileCallback", this, playerId);
+                serObjectTemp.addParameter(playerId);
+                serObjectTemp.addParameter(tileId);
+                serverSerializer.sendCommand(serObjectTemp);
+                serverRMI.sendCommand(serObjectTemp);
+            } catch(Exception e){
+                serverSerializer.userErrorDrawTileCallback(playerId,tileId);
+            }
+        } catch (RemoteException e) {
+            System.err.println("Error during the notification to the client: " + e.getMessage());
+        }
+
     }
 
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
-//        players.get(playerId).ifPresent(player -> {
-//            gameSession.getState().userPlaceTile(player, coordinates);
-//        });
-//        try {
-//            remoteClient.userPlaceTileCallback(playerId, coordinates,orientation);
+//        try{
+//            try{
+//                gameSession.getState().userPlaceTile(playerId, coordinates);
+//                CommandServer serObjectTemp = new CommandServer("userPlaceTileCallback", this, playerId);
+//                serObjectTemp.addParameter(playerId);
+//                serObjectTemp.addParameter(coordinates);
+//                serObjectTemp.addParameter(orientation);
+//                serverSerializer.sendCommand(serObjectTemp);
+//                serverRMI.sendCommand(serObjectTemp);
+//            } catch(Exception e){
+//                serverSerializer.userPlaceTileCallback(playerId,coordinates,orientation);
+//            }
 //        } catch (RemoteException e) {
 //            System.err.println("Error during the notification to the client: " + e.getMessage());
 //        }
-        gameSession.getState().userPlaceTile(playerId,coordinates);
     }
 
 

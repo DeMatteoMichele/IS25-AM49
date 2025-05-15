@@ -5,11 +5,13 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
 
 public class AdventureState extends State {
@@ -64,25 +66,59 @@ public class AdventureState extends State {
     }
     public void userThrowDices(int playerId){
         Player player = getPlayerById(playerId);
-        gameSession.userThrowDices(player);
+        Player currentPlayer = getCurrentPlayer();
+        if(player.equals(currentPlayer)){
+            gameSession.userThrowDices(player);
+        }
+        else{
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
     }
     public void userDrawAdventureCard(int playerId) {
         Player player = getPlayerById(playerId);
         gameSession.userDrawAdventureCard(player);
     }
     public void userFinishDecisionActivating(int playerId, Set<Point> coordinates){
+        Player player = getPlayerById(playerId);
+        Player currentplayer = getCurrentPlayer();
+        if(player.equals(currentplayer)){
+            gameSession.userFinishDecisionActivating(coordinates);
+        }
 
     }
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens){
-
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(player.equals(currentPlayer)){
+            gameSession.userFinishDecisionToken(listOfTokens);
+        }
+        else {
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
     }
+
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+        Player player = getPlayerById(playerId);
+        //controllo se il player che chiama il metodo è il current player
+        //se lo è smetto di passare il player perché gli effetti della carta sono sul current player
+        Player currentPlayer = getCurrentPlayer();
+        if(player.equals(currentPlayer)){
+            gameSession.userLandOnPlanet(isLanded, planetId);
+        }
+        else{
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
 
     }
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
-
-    }
-    public void userQuitGame(int playerId){
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(player.equals(currentPlayer)){
+            gameSession.userLandOnStationOrShip(isLanded);
+        }
+        else{
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
 
     }
 

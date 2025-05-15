@@ -87,8 +87,8 @@ public class TileCardDeck {
     public String toString() {
 
       StringBuilder sr = new StringBuilder();
-              final int width = 190;
-              final int tilesPerRow = 24;
+              final int width = 136;
+              final int tilesPerRow = 17;
               final int tileWidth = 8;//larghezza di ogni id
               String border = "+" + "-".repeat(width - 2) + "+\n";
               sr.append(border);
