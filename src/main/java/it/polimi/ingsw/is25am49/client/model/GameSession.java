@@ -15,16 +15,27 @@ public class GameSession {
     private Optional<Game> game;
     private Optional<Player> admin;
     private State currentState;
+    private int seedForGeneration;
+
     public GameSession(UserInterface userInterface) {
-        this.ui=userInterface;
+        this.ui = userInterface;
         game = Optional.empty();
         admin = Optional.empty();
-        currentState = new InitState(this,ui);
+        currentState = new InitState(this, ui);
     }
 
-    public Optional<Game> getGame() { return game; }
-    public State getState() {return currentState;}
-    public Optional<Player> getAdmin(){return admin;}
+    public Optional<Game> getGame() {
+        return game;
+    }
+
+    public State getState() {
+        return currentState;
+    }
+
+    public Optional<Player> getAdmin() {
+        return admin;
+    }
+
     public Optional<Player> getPlayer(int id) {
         if (game.isEmpty()) {
             if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;
@@ -35,106 +46,133 @@ public class GameSession {
         }
         return Optional.empty();
     }
-    public void setState(State nextState){
+
+    public void setState(State nextState) {
         currentState = nextState;
     }
-    public void createNewGame(GameMode gameMode,int maxPlayers) {
-        if(game.isEmpty()) {
-            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers));
-        }else throw new GameSettingsException("Game already exists!");
+
+    public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
+        if (game.isEmpty()) {
+            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
+        } else throw new GameSettingsException("Game already exists!");
     }
+
     //probabilmente non serve
     public void setGameMode(GameMode mode) {
-        game.ifPresent(g->g.setGameMode(mode));
+        game.ifPresent(g -> g.setGameMode(mode));
     }
-    public void checkIsAdmin(int playerId){
-        if(admin.isEmpty())
+
+    public void checkIsAdmin(int playerId) throws GameSettingsException {
+        if (admin.isEmpty())
             throw new GameSettingsException("There is no admin");
-        if(admin.get().getIdPlayer()!=playerId)
+        if (admin.get().getIdPlayer() != playerId)
             throw new GameSettingsException("You are not the admin of this game");
     }
-    public boolean checkPlayers(){ return game.map(Game::checkPlayers).orElse(false); }
+
+    public boolean checkPlayers() {
+        return game.map(Game::checkPlayers).orElse(false);
+    }
+
     /**
      * method used to control that the admin has set the GameMode
+     *
      * @return returns true only if the mode is not DEFAULT
      */
-    public boolean checkGameMode(){
+    public boolean checkGameMode() {
         return game.map(value -> value.getMode().equals(GameMode.DEFAULT)).orElse(false);
     }
-    public void userJoinLobby(Color playerColor, String username, int playerID) {
+
+    public void userJoinLobby(Color playerColor, String username, int playerID) throws GameSettingsException {
         Player tempPlayer = new Player(username, playerColor, playerID);
-        if(admin.isEmpty()){
+        if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
-        }else if(game.isPresent()){
-            if(checkPlayers()){
+        } else if (game.isPresent()) {
+            if (checkPlayers()) {
                 game.get().addPlayer(tempPlayer);
-            }else throw new GameSettingsException("too many players");
-        }else throw new GameSettingsException("Game is not ready yet");
+            } else throw new GameSettingsException("too many players");
+        } else throw new GameSettingsException("Game is not ready yet");
     }
 
-    public void userDiscardTile(Player player){game.ifPresent(g  -> g.discardTile(player));}
-    public void userDrawTile(Player player, int idTile ){game.ifPresent(g -> g.userDrawTile(player, idTile));}
+    public void userDiscardTile(Player player) {
+        game.ifPresent(g -> g.discardTile(player));
+    }
 
-    public boolean userFinishShipboard(Player player){
+    public void userDrawTile(Player player, int idTile) {
+        game.ifPresent(g -> g.userDrawTile(player, idTile));
+    }
+
+    public boolean userFinishShipboard(Player player) {
         return game.map(value -> value.userFinishShipboard(player)).orElse(false);
     }
-    public void userLookSmallAdventureCardDeck(Player player, int index){
+
+    public void userLookSmallAdventureCardDeck(Player player, int index) {
         game.ifPresent(g -> g.userLookSmallAdventureCardDeck(player, index));
     }
-    public void userStopLookSmallAdventureCardDeck(Player player, int index){
+
+    public void userStopLookSmallAdventureCardDeck(Player player, int index) {
         game.ifPresent(g -> g.userStopLookSmallAdventureCardDeck(player, index));
     }
-    public void userPlaceTimer(Player player){
+
+    public void userPlaceTimer(Player player) {
         game.ifPresent(g -> g.userPlaceTimer(player));
     }
-    public void userThrowDices(Player player){
+
+    public void userThrowDices(Player player) {
         game.ifPresent(g -> g.userThrowDices(player));
     }
-    public void userDrawAdventureCard(Player player){
+
+    public void userDrawAdventureCard(Player player) {
         game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
-    public void userPlayAdventureCard(Player player){
+
+    public void userPlayAdventureCard(Player player) {
     }
 
-    public void userEffectDecision(Player player){
+    public void userEffectDecision(Player player) {
     }
 
     public void userActivateComponent(Player player, Point coordinates) {
     }
 
-    public void userActivateDaysUpdate(){
+    public void userActivateDaysUpdate() {
     }
 
-    public void userQuitGame(Player player){
+    public void userQuitGame(Player player) {
     }
+
     public void calculateScore(int playerId) {
         checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
     }
-    public void configurateFlight(){
+
+    public void configurateFlight() {
         game.ifPresent(Game::configurateFlight);
     }
 
-    public void userEndGame(int playerId) {
-        if(game.map(Game::gameIsFinished).orElse(false)){
+    public void userEndGame(int playerId) throws GameSettingsException {
+        if (game.map(Game::gameIsFinished).orElse(false)) {
             checkIsAdmin(playerId);
             game = Optional.empty();
-            setState(new InitState(this,ui));
-        }
-        else
+            setState(new InitState(this, ui));
+        } else
             throw new GameSettingsException("The game is not finished yet");
     }
+
     public Optional<Player> userShowWinner(int playerId) {
         checkIsAdmin(playerId);
         return game.flatMap(Game::userShowWinner);
     }
-    public void addPlayersToLeaderBoard(){ game.ifPresent(Game::addPlayersToLeaderBoard) ;}
-    public void mergeSmallDecks(){
+
+    public void addPlayersToLeaderBoard() {
+        game.ifPresent(Game::addPlayersToLeaderBoard);
+    }
+
+    public void mergeSmallDecks() {
         game.ifPresent(Game::mergeSmallDecks);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("+-----------------------------------------------\n");
         str.append("| Aviable lobby:\n");
@@ -147,5 +185,9 @@ public class GameSession {
         str.append("+-----------------------------------------------\n");
 
         return str.toString();
+    }
+
+    public void setSeedForGeneration(int seedForGeneration) {
+        this.seedForGeneration = seedForGeneration;
     }
 }

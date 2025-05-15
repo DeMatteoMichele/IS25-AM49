@@ -5,19 +5,19 @@
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.Integer",
-      "content" : 0
+      "content" : 1
     }
   }, {
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.String",
-      "content" : "gigi"
+      "content" : "pollo"
     }
   }, {
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.Integer",
-      "content" : 3
+      "content" : -802672658
     }
   } ]
 }

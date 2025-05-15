@@ -54,8 +54,8 @@ public class ClientController {
         return serverMethods;
     }
 
-    public void notifyClient(String msg) {
-
+    public void errorCallback(int playerId, String errorMessage) {
+        ui.printUpdateMessage(errorMessage);
     }
 
     public void registerClientCallback(int playerId) {
@@ -65,16 +65,17 @@ public class ClientController {
     }
 
     public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
-        gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
-        ui.printUpdateMessage("ADMIN SETUP"); //TODO non va il callback
+        try {
+            gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
+            ui.printUpdateMessage("ADMIN SETUP");
+        } catch (Exception e) {
+            ui.printUpdateMessage("Errore durante la configurazione del gioco: " + e.getMessage());
+        }
     }
 
-    public void playerJoinCallback(int playerId, String username,int seedForGeneration) {
+    public void playerJoinCallback(int playerId, String username, int seedForGeneration) {
         gameSession.getState().userJoinLobby(Color.values()[playerId], username, playerId);
-    }
-
-    public void playerErrorJoinCallback(int playerId, String typeOfError) {
-        ui.printUpdateMessage(typeOfError + " manca un modo per ripristinare il clientModel");
+        gameSession.setSeedForGeneration(seedForGeneration);
     }
 
     public void gameStartedCallback() {
@@ -82,10 +83,6 @@ public class ClientController {
     }
 
     public void userDrawTileCallback(int playerId, int tileId) {
-
-    }
-
-    public void userErrorDrawTileCallback(int playerId, int tileId) {
 
     }
 
@@ -109,19 +106,11 @@ public class ClientController {
 
     }
 
-    public void userErrorLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
-
-    }
-
     public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
 
     }
 
     public void userPlaceTimerCallback(int playerId) {
-
-    }
-
-    public void userErrorPlaceTimerCallback(int playerId) {
 
     }
 
@@ -191,8 +180,8 @@ public class ClientController {
     /**
      * This method is used to register the client socket on the server.
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
-     *
-     *                 //     * @throws RemoteException if there is an error during the remote call
+     * <p>
+     * //     * @throws RemoteException if there is an error during the remote call
      */
     public void registerClientSocket() throws RemoteException {
         CommandClient commandClient = new CommandClient("registerClientSocket", this);
@@ -227,133 +216,133 @@ public class ClientController {
         }
     }
 
-  public void userDrawTile(int playerId, int tileId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userDrawTile", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(tileId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userDrawTile(int playerId, int tileId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userDrawTile", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(tileId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userPlaceTile", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(coordinates);
-      commandClient.addParameter(orientation);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userPlaceTile", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(coordinates);
+        commandClient.addParameter(orientation);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userPickTile(int playerId, Point coordinates) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userPickTile", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(coordinates);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userPickTile(int playerId, Point coordinates) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userPickTile", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(coordinates);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userDiscardTile(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userDiscardTile", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userDiscardTile(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userDiscardTile", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userFinishShipboard(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userFinishShipboard", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userFinishShipboard(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userFinishShipboard", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userLookSmallAdventureCardDeck", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(smallDeckIndex);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userLookSmallAdventureCardDeck", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(smallDeckIndex);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userStopLookSmallAdventureCardDeck", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(smallDeckIndex);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userStopLookSmallAdventureCardDeck", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(smallDeckIndex);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userPlaceTimer(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userPlaceTimer", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userPlaceTimer(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userPlaceTimer", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userSelectTypeOfToken", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(token);
-      commandClient.addParameter(coordinates);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userSelectTypeOfToken", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(token);
+        commandClient.addParameter(coordinates);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userThrowDices(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userThrowDices", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userThrowDices(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userThrowDices", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userDrawAdventureCard(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userDrawAdventureCard", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userDrawAdventureCard(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userDrawAdventureCard", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userFinishDecisionActivating", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(coordinates);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userFinishDecisionActivating", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(coordinates);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userFinishDecisionToken", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(listOfTokens);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userFinishDecisionToken", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(listOfTokens);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userAcceptPrizes", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(wantsRewards);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userAcceptPrizes", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(wantsRewards);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userLandOnPlanet", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(isLanded);
-      commandClient.addParameter(planet);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userLandOnPlanet(int playerId, boolean isLanded, Planet planet) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userLandOnPlanet", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(isLanded);
+        commandClient.addParameter(planet);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userLandOnStationOrShip", this);
-      commandClient.addParameter(playerId);
-      commandClient.addParameter(isLanded);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userLandOnStationOrShip", this);
+        commandClient.addParameter(playerId);
+        commandClient.addParameter(isLanded);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userStopFlight(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userStopFlight", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userStopFlight(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userStopFlight", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void adminCalculateScore(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("adminCalculateScore", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void adminCalculateScore(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("adminCalculateScore", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
-  public void userEndGame(int playerId) throws RemoteException {
-      CommandClient commandClient = new CommandClient("userEndGame", this);
-      commandClient.addParameter(playerId);
-      serverMethods.sendCommand(commandClient);
-  }
+    public void userEndGame(int playerId) throws RemoteException {
+        CommandClient commandClient = new CommandClient("userEndGame", this);
+        commandClient.addParameter(playerId);
+        serverMethods.sendCommand(commandClient);
+    }
 
     public int getplayerId() {
         return playerId;
