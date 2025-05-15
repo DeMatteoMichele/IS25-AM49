@@ -121,7 +121,7 @@ public class ServerHandler {
         while (connected.get()) {
             try {
                 String jsonString = InGoingStringQueue.take();
-                File fileJson = new File("jsonFileFromServer.json");
+                File fileJson = new File("$jsonFileFromServer.json");
                 Files.writeString(fileJson.toPath(), jsonString);
                 clientSerializer.putFileFromSocketInQueue(fileJson);
             } catch (IOException e) {

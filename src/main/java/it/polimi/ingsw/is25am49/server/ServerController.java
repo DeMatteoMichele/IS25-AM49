@@ -1,10 +1,7 @@
 package it.polimi.ingsw.is25am49.server;
 
-import it.polimi.ingsw.is25am49.client.CommandClient;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
@@ -42,14 +39,14 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().adminCreateGame(playerId,mode,numberOfPlayers);
-                CommandServer serObjectTemp = new CommandServer("adminSetupCallback", this, playerId);
+                Command serObjectTemp = new Command("adminSetupCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(numberOfPlayers);
                 serObjectTemp.addParameter(mode);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             }catch (GameSettingsException e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("AdminSetup hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -66,14 +63,14 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(color, username, playerId);
-                CommandServer serObjectTemp = new CommandServer("playerJoinCallback", this, playerId);
+                Command serObjectTemp = new Command("playerJoinCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(username);
                 serObjectTemp.addParameter(gameSession.getSeedForGeneration());
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (GameSettingsException e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("PlayerJoin hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -89,13 +86,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userDrawTile(playerId, tileId);
-                CommandServer serObjectTemp = new CommandServer("userDrawTileCallback", this, playerId);
+                Command serObjectTemp = new Command("userDrawTileCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(tileId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch(Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Draw tile hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -111,14 +108,14 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userPlaceTile(playerId, coordinates);
-                CommandServer serObjectTemp = new CommandServer("userPlaceTileCallback", this, playerId);
+                Command serObjectTemp = new Command("userPlaceTileCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(coordinates);
                 serObjectTemp.addParameter(orientation);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch(Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Place tile hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -134,13 +131,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userPickTile(playerId, coordinates);
-                CommandServer serObjectTemp = new CommandServer("userPickTileCallback", this, playerId);
+                Command serObjectTemp = new Command("userPickTileCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(coordinates);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch(Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Pick tile hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -155,12 +152,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userDiscardTile(playerId);
-                CommandServer serObjectTemp = new CommandServer("userDiscardTile", this, playerId);
+                Command serObjectTemp = new Command("userDiscardTile", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Discard tile hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -175,12 +172,12 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userFinishShipboard(playerId);
-                CommandServer serObjectTemp = new CommandServer("userFinishShipboardCallback", this, playerId);
+                Command serObjectTemp = new Command("userFinishShipboardCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch(Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Finish shipboard hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -195,13 +192,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-                CommandServer serObjectTemp = new CommandServer("userLookSmallAdventureCardDeckCallback", this, playerId);
+                Command serObjectTemp = new Command("userLookSmallAdventureCardDeckCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(smallDeckIndex);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch(Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Look small adventure card deck hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -216,13 +213,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-                CommandServer serObjectTemp = new CommandServer("userStopLookSmallAdventureCardDeckCallback", this, playerId);
+                Command serObjectTemp = new Command("userStopLookSmallAdventureCardDeckCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(smallDeckIndex);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch(Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Stop look small adventure card deck hasn't worked in Server: " +e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -237,12 +234,12 @@ public class ServerController {
         try {
             try{
                 gameSession.getState().userPlaceTimer(playerId);
-                CommandServer serObjectTemp = new CommandServer("userPlaceTimerCallback", this, playerId);
+                Command serObjectTemp = new Command("userPlaceTimerCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Place timer hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -258,14 +255,14 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userSelectTypeOfToken(playerId, token, coordinates);
-                CommandServer serObjectTemp = new CommandServer("userSelectTypeOfTokenCallback", this, playerId);
+                Command serObjectTemp = new Command("userSelectTypeOfTokenCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(token);
                 serObjectTemp.addParameter(coordinates);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             }catch (Exception e){
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Select type of token hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -280,12 +277,12 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userThrowDices(playerId);
-                CommandServer serObjectTemp = new CommandServer("userThrowDicesCallback", this, playerId);
+                Command serObjectTemp = new Command("userThrowDicesCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Throw dices hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -300,12 +297,12 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userDrawAdventureCard(playerId);
-                CommandServer serObjectTemp = new CommandServer("userDrawAdventureCardCallback", this, playerId);
+                Command serObjectTemp = new Command("userDrawAdventureCardCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Draw adventure card hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -320,13 +317,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userFinishDecisionActivating(playerId, coordinates);
-                CommandServer serObjectTemp = new CommandServer("userFinishDecisionActivatingCallback", this, playerId);
+                Command serObjectTemp = new Command("userFinishDecisionActivatingCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(coordinates);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Finish decision activating hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -340,13 +337,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
-                CommandServer serObjectTemp = new CommandServer("userFinishDecisionTokenCallback", this, playerId);
+                Command serObjectTemp = new Command("userFinishDecisionTokenCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(listOfTokens);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Finish decision token hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -361,13 +358,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userAcceptPrizes(playerId, wantsRewards);
-                CommandServer serObjectTemp = new CommandServer("userAcceptPrizesCallback", this, playerId);
+                Command serObjectTemp = new Command("userAcceptPrizesCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(wantsRewards);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Accept prizes hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -382,14 +379,14 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userLandOnPlanet(playerId, isLanded, planetId);
-                CommandServer serObjectTemp = new CommandServer("userLandOnPlanetCallback", this, playerId);
+                Command serObjectTemp = new Command("userLandOnPlanetCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(isLanded);
                 serObjectTemp.addParameter(planetId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Land on planet hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -403,13 +400,13 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userLandOnStationOrShip(playerId, isLanded);
-                CommandServer serObjectTemp = new CommandServer("userLandOnStationOrShipCallback", this, playerId);
+                Command serObjectTemp = new Command("userLandOnStationOrShipCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter(isLanded);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Land on station or ship hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -428,12 +425,12 @@ public class ServerController {
 //        try{
 //            try{
 //                gameSession.getState().userQuitGame(playerId);
-//                CommandServer serObjectTemp = new CommandServer("userQuitGameCallback", this, playerId);
+//                Command serObjectTemp = new Command("userQuitGameCallback", this, playerId);
 //                serObjectTemp.addParameter(playerId);
 //                serverSerializer.sendCommand(serObjectTemp);
 //                serverRMI.sendCommand(serObjectTemp);
 //            } catch (Exception e) {
-//                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+//                Command serObjectTemp = new Command("errorCallback", this, playerId);
 //                serObjectTemp.addParameter(playerId);
 //                serObjectTemp.addParameter("Quit game hasn't worked in Server: " + e.getMessage());
 //                serverSerializer.sendCommand(serObjectTemp);
@@ -447,12 +444,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().adminCalculateScore(playerId);
-                CommandServer serObjectTemp = new CommandServer("adminCalculateScoreCallback", this, playerId);
+                Command serObjectTemp = new Command("adminCalculateScoreCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("Calculate score hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);
@@ -467,12 +464,12 @@ public class ServerController {
         try{
             try{
                 gameSession.getState().userEndGame(playerId);
-                CommandServer serObjectTemp = new CommandServer("userEndGameCallback", this, playerId);
+                Command serObjectTemp = new Command("userEndGameCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serverSerializer.sendCommand(serObjectTemp);
                 serverRMI.sendCommand(serObjectTemp);
             } catch (Exception e) {
-                CommandServer serObjectTemp = new CommandServer("errorCallback", this, playerId);
+                Command serObjectTemp = new Command("errorCallback", this, playerId);
                 serObjectTemp.addParameter(playerId);
                 serObjectTemp.addParameter("End game hasn't worked in Server: " + e.getMessage());
                 serverSerializer.sendCommand(serObjectTemp);

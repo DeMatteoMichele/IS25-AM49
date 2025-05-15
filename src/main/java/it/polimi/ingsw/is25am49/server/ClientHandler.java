@@ -89,7 +89,7 @@ public class ClientHandler {
             byte[] buffer = new byte[length];
             inputStream.readFully(buffer, 0, length);
             String jsonString = new String(buffer, StandardCharsets.UTF_8);
-            File fileJson = new File("first_received.json");
+            File fileJson = new File("$first_received.json");
             Files.writeString(fileJson.toPath(), jsonString);
             return serverSerializer.deserializeHandshake(fileJson);
         } catch (IOException e) {
@@ -239,7 +239,7 @@ public class ClientHandler {
         while (connections.get(clientId)) {
             try {
                 String jsonString = InGoingStringQueues.get(clientId).take();
-                File fileJson = new File(clientId + "_received.json");
+                File fileJson = new File("$"+clientId + "_received.json");
                 Files.writeString(fileJson.toPath(), jsonString);
                 serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {
