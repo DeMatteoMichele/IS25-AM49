@@ -11,6 +11,7 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalTokenInComponentE
 import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 
 import java.awt.*;
+import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -839,7 +840,156 @@ public class ShipBoard {
         return ship;
     }
 
+//------------------------------------------------------------------------------------
+//
+//    funzioni per la stampa della nave ↓
+//
+// ------------------------------------------------------------------------------------
 
+    public ArrayList<String> tileToStringList(Optional<Tile> tile){
+        ArrayList<String> rows = new ArrayList<>(9);
+        if(tile.isEmpty()){
+            rows.add("× × × × × × ×");
+            rows.add("× × × × × × ×");
+            rows.add("× × × × × × ×");
+            rows.add("× × × × × × ×");
+            rows.add("× × × × × × ×");
+            rows.add("× × × × × × ×");
+            rows.add("× × × × × × ×");
+        }
+        else {
+            Tile t=tile.get();
+            ComponentType c=t.getComponentType();
+            Orientation o=t.getTileOrientation();
+            ConnectorType n=t.getConnector(Orientation.NORTH);
+            ConnectorType e=t.getConnector(Orientation.EAST);
+            ConnectorType s=t.getConnector(Orientation.SOUTH);
+            ConnectorType w=t.getConnector(Orientation.WEST);
+            rows.add(String.format("┌ ─ %s ─ ┐", hConnToStr(n)));
+            rows.add(String.format("│   %5s   │",compToStr(c)));
+            rows.add(String.format("%s     %s     %s",vConnToStr(w,1),orientToStr(o,0),vConnToStr(e,1)));
+            rows.add(String.format("%s   %s %s %s   %s",vConnToStr(w,2),orientToStr(o,3),compToEmoji(c),orientToStr(o,1),vConnToStr(e,2)));
+            rows.add(String.format("%s     %s     %s",vConnToStr(w,3),orientToStr(o,2),vConnToStr(e,3)));
+            rows.add(String.format("│   %5s   │",compDescToStr(t)));
+            rows.add(String.format("└ ─ %s ─ ┘", hConnToStr(s)));
+        }
+        return rows;
+    }
+    public String hConnToStr(ConnectorType c){
+        return switch(c){
+            case FLAT -> "─ ─ ─";
+            case SINGLE -> "─ ║ ─";
+            case DOUBLE -> "║ ─ ║";
+            case UNIVERSAL -> "║ ║ ║";
+        };
+    }
+    public String vConnToStr(ConnectorType c, int row){
+        return switch(c.ordinal()+":"+row){
+            case "0:1"-> "│";
+            case "0:2"-> "│";
+            case "0:3" ->"│";
+
+            case "1:1" ->"│";
+            case "1:2" ->"═";
+            case "1:3" ->"│";
+
+            case "2:1" ->"═";
+            case "2:2" ->"│";
+            case "2:3" ->"═";
+
+            case "3:1" ->"═";
+            case "3:2" ->"═";
+            case "3:3" ->"═";
+
+            default -> "│";
+        };
+    }
+    private String compToStr(ComponentType c){
+        return switch (c){
+            case CABINE -> " cab " ;
+            case BATTERY ->  " bat ";
+            case STORAGE -> " sto ";
+            case SPECIAL_STORAGE -> "sp.st";
+            case SHIELD ->  " shi ";
+            case CANNON -> " can ";
+            case DOUBLE_CANNON -> "db.ca";
+            case ENGINE -> " eng ";
+            case DOUBLE_ENGINE -> "db.en";
+            case BROWN_ALIEN_MODULE -> "am.br";
+            case PURPLE_ALIEN_MODULE -> "am.pu";
+            case FRAME_SECTION -> "frame";
+            default -> " ";
+        };
+    }
+    private String compToEmoji(ComponentType c){
+        return switch (c){
+            case CABINE -> "֍";
+            case BATTERY ->  "↯";
+            case STORAGE -> "□";
+            case SPECIAL_STORAGE -> "▣";
+            case SHIELD ->  "◉";
+            case CANNON -> "Ϯ";
+            case DOUBLE_CANNON -> "Џ";
+            case ENGINE -> "Ѫ";
+            case DOUBLE_ENGINE -> "Ѭ";
+            case BROWN_ALIEN_MODULE -> "፠";
+            case PURPLE_ALIEN_MODULE -> "፨";
+            case FRAME_SECTION -> "ᚸ";
+            default -> " ";
+        };
+    }
+    public String orientToStr(Orientation o, int dir){
+        if(o.ordinal()==dir){
+            return switch(o){
+                case NORTH -> "↑";
+                case EAST -> "→";
+                case SOUTH -> "↓";
+                case WEST -> "←";
+            };
+        }else return " ";
+    }
+    public String compDescToStr(Tile t){
+        switch (t.getComponent()){
+            case BasicComponent ignored -> {
+               return " ";
+            }
+            case SpecialComponent ignored -> {
+                return t.getComponent().getIsActive()? "on  ■" : "off □";
+            }
+            case ContainerComponent ignored -> {
+                return " "+t.getComponent().getNumberOfTokens()+"/"+t.getComponent().getLevel()+" ";
+            }
+        }
+    }
+
+    @Override
+    public String toString(){
+        int dim=7; //numero di righe per tessera
+        StringBuilder str = new StringBuilder();
+        ArrayList<ArrayList<String>> ship = new ArrayList<>();
+        for (int y=5;y<=9;y++){
+            for (int x=4;x<=10;x++){
+                if(grid.containsKey(new Point(x,y)))ship.add(tileToStringList(grid.get(new Point(x, y))));
+                else ship.add(tileToStringList(Optional.empty()));
+            }
+        }
+
+        str.append("\t      4            5            6            7            8            9            10       \t \n\n");
+        for (int k=0;k<5;k++){
+            for (int i = 0; i < dim; i++) {
+                for (int j = 0; j < 7; j++) {
+                    if(i==3 && j==0) str.append(k + 5).append(" \t");
+                    else if(j==0)str.append(" \t");
+                    str.append(ship.get(j + k * 7).get(i));
+                    if(i==3 && j==6) str.append("\t ").append(k + 5);
+                    else if(j==6)str.append(" \t");
+                }
+                str.append("\n");
+            }
+        }
+        str.append("\n\t      4            5            6            7            8            9            10       \t \n");
+        return str.toString();
+    }
 
 }
 

@@ -11,8 +11,10 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisCompo
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Tile {
     private final int idTile;
