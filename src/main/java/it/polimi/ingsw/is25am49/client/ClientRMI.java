@@ -1,21 +1,11 @@
 package it.polimi.ingsw.is25am49.client;
 
-import it.polimi.ingsw.is25am49.server.CommandServer;
-import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import javafx.util.Pair;
 
-import java.awt.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.Set;
 
 public class ClientRMI implements RemoteServer {
     public GameSession gameSession;
@@ -42,7 +32,7 @@ public class ClientRMI implements RemoteServer {
     }
 
     @Override
-    public void sendCommand(CommandClient commandClient) throws RemoteException {
+    public void sendCommand(Command command) throws RemoteException {
 
     }
 }

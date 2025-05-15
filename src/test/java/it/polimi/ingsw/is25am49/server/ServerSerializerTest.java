@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ServerSerializerTest {
     ArrayList<File> filesJson;
-    ArrayList<CommandServer> serObjectArray;
+    ArrayList<Command> serObjectArray;
     ServerController serverController;
     GameSession gameSession;
     ServerSerializer serverSerializer;
@@ -34,8 +34,8 @@ class ServerSerializerTest {
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
 
-        CommandServer serObject1;
-        serObject1 = new CommandServer("userPlaceTile", serverController, -1);
+        Command serObject1;
+        serObject1 = new Command("userPlaceTile", serverController, -1);
         serObject1.addParameter(0);
         Point point = new Point(6, 6);
         Orientation orientation = Orientation.NORTH;
@@ -43,8 +43,8 @@ class ServerSerializerTest {
         serObject1.addParameter(orientation);
         serObjectArray.add(serObject1);
 
-        CommandServer serObject2;
-        serObject2 = new CommandServer("userFinishDecisionToken", serverController, -1);
+        Command serObject2;
+        serObject2 = new Command("userFinishDecisionToken", serverController, -1);
         serObject2.addParameter(0);
         ArrayList<Pair<Point, Token>> listOfTokens = new ArrayList<>();
         Pair<Point, Token> pair;
@@ -56,8 +56,8 @@ class ServerSerializerTest {
         serObject2.addParameter(listOfTokens);
         serObjectArray.add(serObject2);
 
-        CommandServer serObject3;
-        serObject3 = new CommandServer("registerClientSocket", serverController, -1);
+        Command serObject3;
+        serObject3 = new Command("registerClientSocket", serverController, -1);
         serObject3.addParameter(-1);
         serObjectArray.add(serObject3);
 
@@ -71,7 +71,7 @@ class ServerSerializerTest {
     @Test
     void deSerializeStringFromClient() {
         int i = 0;
-        CommandServer serProva1;
+        Command serProva1;
         for(File file: filesJson){
             serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serObjectArray.get(i)));
             assertEquals(serProva1.toString(), serverSerializer.deSerializeStringFromClient(file).toString());
@@ -83,22 +83,22 @@ class ServerSerializerTest {
     void serializeObjectFromServer() {
         int i = 0;
         String testString  = "", actualString = "";
-        for(CommandServer serObject: serObjectArray){
+        for(Command serObject: serObjectArray){
             try {
                 testString = Files.readString(filesJson.get(i).toPath());
                 actualString = Files.readString(serverSerializer.serializeObjectFromServer(serObject).toPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            assertEquals(CommandServer.compactJsonString(testString), CommandServer.compactJsonString(actualString));
+            assertEquals(Command.compactJsonString(testString), Command.compactJsonString(actualString));
             i++;
         }
     }
     @Test
     void testCompatibility(){
-        CommandServer serProva1;
-        CommandServer serProva2;
-        for(CommandServer serOb: serObjectArray){
+        Command serProva1;
+        Command serProva2;
+        for(Command serOb: serObjectArray){
             serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serOb));
             System.out.println(serProva1);
             System.out.println(serOb);

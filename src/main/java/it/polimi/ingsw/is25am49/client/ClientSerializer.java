@@ -71,14 +71,14 @@ public class ClientSerializer implements RemoteServer {
         //traduci in un pacchetto serializzato
     }
 
-    public CommandClient deSerializeStringFromServer(File fileJson) {
+    public Command deSerializeStringFromServer(File fileJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, it.polimi.ingsw.is25am49.client.PairMixIn.class);
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
-            CommandClient serObject = new CommandClient(methodName, clientController);
+            Command serObject = new Command(methodName, clientController);
             ArrayNode params = (ArrayNode) rootNode.get("params");
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
@@ -249,8 +249,8 @@ public class ClientSerializer implements RemoteServer {
         }
     }
 
-    public File serializeObjectFromClient(CommandClient serObject) {
-        File jsonFile = new File("commandToServer.json");
+    public File serializeObjectFromClient(Command serObject) {
+        File jsonFile = new File("$commandToServer.json");
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
@@ -362,7 +362,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void sendCommand(CommandClient commandClient) throws RemoteException {
-        serializeObjectFromClient(commandClient);
+    public void sendCommand(Command command) throws RemoteException {
+        serializeObjectFromClient(command);
     }
 }
