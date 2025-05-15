@@ -101,6 +101,9 @@ public class InitState extends State {
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+    public void userAcceptPrizes(int playerId, boolean isAccepted) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
 
 
     public void userStopFlight(int playerId) {

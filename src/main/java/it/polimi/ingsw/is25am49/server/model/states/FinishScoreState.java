@@ -90,6 +90,9 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
+    public void userAcceptPrizes(int playerId, boolean isAccepted){
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
 
     public void userStopFlight(int playerId) {
 

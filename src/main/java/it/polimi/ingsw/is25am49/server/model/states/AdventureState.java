@@ -121,6 +121,16 @@ public class AdventureState extends State {
         }
 
     }
+    public void userAcceptPrizes(int playerId, boolean isAccepted){
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(player.equals(currentPlayer)){
+            gameSession.userAcceptPrizes(isAccepted);
+        }
+        else{
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+    }
 
     public void userStopFlight(int playerId) {
 
