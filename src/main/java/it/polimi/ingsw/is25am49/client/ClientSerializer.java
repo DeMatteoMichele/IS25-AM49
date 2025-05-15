@@ -78,7 +78,7 @@ public class ClientSerializer implements RemoteServer {
             JsonNode rootNode = mapper.readTree(fileJson);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
-            Command serObject = new Command(methodName, clientController);
+            Command command = new Command(methodName, clientController);
             ArrayNode params = (ArrayNode) rootNode.get("params");
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
@@ -139,7 +139,7 @@ public class ClientSerializer implements RemoteServer {
                             };
                             collectionList.add(value);
                         }
-                        serObject.addParameter(collectionList);
+                        command.addParameter(collectionList);
                     } else if (collection instanceof HashSet) {
                         collectionSet = (HashSet<Object>) collection;
                         ArrayNode content = (ArrayNode) paramNode.get("content");
@@ -187,7 +187,7 @@ public class ClientSerializer implements RemoteServer {
                             };
                             collectionSet.add(value);
                         }
-                        serObject.addParameter(collectionSet);
+                        command.addParameter(collectionSet);
                     } else {
                         object = collection;
                         JsonNode content = paramNode.get("content");
@@ -232,33 +232,33 @@ public class ClientSerializer implements RemoteServer {
                             }
                             default -> new Object();
                         };
-                        serObject.addParameter(object);
+                        command.addParameter(object);
                     }
                 }
             } else if (typeOfMessage.equals("HSK")) {
                 for (JsonNode paramNode : params) {
                     String typeOfCollection = paramNode.get("typeOfCollection").asText();
                     int idPlayer = paramNode.get("content").get("content").asInt();
-                    serObject.addParameter(idPlayer);
+                    command.addParameter(idPlayer);
                 }
             }
-            serObject.callClientMethod();
-            return serObject;
+            command.callMethod();
+            return command;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public File serializeObjectFromClient(Command serObject) {
+    public File serializeObjectFromClient(Command command) {
         File jsonFile = new File("$commandToServer.json");
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode params = mapper.createArrayNode();
-        rootNode.put("typeOfMessage", serObject.getTypeOfMessage());
-        rootNode.put("methodName", serObject.getMethodName());
+        rootNode.put("typeOfMessage", command.getTypeOfMessage());
+        rootNode.put("methodName", command.getMethodName());
         rootNode.set("params", params);
-        for (Object param : serObject.getParameters()) {
+        for (Object param : command.getParameters()) {
             ObjectNode paramNode = mapper.createObjectNode();
             if (param instanceof HashSet) {
                 ArrayNode contentNode = mapper.createArrayNode();
@@ -354,7 +354,6 @@ public class ClientSerializer implements RemoteServer {
         serverHandler.putInTheOutGoingFileQueue(jsonFile);
         return jsonFile;
     }
-
 
 
     public void setServerHandler(ServerHandler serverHandler) {

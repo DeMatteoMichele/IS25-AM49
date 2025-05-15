@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -98,10 +99,10 @@ public class FinishScoreState extends State {
 
     }
 
-    public void adminCalculateScore(int playerId) {
+    public void adminCalculateScore(int playerId) throws GameSettingsException {
         gameSession.calculateScore(playerId);
     }
-    public void userEndGame(int playerId) {
+    public void userEndGame(int playerId) throws GameSettingsException {
         gameSession.userEndGame(playerId);
     }
 }

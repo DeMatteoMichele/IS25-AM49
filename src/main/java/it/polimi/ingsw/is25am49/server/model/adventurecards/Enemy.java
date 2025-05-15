@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
@@ -98,7 +99,7 @@ public abstract class Enemy extends AdventureCard {
 
     protected abstract void evaluateBattleOutcome(ShipBoard shipBoard);
 
-    protected void tryNextPlayer() {
+    protected void tryNextPlayer()  {
         try {
             gameBoard.nextPlayer();
             System.out.println("Now check on next player");

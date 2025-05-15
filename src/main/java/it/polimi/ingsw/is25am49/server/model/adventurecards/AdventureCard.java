@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -107,13 +108,16 @@ public abstract class AdventureCard {
     }
 
 
-    protected void update(){
+    protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
         gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
         if(!gameBoard.getQuitPlayers().isEmpty()){
             for(Player player : gameBoard.getQuitPlayers()){
-                gameBoard.playerNoMoreInFlight(player);
+                try{gameBoard.setCurrentPlayer(player);
+            }catch (GameSettingsException e){
+                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
+                }
             }
         }
         isFinished= true;

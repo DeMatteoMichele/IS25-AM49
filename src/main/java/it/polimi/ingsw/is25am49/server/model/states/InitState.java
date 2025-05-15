@@ -20,20 +20,18 @@ public class InitState extends State {
     }
 
     //To change
-    public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        Player player = getPlayerById(playerId);
+    public void adminSelectGameMode(int playerId, GameMode gamemode) throws GameSettingsException {
         gameSession.checkIsAdmin(playerId);
         gameSession.setGameMode(gamemode);
     }
-    public void userJoinLobby(Color playerColor, String username, int playerId) {
+    public void userJoinLobby(Color playerColor, String username, int playerId) throws GameSettingsException {
         gameSession.userJoinLobby(playerColor, username, playerId);
     }
-    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+    public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException{
         gameSession.checkIsAdmin(playerId);
         gameSession.createNewGame(gamemode, maxPlayers);
     }
-    public void adminStartGame(int playerId) {
-        Player player = getPlayerById(playerId);
+    public void adminStartGame(int playerId) throws GameSettingsException{
         gameSession.checkIsAdmin(playerId);
         if(!gameSession.checkGameMode())
             throw new GameSettingsException("You cannot start the game yet, set gameMode");
@@ -113,7 +111,7 @@ public class InitState extends State {
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userEndGame(int playerId) {
+    public void userEndGame(int playerId)  {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 }

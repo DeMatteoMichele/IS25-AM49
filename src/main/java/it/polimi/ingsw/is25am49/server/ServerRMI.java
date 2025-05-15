@@ -20,4 +20,9 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
     public void sendCommand(Command command) throws RemoteException {
 
     }
+
+    @Override
+    public void sendCommandToSpecificClient(Command command, int clientId) throws RemoteException {
+
+    }
 }
