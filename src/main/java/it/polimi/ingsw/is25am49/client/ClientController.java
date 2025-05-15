@@ -54,7 +54,7 @@ public class ClientController {
         return serverMethods;
     }
 
-    public void errorCallback(String errorMessage) {
+    public void errorCallback(int playerId, String errorMessage) {
         ui.printUpdateMessage(errorMessage);
     }
 

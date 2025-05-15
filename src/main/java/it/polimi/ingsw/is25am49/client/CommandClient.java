@@ -67,7 +67,7 @@ public class CommandClient {
             assert clientController != null;
             switch (methodName) {
                 case "errorCallback"->
-                    clientController.errorCallback((String) parameters.get(0));
+                    clientController.errorCallback((int) parameters.get(0), (String) parameters.get(0));
                 case "registerClientCallback" -> {
                     try {
                         clientController.registerClientCallback((int) parameters.get(0));
