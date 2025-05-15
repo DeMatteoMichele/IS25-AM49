@@ -116,8 +116,9 @@ public class BuildState extends State {
     public void userActivateDaysUpdate() {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-
-
+    public void userAcceptPrizes(int playerId, boolean isAccepted){
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+    }
     public void userStopFlight(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }

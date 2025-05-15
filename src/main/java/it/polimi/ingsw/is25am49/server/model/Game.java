@@ -108,6 +108,9 @@ public class Game {
     public void userLandOnStationOrShip(boolean isLanded){
         board.getCurrentCard().landingOnStationOrShip(isLanded);
     }
+    public void userAcceptPrizes(boolean isAccepted){
+        board.getCurrentCard().acceptPrizes(isAccepted);
+    }
     public void userFinishDecisionActivating(Set<Point> coordinates){
         board.getCurrentCard().finishDecision(coordinates);
     }

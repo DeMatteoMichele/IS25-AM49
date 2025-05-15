@@ -43,6 +43,7 @@ public abstract class State {
     public abstract void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
     public abstract void userLandOnPlanet(int playerId, boolean isLanded, int planetId);
     public abstract void userLandOnStationOrShip(int playerId, boolean isLanded);
+    public abstract void userAcceptPrizes(int playerId, boolean isAccepted);
     public void userQuitGame(int playerId){
         Player player = getPlayerById(playerId);
         gameSession.userQuitGame(player);

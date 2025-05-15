@@ -153,6 +153,10 @@ public class GameSession {
     public void userFinishDecisionActivating(Set<Point> coordinates){
         game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
     }
+
+    public void userAcceptPrizes(boolean isAccepted){
+        game.ifPresent(game->game.userAcceptPrizes(isAccepted));
+    }
     public void userQuitGame(Player player) {
         game.ifPresent(game->game.userQuitGame(player));
     }
