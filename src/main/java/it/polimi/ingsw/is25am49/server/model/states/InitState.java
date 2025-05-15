@@ -21,21 +21,20 @@ public class InitState extends State {
 
     //To change
     public void adminSelectGameMode(int playerId, GameMode gamemode) {
-//        Player player = gameSession.getPlayers().get(playerId);
-//        gameSession.checkIsAdmin(player);
+        Player player = getPlayerById(playerId);
+        gameSession.checkIsAdmin(playerId);
         gameSession.setGameMode(gamemode);
     }
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         gameSession.userJoinLobby(playerColor, username, playerId);
     }
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
-//        Player player = gameSession.getPlayers().get(playerId);
-//        gameSession.checkIsAdmin(player);
+        gameSession.checkIsAdmin(playerId);
         gameSession.createNewGame(gamemode, maxPlayers);
     }
     public void adminStartGame(int playerId) {
         Player player = getPlayerById(playerId);
-        gameSession.checkIsAdmin(player);
+        gameSession.checkIsAdmin(playerId);
         if(!gameSession.checkGameMode())
             throw new GameSettingsException("You cannot start the game yet, set gameMode");
         else{

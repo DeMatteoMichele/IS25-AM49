@@ -1,23 +1,23 @@
 {
   "typeOfMessage" : "MSG",
-  "methodName" : "adminSetup",
+  "methodName" : "playerJoin",
   "params" : [ {
     "typeOfCollection" : "",
     "content" : {
       "className" : "java.lang.Integer",
-      "content" : 0
+      "content" : 1
     }
   }, {
     "typeOfCollection" : "",
     "content" : {
-      "className" : "java.lang.Integer",
-      "content" : 4
+      "className" : "java.lang.String",
+      "content" : "pollo"
     }
   }, {
     "typeOfCollection" : "",
     "content" : {
-      "className" : "it.polimi.ingsw.is25am49.client.model.enums.GameMode",
-      "content" : "LEVEL_2"
+      "className" : "it.polimi.ingsw.is25am49.client.model.enums.Color",
+      "content" : "BLUE"
     }
   } ]
 }

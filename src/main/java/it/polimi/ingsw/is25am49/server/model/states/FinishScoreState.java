@@ -100,10 +100,10 @@ public class FinishScoreState extends State {
 
     public void adminCalculateScore(int playerId) {
         Player player = getPlayerById(playerId);
-        gameSession.calculateScore(player);
+        gameSession.calculateScore(playerId);
     }
     public void userEndGame(int playerId) {
         Player player = getPlayerById(playerId);
-        gameSession.userEndGame(player);
+        gameSession.userEndGame(playerId);
     }
 }
