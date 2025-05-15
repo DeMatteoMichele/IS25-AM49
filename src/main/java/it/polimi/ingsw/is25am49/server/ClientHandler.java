@@ -71,6 +71,9 @@ public class ClientHandler {
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             int clientId = handleFirstMessage(socket, inputStream, outputStream);
             if ((clientSockets.size() < maxClients) || (clientSockets.size() == maxClients && connections.containsKey(clientId))) {
+                if(connections.containsKey(clientId)){
+                    executors.submit(()->startReconnection(clientId));
+                }
                 System.out.println("Client connected with id: " + clientId);
                 connectClient(socket, inputStream, outputStream, clientId);
                 System.out.println("size: " + clientSockets.size());
@@ -270,7 +273,11 @@ public class ClientHandler {
         }
     }
 
-        /**
+    private void startReconnection(int clientId) {
+        serverSerializer.askControllerForCommandsForReconnection(clientId);
+    }
+
+    /**
      * This method is used to put files in the BroadcastQueue.
      * It is called by the server serializer.
      *

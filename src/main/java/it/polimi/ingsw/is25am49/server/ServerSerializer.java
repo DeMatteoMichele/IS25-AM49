@@ -241,7 +241,7 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
-    public File serializeObjectFromServer(Command command) {
+    public File serializeObjectFromServer(Command command,boolean toSpecificClient, int clientId) {
         File jsonFile = null;
         try {
             jsonFile = File.createTempFile("server_response", ".json");
@@ -349,10 +349,10 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if (command.getTypeOfMessage().equals("MSG")) {
+        if (!toSpecificClient) {
             clientHandler.putFileInTheBroadcastQueue(jsonFile);
-        } else if (command.getTypeOfMessage().equals("HSK")) {
-            clientHandler.putFileInTheOutGoingFileQueue(jsonFile, command.getPlayerId());
+        } else   {
+            clientHandler.putFileInTheOutGoingFileQueue(jsonFile, clientId);
         }
         return jsonFile;
     }
@@ -370,12 +370,21 @@ public class ServerSerializer implements RemoteClient {
         Command commandTemp;
         commandTemp = deSerializeStringFromClient(fileJson);
         commandTemp.setMethodName("registerClientCallback");
-        serializeObjectFromServer(commandTemp);
+        serializeObjectFromServer(commandTemp,true,commandTemp.getPlayerId());
         return commandTemp.getPlayerId();
     }
 
     @Override
     public void sendCommand(Command command) throws RemoteException {
-        serializeObjectFromServer(command);
+        serializeObjectFromServer(command,false,99);
+    }
+
+    @Override
+    public void sendCommandToSpecificClient(Command command, int clientId) throws RemoteException {
+        serializeObjectFromServer(command,true,clientId);
+    }
+
+    public void askControllerForCommandsForReconnection(int clientId) {
+        serverController.giveMeCommandsForReconnection(clientId);
     }
 }
