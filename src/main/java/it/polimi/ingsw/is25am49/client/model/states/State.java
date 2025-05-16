@@ -16,7 +16,7 @@ import java.util.Set;
 
 
 public abstract class State {
-    protected int stateIndex=0;
+    protected int stateIndex = 0;
     protected UserInterface userInterface;
     protected final GameSession gameSession;
 
@@ -30,64 +30,101 @@ public abstract class State {
         stateIndex++;
     }
 
-    public int getStateIndex(){return stateIndex;}
+    public int getStateIndex() {
+        return stateIndex;
+    }
+
     public abstract void checkUserJoinLobby(int playerID);
+
     public abstract void checkAdminCreateGame(int playerId);
+
     public abstract void checkAdminStartGame(int playerId);
 
     public abstract void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException;
+
     public abstract void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException;
+
     public abstract void checkUserDiscardTile(int playerId) throws IllegalStateException;
+
     public abstract void checkUserDrawTile(int playerId, int idTIle);
+
     public abstract void checkUserFinishShipboard(int playerId);
+
     public abstract void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+
     public abstract void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+
     public abstract void checkUserPlaceTimer(int playerId);
+
     public abstract void checkTimerIsDone();
+
     public abstract void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates);
 
     public abstract void checkUserThrowDices(int playerId);
+
     public abstract void checkUserDrawAdventureCard(int playerId);
+
     public abstract void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates);
+
     public abstract void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
+
     public abstract void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId);
+
     public abstract void checkUserLandOnStationOrShip(int playerId, boolean isLanded);
+
     public abstract void checkUserStopFlight(int playerId);
 
     public abstract void checkAdminCalculateScore(int playerId);
-    public abstract void checkUserEndGame(int playerId);
 
+    public abstract void checkAdminEndGame(int playerId);
 
 
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
+
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
-    public abstract void adminStartGame(int playerId);
 
     public abstract void userPlaceTile(int playerId, Point coordinates);
+
     public abstract void userPickTile(int playerId, Point coordinates);
+
     public abstract void userDiscardTile(int playerId);
+
     public abstract void userDrawTile(int playerId, int idTIle);
+
     public abstract void userFinishShipboard(int playerId);
+
     public abstract void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+
     public abstract void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+
     public abstract void userPlaceTimer(int playerId);
+
     public abstract void timerIsDone();
+
     public abstract void userSelectTypeOfToken(int playerId, Token token, Point coordinates);
 
     public abstract void userThrowDices(int playerId);
+
     public abstract void userDrawAdventureCard(int playerId);
+
     public abstract void userFinishDecisionActivating(int playerId, Set<Point> coordinates);
+
     public abstract void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
+
     public abstract void userLandOnPlanet(int playerId, boolean isLanded, int planetId);
+
     public abstract void userLandOnStationOrShip(int playerId, boolean isLanded);
-    public void userQuitGame(int playerId){
+
+    public void userQuitGame(int playerId) {
         Player player = getPlayerById(playerId);
         gameSession.userQuitGame(player);
     }
+
     public abstract void userStopFlight(int playerId);
 
     public abstract void adminCalculateScore(int playerId);
-    public abstract void userEndGame(int playerId);
+
+    public abstract void adminEndGame(int playerId);
 
     public Player getPlayerById(int playerId) {
         return gameSession.getGame()
@@ -95,9 +132,9 @@ public abstract class State {
                 .orElseThrow(() -> new IllegalStateException("Game or Player not found"));
     }
 
-    public Player getCurrentPlayer(){
+    public Player getCurrentPlayer() {
         return gameSession.getGame()
-                .map(g->g.getGameboard().getCurrentPlayer())
+                .map(g -> g.getGameboard().getCurrentPlayer())
                 .orElse(null);
     }
 

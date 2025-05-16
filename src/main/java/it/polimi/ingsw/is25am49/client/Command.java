@@ -231,11 +231,11 @@ public class Command {
                     e.printStackTrace();
                 }
             }
-            case "userEndGame" -> {
+            case "adminEndGame" -> {
                 try {
-                    serverController.userEndGame((int) parameters.get(0));
+                    serverController.adminEndGame((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in userEndGame: " + e.getMessage());
+                    System.err.println("Errore in adminEndGame: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -423,11 +423,11 @@ public class Command {
                     e.printStackTrace();
                 }
             }
-            case "userEndGameCallback" -> {
+            case "adminEndGameCallback" -> {
                 try {
-                    clientController.userEndGameCallback((int) parameters.get(0));
+                    clientController.adminEndGameCallback((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in userEndGameCallback: " + e.getMessage());
+                    System.err.println("Errore in adminEndGameCallback: " + e.getMessage());
                     e.printStackTrace();
                 }
             }

@@ -489,11 +489,11 @@ public class ServerController {
         }
     }
 
-    public void userEndGame(int playerId) {
+    public void adminEndGame(int playerId) {
         try {
             try {
                 gameSession.getState().userEndGame(playerId);
-                Command command = new Command("userEndGameCallback", this, playerId);
+                Command command = new Command("adminEndGameCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);

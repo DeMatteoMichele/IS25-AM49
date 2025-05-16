@@ -167,7 +167,7 @@ public class ClientController {
 
     }
 
-    public void userEndGameCallback(int playerId) {
+    public void adminEndGameCallback(int playerId) {
 
     }
 
@@ -358,8 +358,8 @@ public class ClientController {
         serverMethods.command_FromClientToServer(command);
     }
 
-    public void userEndGame(int playerId) throws RemoteException {
-        Command command = new Command("userEndGame", this);
+    public void adminEndGame(int playerId) throws RemoteException {
+        Command command = new Command("adminEndGame", this);
         command.addParameter(playerId);
         serverMethods.command_FromClientToServer(command);
     }

@@ -126,7 +126,7 @@ public class AdventureState extends State {
     }
 
     @Override
-    public void checkUserEndGame(int playerId) {
+    public void checkAdminEndGame(int playerId) {
 
     }
 
@@ -238,7 +238,7 @@ public class AdventureState extends State {
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userEndGame(int playerId) {
+    public void adminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }

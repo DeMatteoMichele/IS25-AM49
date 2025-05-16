@@ -140,6 +140,10 @@ public class GameSession {
     public void userQuitGame(Player player) {
         game.ifPresent(game->game.userQuitGame(player));
     }
+    public void checkCalculateScore(int playerId) {
+        checkIsAdmin(playerId);
+        game.ifPresent(g -> g.checkCalculateScore(game.get().getPlayer(playerId)));
+    }
     public void calculateScore(int playerId) {
         checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
@@ -147,7 +151,13 @@ public class GameSession {
     public void configurateFlight() {
         game.ifPresent(Game::configurateFlight);
     }
-    public void userEndGame(int playerId) throws GameSettingsException {
+    public void checkAdminEndGame(int playerId) throws GameSettingsException {
+        if (game.map(Game::gameIsFinished).orElse(false)) {
+            checkIsAdmin(playerId);
+        } else
+            throw new GameSettingsException("The game is not finished yet");
+    }
+    public void adminEndGame(int playerId) throws GameSettingsException {
         if (game.map(Game::gameIsFinished).orElse(false)) {
             checkIsAdmin(playerId);
             game = Optional.empty();

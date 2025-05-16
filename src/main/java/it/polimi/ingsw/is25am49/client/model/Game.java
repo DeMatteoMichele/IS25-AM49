@@ -57,6 +57,10 @@ public class Game {
         numPlayers++;
     }
     public ArrayList<Player> getListPlayers() { return players; }
+    public void checkCalculateScore(Player player) {
+        if(winner.isEmpty()){}
+        else throw new GameSettingsException("Final score already calculated");
+    }
     public void calculateScore(Player player) {
         if(winner.isEmpty()){
                 board.calculateFinalCredits();
