@@ -28,6 +28,7 @@ public class ClientController {
     private UserInterface ui;
     private String username;
 
+    private String error= "⚠ Error : ";
     /**
      * Solo per i test
      */
@@ -60,7 +61,7 @@ public class ClientController {
     }
 
     public void errorCallback(int playerId, String errorMessage) {
-        ui.printUpdateMessage(errorMessage);
+        ui.printUpdateMessage(error + errorMessage);
     }
 
     public void registerClientCallback(int playerId) {
@@ -80,9 +81,8 @@ public class ClientController {
     public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
-            ui.printUpdateMessage("ADMIN SETUP");
         } catch (Exception e) {
-            ui.printUpdateMessage("Errore durante la configurazione del gioco: " + e.getMessage());
+            ui.printUpdateMessage(error+ "Errore durante la configurazione del gioco --> " + e.getMessage());
         }
     }
 
@@ -96,6 +96,7 @@ public class ClientController {
     }
 
     public void userDrawTileCallback(int playerId, int tileId) {
+
     }
 
     public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) {
@@ -204,33 +205,34 @@ public class ClientController {
             System.out.println("Errore durante la lettura dell'ID: " + e.getMessage());
         }
         command.addParameter(playerId);
-        serverMethods.sendCommand(command);
+        serverMethods.command_FromClientToServer(command);
         serverHandler.connectCommand();
     }
 
 
     public void adminSetup(int numberOfPlayers, GameMode mode) {
         try {
+            gameSession.getState().checkAdminCreateGame(playerId);
             Command command = new Command("adminSetup", this);
             command.addParameter(playerId);
             command.addParameter(numberOfPlayers);
             command.addParameter(mode);
-            serverMethods.sendCommand(command);
-        } catch (RemoteException e) {
-            ui.printUpdateMessage(e.getMessage());
+            serverMethods.command_FromClientToServer(command);
+        } catch (RemoteException | GameSettingsException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     public void playerJoin(String username) {
         try {
-            this.username = username;//todo da togliere
+            gameSession.getState().checkUserJoinLobby(playerId);
             Command command = new Command("playerJoin", this);
             command.addParameter(playerId);
             command.addParameter(username);
             command.addParameter(Color.values()[playerId]);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         } catch (RemoteException | GameSettingsException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

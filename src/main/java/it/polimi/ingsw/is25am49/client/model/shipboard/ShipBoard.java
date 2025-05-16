@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -861,13 +862,13 @@ public class ShipBoard {
     public ArrayList<String> tileToStringList(Optional<Tile> tile){
         ArrayList<String> rows = new ArrayList<>(9);
         if(tile.isEmpty()){
-            rows.add("× × × × × × ×");
-            rows.add("× × × × × × ×");
-            rows.add("× × × × × × ×");
-            rows.add("× × × × × × ×");
-            rows.add("× × × × × × ×");
-            rows.add("× × × × × × ×");
-            rows.add("× × × × × × ×");
+            rows.add("┌ ─ ─ ─ ─ ─ ┐");
+            rows.add("│ • • • • • │");
+            rows.add("│ • • • • • │");
+            rows.add("│ • empty • │");
+            rows.add("│ • • • • • │");
+            rows.add("│ • • • • • │");
+            rows.add("└ ─ ─ ─ ─ ─ ┘");
         }
         else {
             Tile t=tile.get();
@@ -880,7 +881,7 @@ public class ShipBoard {
             rows.add(String.format("┌ ─ %s ─ ┐", hConnToStr(n)));
             rows.add(String.format("│   %5s   │",compToStr(c)));
             rows.add(String.format("%s     %s     %s",vConnToStr(w,1),orientToStr(o,0),vConnToStr(e,1)));
-            rows.add(String.format("%s   %s %s %s   %s",vConnToStr(w,2),orientToStr(o,3),compToEmoji(c),orientToStr(o,1),vConnToStr(e,2)));
+            rows.add(String.format("%s   %s %s %s   %s",vConnToStr(w,2),orientToStr(o,3),"■",orientToStr(o,1),vConnToStr(e,2)));
             rows.add(String.format("%s     %s     %s",vConnToStr(w,3),orientToStr(o,2),vConnToStr(e,3)));
             rows.add(String.format("│   %5s   │",compDescToStr(t)));
             rows.add(String.format("└ ─ %s ─ ┘", hConnToStr(s)));
@@ -938,7 +939,7 @@ public class ShipBoard {
             case CABINE -> "֍";
             case BATTERY ->  "↯";
             case STORAGE -> "□";
-            case SPECIAL_STORAGE -> "▣";
+            case SPECIAL_STORAGE -> "■";
             case SHIELD ->  "◉";
             case CANNON -> "Ϯ";
             case DOUBLE_CANNON -> "Џ";
@@ -982,7 +983,17 @@ public class ShipBoard {
         for (int y=5;y<=9;y++){
             for (int x=4;x<=10;x++){
                 if(grid.containsKey(new Point(x,y)))ship.add(tileToStringList(grid.get(new Point(x, y))));
-                else ship.add(tileToStringList(Optional.empty()));
+                else {
+                    ship.add( new ArrayList<>(List.of(  "× × × × × × ×",
+                                                        "× × × × × × ×",
+                                                        "× × × × × × ×",
+                                                        "× × × × × × ×",
+                                                        "× × × × × × ×",
+                                                        "× × × × × × ×",
+                                                        "× × × × × × ×"
+                            ))
+                    );
+                }
             }
         }
 

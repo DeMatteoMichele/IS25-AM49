@@ -6,7 +6,9 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -18,15 +20,124 @@ public class AdventureState extends State {
         super(gameSession,ui);
     }
 
+    @Override
+    public void checkUserJoinLobby(int playerID) {
+
+    }
+
+    @Override
+    public void checkAdminCreateGame(int playerId) {
+
+    }
+
+    @Override
+    public void checkAdminStartGame(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
+
+    }
+
+    @Override
+    public void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException {
+
+    }
+
+    @Override
+    public void checkUserDiscardTile(int playerId) throws IllegalStateException {
+
+    }
+
+    @Override
+    public void checkUserDrawTile(int playerId, int idTIle) {
+
+    }
+
+    @Override
+    public void checkUserFinishShipboard(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+    }
+
+    @Override
+    public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+    }
+
+    @Override
+    public void checkUserPlaceTimer(int playerId) {
+
+    }
+
+    @Override
+    public void checkTimerIsDone() {
+
+    }
+
+    @Override
+    public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
+
+    }
+
+    @Override
+    public void checkUserThrowDices(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserDrawAdventureCard(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
+
+    }
+
+    @Override
+    public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
+
+    }
+
+    @Override
+    public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+
+    }
+
+    @Override
+    public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
+
+    }
+
+    @Override
+    public void checkUserStopFlight(int playerId) {
+
+    }
+
+    @Override
+    public void checkAdminCalculateScore(int playerId) {
+
+    }
+
+    @Override
+    public void checkAdminEndGame(int playerId) {
+
+    }
+
     public void userJoinLobby(Color playerColor, String username, int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
+
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
-    }
+
     public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
@@ -102,7 +213,7 @@ public class AdventureState extends State {
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userEndGame(int playerId) {
+    public void adminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void checkAdminSelectGameMode(Player player, GameMode gamemode) {

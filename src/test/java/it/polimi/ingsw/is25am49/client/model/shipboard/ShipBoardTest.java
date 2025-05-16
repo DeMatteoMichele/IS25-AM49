@@ -39,7 +39,7 @@ class ShipBoardTest {
         System.out.println(ship);
 
         ship = new ShipBoard(2, 501);
-        ship= ShipBoard.generateShipboard(2,56);
+        ship= ShipBoard.generateShipboard(2,10);
         ship.printShipboardSpecial();
         ship.fillTileComponent(new Point(7,7), Token.ASTRONAUT);
         System.out.println(ship);

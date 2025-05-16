@@ -50,14 +50,14 @@ public class ServerController {
                 command.addParameter(numberOfPlayers);
                 command.addParameter(mode);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (GameSettingsException e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("AdminSetup hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server in adminSetup: " + e.getMessage());
@@ -74,14 +74,14 @@ public class ServerController {
                 command.addParameter(username);
                 command.addParameter(gameSession.getSeedForGeneration());
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (GameSettingsException e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("PlayerJoin hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in playerJoin: " + e.getMessage());
@@ -97,14 +97,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(tileId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Draw tile hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.err.println("Error due to RemoteException in Server  in drawTile: " + e.getMessage());
@@ -121,14 +121,14 @@ public class ServerController {
                 command.addParameter(coordinates);
                 command.addParameter(orientation);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Place tile hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.err.println("Error due to RemoteException in Server  in placeTile: " + e.getMessage());
@@ -144,14 +144,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Pick tile hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in pickTile: " + e.getMessage());
@@ -165,14 +165,14 @@ public class ServerController {
                 Command command = new Command("userDiscardTile", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Discard tile hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in discardTile: " + e.getMessage());
@@ -186,14 +186,14 @@ public class ServerController {
                 Command command = new Command("userFinishShipboardCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish shipboard hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in finishShipboard: " + e.getMessage());
@@ -208,14 +208,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(smallDeckIndex);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Look small adventure card deck hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in lookSmallAdventureCardDeck: " + e.getMessage());
@@ -230,14 +230,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(smallDeckIndex);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Stop look small adventure card deck hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in stopLookSmallAdventureCardDeck: " + e.getMessage());
@@ -251,14 +251,14 @@ public class ServerController {
                 Command command = new Command("userPlaceTimerCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Place timer hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in placeTimer: " + e.getMessage());
@@ -275,14 +275,14 @@ public class ServerController {
                 command.addParameter(token);
                 command.addParameter(coordinates);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Select type of token hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in selectTypeOfToken: " + e.getMessage());
@@ -296,14 +296,14 @@ public class ServerController {
                 Command command = new Command("userThrowDicesCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Throw dices hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in throwDices: " + e.getMessage());
@@ -317,14 +317,14 @@ public class ServerController {
                 Command command = new Command("userDrawAdventureCardCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Draw adventure card hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in drawAdventureCard: " + e.getMessage());
@@ -339,14 +339,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision activating hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in finishDecisionActivating: " + e.getMessage());
@@ -361,14 +361,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(listOfTokens);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision token hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in finishDecisionToken: " + e.getMessage());
@@ -383,14 +383,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(wantsRewards);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Accept prizes hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in acceptPrizes: " + e.getMessage());
@@ -406,14 +406,14 @@ public class ServerController {
                 command.addParameter(isLanded);
                 command.addParameter(planetId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Land on planet hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in landOnPlanet: " + e.getMessage());
@@ -428,14 +428,14 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(isLanded);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Land on station or ship hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in landOnStationOrShip: " + e.getMessage());
@@ -454,14 +454,14 @@ public class ServerController {
                 Command command = new Command("userQuitGameCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Quit game hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in quitGame: " + e.getMessage());
@@ -475,35 +475,35 @@ public class ServerController {
                 Command command = new Command("adminCalculateScoreCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("Calculate score hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in calculateScore: " + e.getMessage());
         }
     }
 
-    public void userEndGame(int playerId) {
+    public void adminEndGame(int playerId) {
         try {
             try {
                 gameSession.getState().userEndGame(playerId);
-                Command command = new Command("userEndGameCallback", this, playerId);
+                Command command = new Command("adminEndGameCallback", this, playerId);
                 command.addParameter(playerId);
                 commandQueue.add(command);
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter("End game hasn't worked in Server: " + e.getMessage());
-                serverSerializer.sendCommand(command);
-                serverRMI.sendCommand(command);
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in endGame: " + e.getMessage());
@@ -518,8 +518,8 @@ public class ServerController {
         executors.submit(() -> {
             while (!commandQueue.isEmpty()) {
                 try {
-                    serverSerializer.sendCommandToSpecificClient(commandQueue.poll(), clientId);
-                    serverRMI.sendCommandToSpecificClient(commandQueue.poll(), clientId);
+                    serverSerializer.command_FromServerToSpecificClient(commandQueue.poll(), clientId);
+                    serverRMI.command_FromServerToSpecificClient(commandQueue.poll(), clientId);
                 } catch (RemoteException e) {
                     System.out.println("Error due to RemoteException in Server in giveMeCommandsForReconnection: " + e.getMessage());
                 }

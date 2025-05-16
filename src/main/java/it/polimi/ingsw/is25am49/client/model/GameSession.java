@@ -55,25 +55,12 @@ public class GameSession {
         currentState = nextState;
     }
 
-    public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
-        if (game.isEmpty()) {
-            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
-        } else throw new GameSettingsException("Game already exists!");
-    }
-
-    //probabilmente non serve
-    public void setGameMode(GameMode mode) {
-        game.ifPresent(g -> g.setGameMode(mode));
-    }
 
     public void checkIsAdmin(int playerId) throws GameSettingsException {
-        if (admin.isEmpty())
-            throw new GameSettingsException("There is no admin");
-        if (admin.get().getIdPlayer() != playerId)
-            throw new GameSettingsException("You are not the admin of this game");
+        if (admin.isEmpty()) throw new GameSettingsException("There is no admin");
+        if (admin.get().getIdPlayer() != playerId) throw new GameSettingsException("You are not the admin of this game");
     }
-
-    public boolean checkPlayers() {
+    public boolean checkMaxPlayers() {
         return game.map(Game::checkPlayers).orElse(false);
     }
 
@@ -85,16 +72,44 @@ public class GameSession {
     public boolean checkGameMode() {
         return game.map(value -> value.getMode().equals(GameMode.DEFAULT)).orElse(false);
     }
+    public boolean checkIsInLobby(int playerId) throws GameSettingsException {
+        return game.map(g -> g.getListPlayers().stream().anyMatch(p -> p.getIdPlayer() == playerId))
+                .orElse(false);
+    }
+    public void checkJoinLobby(int playerId) throws GameSettingsException {
+        if (admin.isPresent()) {
+            if (game.isPresent()) {
+                if (checkMaxPlayers()) {
+                    if(checkIsInLobby(playerId))throw new GameSettingsException("you already joined the lobby");
+                } else throw new GameSettingsException("too many players");
+            }else throw new GameSettingsException("game is not ready yet");
+        }
+    }
+    public void checkSetupGame(int playerId) throws GameSettingsException {
+        checkIsAdmin(playerId);
+        if(game.isPresent())throw new GameSettingsException("game already exists!");
+    }
+    public void checkStartGame(int playerId) throws GameSettingsException {
+        checkIsAdmin(playerId);
+        if(game.isEmpty())throw new GameSettingsException("there is no game to start");
+        if(game.get().numOfPlayers() < 2)throw new GameSettingsException("you cannot start the game yet, not enough players");
+    }
 
-    public void userJoinLobby(Color playerColor, String username, int playerID) throws GameSettingsException {
+    public void JoinLobby(Color playerColor, String username, int playerID) throws GameSettingsException {
         Player tempPlayer = new Player(username, playerColor, playerID);
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
         } else if (game.isPresent()) {
-            if (checkPlayers()) {
+            if (checkMaxPlayers()) {
                 game.get().addPlayer(tempPlayer);
             } else throw new GameSettingsException("too many players");
         } else throw new GameSettingsException("Game is not ready yet");
+    }
+
+    public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
+        if (game.isEmpty()) {
+            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
+        } else throw new GameSettingsException("Game already exists!");
     }
 
     public void userDiscardTile(Player player) {
@@ -144,7 +159,10 @@ public class GameSession {
     public void userQuitGame(Player player) {
         game.ifPresent(game->game.userQuitGame(player));
     }
-
+    public void checkCalculateScore(int playerId) {
+        checkIsAdmin(playerId);
+        game.ifPresent(g -> g.checkCalculateScore(game.get().getPlayer(playerId)));
+    }
     public void calculateScore(int playerId) {
         checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
@@ -153,8 +171,13 @@ public class GameSession {
     public void configurateFlight() {
         game.ifPresent(Game::configurateFlight);
     }
-
-    public void userEndGame(int playerId) throws GameSettingsException {
+    public void checkAdminEndGame(int playerId) throws GameSettingsException {
+        if (game.map(Game::gameIsFinished).orElse(false)) {
+            checkIsAdmin(playerId);
+        } else
+            throw new GameSettingsException("The game is not finished yet");
+    }
+    public void adminEndGame(int playerId) throws GameSettingsException {
         if (game.map(Game::gameIsFinished).orElse(false)) {
             checkIsAdmin(playerId);
             game = Optional.empty();
@@ -184,7 +207,7 @@ public class GameSession {
         if (getGame().isPresent()) {
             str.append("| 01) TestMatch - users ").append(getGame().get().numOfPlayers()).
                     append("/").append(getGame().get().getMaxPlayers());
-            if (!checkPlayers()) str.append(" - full\n");
+            if (!checkMaxPlayers()) str.append(" - full\n");
         } else if (getAdmin().isPresent()) str.append("| 01) TestMatch - users 1/4\n");
         else str.append("| 01) TestMatch - users 0/4 - CREATE LOBBY\n");
         str.append("+-----------------------------------------------\n");

@@ -21,18 +21,12 @@ public class BuildState extends State {
     }
 
     @Override
-    public void checkUserJoinLobby(Color playerColor, String username, int playerID) {
+    public void checkUserJoinLobby(int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
     }
 
     @Override
-    public void checkAdminSelectGameMode(int playerId, GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
-
-    }
-
-    @Override
-    public void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+    public void checkAdminCreateGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
     }
@@ -58,7 +52,7 @@ public class BuildState extends State {
     }
 
     @Override
-    public void checkUserDiscardTile(int playerId) throws IllegalStateException{
+    public void checkUserDiscardTile(int playerId) throws IllegalStateException {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         player.thereIsHandTile();
@@ -152,14 +146,9 @@ public class BuildState extends State {
     }
 
     @Override
-    public void checkUserEndGame(int playerId) {
+    public void checkAdminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
-    }
-
-    //illegal
-    public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
     public void userJoinLobby(Color playerColor, String username, int playerId) {
@@ -174,7 +163,6 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
-    //ok
     public void userPlaceTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
         player.placeTile(coordinates);
@@ -235,9 +223,8 @@ public class BuildState extends State {
         gameSession.mergeSmallDecks();
     }
 
-    //riempi tutti i component, anche le batterie, ecc.
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-
+        //TODO
     }
 
     //illegal
@@ -246,10 +233,6 @@ public class BuildState extends State {
     }
 
     public void userDrawAdventureCard(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
-
-    public void userPlayAdventureCard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
@@ -262,10 +245,6 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
-    public void userActivateComponent(int playerId, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
-
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
@@ -273,11 +252,6 @@ public class BuildState extends State {
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-
-    public void userActivateDaysUpdate() {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
-
 
     public void userStopFlight(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
@@ -287,7 +261,7 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
-    public void userEndGame(int playerId) {
+    public void adminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }

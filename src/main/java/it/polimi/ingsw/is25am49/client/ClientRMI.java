@@ -32,8 +32,19 @@ public class ClientRMI implements RemoteServer {
     }
 
     @Override
-    public void sendCommand(Command command) throws RemoteException {
+    public void command_FromClientToServer(Command command) throws RemoteException {
 
+    }
+
+    /**THIS METHOD IS CALLED BY THE SERVER
+     *REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
+     * SO: SERVER CAN CALL HIS INTERFACE METHOD(command_FromServerToClient) ONLY IF
+     * CLIENTRMI(the remote object) HAS THE METHOD IMPLEMENTED.
+     * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
+     * EXAMPLE: TO CALL PLACETILE ON THE SHIPBOARD, THE SHIPBOARD MUST HAVE PLACETILE ON ITS CODE.
+     */
+    public void command_FromServerToClient(Command command) throws RemoteException {
+        //DO NOT CANCEL THIS METHOD
     }
 }
 
