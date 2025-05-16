@@ -7,7 +7,7 @@ import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
+import it.polimi.ingsw.is25am49.client.model.Player;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -19,95 +19,116 @@ public class InitState extends State {
         super(gameSession, userInterface);
     }
 
-//-----------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------
 //    CHECK initState ↓
 //-----------------------------------------------------------------------------------------------------------
     @Override
     public void checkUserJoinLobby(int playerId) throws GameSettingsException {
         gameSession.checkJoinLobby(playerId);
     }
+
     @Override
     public void checkAdminCreateGame(int playerId) {
         gameSession.checkSetupGame(playerId);
     }
+
     @Override
     public void checkAdminStartGame(int playerId) throws GameSettingsException {
         gameSession.checkStartGame(playerId);
     }
+
     @Override
-    public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
+    public void checkUserPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserDiscardTile(int playerId) throws IllegalStateException {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserDrawTile(int playerId, int idTIle) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserFinishShipboard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+    public void checkUserAcceptPrizes(int playerId, boolean acceptPrizes) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+
     @Override
     public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserPlaceTimer(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkTimerIsDone() {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserThrowDices(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserDrawAdventureCard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
     public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    @Override
-    public void checkUserStopFlight(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
+
+
+
     @Override
     public void checkAdminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
     @Override
-    public void checkUserEndGame(int playerId) {
+    public void checkAdminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
@@ -126,7 +147,6 @@ public class InitState extends State {
         gameSession.createNewGame(gamemode, maxPlayers);
         userInterface.updateGameSessionCreateGame(playerId, gamemode, maxPlayers);
     }
-
     public void adminStartGame(int playerId) {
         gameSession.checkIsAdmin(playerId);
         if(!gameSession.checkGameMode())
@@ -201,14 +221,13 @@ public class InitState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
-    public void userStopFlight(int playerId) {
 
-    }
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-    public void userEndGame(int playerId) {
+
+    public void adminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }

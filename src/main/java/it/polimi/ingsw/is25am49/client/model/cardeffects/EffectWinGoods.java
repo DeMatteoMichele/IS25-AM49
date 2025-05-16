@@ -105,7 +105,7 @@ private boolean addTokenToTile(Point coordinate, Token token, Player player) {
     private Token minValueToken(List<Token> tokens) {
         Token minValueToken = tokens.getFirst();
         for (Token token : tokens) {
-            // Controllo se il token corrente ha un valore minore rispetto al minimo trovato finora
+            // controllo se il token corrente ha un valore minore rispetto al minimo trovato finora
             if (getTokenValue(token) < getTokenValue(minValueToken)) {
                 minValueToken = token;
             }

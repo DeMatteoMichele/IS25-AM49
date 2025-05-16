@@ -30,103 +30,9 @@ public class AdventureState extends State {
 
     }
 
-    @Override
-    public void checkAdminStartGame(int playerId) {
-
-    }
 
     @Override
-    public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
-
-    }
-
-    @Override
-    public void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException {
-
-    }
-
-    @Override
-    public void checkUserDiscardTile(int playerId) throws IllegalStateException {
-
-    }
-
-    @Override
-    public void checkUserDrawTile(int playerId, int idTIle) {
-
-    }
-
-    @Override
-    public void checkUserFinishShipboard(int playerId) {
-
-    }
-
-    @Override
-    public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-
-    }
-
-    @Override
-    public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-
-    }
-
-    @Override
-    public void checkUserPlaceTimer(int playerId) {
-
-    }
-
-    @Override
-    public void checkTimerIsDone() {
-
-    }
-
-    @Override
-    public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-
-    }
-
-    @Override
-    public void checkUserThrowDices(int playerId) {
-
-    }
-
-    @Override
-    public void checkUserDrawAdventureCard(int playerId) {
-
-    }
-
-    @Override
-    public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
-
-    }
-
-    @Override
-    public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
-    }
-
-    @Override
-    public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-
-    }
-
-    @Override
-    public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
-
-    }
-
-    @Override
-    public void checkUserStopFlight(int playerId) {
-
-    }
-
-    @Override
-    public void checkAdminCalculateScore(int playerId) {
-
-    }
-
-    @Override
-    public void checkUserEndGame(int playerId) {
+    public void checkAdminEndGame(int playerId) {
 
     }
 
@@ -174,71 +80,152 @@ public class AdventureState extends State {
     }
     public void userThrowDices(int playerId){
         Player player = getPlayerById(playerId);
-        Player currentPlayer = getCurrentPlayer();
-        if(player.equals(currentPlayer)){
-            gameSession.userThrowDices(player);
-        }
-        else{
-            throw new IllegalMethodOnThisStateException("You are not the current player");
-        }
+        gameSession.userThrowDices(player);
     }
-    public void userDrawAdventureCard(int playerId) {
+    public void userDrawAdventureCard(int playerId){
         Player player = getPlayerById(playerId);
         gameSession.userDrawAdventureCard(player);
     }
 
     public void userFinishDecisionActivating(int playerId, Set<Point> coordinates){
-        Player player = getPlayerById(playerId);
-        Player currentplayer = getCurrentPlayer();
-        if(player.equals(currentplayer)){
-            gameSession.userFinishDecisionActivating(coordinates);
-        }
-
+        gameSession.userFinishDecisionActivating(coordinates);
     }
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens){
-        Player player = getPlayerById(playerId);
-        Player currentPlayer = getCurrentPlayer();
-        if(player.equals(currentPlayer)){
-            gameSession.userFinishDecisionToken(listOfTokens);
-        }
-        else {
-            throw new IllegalMethodOnThisStateException("You are not the current player");
-        }
+        gameSession.userFinishDecisionToken(listOfTokens);
     }
 
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-        Player player = getPlayerById(playerId);
-        //controllo se il player che chiama il metodo è il current player
-        //se lo è smetto di passare il player perché gli effetti della carta sono sul current player
-        Player currentPlayer = getCurrentPlayer();
-        if(player.equals(currentPlayer)){
-            gameSession.userLandOnPlanet(isLanded, planetId);
-        }
-        else{
-            throw new IllegalMethodOnThisStateException("You are not the current player");
-        }
-
+        gameSession.userLandOnPlanet(isLanded, planetId);
     }
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
-        Player player = getPlayerById(playerId);
-        Player currentPlayer = getCurrentPlayer();
-        if(player.equals(currentPlayer)){
-            gameSession.userLandOnStationOrShip(isLanded);
-        }
-        else{
-            throw new IllegalMethodOnThisStateException("You are not the current player");
-        }
+        gameSession.userLandOnStationOrShip(isLanded);
 
     }
-
-    public void userStopFlight(int playerId) {
-
+    public void userAcceptPrizes(int playerId, boolean isAccepted){
+        gameSession.userAcceptPrizes(isAccepted);
     }
+
+
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userEndGame(int playerId) {
+    public void adminEndGame(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkAdminSelectGameMode(Player player, GameMode gamemode) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserJoinLobby(Color playerColor, String username, int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkAdminSelectGameMode(int playerId, GameMode gamemode) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkAdminStartGame(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserPlaceTile(int playerId, Point coordinates) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserPickTile(int playerId, Point coordinates){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserDiscardTile(int playerId){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserDrawTile(int playerId, int idTIle) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserFinishShipboard(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+
+    public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserPlaceTimer(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkTimerIsDone(){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates){
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserThrowDices(int playerId){
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        gameSession.checkThrowDicesState();
+        if(!player.equals(currentPlayer)){
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+    }
+
+    public void checkUserDrawAdventureCard(int playerId)  {
+        gameSession.checkUserDrawAdventureCard(playerId);
+    }
+    public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates){
+        gameSession.checkFinishDecisionActivatingStates();
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(!player.equals(currentPlayer)){
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+        gameSession.checkFinishDecisionActivatingCoordinates(coordinates);
+
+    }
+    public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens){
+        gameSession.checkFinishDecisionTokenStates();
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(!player.equals(currentPlayer)){
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+        gameSession.checkFinishDecisionTokenCoordinates(listOfTokens);
+    }
+
+    public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+        gameSession.checkLandingOnPlanet();
+        Player player = getPlayerById(playerId);
+        //controllo se il player che chiama il metodo è il current player
+        //se lo è smetto di passare il player perché gli effetti della carta sono sul current player
+        Player currentPlayer = getCurrentPlayer();
+        if(!player.equals(currentPlayer)){
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+
+    }
+    public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
+        gameSession.checkLandOnStationOrShipState();
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(!player.equals(currentPlayer)){
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+
+    }
+    public void checkUserAcceptPrizes(int playerId, boolean isAccepted){
+        gameSession.checkAcceptPrizesState();
+        Player player = getPlayerById(playerId);
+        Player currentPlayer = getCurrentPlayer();
+        if(!player.equals(currentPlayer)){
+            throw new IllegalMethodOnThisStateException("You are not the current player");
+        }
+    }
+
+
+
+    public void checkAdminCalculateScore(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void checkUserEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 }

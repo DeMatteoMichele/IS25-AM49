@@ -350,6 +350,23 @@ public class GameBoard {
             leaderBoard.remove(player);
         }
     }
+    /**
+     * This method is used to check if is possible to draw an adventure card
+     * @param player the player who is drawing the card
+     * @throws IllegalMethodOnThisStateException if the player is not the leader
+     * @throws GameSettingsException if the card is not finished
+     */
+    public void checkDrawAdventureCard(Player player){
+        if (player.equals(leaderBoard.getLeader())) {
+            if (isFirstCard || currentCard.getIsFinished() || !mainAdventureDeck.getDeck().isEmpty()) {
+                //OK
+            } else {
+                throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
+            }
+        } else
+            throw new GameSettingsException("You are not the leader of this turn");
+    }
+
 
     /**
      * This method is used to draw an adventure card
