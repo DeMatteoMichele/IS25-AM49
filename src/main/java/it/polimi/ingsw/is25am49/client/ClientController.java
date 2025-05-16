@@ -28,6 +28,7 @@ public class ClientController {
     private UserInterface ui;
     private String username;
 
+    private String error= "⚠ Error : ";
     /**
      * Solo per i test
      */
@@ -60,7 +61,7 @@ public class ClientController {
     }
 
     public void errorCallback(int playerId, String errorMessage) {
-        ui.printUpdateMessage(errorMessage);
+        ui.printUpdateMessage(error + errorMessage);
     }
 
     public void registerClientCallback(int playerId) {
@@ -80,9 +81,8 @@ public class ClientController {
     public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
-            ui.printUpdateMessage("ADMIN SETUP");
         } catch (Exception e) {
-            ui.printUpdateMessage("Errore durante la configurazione del gioco: " + e.getMessage());
+            ui.printUpdateMessage(error+ "Errore durante la configurazione del gioco --> " + e.getMessage());
         }
     }
 
@@ -219,7 +219,7 @@ public class ClientController {
             command.addParameter(mode);
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException | GameSettingsException e) {
-            ui.printUpdateMessage(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -232,7 +232,7 @@ public class ClientController {
             command.addParameter(Color.values()[playerId]);
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException | GameSettingsException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
