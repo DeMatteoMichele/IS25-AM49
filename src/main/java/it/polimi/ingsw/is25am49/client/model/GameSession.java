@@ -262,4 +262,7 @@ public class GameSession {
     public void checkLandOnStationOrShipState(){
         game.ifPresent(Game::checkLandOnStationOrShipState);
     }
+    public void checkAcceptPrizesState(){
+        game.ifPresent(Game::checkAcceptPrizesState);
+    }
 }

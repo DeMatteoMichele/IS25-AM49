@@ -73,7 +73,6 @@ public abstract class State {
 
     public abstract void checkUserLandOnStationOrShip(int playerId, boolean isLanded);
 
-    public abstract void checkUserStopFlight(int playerId);
     public abstract void checkUserAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException;
 
     public abstract void checkAdminCalculateScore(int playerId);
@@ -122,7 +121,7 @@ public abstract class State {
         gameSession.userQuitGame(player);
     }
 
-    public abstract void userStopFlight(int playerId);
+
 
     public abstract void adminCalculateScore(int playerId);
 

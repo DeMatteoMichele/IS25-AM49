@@ -102,19 +102,10 @@ public class AdventureState extends State {
 
     }
     public void userAcceptPrizes(int playerId, boolean isAccepted){
-        Player player = getPlayerById(playerId);
-        Player currentPlayer = getCurrentPlayer();
-        if(player.equals(currentPlayer)){
-            gameSession.userAcceptPrizes(isAccepted);
-        }
-        else{
-            throw new IllegalMethodOnThisStateException("You are not the current player");
-        }
+        gameSession.userAcceptPrizes(isAccepted);
     }
 
-    public void userStopFlight(int playerId) {
 
-    }
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
@@ -221,19 +212,15 @@ public class AdventureState extends State {
 
     }
     public void checkUserAcceptPrizes(int playerId, boolean isAccepted){
+        gameSession.checkAcceptPrizesState();
         Player player = getPlayerById(playerId);
         Player currentPlayer = getCurrentPlayer();
-        if(player.equals(currentPlayer)){
-            gameSession.userAcceptPrizes(isAccepted);
-        }
-        else{
+        if(!player.equals(currentPlayer)){
             throw new IllegalMethodOnThisStateException("You are not the current player");
         }
     }
 
-    public void checkUserStopFlight(int playerId) {
 
-    }
 
     public void checkAdminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");

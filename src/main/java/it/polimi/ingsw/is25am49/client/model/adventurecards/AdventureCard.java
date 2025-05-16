@@ -177,6 +177,11 @@ public abstract class AdventureCard {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
+    public void checkAcceptPrizesState(){
+        if (currentState != AdventureStatesTypes.DECISION_REWARDS) {
+            throw new IllegalMethodOnThisStateException("Wrong state");
+        }
+    }
 
     /**
      if description is longer than the width, it will be split into multiple lines

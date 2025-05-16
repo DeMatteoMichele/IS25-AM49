@@ -181,4 +181,7 @@ public class Game {
     public void checkLandOnStationOrShipState(){
         board.getCurrentCard().checkLandOnStationOrShipState();
     }
+    public void checkAcceptPrizesState(){
+        board.getCurrentCard().checkAcceptPrizesState();
+    }
 }

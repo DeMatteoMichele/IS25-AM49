@@ -133,11 +133,7 @@ public class BuildState extends State {
 
     }
 
-    @Override
-    public void checkUserStopFlight(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
-    }
 
     @Override
     public void checkAdminCalculateScore(int playerId) {
@@ -253,9 +249,7 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
-    public void userStopFlight(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
+
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");

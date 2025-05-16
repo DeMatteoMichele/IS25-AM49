@@ -120,10 +120,7 @@ public class InitState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
-    @Override
-    public void checkUserStopFlight(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
-    }
+
 
     @Override
     public void checkAdminCalculateScore(int playerId) {
@@ -224,9 +221,7 @@ public class InitState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
-    public void userStopFlight(int playerId) {
 
-    }
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");

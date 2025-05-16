@@ -93,9 +93,7 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
-    public void userStopFlight(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
+
 
     public void adminCalculateScore(int playerId) {
         gameSession.calculateScore(playerId);
@@ -185,9 +183,7 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
-    public void checkUserStopFlight(int playerId) {
 
-    }
 
     public void checkAdminCalculateScore(int playerId)  {
         gameSession.calculateScore(playerId);

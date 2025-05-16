@@ -439,10 +439,9 @@ public class ClientController {
         }
     }
 
-    public void userStopFlight(int playerId) throws RemoteException {
+    public void userQuitGame(int playerId) throws RemoteException {
         try{
-            gameSession.getState().checkUserStopFlight(playerId);
-            Command command = new Command("userStopFlight", this);
+            Command command = new Command("userQuitGame", this);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
