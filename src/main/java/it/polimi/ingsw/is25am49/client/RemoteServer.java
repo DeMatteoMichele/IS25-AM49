@@ -4,5 +4,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RemoteServer extends Remote {
-    void sendCommand(Command command) throws RemoteException;
+    void command_FromClientToServer(Command command) throws RemoteException;
 }

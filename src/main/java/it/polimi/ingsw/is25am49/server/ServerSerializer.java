@@ -375,12 +375,12 @@ public class ServerSerializer implements RemoteClient {
     }
 
     @Override
-    public void sendCommand(Command command) throws RemoteException {
+    public void command_FromServerToClient(Command command) throws RemoteException {
         serializeObjectFromServer(command,false,99);
     }
 
     @Override
-    public void sendCommandToSpecificClient(Command command, int clientId) throws RemoteException {
+    public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
         serializeObjectFromServer(command,true,clientId);
     }
 

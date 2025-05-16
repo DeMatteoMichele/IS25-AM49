@@ -361,7 +361,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     @Override
-    public void sendCommand(Command command) throws RemoteException {
+    public void command_FromClientToServer(Command command) throws RemoteException {
         serializeObjectFromClient(command);
     }
 }

@@ -17,12 +17,23 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
     }
 
     @Override
-    public void sendCommand(Command command) throws RemoteException {
+    public void command_FromServerToClient(Command command) throws RemoteException {
 
     }
 
     @Override
-    public void sendCommandToSpecificClient(Command command, int clientId) throws RemoteException {
+    public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
 
+    }
+
+    /**THIS METHOD IS CALLED BY THE CLIENT
+     *REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
+     * SO: CLIENT CAN CALL HIS INTERFACE METHOD(command_FromClientToServer) ONLY IF
+     * SERVERRMI(the remote object) HAS THE METHOD IMPLEMENTED.
+     * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
+     * EXAMPLE: TO CALL PLACETILE ON THE SHIPBOARD, THE SHIPBOARD MUST HAVE PLACETILE ON ITS CODE.
+     */
+    public void command_FromClientToServer(Command command) throws RemoteException {
+        //DO NOT CANCEL THIS METHOD
     }
 }

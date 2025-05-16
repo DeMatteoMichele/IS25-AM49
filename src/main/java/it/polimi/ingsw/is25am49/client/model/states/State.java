@@ -4,9 +4,10 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -30,11 +31,35 @@ public abstract class State {
     }
 
     public int getStateIndex(){return stateIndex;}
-    public abstract void checkUserJoinLobby(int playerId) throws GameSettingsException;
+    public abstract void checkUserJoinLobby(Color playerColor, String username, int playerID);
+    public abstract void checkAdminSelectGameMode(int playerId, GameMode gamemode);
+    public abstract void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
+    public abstract void checkAdminStartGame(int playerId);
+
+    public abstract void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException;
+    public abstract void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException;
+    public abstract void checkUserDiscardTile(int playerId) throws IllegalStateException;
+    public abstract void checkUserDrawTile(int playerId, int idTIle);
+    public abstract void checkUserFinishShipboard(int playerId);
+    public abstract void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+    public abstract void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
+    public abstract void checkUserPlaceTimer(int playerId);
+    public abstract void checkTimerIsDone();
+    public abstract void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates);
+
+    public abstract void checkUserThrowDices(int playerId);
+    public abstract void checkUserDrawAdventureCard(int playerId);
+    public abstract void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates);
+    public abstract void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
+    public abstract void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId);
+    public abstract void checkUserLandOnStationOrShip(int playerId, boolean isLanded);
+    public abstract void checkUserStopFlight(int playerId);
+
+    public abstract void checkAdminCalculateScore(int playerId);
+    public abstract void checkUserEndGame(int playerId);
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void checkAdminSetupGame(int playerId) throws GameSettingsException;
+    public abstract void adminSelectGameMode(int playerId, GameMode gamemode);
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
-    public abstract void checkAdminStartGame(int playerId) throws GameSettingsException;
     public abstract void adminStartGame(int playerId);
 
     public abstract void userPlaceTile(int playerId, Point coordinates);
