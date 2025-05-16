@@ -2,10 +2,10 @@ package it.polimi.ingsw.is25am49.client.model.states;
 
 import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -17,15 +17,30 @@ public class FinishScoreState extends State {
     public FinishScoreState(GameSession gameSession, UserInterface ui) {
         super(gameSession,ui);
     }
-    public void adminSelectGameMode(int playerId,GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+
+    @Override
+    public void checkUserJoinLobby(int playerId) throws GameSettingsException {
+
     }
+
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+    @Override
+    public void checkAdminSetupGame(int playerId) throws GameSettingsException {
+
+    }
+
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+    @Override
+    public void checkAdminStartGame(int playerId) throws GameSettingsException {
+
+    }
+
     public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }

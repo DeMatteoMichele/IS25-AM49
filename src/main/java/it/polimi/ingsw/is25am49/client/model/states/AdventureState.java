@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -18,15 +19,29 @@ public class AdventureState extends State {
         super(gameSession,ui);
     }
 
+    @Override
+    public void checkUserJoinLobby(int playerId) throws GameSettingsException {
+
+    }
+
     public void userJoinLobby(Color playerColor, String username, int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
+
+    @Override
+    public void checkAdminSetupGame(int playerId) throws GameSettingsException {
+
+    }
+
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+
+    @Override
+    public void checkAdminStartGame(int playerId) throws GameSettingsException {
+
     }
+
     public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

@@ -4,9 +4,9 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
-import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -30,9 +30,11 @@ public abstract class State {
     }
 
     public int getStateIndex(){return stateIndex;}
+    public abstract void checkUserJoinLobby(int playerId) throws GameSettingsException;
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void adminSelectGameMode(int playerId, GameMode gamemode);
+    public abstract void checkAdminSetupGame(int playerId) throws GameSettingsException;
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
+    public abstract void checkAdminStartGame(int playerId) throws GameSettingsException;
     public abstract void adminStartGame(int playerId);
 
     public abstract void userPlaceTile(int playerId, Point coordinates);

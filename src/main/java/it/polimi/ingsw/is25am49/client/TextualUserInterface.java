@@ -28,7 +28,7 @@ public class TextualUserInterface implements UserInterface {
     private ClientController controller;
     private final GameSession gameSession;
     private String username;
-    private int myId;
+    private int myId=-1;
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
@@ -122,17 +122,15 @@ public class TextualUserInterface implements UserInterface {
         lineReader.printAbove("Do you want to reconnect to a previous game? y/n");
         String risposta = lineReader.readLine(prompt).trim();
         while (true) {
-            if (risposta.equalsIgnoreCase("y"))
-                lineReader.printAbove("Insert your EXACT PREVIOUS username:");
-            else
-                lineReader.printAbove("Insert your username:");
+            if (risposta.equalsIgnoreCase("y")) lineReader.printAbove("Insert your EXACT PREVIOUS username:");
+            else  lineReader.printAbove("Insert your username:");
             username = lineReader.readLine(prompt).trim();
             if (username.length() > 20 || username.isEmpty()) {
                 printUpdateMessage(error + "username non valid");
             } else break;
         }
         controller.setUsername(username);
-        if (risposta.equalsIgnoreCase("n"))
+        if (!risposta.equalsIgnoreCase("y"))
             controller.createMyIdJson();
 
 //      CONNESSIONE AL SERVER + registrazione client
@@ -153,7 +151,7 @@ public class TextualUserInterface implements UserInterface {
                             System.out.println("client failed logging on server RMI --> " + e.getMessage());
                             //se voglio riprovare a connettermi
                             System.out.println("\nwanna retry? Y");
-                            if (lineReader.readLine(prompt).trim().equals("Y")) setupConnection();
+                            if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
                             else {
                                 printUpdateMessage("Server: closing...");
                                 System.exit(0);
@@ -163,7 +161,7 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage("⚠ Error : something went wrong during the connection tio the server RMI --> " + e.getMessage());
                         //se voglio riprovare a connettermi
                         printUpdateMessage("\nwanna retry? Y");
-                        if (lineReader.readLine(prompt).trim().equals("Y")) setupConnection();
+                        if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
                         else {
                             System.exit(0);
                             printUpdateMessage("closing...");
@@ -229,7 +227,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
-        if (gameSession.getPlayer(playerId).isEmpty()) {
+        if (!gameSession.checkIsInLobby(playerId)) {
             StringBuilder str = new StringBuilder();
             str.append(gameSession).append("\n");
             str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
@@ -246,7 +244,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateGameNewPlayer(int playerId) {
         StringBuilder str = new StringBuilder();
-        if (gameSession.getAdmin().map(a -> a.getIdPlayer() == playerId).orElse(false) && gameSession.getGame().isEmpty()) {
+        if (gameSession.getAdmin().map(a -> a.getIdPlayer() == myId).orElse(false) && gameSession.getGame().isEmpty()) {
             str.append("__________________________________________________________________\n\n");
             str.append("+----------------------------------------------\n");
             str.append("| LOBBY : Config\tmaxPlayers - 4\tgameMode - DEFAULT\n");
@@ -255,7 +253,7 @@ public class TextualUserInterface implements UserInterface {
             str.append("\n__________________________________________________________________\n");
             str.append("choose an option:");
             lineReader.printAbove(str.toString());
-        } else if (gameSession.getPlayer(playerId).isPresent()) { //TODO SUS
+        } else if (gameSession.checkIsInLobby(myId)) {
             str.append("__________________________________________________________________\n\n").
                     append(" SERVER - ").append(serverIP).append("\tstatus - connected\n").
                     append(gameSession.getGame().get()).append("\n");
@@ -302,7 +300,6 @@ public class TextualUserInterface implements UserInterface {
                         updateGameSessionCreateGame(myId, GameMode.DEFAULT, max);
                     }
                 }
-
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {

@@ -7,7 +7,6 @@ import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.client.model.Player;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -19,20 +18,24 @@ public class InitState extends State {
         super(gameSession, userInterface);
     }
 
+    public void checkUserJoinLobby(int playerId) throws GameSettingsException {
+        gameSession.checkJoinLobby(playerId);
+    }
     public void userJoinLobby(Color playerColor, String username, int playerId) {
-        gameSession.userJoinLobby(playerColor, username, playerId);
+        gameSession.JoinLobby(playerColor, username, playerId);
         userInterface.updateGameSessionNewPlayer(playerId);
         userInterface.updateGameNewPlayer(playerId);
     }
-    public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        Player player = getPlayerById(playerId);
-        gameSession.checkIsAdmin(playerId);
-        gameSession.setGameMode(gamemode);
+    public void checkAdminSetupGame(int playerId) throws GameSettingsException {
+        gameSession.checkSetupGame(playerId);
     }
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException {
         gameSession.checkIsAdmin(playerId);
         gameSession.createNewGame(gamemode, maxPlayers);
         userInterface.updateGameSessionCreateGame(playerId, gamemode, maxPlayers);
+    }
+    public void checkAdminStartGame(int playerId) throws GameSettingsException {
+        gameSession.checkStartGame(playerId);
     }
     public void adminStartGame(int playerId) {
         gameSession.checkIsAdmin(playerId);
