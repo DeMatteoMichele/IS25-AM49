@@ -73,7 +73,7 @@ class ServerSerializerTest {
         int i = 0;
         Command serProva1;
         for(File file: filesJson){
-            serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serObjectArray.get(i)));
+            serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serObjectArray.get(i),false,99));
             assertEquals(serProva1.toString(), serverSerializer.deSerializeStringFromClient(file).toString());
             i++;
         }
@@ -86,7 +86,7 @@ class ServerSerializerTest {
         for(Command serObject: serObjectArray){
             try {
                 testString = Files.readString(filesJson.get(i).toPath());
-                actualString = Files.readString(serverSerializer.serializeObjectFromServer(serObject).toPath());
+                actualString = Files.readString(serverSerializer.serializeObjectFromServer(serObject,false, 99).toPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -99,10 +99,10 @@ class ServerSerializerTest {
         Command serProva1;
         Command serProva2;
         for(Command serOb: serObjectArray){
-            serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serOb));
+            serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serOb,false,99));
             System.out.println(serProva1);
             System.out.println(serOb);
-            serProva2 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serProva1));
+            serProva2 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serProva1,false, 99));
             System.out.println(serProva2);
             System.out.println(serProva1);
             assertEquals(serProva1.toString(), serProva2.toString());
