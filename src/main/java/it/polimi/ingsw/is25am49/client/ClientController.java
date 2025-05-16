@@ -212,19 +212,20 @@ public class ClientController {
 
     public void adminSetup(int numberOfPlayers, GameMode mode) {
         try {
+            gameSession.getState().checkAdminCreateGame(playerId);
             Command command = new Command("adminSetup", this);
             command.addParameter(playerId);
             command.addParameter(numberOfPlayers);
             command.addParameter(mode);
             serverMethods.command_FromClientToServer(command);
-        } catch (RemoteException e) {
+        } catch (RemoteException | GameSettingsException e) {
             ui.printUpdateMessage(e.getMessage());
         }
     }
 
     public void playerJoin(String username) {
         try {
-            this.username = username;//todo da togliere
+            gameSession.getState().checkUserJoinLobby(playerId);
             Command command = new Command("playerJoin", this);
             command.addParameter(playerId);
             command.addParameter(username);

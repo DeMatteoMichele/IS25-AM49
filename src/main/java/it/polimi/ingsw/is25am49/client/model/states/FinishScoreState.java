@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -23,13 +24,13 @@ public class FinishScoreState extends State {
 
     }
 
-    public void userJoinLobby(Color playerColor, String username, int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    @Override
+    public void checkAdminCreateGame(int playerId) {
+
     }
 
-    @Override
-    public void checkAdminSetupGame(int playerId) throws GameSettingsException {
-
+    public void userJoinLobby(Color playerColor, String username, int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
@@ -38,6 +39,101 @@ public class FinishScoreState extends State {
 
     @Override
     public void checkAdminStartGame(int playerId) throws GameSettingsException {
+
+    }
+
+    @Override
+    public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
+
+    }
+
+    @Override
+    public void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException {
+
+    }
+
+    @Override
+    public void checkUserDiscardTile(int playerId) throws IllegalStateException {
+
+    }
+
+    @Override
+    public void checkUserDrawTile(int playerId, int idTIle) {
+
+    }
+
+    @Override
+    public void checkUserFinishShipboard(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+    }
+
+    @Override
+    public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+    }
+
+    @Override
+    public void checkUserPlaceTimer(int playerId) {
+
+    }
+
+    @Override
+    public void checkTimerIsDone() {
+
+    }
+
+    @Override
+    public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
+
+    }
+
+    @Override
+    public void checkUserThrowDices(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserDrawAdventureCard(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
+
+    }
+
+    @Override
+    public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
+
+    }
+
+    @Override
+    public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+
+    }
+
+    @Override
+    public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
+
+    }
+
+    @Override
+    public void checkUserStopFlight(int playerId) {
+
+    }
+
+    @Override
+    public void checkAdminCalculateScore(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserEndGame(int playerId) {
 
     }
 

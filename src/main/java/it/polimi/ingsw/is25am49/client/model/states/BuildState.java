@@ -21,18 +21,12 @@ public class BuildState extends State {
     }
 
     @Override
-    public void checkUserJoinLobby(Color playerColor, String username, int playerID) {
+    public void checkUserJoinLobby(int playerID) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
     }
 
     @Override
-    public void checkAdminSelectGameMode(int playerId, GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
-
-    }
-
-    @Override
-    public void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+    public void checkAdminCreateGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
     }
@@ -151,11 +145,6 @@ public class BuildState extends State {
     public void checkUserEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
-    }
-
-    //illegal
-    public void adminSelectGameMode(int playerId, GameMode gamemode) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
     public void userJoinLobby(Color playerColor, String username, int playerId) {

@@ -31,9 +31,8 @@ public abstract class State {
     }
 
     public int getStateIndex(){return stateIndex;}
-    public abstract void checkUserJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void checkAdminSelectGameMode(int playerId, GameMode gamemode);
-    public abstract void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
+    public abstract void checkUserJoinLobby(int playerID);
+    public abstract void checkAdminCreateGame(int playerId);
     public abstract void checkAdminStartGame(int playerId);
 
     public abstract void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException;
@@ -57,8 +56,10 @@ public abstract class State {
 
     public abstract void checkAdminCalculateScore(int playerId);
     public abstract void checkUserEndGame(int playerId);
+
+
+
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
-    public abstract void adminSelectGameMode(int playerId, GameMode gamemode);
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
     public abstract void adminStartGame(int playerId);
 
