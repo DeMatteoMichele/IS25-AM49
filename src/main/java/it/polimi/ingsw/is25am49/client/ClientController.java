@@ -167,7 +167,7 @@ public class ClientController {
 
     }
 
-    public void userEndGameCallback(int playerId) {
+    public void adminEndGameCallback(int playerId) {
 
     }
 
@@ -242,7 +242,7 @@ public class ClientController {
             Command command = new Command("userDrawTile", this);
             command.addParameter(playerId);
             command.addParameter(tileId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch(Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -256,7 +256,7 @@ public class ClientController {
             command.addParameter(playerId);
             command.addParameter(coordinates);
             command.addParameter(orientation);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -269,7 +269,7 @@ public class ClientController {
             Command command = new Command("userPickTile", this);
             command.addParameter(playerId);
             command.addParameter(coordinates);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e) {
             ui.printUpdateMessage(e.getMessage());
         }
@@ -280,7 +280,7 @@ public class ClientController {
             gameSession.getState().checkUserDiscardTile(playerId);
             Command command = new Command("userDiscardTile", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e) {
             ui.printUpdateMessage(e.getMessage());
         }
@@ -292,7 +292,7 @@ public class ClientController {
             gameSession.getState().checkUserFinishShipboard(playerId);
             Command command = new Command("userFinishShipboard", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e) {
             ui.printUpdateMessage(e.getMessage());
         }
@@ -305,7 +305,7 @@ public class ClientController {
             Command command = new Command("userLookSmallAdventureCardDeck", this);
             command.addParameter(playerId);
             command.addParameter(smallDeckIndex);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -318,7 +318,7 @@ public class ClientController {
             Command command = new Command("userStopLookSmallAdventureCardDeck", this);
             command.addParameter(playerId);
             command.addParameter(smallDeckIndex);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -330,7 +330,7 @@ public class ClientController {
             gameSession.getState().checkUserPlaceTimer(playerId);
             Command command = new Command("userPlaceTimer", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -344,7 +344,7 @@ public class ClientController {
             command.addParameter(playerId);
             command.addParameter(token);
             command.addParameter(coordinates);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -356,7 +356,7 @@ public class ClientController {
             gameSession.getState().checkUserThrowDices(playerId);
             Command command = new Command("userThrowDices", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch(Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -368,7 +368,7 @@ public class ClientController {
             gameSession.getState().checkUserDrawAdventureCard(playerId);
             Command command = new Command("userDrawAdventureCard", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch(Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -381,7 +381,7 @@ public class ClientController {
             Command command = new Command("userFinishDecisionActivating", this);
             command.addParameter(playerId);
             command.addParameter(coordinates);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -394,7 +394,7 @@ public class ClientController {
             Command command = new Command("userFinishDecisionToken", this);
             command.addParameter(playerId);
             command.addParameter(listOfTokens);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch(Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -407,7 +407,7 @@ public class ClientController {
             Command command = new Command("userAcceptPrizes", this);
             command.addParameter(playerId);
             command.addParameter(wantsRewards);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -420,7 +420,7 @@ public class ClientController {
             command.addParameter(playerId);
             command.addParameter(isLanded);
             command.addParameter(planetId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -433,7 +433,7 @@ public class ClientController {
             Command command = new Command("userLandOnStationOrShip", this);
             command.addParameter(playerId);
             command.addParameter(isLanded);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch(Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -444,7 +444,7 @@ public class ClientController {
             gameSession.getState().checkUserStopFlight(playerId);
             Command command = new Command("userStopFlight", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
@@ -456,18 +456,18 @@ public class ClientController {
             gameSession.getState().checkAdminCalculateScore(playerId);
             Command command = new Command("adminCalculateScore", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch (Exception e){
             ui.printUpdateMessage(e.getMessage());
         }
     }
 
-    public void userEndGame(int playerId) throws RemoteException {
+    public void adminEndGame(int playerId) throws RemoteException {
         try{
-            gameSession.getState().checkUserEndGame(playerId);
-            Command command = new Command("userEndGame", this);
+            gameSession.getState().checkAdminEndGame(playerId);
+            Command command = new Command("adminEndGame", this);
             command.addParameter(playerId);
-            serverMethods.sendCommand(command);
+            serverMethods.command_FromClientToServer(command);
         }catch(Exception e){
             ui.printUpdateMessage(e.getMessage());
         }

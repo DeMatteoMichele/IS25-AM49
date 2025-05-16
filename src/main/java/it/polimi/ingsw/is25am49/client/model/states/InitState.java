@@ -38,7 +38,7 @@ public class InitState extends State {
     }
 
     @Override
-    public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
+    public void checkUserPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
@@ -64,6 +64,9 @@ public class InitState extends State {
 
     @Override
     public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void checkUserAcceptPrizes(int playerId, boolean acceptPrizes) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
