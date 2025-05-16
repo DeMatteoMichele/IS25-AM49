@@ -31,10 +31,13 @@ public sealed abstract class  Component permits BasicComponent, ContainerCompone
         };
     }
 
+    public abstract void checkAddToken(Token token);
+    public abstract void checkRemoveToken(Token token);
+    public abstract boolean checkIfTokenIsValid(Token token);
+
     public abstract ArrayList<Token> getTokenList();
     public abstract int getNumberOfTokens();
     public abstract int getNumberOfaToken(Token token);
-    public abstract boolean checkIfTokenIsValid(Token token);
     public abstract void addToken(Token token);
     public abstract void removeToken(Token token);
     public abstract void removeToken();

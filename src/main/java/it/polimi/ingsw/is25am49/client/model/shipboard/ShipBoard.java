@@ -80,6 +80,132 @@ public class ShipBoard {
         }
     }
 
+//   -----------------------------------------------------------------------------------------------
+//    Funzioni di Check Shipboard ↓
+//  ------------------------------------------------------------------------------------------------
+
+    /**
+     * check if there is a tile at given Coordinates
+     * @param coordinates
+     */
+    public void checkCoordinates(Point coordinates) {
+        getTile(coordinates);
+    }
+    /**
+     * check if i can insert a tile
+     * @param coordinates indicating where to place the Tile
+     */
+    public void checkInsertTile(Point coordinates){
+        if(grid.containsKey(coordinates)){
+            if (grid.get(coordinates).isPresent()) throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> tile already present");
+        } else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+    }
+    /**
+     * check if i can remove a tile
+     * @param coordinates indicating where to remove the Tile from
+     */
+    public void checkRemoveTile(Point coordinates) {
+        try{
+            Tile t = getTile(coordinates);
+            if (t.isLocked())throw new InvalidCoordinatesException("cannot REMOVE a tile i<" + coordinates.x + "," + coordinates.y + "> --> tile is locked");
+        } catch (InvalidCoordinatesException e) {
+            throw new InvalidCoordinatesException("cannot REMOVE a tile in point<" + coordinates.x + "," + coordinates.y + "> --> "+e.getMessage());
+        }
+    }
+    /**
+     * check if the token can be added to the Tile
+     * @param coordinates of the tile
+     * @param token to add
+     */
+    public void checkAddTokenToTile(Point coordinates, Token token){
+        try{
+            Tile t= getTile(coordinates);
+            try{
+            t.getComponent().checkAddToken(token);
+            } catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
+                     IllegalMethodOnThisComponentException e) {
+                throw new RuntimeException("cannot add " + token + " to " + t.getComponentType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
+            }
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot add "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+ e.getMessage());
+        }
+    }
+    /**
+     * check if it's possible to fill the Tile with the given token
+     * @param coordinates of the Tile
+     * @param token to fill the Tile with
+     */
+    public void checkFillTileComponent(Point coordinates, Token token){
+        try {
+            Tile t=getTile(coordinates);
+            if (!t.getComponent().checkIfTokenIsValid(token)) throw new IllegalTokenInComponentEcxeption("cannot fill " + t.getComponentType() + " with token " + token);
+        }catch (InvalidCoordinatesException e) {
+            throw new InvalidCoordinatesException("cannot FILL point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
+        }
+    }
+    /**
+     * check if it's possible to remove the given token from the Tile
+     * @param coordinates of the Tile
+     * @param token to remove
+     */
+    public void checkRemoveTokenFromTile(Point coordinates, Token token){
+        try{
+            Tile t=getTile(coordinates);
+            try{t.getComponent().checkRemoveToken(token);}
+            catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
+                   IllegalMethodOnThisComponentException e) {
+                throw new RuntimeException("cannot remove "+token+" from " + t.getComponentType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
+            }
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot ADD "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+e.getMessage());
+        }
+    }
+    /**
+     * check if it's possible to activate the component in the Tile (coordinates)
+     * using a battery from Tile(donator)
+     * @param coordinates of the component to activate
+     * @param donator point of the battery
+     */
+    public void checkTurnOnComponent(Point coordinates, Point donator){
+        try{
+            Tile t=getTile(coordinates);
+            Tile d=getTile(donator);
+
+            if(d.getComponentType().equals(ComponentType.BATTERY)) {
+                try {
+                    d.getComponent().checkRemoveToken(Token.BATTERY_CELLS);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new RuntimeException("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
+                }
+            }else throw new IllegalMethodOnThisComponentException("cannot donate a BATTERY from" + t.getComponentType() + " point<" + donator.x + "," + donator.y+">");
+
+            try{t.isActive();}
+            catch(IllegalMethodOnThisComponentException e){
+                throw new RuntimeException("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+            }
+        }catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot turn ON point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
+        }
+    }
+    /**
+     * check if it's possible to turn off the component of a Tile
+     * @param coordinates of the Tile
+     */
+    public void checkTurnOff(Point coordinates){
+        try{
+            Tile t=getTile(coordinates);
+            try{t.isActive();}
+            catch(IllegalMethodOnThisComponentException e){
+                throw new RuntimeException("cannot turn off " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+            }
+        } catch (InvalidCoordinatesException e){
+            throw new InvalidCoordinatesException("cannot turn OFF point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
+        }
+    }
+//  -----------------------------------------------------------------------------------------------
+//    Funzioni di Update Shipboard ↓
+//  ------------------------------------------------------------------------------------------------
+
     /**
      * Locks the last tile placed in the shipboard
      */
@@ -183,18 +309,6 @@ public class ShipBoard {
             if(grid.get(coordinates).isEmpty()){
                 grid.put(coordinates, Optional.of(tile));
                 lastPlacedPoint=coordinates;
-            }else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> tile already present");
-        } else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
-    }
-
-    /**
-     * check if i can insert a tile
-     * @param coordinates indicating where to place the Tile
-     */
-    public void checkInsertTile(Point coordinates) throws InvalidCoordinatesException {
-        if(grid.containsKey(coordinates)){
-            if(grid.get(coordinates).isEmpty()){
-                //OK
             }else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> tile already present");
         } else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
     }
@@ -443,7 +557,7 @@ public class ShipBoard {
                 t.addToken(token);
             } catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
                      IllegalMethodOnThisComponentException e) {
-                System.out.println("cannot add " + token + " to " + t.getComponentType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
+                //System.out.println("cannot add " + token + " to " + t.getComponentType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot add "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+ e.getMessage());
@@ -462,7 +576,7 @@ public class ShipBoard {
             try {
                 t.fillComponent(token);
             } catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e) {
-                System.out.println("cannot fill " + t.getComponentType() + " with token " + token + " --> " + e.getMessage());
+                //System.out.println("cannot fill " + t.getComponentType() + " with token " + token + " --> " + e.getMessage());
             }
         }catch (InvalidCoordinatesException e) {
             throw new InvalidCoordinatesException("cannot FILL point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
@@ -499,7 +613,7 @@ public class ShipBoard {
                 try {
                     t.removeToken();
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
+                    //System.out.println("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
                     throw e;
                 }
             }else throw new IllegalMethodOnThisComponentException("cannot donate a BATTERY from" + t.getComponentType() + " point<" + donator.x + "," + donator.y+">");
@@ -517,7 +631,7 @@ public class ShipBoard {
             Tile t=getTile(coordinates);
             try{t.turnOn();}
             catch(IllegalMethodOnThisComponentException e){
-                System.out.println("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+                //System.out.println("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
                 throw e;
             }
         } catch (InvalidCoordinatesException e){
@@ -552,7 +666,7 @@ public class ShipBoard {
             Tile t=getTile(coordinates);
             try{t.turnOff();}
             catch(IllegalMethodOnThisComponentException e){
-                System.out.println("cannot turn off " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+                //System.out.println("cannot turn off " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot turn OFF point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());

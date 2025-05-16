@@ -13,6 +13,18 @@ public final class BasicComponent extends Component {
     }
 
     @Override
+    public void checkAddToken(Token token) {
+        throw new IllegalMethodOnThisComponentException("checkAddToken is not supported on BasicComponent");
+    }
+    @Override
+    public void checkRemoveToken(Token token) {
+        throw new IllegalMethodOnThisComponentException("checkRemoveToken is not supported on BasicComponent");
+    }
+    @Override
+    public boolean checkIfTokenIsValid(Token token) {
+        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid is not supported on BasicComponent");
+    }
+    @Override
     public ArrayList<Token> getTokenList() {
         throw new IllegalMethodOnThisComponentException("getTokenList is not supported on BasicComponent");
     }
@@ -23,10 +35,6 @@ public final class BasicComponent extends Component {
     @Override
     public int getNumberOfaToken(Token token) {
         throw new IllegalMethodOnThisComponentException("checkIfContainsToken is not supported on BasicComponent");
-    }
-    @Override
-    public boolean checkIfTokenIsValid(Token token) {
-        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid is not supported on BasicComponent");
     }
     @Override
     public void addToken(Token token) {

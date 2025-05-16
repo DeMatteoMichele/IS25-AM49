@@ -93,7 +93,6 @@ public class Tile {
         try {
             return component.getIsActive();
         }catch (IllegalMethodOnThisComponentException e){
-            System.out.println(e.getMessage());
             return false;
         }
     }
