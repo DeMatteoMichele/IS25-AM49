@@ -6,7 +6,9 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -14,27 +16,166 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class BuildState extends State {
-    public BuildState(GameSession gameSession, UserInterface ui){
+    public BuildState(GameSession gameSession, UserInterface ui) {
         super(gameSession, ui);
     }
+
+    @Override
+    public void checkUserJoinLobby(Color playerColor, String username, int playerID) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+    }
+
+    @Override
+    public void checkAdminSelectGameMode(int playerId, GameMode gamemode) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkAdminStartGame(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
+        Player player = getPlayerById(playerId);
+        player.thereIsHandTile();
+        player.shipBoardIsNotCompletedYet();
+        player.getShipBoard().checkInsertTile(coordinates);
+    }
+
+    @Override
+    public void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException {
+        Player player = getPlayerById(playerId);
+        player.checkPickTile(coordinates);
+    }
+
+    @Override
+    public void checkUserDiscardTile(int playerId) throws IllegalStateException{
+        Player player = getPlayerById(playerId);
+        player.shipBoardIsNotCompletedYet();
+        player.thereIsHandTile();
+    }
+
+    @Override
+    public void checkUserDrawTile(int playerId, int idTIle) {
+
+    }
+
+    @Override
+    public void checkUserFinishShipboard(int playerId) {
+
+    }
+
+    @Override
+    public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+    }
+
+    @Override
+    public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+    }
+
+    @Override
+    public void checkUserPlaceTimer(int playerId) {
+
+    }
+
+    @Override
+    public void checkTimerIsDone() {
+
+    }
+
+    @Override
+    public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
+
+    }
+
+    @Override
+    public void checkUserThrowDices(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserDrawAdventureCard(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserStopFlight(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkAdminCalculateScore(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
+    @Override
+    public void checkUserEndGame(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+
+    }
+
     //illegal
     public void adminSelectGameMode(int playerId, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     //ok
     public void userPlaceTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
         player.placeTile(coordinates);
     }
+
     //da discutere
 //    public void userRotateTileClockwise(Player player, Point coordinates) {
 //        player.rotateTile(true);
@@ -43,77 +184,92 @@ public class BuildState extends State {
 //        player.rotateTile(false);
 //    }
     //ok
-    public void userPickTile(int playerId, Point coordinates){
+    public void userPickTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
         player.pickTile(coordinates);
     }
-    public void userDiscardTile(int playerId){
+
+    public void userDiscardTile(int playerId) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userDiscardTile(player);
     }
+
     public void userDrawTile(int playerId, int idTIle) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userDrawTile(player, idTIle);
     }
+
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
-        if(gameSession.userFinishShipboard(player)) {
+        if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
         }
     }
+
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
-    public void userStopLookSmallAdventureCardDeck(int playerId,int smallDeckIndex) {
+
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userStopLookSmallAdventureCardDeck(player, smallDeckIndex);
     }
+
     public void userPlaceTimer(int playerId) {
         Player player = getPlayerById(playerId);
         gameSession.userPlaceTimer(player);
     }
-    public void timerIsDone(){
+
+    public void timerIsDone() {
         gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
     }
+
     //riempi tutti i component, anche le batterie, ecc.
-    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
 
     }
+
     //illegal
     public void userThrowDices(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userDrawAdventureCard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userPlayAdventureCard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userFinishDecisionActivating(int playerId, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
     @Override
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-        throw  new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
     public void userActivateComponent(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void userLandOnStationOrShip(int playerId,boolean isLanded) {
+
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userActivateDaysUpdate() {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
@@ -126,6 +282,7 @@ public class BuildState extends State {
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
     public void userEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

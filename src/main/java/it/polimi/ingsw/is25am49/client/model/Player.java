@@ -40,8 +40,8 @@ public class Player {
         this.idPlayer = idPlayer;
         isWatching = false;
     }
-//michele gay
-    private void thereIsHandTile(){
+
+    public void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");
     }
@@ -104,6 +104,13 @@ public class Player {
 
     public void addCredits(int amount){
         totCredits = totCredits + amount;
+    }
+
+    public void checkPickTile(Point coordinates) throws GameSettingsException {
+        shipBoardIsNotCompletedYet();
+        if(handTile.isEmpty());
+        else
+            throw new GameSettingsException("You cannot pick this tile");
     }
     // da testare
     public void pickTile(Point coordinates){

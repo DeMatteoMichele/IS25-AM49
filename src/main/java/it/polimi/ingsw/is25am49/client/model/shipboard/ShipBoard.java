@@ -187,6 +187,18 @@ public class ShipBoard {
     }
 
     /**
+     * check if i can insert a tile
+     * @param coordinates indicating where to place the Tile
+     */
+    public void checkInsertTile(Point coordinates) throws InvalidCoordinatesException {
+        if(grid.containsKey(coordinates)){
+            if(grid.get(coordinates).isEmpty()){
+                //OK
+            }else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> tile already present");
+        } else throw new InvalidCoordinatesException("cannot INSERT a tile in point<" + coordinates.x + "," + coordinates.y + "> --> out of shipboard");
+    }
+
+    /**
      * removes the tile at given coordinates from the SipBoard if present
      * @param coordinates of the Tile to remove
      * @return the removed Tile

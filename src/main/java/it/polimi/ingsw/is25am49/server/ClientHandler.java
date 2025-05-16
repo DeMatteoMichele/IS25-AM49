@@ -69,7 +69,7 @@ public class ClientHandler {
             Socket socket = serverSocket.accept();
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-            int clientId = handleFirstMessage(socket, inputStream, outputStream);
+            int clientId = handleFirstMessage(inputStream);
             if ((clientSockets.size() < maxClients) || (clientSockets.size() == maxClients && connections.containsKey(clientId))) {
                 if(connections.containsKey(clientId)){
                     executors.submit(()->startReconnection(clientId));
@@ -86,7 +86,7 @@ public class ClientHandler {
         }
     }
 
-    private int handleFirstMessage(Socket socket, DataInputStream inputStream, DataOutputStream outputStream) {
+    private int handleFirstMessage(DataInputStream inputStream) {
         try {
             int length = inputStream.readInt();
             byte[] buffer = new byte[length];
