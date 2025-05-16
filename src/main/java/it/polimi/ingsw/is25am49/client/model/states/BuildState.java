@@ -112,6 +112,10 @@ public class BuildState extends State {
     }
 
     @Override
+    public void checkUserAcceptPrizes(int playerId, boolean wantsRewards) {
+        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
+    }
+    @Override
     public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 

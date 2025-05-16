@@ -127,6 +127,8 @@ public abstract class AdventureCard {
         return name;
     }
 
+
+
     /**
      If description is longer than the width, it will be split into multiple lines
      @param sb the StringBuilder to append the text to

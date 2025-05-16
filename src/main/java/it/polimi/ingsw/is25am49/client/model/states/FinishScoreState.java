@@ -91,6 +91,9 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
+    public void userAcceptPrizes(int playerId, boolean isAccepted){
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
 
     public void userStopFlight(int playerId) {
 
@@ -100,6 +103,94 @@ public class FinishScoreState extends State {
         gameSession.calculateScore(playerId);
     }
     public void userEndGame(int playerId) {
+        gameSession.userEndGame(playerId);
+    }
+    public void checkAdminSelectGameMode(int playerId,GameMode gamemode) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserJoinLobby(Color playerColor, String username, int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkAdminStartGame(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserPlaceTile(int playerId, Point coordinates) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserRotateTileClockwise(int playerId, Point coordinates) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserRotateTileCounterClockwise(int playerId, Point coordinates) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserPickTile(int playerId, Point coordinates){
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserDiscardTile(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserDrawTile(int playerId, int idTIle) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserFinishShipboard(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserStopLookSmallAdventureCardDeck(int playerId,int smallDeckIndex) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserPlaceTimer(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkTimerIsDone(){
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates){
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserThrowDices(int playerid) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserDrawAdventureCard(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserPlayAdventureCard(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+    public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
+    public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
+    public void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
+
+    public void checkUserLandOnStationOrShip(int playerId, boolean isLanded) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
+    public void checkUserAcceptPrizes(int playerId, boolean isAccepted){
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
+    public void checkUserStopFlight(int playerId) {
+
+    }
+
+    public void checkAdminCalculateScore(int playerId)  {
+        gameSession.calculateScore(playerId);
+    }
+    public void checkUserEndGame(int playerId){
         gameSession.userEndGame(playerId);
     }
 }

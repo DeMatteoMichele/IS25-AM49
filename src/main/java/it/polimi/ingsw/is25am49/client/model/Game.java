@@ -144,7 +144,37 @@ public class Game {
         board.getCurrentCard().finishDecision(coordinates);
     }
 
+    public void userAcceptPrizes(boolean isAccepted){
+        board.getCurrentCard().acceptPrizes(isAccepted);
+    }
+
     public void userQuitGame(Player player){
         board.userQuitGame(player);
+    }
+
+    public void checkUserDrawAdventureCard(int playerId) throws GameSettingsException {
+        Player player = getPlayer(playerId);
+        board.checkDrawAdventureCard(player);
+    }
+    public void checkFinishDecisionActivatingStates(){
+        board.getCurrentCard().checkFinishDecisionActivatingStates();
+    }
+    public void checkThrowDicesState(){
+        board.getCurrentCard().checkThrowDicesState();
+    }
+    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates){
+        board.getCurrentCard().checkFinishDecisionActivatingCoordinates(coordinates);
+    }
+    public void checkFinishDecisionTokenStates(){
+        board.getCurrentCard().checkFinishDecisionTokenStates();
+    }
+    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens){
+        board.getCurrentCard().checkFinishDecisionTokenCoordinates(listOfTokens);
+    }
+    public void checkLandOnPlanetState(){
+        board.getCurrentCard().checkLandOnPlanetState();
+    }
+    public void checkLandOnStationOrShipState(){
+        board.getCurrentCard().checkLandOnStationOrShipState();
     }
 }

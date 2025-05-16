@@ -204,11 +204,39 @@ public class GameSession {
     public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
         game.ifPresent(game-> game.userFinishDecisionToken(listOfTokens));
     }
+    public void userAcceptPrizes(boolean isAccepted){
+        game.ifPresent(game->game.userAcceptPrizes(isAccepted));
+    }
 
     public void userLandOnStationOrShip(boolean isLanded){
         game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
     }
     public void userFinishDecisionActivating(Set<Point> coordinates){
         game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
+    }
+
+    public void checkUserDrawAdventureCard(int playerId) throws GameSettingsException {
+        game.ifPresent(g -> g.checkUserDrawAdventureCard(playerId));
+    }
+    public void checkFinishDecisionActivatingStates(){
+        game.ifPresent(Game::checkFinishDecisionActivatingStates);
+    }
+    public void checkThrowDicesState(){
+        game.ifPresent(Game::checkThrowDicesState);
+    }
+    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates){
+        game.ifPresent(g->g.checkFinishDecisionActivatingCoordinates(coordinates));
+    }
+    public void checkFinishDecisionTokenStates(){
+        game.ifPresent(Game::checkFinishDecisionTokenStates);
+    }
+    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens){
+        game.ifPresent(g->g.checkFinishDecisionTokenCoordinates(listOfTokens));
+    }
+    public void checkLandingOnPlanet( ) {
+        game.ifPresent(Game::checkLandOnPlanetState);
+    }
+    public void checkLandOnStationOrShipState(){
+        game.ifPresent(Game::checkLandOnStationOrShipState);
     }
 }

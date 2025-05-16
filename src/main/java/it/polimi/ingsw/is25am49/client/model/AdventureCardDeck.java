@@ -17,6 +17,9 @@ public class AdventureCardDeck {
         deck = new ArrayList<>();
         isBeingWatched = false;
     }
+    public List<AdventureCard> getDeck() {
+        return deck;
+    }
     public boolean isWatched() { return isBeingWatched; }
     public void watch(){ isBeingWatched = true; }
     public void stopWatch(){ isBeingWatched = false; }
