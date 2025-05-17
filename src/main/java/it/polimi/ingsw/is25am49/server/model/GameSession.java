@@ -1,9 +1,11 @@
 package it.polimi.ingsw.is25am49.server.model;
 
+import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.server.model.states.BuildState;
 import it.polimi.ingsw.is25am49.server.model.states.InitState;
 import it.polimi.ingsw.is25am49.server.model.states.State;
 import javafx.util.Pair;
@@ -18,6 +20,7 @@ public class GameSession {
     private Optional<Player> admin;
     private State currentState;
     private final int seedForGeneration;
+    private ServerController serverController;
 
     public GameSession() {
         seedForGeneration = (int) System.currentTimeMillis();
@@ -32,6 +35,10 @@ public class GameSession {
 
     public State getState() {
         return currentState;
+    }
+
+    public void setServerController(ServerController serverController) {
+        this.serverController = serverController;
     }
 
     public Optional<Player> getAdmin() {
@@ -127,18 +134,6 @@ public class GameSession {
         game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
 
-    public void userPlayAdventureCard(Player player) {
-    }
-
-    public void userEffectDecision(Player player) {
-    }
-
-    public void userActivateComponent(Player player, Point coordinates) {
-    }
-
-    public void userActivateDaysUpdate() {
-    }
-
     public void userLandOnPlanet(boolean isLanded, int planetId) {
         game.ifPresent(g -> g.userLandOnPlanet(isLanded, planetId));
     }
@@ -168,6 +163,7 @@ public class GameSession {
 
     public void configurateFlight() {
         game.ifPresent(Game::configurateFlight);
+        setState(new BuildState(this));
     }
 
     public void userEndGame(int playerId) throws GameSettingsException {
@@ -196,4 +192,7 @@ public class GameSession {
         return seedForGeneration;
     }
 
+    public void signalToControllerThatGameStarted() {
+        serverController.signalThatGameStarted();
+    }
 }

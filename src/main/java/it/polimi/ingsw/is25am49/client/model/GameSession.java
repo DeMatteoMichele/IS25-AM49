@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.states.BuildState;
 import it.polimi.ingsw.is25am49.client.model.states.InitState;
 import it.polimi.ingsw.is25am49.client.model.states.State;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -150,6 +151,7 @@ public class GameSession {
     }
     public void configurateFlight() {
         game.ifPresent(Game::configurateFlight);
+        currentState.transition(new BuildState(this, ui));
     }
     public void checkAdminEndGame(int playerId) throws GameSettingsException {
         if (game.map(Game::gameIsFinished).orElse(false)) {

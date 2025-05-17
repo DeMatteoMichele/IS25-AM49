@@ -28,6 +28,7 @@ public abstract class State {
     public void transition(State nextState) {
         gameSession.setState(nextState);
         stateIndex++;
+        userInterface.printUpdateMessage("NEW STATE: " + nextState.getClass().getSimpleName());
     }
 
     public int getStateIndex() {

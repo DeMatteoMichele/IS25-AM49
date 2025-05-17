@@ -20,13 +20,11 @@ public class ServerController {
     private ServerSerializer serverSerializer;
     private final ArrayList<Integer> players;
     private ServerRMI serverRMI;
-    private final ArrayBlockingQueue<Command> commandQueue;
     private final ExecutorService executors = Executors.newFixedThreadPool(10);
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
         this.players = new ArrayList<>();
-        commandQueue = new ArrayBlockingQueue<>(50000, true);
     }
 
     public void setSerializer(ServerSerializer serverSerializer) {
@@ -49,7 +47,6 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(numberOfPlayers);
                 command.addParameter(mode);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (GameSettingsException e) {
@@ -69,11 +66,11 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(color, username, playerId);
+                serverSerializer.sayToClientHandlerWhoHasJoined(playerId);
                 Command command = new Command("playerJoinCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(username);
                 command.addParameter(gameSession.getSeedForGeneration());
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (GameSettingsException e) {
@@ -96,7 +93,6 @@ public class ServerController {
                 Command command = new Command("userDrawTileCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(tileId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -120,7 +116,6 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
                 command.addParameter(orientation);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -143,7 +138,6 @@ public class ServerController {
                 Command command = new Command("userPickTileCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -164,7 +158,6 @@ public class ServerController {
                 gameSession.getState().userDiscardTile(playerId);
                 Command command = new Command("userDiscardTile", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -185,7 +178,6 @@ public class ServerController {
                 gameSession.getState().userFinishShipboard(playerId);
                 Command command = new Command("userFinishShipboardCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -207,7 +199,6 @@ public class ServerController {
                 Command command = new Command("userLookSmallAdventureCardDeckCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(smallDeckIndex);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -229,7 +220,6 @@ public class ServerController {
                 Command command = new Command("userStopLookSmallAdventureCardDeckCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(smallDeckIndex);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -250,7 +240,6 @@ public class ServerController {
                 gameSession.getState().userPlaceTimer(playerId);
                 Command command = new Command("userPlaceTimerCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -274,7 +263,6 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(token);
                 command.addParameter(coordinates);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -295,7 +283,6 @@ public class ServerController {
                 gameSession.getState().userThrowDices(playerId);
                 Command command = new Command("userThrowDicesCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -316,7 +303,6 @@ public class ServerController {
                 gameSession.getState().userDrawAdventureCard(playerId);
                 Command command = new Command("userDrawAdventureCardCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -338,7 +324,6 @@ public class ServerController {
                 Command command = new Command("userFinishDecisionActivatingCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -360,7 +345,6 @@ public class ServerController {
                 Command command = new Command("userFinishDecisionTokenCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(listOfTokens);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -382,7 +366,6 @@ public class ServerController {
                 Command command = new Command("userAcceptPrizesCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(wantsRewards);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -405,7 +388,6 @@ public class ServerController {
                 command.addParameter(playerId);
                 command.addParameter(isLanded);
                 command.addParameter(planetId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -427,7 +409,6 @@ public class ServerController {
                 Command command = new Command("userLandOnStationOrShipCallback", this, playerId);
                 command.addParameter(playerId);
                 command.addParameter(isLanded);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -446,14 +427,12 @@ public class ServerController {
         //????
     }
 
-    //todo commentato, c'è da aggiungere userquitgame callback a commandclient
     public void userQuitGame(int playerId) {
         try {
             try {
                 gameSession.getState().userQuitGame(playerId);
                 Command command = new Command("userQuitGameCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -474,7 +453,6 @@ public class ServerController {
                 gameSession.getState().adminCalculateScore(playerId);
                 Command command = new Command("adminCalculateScoreCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -495,7 +473,6 @@ public class ServerController {
                 gameSession.getState().userEndGame(playerId);
                 Command command = new Command("adminEndGameCallback", this, playerId);
                 command.addParameter(playerId);
-                commandQueue.add(command);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
@@ -514,16 +491,8 @@ public class ServerController {
         this.serverRMI = serverRMI;
     }
 
-    public void giveMeCommandsForReconnection(int clientId) {
-        executors.submit(() -> {
-            while (!commandQueue.isEmpty()) {
-                try {
-                    serverSerializer.command_FromServerToSpecificClient(commandQueue.poll(), clientId);
-                    serverRMI.command_FromServerToSpecificClient(commandQueue.poll(), clientId);
-                } catch (RemoteException e) {
-                    System.out.println("Error due to RemoteException in Server in giveMeCommandsForReconnection: " + e.getMessage());
-                }
-            }
-        });
+    public void signalThatGameStarted() {
+        serverSerializer.signalThatGameStarted();
+        serverRMI.signalThatGameStarted();
     }
 }

@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Map;
 import java.util.concurrent.*;
 
 public class ClientHandler {
@@ -25,9 +24,11 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, DataInputStream> inputStreams;
     private final ConcurrentMap<Integer, ArrayBlockingQueue<String>> InGoingStringQueues;
     private final ConcurrentMap<Integer, ArrayBlockingQueue<File>> OutGoingFileQueue;
+    private final ConcurrentMap<Integer, DataOutputStream> playersOutputStreams;
     private final ArrayBlockingQueue<File> BroadcastQueue;
     private final int maxClients;
     private final Thread serverThread;
+    private boolean gameStarted;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         maxClients = 4;
@@ -41,6 +42,8 @@ public class ClientHandler {
         lastHeartBeats = new ConcurrentHashMap<>();
         InGoingStringQueues = new ConcurrentHashMap<>();
         OutGoingFileQueue = new ConcurrentHashMap<>();
+        playersOutputStreams = new ConcurrentHashMap<>();
+        gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
         serverThread = new Thread(() -> {
             try {
@@ -70,19 +73,12 @@ public class ClientHandler {
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             int clientId = handleFirstMessage(inputStream);
-            if ((clientSockets.size() < maxClients) || (clientSockets.size() == maxClients && connections.containsKey(clientId))) {
-                if(connections.containsKey(clientId)){
-                    executors.submit(()->startReconnection(clientId));
-                }
-                System.out.println("Client connected with id: " + clientId);
-                connectClient(socket, inputStream, outputStream, clientId);
-                System.out.println("size: " + clientSockets.size());
-            } else {
-                System.out.println("Unwanted connection");
-                socket.close();
-                inputStream.close();
-                outputStream.close();
+            if (!gameStarted || connections.containsKey(clientId)) {
+                executors.submit(() -> askForPreviousCommands(clientId));
             }
+            System.out.println("Client connected with id: " + clientId);
+            connectClient(socket, inputStream, outputStream, clientId);
+            System.out.println("size: " + clientSockets.size());
         }
     }
 
@@ -105,17 +101,17 @@ public class ClientHandler {
      * This method creates all network components needed for the connection.
      * It submits to an executor the task of listening to that specific client which just connected.
      *
-     * @param socket        The socket of the client.
+     * @param socket   The socket of the client.
      * @param clientId The clientId of the client being connected.
      */
     private void connectClient(Socket socket, DataInputStream clientInputStream, DataOutputStream clientOutputStream, int clientId) {
-            lastHeartBeats.put(clientId, System.currentTimeMillis());
-            clientSockets.put(clientId, socket);
-            outputStreams.put(clientId, clientOutputStream);
-            inputStreams.put(clientId, clientInputStream);
-            connections.put(clientId, true);
-            InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
-            executors.submit(() -> listenToClient(clientId));
+        lastHeartBeats.put(clientId, System.currentTimeMillis());
+        clientSockets.put(clientId, socket);
+        outputStreams.put(clientId, clientOutputStream);
+        inputStreams.put(clientId, clientInputStream);
+        connections.put(clientId, true);
+        InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
+        executors.submit(() -> listenToClient(clientId));
     }
 
     /**
@@ -127,14 +123,14 @@ public class ClientHandler {
      */
     private void startCentralHeartBeatMonitor() {
         scheduler.scheduleAtFixedRate(() -> {
-            for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
-                if (connections.get(entry.getKey())) {
-                    if (System.currentTimeMillis() - entry.getValue() > 20000) {
-                        System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
-                        shutDownClientRelated(entry.getKey());
-                    }
-                }
-            }
+//            for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
+//                if (connections.get(entry.getKey())) {
+//                    if (System.currentTimeMillis() - entry.getValue() > 20000) {
+//                        System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+//                        shutDownClientRelated(entry.getKey());
+//                    }
+//                }
+//            }
         }, 0, 5, TimeUnit.SECONDS);
     }
 
@@ -178,7 +174,7 @@ public class ClientHandler {
      */
     public void putFileInTheOutGoingFileQueue(File filejson, int clientId) {
         try {
-            if(OutGoingFileQueue.get(clientId) == null){
+            if (OutGoingFileQueue.get(clientId) == null) {
                 OutGoingFileQueue.put(clientId, new ArrayBlockingQueue<>(1000, true));
             }
             OutGoingFileQueue.get(clientId).put(filejson);
@@ -200,7 +196,8 @@ public class ClientHandler {
         while (connections.get(clientId)) {
             try {
                 File fileToSend = OutGoingFileQueue.get(clientId).take();
-                sendMessageToClient(clientId,fileToSend);
+                sendMessageToClient(clientId, fileToSend);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the file from the Outgoing queue of the client " + clientId);
             }
@@ -221,9 +218,7 @@ public class ClientHandler {
             int length = jsonContent.length();
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
             DataOutputStream outputStream = outputStreams.get(clientId);
-            outputStream.writeInt(length);
-            outputStream.write(buffer);
-            outputStream.flush();
+            sendViaOutputStreams(clientId, outputStream, length, buffer);
         } catch (IOException e) {
             System.out.println("Error while sending the file to client " + clientId + " shutting down his connection");
             shutDownClientRelated(clientId);
@@ -242,7 +237,7 @@ public class ClientHandler {
         while (connections.get(clientId)) {
             try {
                 String jsonString = InGoingStringQueues.get(clientId).take();
-                File fileJson = new File("$"+clientId + "_received.json");
+                File fileJson = new File("$" + clientId + "_received.json");
                 Files.writeString(fileJson.toPath(), jsonString);
                 serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {
@@ -273,8 +268,8 @@ public class ClientHandler {
         }
     }
 
-    private void startReconnection(int clientId) {
-        serverSerializer.askControllerForCommandsForReconnection(clientId);
+    private void askForPreviousCommands(int clientId) {
+        serverSerializer.giveMeCommandsHistory(clientId);
     }
 
     /**
@@ -314,8 +309,8 @@ public class ClientHandler {
     /**
      * This method is used to send a file in broadcast to all the clients connected.
      * It takes the file, converts it to a string and sends it to all the clients connected.
-     * If the client is disconnected, it puts the file in the specific OutGoingFileQueue of that client.
      * It uses the output streams of the clients to send the file.
+     * It differs its chosen outputstreams based on the gameStarted boolean.
      *
      * @param fileToSend The file that has to be sent in broadcast.
      */
@@ -324,44 +319,66 @@ public class ClientHandler {
             String jsonContent = Files.readString(fileToSend.toPath());
             int length = jsonContent.length();
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
-            outputStreams.forEach((clientId, outputStream) -> {
-                try {
-                    if (connections.get(clientId)) {
-                        outputStream.writeInt(length);
-                        outputStream.write(buffer);
-                        outputStream.flush();
-                    }
-                    else {
-                        putFileInTheOutGoingFileQueue(fileToSend, clientId);
-                    }
-                } catch (IOException e) {
-                    System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);
-                    shutDownClientRelated(clientId);
-                    putFileInTheOutGoingFileQueue(fileToSend, clientId);
-                }
-            });
+            if (!gameStarted) {
+                outputStreams.forEach((clientId, outputStream) ->
+                        sendViaOutputStreams(clientId, outputStream, length, buffer));
+            } else {
+                playersOutputStreams.forEach((clientId, outputStream) ->
+                        sendViaOutputStreams(clientId, outputStream, length, buffer));
+            }
         } catch (IOException e) {
             System.err.println("Error while converting the file in string to send in broadcast: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method is used to flush the output stream of the client.
+     * It checks if the client is still connected and if it is, it sends the file to the client via its outputstream.
+     *
+     * @param clientId     The int of the client which we want to send the file.
+     * @param outputStream The output stream of the client.
+     * @param length       The length of the file to be sent.
+     * @param buffer       The byte array of the file to be sent.
+     */
+    private void sendViaOutputStreams(int clientId, DataOutputStream outputStream, int length, byte[] buffer) {
+        try {
+            if (connections.get(clientId)) {
+                outputStream.writeInt(length);
+                outputStream.write(buffer);
+                outputStream.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);
+            shutDownClientRelated(clientId);
         }
     }
 
     public static void main(String[] args) {
         GameSession gameSession = new GameSession();
         ServerController serverController = new ServerController(gameSession);
+        gameSession.setServerController(serverController);
         ServerSerializer serverSerializer = new ServerSerializer(serverController);
         ClientHandler clientHandler = new ClientHandler(serverSerializer, 8081);
         System.out.println("Server socket accesso!");
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
         try {
-            ServerRMI serverRMI=new ServerRMI();
+            ServerRMI serverRMI = new ServerRMI();
             Registry reg = LocateRegistry.createRegistry(1099);
             reg.rebind("ServerController", serverRMI);
             System.out.println("server RMI acceso!");
             serverController.setServerRMI(serverRMI);
+        } catch (RemoteException e) {
+            System.out.println("errore lato Skeleton: " + e.getMessage());
         }
-        catch (RemoteException e){
-            System.out.println("errore lato Skeleton: "+e.getMessage());
-        }
+    }
+
+    public void playerHasJoined(int playerId) {
+        playersOutputStreams.put(playerId, outputStreams.get(playerId));
+    }
+
+    public void gameStarted() {
+        gameStarted = true;
+        System.out.println("Game started");
     }
 }

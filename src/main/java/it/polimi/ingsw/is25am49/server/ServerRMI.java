@@ -36,4 +36,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
     public void command_FromClientToServer(Command command) throws RemoteException {
         //DO NOT CANCEL THIS METHOD
     }
+
+    public void signalThatGameStarted() {
+    }
 }

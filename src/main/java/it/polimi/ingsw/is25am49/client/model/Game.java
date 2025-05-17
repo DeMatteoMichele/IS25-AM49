@@ -55,6 +55,9 @@ public class Game {
     public void addPlayer(Player player) {
         players.add(player);
         numPlayers++;
+        if(numPlayers == maxPlayers) {
+            session.configurateFlight();
+        }
     }
     public ArrayList<Player> getListPlayers() { return players; }
     public void checkCalculateScore(Player player) {

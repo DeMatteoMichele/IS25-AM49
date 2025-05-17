@@ -26,9 +26,6 @@ public class FinishScoreState extends State {
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void adminStartGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
     public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }

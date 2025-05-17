@@ -27,9 +27,6 @@ public class BuildState extends State {
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
-    public void adminStartGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
-    }
     //ok
     public void userPlaceTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);

@@ -31,20 +31,6 @@ public class InitState extends State {
         gameSession.checkIsAdmin(playerId);
         gameSession.createNewGame(gamemode, maxPlayers);
     }
-    public void adminStartGame(int playerId) throws GameSettingsException{
-        gameSession.checkIsAdmin(playerId);
-        if(!gameSession.checkGameMode())
-            throw new GameSettingsException("You cannot start the game yet, set gameMode");
-        else{
-            if(gameSession.getGame().map(g -> g.numOfPlayers() < 2).orElse(false)){
-                throw new GameSettingsException("You cannot start the game yet, not enough players");
-            }
-            else{
-                gameSession.configurateFlight();
-                transition(new BuildState(gameSession));
-            }
-        }
-    }
     //Illegal
     public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");

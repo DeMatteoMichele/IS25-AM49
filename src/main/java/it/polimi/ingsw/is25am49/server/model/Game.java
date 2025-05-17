@@ -49,10 +49,16 @@ public class Game {
         timer = new Timer(mode, session);
     }
     public boolean checkPlayers(){ return players.size() < maxPlayers; }
+
     public void addPlayer(Player player) {
         players.add(player);
         numPlayers++;
+        if(numPlayers == maxPlayers) {
+            session.configurateFlight();
+            session.signalToControllerThatGameStarted();
+        }
     }
+
     public ArrayList<Player> getListPlayers() { return players; }
     public void calculateScore(Player player) throws GameSettingsException {
         if(winner.isEmpty()){
@@ -114,7 +120,6 @@ public class Game {
     public void userFinishDecisionActivating(Set<Point> coordinates){
         board.getCurrentCard().finishDecision(coordinates);
     }
-
     public void userQuitGame(Player player) throws GameSettingsException {
         board.userQuitGame(player);
     }

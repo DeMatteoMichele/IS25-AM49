@@ -25,6 +25,7 @@ public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private ClientHandler clientHandler;
     private final BlockingQueue<File> filesFromSocketQueue;
+    private final BlockingQueue<File> historyQueue;
     private final ExecutorService executorService;
     private int idCounter;
 
@@ -33,6 +34,7 @@ public class ServerSerializer implements RemoteClient {
         this.serverController = serverController;
         this.idCounter = -1;
         filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
+        historyQueue = new ArrayBlockingQueue<File>(50000, true);
         executorService = Executors.newFixedThreadPool(10);
         executorService.submit(this::processFilesFromSocketQueue);
     }
@@ -241,7 +243,7 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
-    public File serializeObjectFromServer(Command command,boolean toSpecificClient, int clientId) {
+    public File serializeObjectFromServer(Command command, boolean toSpecificClient, int clientId) {
         File jsonFile = null;
         try {
             jsonFile = File.createTempFile("server_response", ".json");
@@ -349,9 +351,12 @@ public class ServerSerializer implements RemoteClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
+            historyQueue.add(jsonFile);
+        }
         if (!toSpecificClient) {
             clientHandler.putFileInTheBroadcastQueue(jsonFile);
-        } else   {
+        } else {
             clientHandler.putFileInTheOutGoingFileQueue(jsonFile, clientId);
         }
         return jsonFile;
@@ -370,21 +375,44 @@ public class ServerSerializer implements RemoteClient {
         Command commandTemp;
         commandTemp = deSerializeStringFromClient(fileJson);
         commandTemp.setMethodName("registerClientCallback");
-        serializeObjectFromServer(commandTemp,true,commandTemp.getPlayerId());
+        serializeObjectFromServer(commandTemp, true, commandTemp.getPlayerId());
         return commandTemp.getPlayerId();
     }
 
+
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-        serializeObjectFromServer(command,false,99);
+        serializeObjectFromServer(command, false, 99);
     }
 
     @Override
     public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
-        serializeObjectFromServer(command,true,clientId);
+        serializeObjectFromServer(command, true, clientId);
     }
 
-    public void askControllerForCommandsForReconnection(int clientId) {
-        serverController.giveMeCommandsForReconnection(clientId);
+    /**
+     * This method is used to signal to the clienthandler that a player has joined.
+     * @param playerId the id of the player that has joined
+     */
+    public void sayToClientHandlerWhoHasJoined(int playerId) {
+        clientHandler.playerHasJoined(playerId);
+    }
+
+    /**
+     * This method is used to signal to the clienthandler that the game has started.
+     */
+    public void signalThatGameStarted() {
+        clientHandler.gameStarted();
+    }
+
+    /**
+     * This method is used to give the commands history to the client.
+     * It takes the files from the history queue and puts them in the outgoing file queue in clienthandler.
+     * @param clientId the id of the client that requested the history
+     */
+    public void giveMeCommandsHistory(int clientId) {
+       for(File filejson: historyQueue) {
+            clientHandler.putFileInTheOutGoingFileQueue(filejson, clientId);
+        }
     }
 }
