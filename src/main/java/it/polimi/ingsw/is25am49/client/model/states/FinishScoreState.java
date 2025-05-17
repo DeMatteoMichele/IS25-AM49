@@ -5,9 +5,7 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -104,7 +102,7 @@ public class FinishScoreState extends State {
     public void checkUserJoinLobby(int playerId,String username) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void checkAdminCreateGame(int playerId) {
+    public void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void checkAdminSelectGameMode(int playerId,GameMode gamemode) {

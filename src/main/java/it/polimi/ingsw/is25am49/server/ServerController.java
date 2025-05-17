@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -11,7 +10,6 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -61,11 +59,11 @@ public class ServerController {
         }
     }
 
-    public void playerJoin(int playerId, String username, Color color) {
+    public void playerJoin(int playerId, String username) {
         addPlayerToLobby(playerId);
         try {
             try {
-                gameSession.getState().userJoinLobby(color, username, playerId);
+                gameSession.getState().userJoinLobby(username, playerId);
                 serverSerializer.sayToClientHandlerWhoHasJoined(playerId);
                 Command command = new Command("playerJoinCallback", this, playerId);
                 command.addParameter(playerId);

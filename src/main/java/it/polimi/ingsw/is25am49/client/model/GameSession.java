@@ -56,7 +56,11 @@ public class GameSession {
     public void setState(State nextState) {
         currentState = nextState;
     }
-
+    public Color getColor() {
+       if(game.isEmpty()){
+           return Color.values()[0];
+       }else return Color.values()[game.get().numOfPlayers()];
+    }
 
     public void checkIsAdmin(int playerId) throws GameSettingsException {
         if (admin.isEmpty()) throw new GameSettingsException("There is no admin");
@@ -94,8 +98,10 @@ public class GameSession {
                 .orElse(false);
     }
 
-    public void checkSetupGame(int playerId) throws GameSettingsException {
+    public void checkSetupGame(int playerId, int mode, int numberOfPlayers) throws GameSettingsException {
         checkIsAdmin(playerId);
+        if(mode<0 || mode>2) throw new GameSettingsException("selected mode doesn't exist");
+        if(numberOfPlayers<0) throw new GameSettingsException("you need at least two players in a game!");
         if(game.isPresent())throw new GameSettingsException("game already exists!");
     }
     public void checkStartGame(int playerId) throws GameSettingsException {
@@ -218,6 +224,7 @@ public class GameSession {
             str.append("| 01) TestMatch - users ").append(getGame().get().numOfPlayers()).
                     append("/").append(getGame().get().getMaxPlayers());
             if (!checkMaxPlayers()) str.append(" - full\n");
+            else str.append("\n");
         } else if (getAdmin().isPresent()) str.append("| 01) TestMatch - users 1/4\n");
         else str.append("| 01) TestMatch - users 0/4 - CREATE LOBBY\n");
         str.append("+-----------------------------------------------\n");

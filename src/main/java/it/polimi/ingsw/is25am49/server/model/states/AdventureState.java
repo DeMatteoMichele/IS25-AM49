@@ -22,7 +22,7 @@ public class AdventureState extends State {
     public void adminSelectGameMode(Player player, GameMode gamemode) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void userJoinLobby(Color playerColor, String username, int playerId) {
+    public void userJoinLobby(String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void adminSelectGameMode(int playerId, GameMode gamemode) {

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
@@ -59,6 +59,11 @@ public class GameSession {
     public void setState(State nextState) {
         currentState = nextState;
     }
+    public Color getColor() {
+        if(game.isEmpty()){
+            return Color.values()[0];
+        }else return Color.values()[game.get().numOfPlayers()];
+    }
 
     public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
         if (game.isEmpty()) {
@@ -91,8 +96,8 @@ public class GameSession {
         return game.map(value -> value.getMode().equals(GameMode.DEFAULT)).orElse(false);
     }
 
-    public void userJoinLobby(Color playerColor, String username, int playerID) throws GameSettingsException {
-        Player tempPlayer = new Player(username, playerColor, playerID);
+    public void userJoinLobby(String username, int playerID) throws GameSettingsException {
+        Player tempPlayer = new Player(username,getColor() , playerID);
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
         } else if (game.isPresent()) {

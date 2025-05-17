@@ -4,13 +4,10 @@ import it.polimi.ingsw.is25am49.server.model.*;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +42,7 @@ class TileCardDeckTest {
         player1.setShipBoard(ship1);
         game = new Game(player1, gameSession, GameMode.DEFAULT,999,400);
         deck = game.getGameboard().getTilesDeck();
-        gameSession.userJoinLobby(player1.getColor(),player1.getUsername(),player1.getIdPlayer());
+        gameSession.userJoinLobby(player1.getUsername(),player1.getIdPlayer());
         gameSession.createNewGame(GameMode.FLIGHT_MODE, 999);
         //deck = game.getGameboard().getTilesDeck();
         deck = gameSession.getGame().map(g->g.getGameboard().getTilesDeck()).orElse(null);

@@ -197,7 +197,7 @@ public class ClientHandler {
             try {
                 File fileToSend = OutGoingFileQueue.get(clientId).take();
                 sendMessageToClient(clientId, fileToSend);
-                Thread.sleep(10);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the file from the Outgoing queue of the client " + clientId);
             }

@@ -28,7 +28,7 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
     }
     @Override
-    public void checkAdminCreateGame(int playerId) {
+    public void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
     }

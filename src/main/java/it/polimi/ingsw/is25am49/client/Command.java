@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.client;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.server.RemoteClient;
 import it.polimi.ingsw.is25am49.server.ServerController;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -73,7 +72,7 @@ public class Command {
             }
             case "playerJoin" -> {
                 try {
-                    serverController.playerJoin((int) parameters.get(0), parameters.get(1).toString(), (Color) parameters.get(2));
+                    serverController.playerJoin((int) parameters.get(0), parameters.get(1).toString());
                 } catch (Exception e) {
                     System.err.println("Errore in playerJoin: " + e.getMessage());
                     e.printStackTrace();

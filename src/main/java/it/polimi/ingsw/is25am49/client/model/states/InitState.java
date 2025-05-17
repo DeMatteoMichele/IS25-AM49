@@ -27,8 +27,8 @@ public class InitState extends State {
     }
 
     @Override
-    public void checkAdminCreateGame(int playerId) {
-        gameSession.checkSetupGame(playerId);
+    public void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers) {
+        gameSession.checkSetupGame(playerId,mode ,numberOfPlayers);
     }
 
     @Override

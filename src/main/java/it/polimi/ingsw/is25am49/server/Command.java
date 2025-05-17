@@ -77,7 +77,7 @@ public class Command {
             }
             case "playerJoin" -> {
                 try {
-                    serverController.playerJoin((int) parameters.get(0), parameters.get(1).toString(), (Color) parameters.get(2));
+                    serverController.playerJoin((int) parameters.get(0), parameters.get(1).toString());
                 } catch (Exception e) {
                     System.err.println("Error in playerJoin: " + e.getMessage());
                     e.printStackTrace();

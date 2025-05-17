@@ -38,7 +38,7 @@ public abstract class State {
 
     public abstract void checkUserJoinLobby(int playerID,String username);
 
-    public abstract void checkAdminCreateGame(int playerId);
+    public abstract void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers);
 
     public abstract void checkAdminStartGame(int playerId);
 

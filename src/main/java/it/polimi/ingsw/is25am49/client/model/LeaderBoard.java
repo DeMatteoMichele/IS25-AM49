@@ -21,7 +21,7 @@ public class LeaderBoard {
         mapLeaderboard = new HashMap<>();
         arrayLeaderboard = new ArrayList<>();
         switch (mode) {
-            case LEVEL_1 -> {
+            case FLIGHT_MODE,LEVEL_1 -> {
                 level = 1;
                 numberOfCells = 18;
                 break;

@@ -1,4 +1,5 @@
 package it.polimi.ingsw.is25am49.client.model;
+
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -34,87 +35,128 @@ public class Game {
 
         players.add(admin);
         numPlayers = 1;
-        this.maxPlayers = Math.max(Math.min(4,maxPlayers),2);
+        this.maxPlayers = Math.max(Math.min(4, maxPlayers), 2);
     }
-    public GameMode getMode() {return mode;}
-    public Player getPlayer(int id) throws IllegalArgumentException{
+
+    public GameMode getMode() {
+        return mode;
+    }
+
+    public Player getPlayer(int id) throws IllegalArgumentException {
         for (Player p : players) {
-            if(p.getIdPlayer() == id) return p;
+            if (p.getIdPlayer() == id) return p;
         }
         throw new IllegalArgumentException("Player not found");
     }
-    public GameBoard getGameboard() {return board;}
-    public int getMaxPlayers() {return maxPlayers;}
-    public int numOfPlayers() {return numPlayers;}
+
+    public GameBoard getGameboard() {
+        return board;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public int numOfPlayers() {
+        return numPlayers;
+    }
 
     public void setGameMode(GameMode mode) {
         this.mode = mode;
         timer = new Timer(mode, session);
     }
-    public boolean checkPlayers(){ return players.size() < maxPlayers; }
+
+    public boolean checkPlayers() {
+        return players.size() < maxPlayers;
+    }
+
     public void addPlayer(Player player) {
         players.add(player);
         numPlayers++;
-        if(numPlayers == maxPlayers) {
+        if (numPlayers == maxPlayers) {
             session.configurateFlight();
         }
     }
-    public ArrayList<Player> getListPlayers() { return players; }
+
+    public ArrayList<Player> getListPlayers() {
+        return players;
+    }
+
     public void checkCalculateScore(Player player) {
-        if(winner.isEmpty()){}
-        else throw new GameSettingsException("Final score already calculated");
+        if (winner.isEmpty()) {
+        } else throw new GameSettingsException("Final score already calculated");
     }
+
     public void calculateScore(Player player) {
-        if(winner.isEmpty()){
-                board.calculateFinalCredits();
-                winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
-        }
-        else throw new GameSettingsException("Final score already calculated");
+        if (winner.isEmpty()) {
+            board.calculateFinalCredits();
+            winner = players.stream().max((p1, p2) -> Integer.compare(p1.getCredits(), p2.getCredits()));
+        } else throw new GameSettingsException("Final score already calculated");
     }
-    public void configurateFlight(){
+
+    public void configurateFlight() {
         board.configurateFlight(mode, players);
         board.initialize(mode);
     }
-    public boolean gameIsFinished(){
+
+    public boolean gameIsFinished() {
         return isFinished;
     }
+
     public Optional<Player> userShowWinner() {
-            isFinished = true;
-            return winner;
+        isFinished = true;
+        return winner;
     }
+
     public boolean isTestFlight() {
         return mode == GameMode.FLIGHT_MODE;
     }
-    public void userPlaceTimer(Player player){
-        if(!isTestFlight())
+
+    public void userPlaceTimer(Player player) {
+        if (!isTestFlight())
             timer.place(player);
         else
             throw new GameSettingsException("This is a Test Flight");
     }
-    public void discardTile(Player player){
+
+    public void discardTile(Player player) {
         board.addDiscardedTile(player);
     }
-    public void userDrawTile(Player player, int idTile){
-        if(player.getHandTile().isPresent()){
+
+    public void userDrawTile(Player player, int idTile) {
+        if (player.getHandTile().isPresent()) {
             board.addDiscardedTile(player);
         }
         player.lockLastTile();
         player.setHandTile(board.drawTile(idTile, player));
     }
-    public boolean userFinishShipboard(Player player){ return board.userFinishShipboard(player) == numPlayers;}
-    public void userLookSmallAdventureCardDeck(Player player, int index){ board.userLookSmallAdventureCardDeck(player, index);}
-    public void userStopLookSmallAdventureCardDeck(Player player, Integer index){ board.userStopLookSmallAdventureCardDeck(player, index);}
-    public void addPlayersToLeaderBoard(){
+
+    public boolean userFinishShipboard(Player player) {
+        return board.userFinishShipboard(player) == numPlayers;
+    }
+
+    public void userLookSmallAdventureCardDeck(Player player, int index) {
+        board.userLookSmallAdventureCardDeck(player, index);
+    }
+
+    public void userStopLookSmallAdventureCardDeck(Player player, Integer index) {
+        board.userStopLookSmallAdventureCardDeck(player, index);
+    }
+
+    public void addPlayersToLeaderBoard() {
         players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
     }
-    public void mergeSmallDecks(){
+
+    public void mergeSmallDecks() {
         board.mergeDecks();
     }
-    public void userDrawAdventureCard(Player player){
+
+    public void userDrawAdventureCard(Player player) {
         board.drawAdventureCard(player);
     }
-    public void userThrowDices(Player player){
+
+    public void userThrowDices(Player player) {
         board.userThrowDices(player);
     }
 
@@ -126,10 +168,12 @@ public class Game {
         str.append("/").
                 append(getMaxPlayers()).append(" \tMode: ").
                 append(getMode()).append("\n");
-        int i=0;
+        int i = 0;
         for (Player player : getListPlayers()) {
-            str.append("| ").append(player.getIdPlayer()).append(")\t").append(player.getUsername());
-            if(i==0) str.append(" - ADMIN\n");
+            str.append("| ").append(player.getIdPlayer()).append(")\t").
+                    append("[").append(player.getColor()).append("]\t").
+                    append(player.getUsername());
+            if (i == 0) str.append(" - ADMIN\n");
             else str.append("\n");
             i++;
         }
@@ -138,24 +182,27 @@ public class Game {
     }
 
 
-    public void userLandOnPlanet(boolean isLanded, int planetId){
+    public void userLandOnPlanet(boolean isLanded, int planetId) {
         board.getCurrentCard().landingOnPlanet(isLanded, planetId);
     }
-    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
+
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens) {
         board.getCurrentCard().finishDecision(listOfTokens);
     }
-    public void userLandOnStationOrShip(boolean isLanded){
+
+    public void userLandOnStationOrShip(boolean isLanded) {
         board.getCurrentCard().landingOnStationOrShip(isLanded);
     }
-    public void userFinishDecisionActivating(Set<Point> coordinates){
+
+    public void userFinishDecisionActivating(Set<Point> coordinates) {
         board.getCurrentCard().finishDecision(coordinates);
     }
 
-    public void userAcceptPrizes(boolean isAccepted){
+    public void userAcceptPrizes(boolean isAccepted) {
         board.getCurrentCard().acceptPrizes(isAccepted);
     }
 
-    public void userQuitGame(Player player){
+    public void userQuitGame(Player player) {
         board.userQuitGame(player);
     }
 
@@ -163,28 +210,36 @@ public class Game {
         Player player = getPlayer(playerId);
         board.checkDrawAdventureCard(player);
     }
-    public void checkFinishDecisionActivatingStates(){
+
+    public void checkFinishDecisionActivatingStates() {
         board.getCurrentCard().checkFinishDecisionActivatingStates();
     }
-    public void checkThrowDicesState(){
+
+    public void checkThrowDicesState() {
         board.getCurrentCard().checkThrowDicesState();
     }
-    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates){
+
+    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates) {
         board.getCurrentCard().checkFinishDecisionActivatingCoordinates(coordinates);
     }
-    public void checkFinishDecisionTokenStates(){
+
+    public void checkFinishDecisionTokenStates() {
         board.getCurrentCard().checkFinishDecisionTokenStates();
     }
-    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens){
+
+    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens) {
         board.getCurrentCard().checkFinishDecisionTokenCoordinates(listOfTokens);
     }
-    public void checkLandOnPlanetState(){
+
+    public void checkLandOnPlanetState() {
         board.getCurrentCard().checkLandOnPlanetState();
     }
-    public void checkLandOnStationOrShipState(){
+
+    public void checkLandOnStationOrShipState() {
         board.getCurrentCard().checkLandOnStationOrShipState();
     }
-    public void checkAcceptPrizesState(){
+
+    public void checkAcceptPrizesState() {
         board.getCurrentCard().checkAcceptPrizesState();
     }
 }

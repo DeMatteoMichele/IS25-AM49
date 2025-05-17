@@ -3,11 +3,14 @@ package it.polimi.ingsw.is25am49.client;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.DefaultParser;
@@ -32,11 +35,11 @@ public class TextualUserInterface implements UserInterface {
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
-    //private final int boxWidth = 30;
-    //String border = "+" + "-".repeat(boxWidth - 2) + "+\n";
+    private final Queue<String> graphicsQueue;
 
     public Terminal terminal;
     public LineReader lineReader;
+    ExecutorService executor ;
 
     public TextualUserInterface() {
         gameSession = new GameSession(this);
@@ -50,6 +53,8 @@ public class TextualUserInterface implements UserInterface {
         } catch (IOException e) {
             System.err.println("errore creazione terminale TUI: " + e.getMessage());
         }
+        executor = Executors.newFixedThreadPool(5);
+        graphicsQueue = new LinkedList<String>();
     }
 
     @Override
@@ -64,6 +69,7 @@ public class TextualUserInterface implements UserInterface {
      */
     public static void main(String args[]) throws IOException {
         TextualUserInterface ui = new TextualUserInterface();
+        ui.controller = new ClientController(ui.gameSession, ui);
         Terminal terminal = ui.terminal;
 
         terminal.writer().println("+------------------------------+");
@@ -71,8 +77,10 @@ public class TextualUserInterface implements UserInterface {
         terminal.writer().println("+------------------------------+");
 
         //stabilisco connessione al server
+        ui.userSettings();
         ui.setupConnection();
         ui.updateGameSessionNewPlayer(ui.myId);
+
         ui.startGame();
     }
 
@@ -89,8 +97,6 @@ public class TextualUserInterface implements UserInterface {
      * Method used from the TUI to register the client to the server via (Socket/RMI)
      */
     public void setupConnection() {
-        controller = new ClientController(gameSession, this);
-
         int n = 0;
         StringBuilder str = new StringBuilder();
         str.append("Which connection do you want to use:\n").
@@ -116,13 +122,13 @@ public class TextualUserInterface implements UserInterface {
      * Method used from the setupConnection method to register the client to the server.
      * To register you must insert your Username that has to be unique!
      */
-    public void registerClient() {
+    public void userSettings() {
         //Utente inserisce Username
         lineReader.printAbove("Do you want to reconnect to a previous game? y/n");
         String risposta = lineReader.readLine(prompt).trim();
         while (true) {
             if (risposta.equalsIgnoreCase("y")) lineReader.printAbove("Insert your EXACT PREVIOUS username:");
-            else  lineReader.printAbove("Insert your username:");
+            else lineReader.printAbove("Insert your username:");
             username = lineReader.readLine(prompt).trim();
             if (username.length() > 20 || username.isEmpty()) {
                 printUpdateMessage(error + "username non valid");
@@ -131,8 +137,12 @@ public class TextualUserInterface implements UserInterface {
         controller.setUsername(username);
         if (!risposta.equalsIgnoreCase("y"))
             controller.createMyIdJson();
-
-//      CONNESSIONE AL SERVER + registrazione client
+    }
+    /**
+     * Method used from the setupConnection method to register the client to the server.
+     * To register you must insert your Username that has to be unique!
+     */
+    public void registerClient() {
         try {
             switch (connectionType) {
                 //CONNESSIONE RMI
@@ -191,9 +201,7 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
-
     public void startGame() {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
         executor.submit(() -> {
             String inputString;
             while (true) {
@@ -231,7 +239,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
-        if (!gameSession.checkIsInLobby(playerId)) {
+        if (!gameSession.checkIsInLobby(myId)) {
             clearConsole();
             StringBuilder str = new StringBuilder();
             str.append("welcome to the game ").append(username).append("!\n");
@@ -290,30 +298,31 @@ public class TextualUserInterface implements UserInterface {
         try {
             switch (input.trim() + ":" + gameSession.getState().getStateIndex()) {
                 case "1:0" -> { //JOIN LOBBY
-                    controller.playerJoin(username);
+                    try {
+                        controller.playerJoin(username);
+                    }catch (IllegalUsernameException e){
+                        printUpdateMessage(error+e.getMessage());
+                        userSettings();
+                        updateGameSessionNewPlayer(myId);
+                    }
                 }
                 case "2:0" -> { //SETUP GAME
                     int mode = 0, max = 0;
                     lineReader.printAbove("\nSETTINGS\nSelect gamemode:\n\t0. flight mode\n\t1. level 1\n\t2. level 2\n");
                     try {
                         mode = Integer.parseInt(lineReader.readLine(">> ").trim());
-                    } catch (NumberFormatException _) {
-                    }
-                    try {
                         max = Integer.parseInt(lineReader.readLine("insert max players:\n>> ").trim());
-                    } catch (NumberFormatException _) {
-                    }
-                    if (mode >= 0 && mode < 3 && max > 0)
-                        controller.adminSetup(max, GameMode.values()[mode]);
-                    else {
-                        printUpdateMessage("⚠ Error : invalid settings");
-                        updateGameSessionCreateGame(myId, GameMode.DEFAULT, max);
+                        controller.adminSetup(max, mode);
+                    } catch (Exception e) {
+                        printUpdateMessage(error+e.getMessage());
+                        //updateGameSessionCreateGame(myId, GameMode.DEFAULT, 4);
                     }
                 }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {
-            printUpdateMessage(error + "(errore switch) " + e.getMessage());
+            printUpdateMessage("(errore switch) "+error + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

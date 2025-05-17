@@ -84,13 +84,12 @@ public class GameBoard {
      * @param players the players of the game
      */
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
-        int level;
-        if (gameMode == GameMode.LEVEL_1)
-            level = 1;
-        else if (gameMode == GameMode.LEVEL_2)
-            level = 2;
-        else
-            throw new GameSettingsException("Illegal gameMode");
+        int level=switch (gameMode) {
+            case FLIGHT_MODE -> 0;
+            case LEVEL_1 -> 1;
+            case LEVEL_2 -> 2;
+            default -> throw new GameSettingsException("Illegal gameMode");
+        };
         players.stream().forEach(player ->
                 player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()))
         );

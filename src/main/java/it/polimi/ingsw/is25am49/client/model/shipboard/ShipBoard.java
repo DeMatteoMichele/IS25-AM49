@@ -43,7 +43,7 @@ public class ShipBoard {
         centerCabinTile.setConnectors(ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL);
 
         switch (level){
-            case 1:
+            case 0,1:
                 try{
                     File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_one_config.json");
                     if(!file.exists()){throw new FileNotFoundException("File(shipboard_two_config.json) non trovato: " + file.getAbsolutePath());}
@@ -977,11 +977,11 @@ public class ShipBoard {
         ArrayList<String> rows = new ArrayList<>(9);
         if(tile.isEmpty()){
             rows.add("┌ ─ ─ ─ ─ ─ ┐");
-            rows.add("│ • • • • • │");
-            rows.add("│ • • • • • │");
+            rows.add("│ •   •   • │");
+            rows.add("│           │");
             rows.add("│ • empty • │");
-            rows.add("│ • • • • • │");
-            rows.add("│ • • • • • │");
+            rows.add("│           │");
+            rows.add("│ •   •   • │");
             rows.add("└ ─ ─ ─ ─ ─ ┘");
         }
         else {

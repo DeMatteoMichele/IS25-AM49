@@ -2,7 +2,6 @@ package it.polimi.ingsw.is25am49.server.model.states;
 
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
@@ -24,8 +23,8 @@ public class InitState extends State {
         gameSession.checkIsAdmin(playerId);
         gameSession.setGameMode(gamemode);
     }
-    public void userJoinLobby(Color playerColor, String username, int playerId) throws GameSettingsException {
-        gameSession.userJoinLobby(playerColor, username, playerId);
+    public void userJoinLobby(String username, int playerId) throws GameSettingsException {
+        gameSession.userJoinLobby(username, playerId);
     }
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException{
         gameSession.checkIsAdmin(playerId);
