@@ -11,6 +11,7 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesExcept
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ public abstract class State {
 
     public abstract void checkUserLandOnStationOrShip(int playerId, boolean isLanded);
 
-    public abstract void checkUserStopFlight(int playerId);
+    public abstract void checkUserAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException;
 
     public abstract void checkAdminCalculateScore(int playerId);
 
@@ -121,7 +122,7 @@ public abstract class State {
         gameSession.userQuitGame(player);
     }
 
-    public abstract void userStopFlight(int playerId);
+
 
     public abstract void adminCalculateScore(int playerId);
 

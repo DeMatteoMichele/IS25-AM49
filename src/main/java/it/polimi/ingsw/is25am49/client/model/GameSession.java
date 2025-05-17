@@ -28,15 +28,19 @@ public class GameSession {
         admin = Optional.empty();
         currentState = new InitState(this, ui);
     }
+
     public Optional<Game> getGame() {
         return game;
     }
+
     public State getState() {
         return currentState;
     }
+
     public Optional<Player> getAdmin() {
         return admin;
     }
+
     public Optional<Player> getPlayer(int id) {
         if (game.isEmpty()) {
             if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;
@@ -47,10 +51,11 @@ public class GameSession {
         }
         return Optional.empty();
     }
+
     public void setState(State nextState) {
         currentState = nextState;
     }
-    public void setSeedForGeneration(int seedForGeneration) {this.seedForGeneration = seedForGeneration;}
+
 
     public void checkIsAdmin(int playerId) throws GameSettingsException {
         if (admin.isEmpty()) throw new GameSettingsException("There is no admin");
@@ -59,8 +64,10 @@ public class GameSession {
     public boolean checkMaxPlayers() {
         return game.map(Game::checkPlayers).orElse(false);
     }
+
     /**
      * method used to control that the admin has set the GameMode
+     *
      * @return returns true only if the mode is not DEFAULT
      */
     public boolean checkGameMode() {
@@ -109,35 +116,47 @@ public class GameSession {
     public void userDiscardTile(Player player) {
         game.ifPresent(g -> g.discardTile(player));
     }
+
     public void userDrawTile(Player player, int idTile) {
         game.ifPresent(g -> g.userDrawTile(player, idTile));
     }
+
     public boolean userFinishShipboard(Player player) {
         return game.map(value -> value.userFinishShipboard(player)).orElse(false);
     }
+
     public void userLookSmallAdventureCardDeck(Player player, int index) {
         game.ifPresent(g -> g.userLookSmallAdventureCardDeck(player, index));
     }
+
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {
         game.ifPresent(g -> g.userStopLookSmallAdventureCardDeck(player, index));
     }
+
     public void userPlaceTimer(Player player) {
         game.ifPresent(g -> g.userPlaceTimer(player));
     }
+
     public void userThrowDices(Player player) {
         game.ifPresent(g -> g.userThrowDices(player));
     }
+
     public void userDrawAdventureCard(Player player) {
         game.ifPresent(g -> g.userDrawAdventureCard(player));
     }
+
     public void userPlayAdventureCard(Player player) {
     }
+
     public void userEffectDecision(Player player) {
     }
+
     public void userActivateComponent(Player player, Point coordinates) {
     }
+
     public void userActivateDaysUpdate() {
     }
+
     public void userQuitGame(Player player) {
         game.ifPresent(game->game.userQuitGame(player));
     }
@@ -149,6 +168,7 @@ public class GameSession {
         checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
     }
+
     public void configurateFlight() {
         game.ifPresent(Game::configurateFlight);
         currentState.transition(new BuildState(this, ui));
@@ -167,30 +187,18 @@ public class GameSession {
         } else
             throw new GameSettingsException("The game is not finished yet");
     }
+
     public Optional<Player> userShowWinner(int playerId) {
         checkIsAdmin(playerId);
         return game.flatMap(Game::userShowWinner);
     }
+
     public void addPlayersToLeaderBoard() {
         game.ifPresent(Game::addPlayersToLeaderBoard);
     }
+
     public void mergeSmallDecks() {
         game.ifPresent(Game::mergeSmallDecks);
-    }
-
-    public void userLandOnPlanet(boolean isLanded, int planetId) {
-        game.ifPresent(g -> g.userLandOnPlanet(isLanded, planetId));
-    }
-
-    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
-        game.ifPresent(game-> game.userFinishDecisionToken(listOfTokens));
-    }
-
-    public void userLandOnStationOrShip(boolean isLanded){
-        game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
-    }
-    public void userFinishDecisionActivating(Set<Point> coordinates){
-        game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
     }
 
     @Override
@@ -207,5 +215,56 @@ public class GameSession {
         str.append("+-----------------------------------------------\n");
 
         return str.toString();
+    }
+
+    public void setSeedForGeneration(int seedForGeneration) {
+        this.seedForGeneration = seedForGeneration;
+    }
+
+
+    public void userLandOnPlanet(boolean isLanded, int planetId) {
+        game.ifPresent(g -> g.userLandOnPlanet(isLanded, planetId));
+    }
+
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
+        game.ifPresent(game-> game.userFinishDecisionToken(listOfTokens));
+    }
+    public void userAcceptPrizes(boolean isAccepted){
+        game.ifPresent(game->game.userAcceptPrizes(isAccepted));
+    }
+
+    public void userLandOnStationOrShip(boolean isLanded){
+        game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
+    }
+    public void userFinishDecisionActivating(Set<Point> coordinates){
+        game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
+    }
+
+    public void checkUserDrawAdventureCard(int playerId) throws GameSettingsException {
+        game.ifPresent(g -> g.checkUserDrawAdventureCard(playerId));
+    }
+    public void checkFinishDecisionActivatingStates(){
+        game.ifPresent(Game::checkFinishDecisionActivatingStates);
+    }
+    public void checkThrowDicesState(){
+        game.ifPresent(Game::checkThrowDicesState);
+    }
+    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates){
+        game.ifPresent(g->g.checkFinishDecisionActivatingCoordinates(coordinates));
+    }
+    public void checkFinishDecisionTokenStates(){
+        game.ifPresent(Game::checkFinishDecisionTokenStates);
+    }
+    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens){
+        game.ifPresent(g->g.checkFinishDecisionTokenCoordinates(listOfTokens));
+    }
+    public void checkLandingOnPlanet( ) {
+        game.ifPresent(Game::checkLandOnPlanetState);
+    }
+    public void checkLandOnStationOrShipState(){
+        game.ifPresent(Game::checkLandOnStationOrShipState);
+    }
+    public void checkAcceptPrizesState(){
+        game.ifPresent(Game::checkAcceptPrizesState);
     }
 }

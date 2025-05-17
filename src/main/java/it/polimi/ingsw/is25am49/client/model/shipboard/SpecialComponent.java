@@ -14,6 +14,20 @@ public final class SpecialComponent extends Component {
     }
 
     @Override
+    public void checkAddToken(Token token) {
+        throw new IllegalMethodOnThisComponentException("checkAddToken is not supported on SpecialComponent");
+    }
+    @Override
+    public void checkRemoveToken(Token token) {
+        throw new IllegalMethodOnThisComponentException("checkRemoveToken is not supported on SpecialComponent");
+    }
+    @Override
+    public boolean checkIfTokenIsValid(Token token) {
+        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid is not supported on SpecialComponent");
+    }
+
+
+    @Override
     public ArrayList<Token> getTokenList() {
         throw new IllegalMethodOnThisComponentException("getTokenList is not supported on SpecialComponent");
     }
@@ -24,10 +38,6 @@ public final class SpecialComponent extends Component {
     @Override
     public int getNumberOfaToken(Token token) {
         throw new IllegalMethodOnThisComponentException("checkIfContainsToken is not supported on SpecialComponent");
-    }
-    @Override
-    public boolean checkIfTokenIsValid(Token token) {
-        throw new IllegalMethodOnThisComponentException("checkIfTokenIsValid is not supported on SpecialComponent");
     }
     @Override
     public void addToken(Token token) {
@@ -68,4 +78,6 @@ public final class SpecialComponent extends Component {
     public int getFirePower() {return isActive? super.getFirePower():0;}
     @Override
     public int getEnginePower() {return isActive? super.getEnginePower():0;}
+
+
 }

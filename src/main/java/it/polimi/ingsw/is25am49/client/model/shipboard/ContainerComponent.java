@@ -18,20 +18,21 @@ public final class ContainerComponent extends Component {
     }
 
     @Override
-    public ArrayList<Token> getTokenList() {
-        return tokens;
+    public void checkAddToken(Token token) {
+        if(checkIfTokenIsValid(token)){
+            if (Objects.equals(level, tokens.size())) {
+                if (!type.equals(ComponentType.STORAGE) && !type.equals(ComponentType.SPECIAL_STORAGE))
+                    throw new ArrayIndexOutOfBoundsException("Cannot add tokens to " + type + ", container is full! level: " + level + " elements: " + tokens.size());
+            }
+        }else throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a " + type);
     }
-
     @Override
-    public int getNumberOfTokens() {
-        return tokens.size();
+    public void checkRemoveToken(Token token) {
+        if(checkIfTokenIsValid(token)){
+            if (tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("container is empty!");
+            if (!tokens.contains(token)) throw new IllegalTokenInComponentEcxeption("Token: " + token + " is not in the container!");
+        }else throw new IllegalTokenInComponentEcxeption("Cannot have a " + token + " in a " + type);
     }
-
-    @Override
-    public int getNumberOfaToken(Token token) {
-        return tokens.stream().filter(t -> t.equals(token)).mapToInt(t -> 1).sum();
-    }
-
     @Override
     public boolean checkIfTokenIsValid(Token token) {
         return switch (token) {
@@ -43,6 +44,18 @@ public final class ContainerComponent extends Component {
     }
 
     @Override
+    public ArrayList<Token> getTokenList() {
+        return tokens;
+    }
+    @Override
+    public int getNumberOfTokens() {
+        return tokens.size();
+    }
+    @Override
+    public int getNumberOfaToken(Token token) {
+        return tokens.stream().filter(t -> t.equals(token)).mapToInt(_ -> 1).sum();
+    }
+    @Override
     public void addToken(Token token) {
         if (!checkIfTokenIsValid(token))
             throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a " + type);
@@ -50,8 +63,7 @@ public final class ContainerComponent extends Component {
             if (type.equals(ComponentType.STORAGE) || type.equals(ComponentType.SPECIAL_STORAGE)) {
                 tokens.remove(Collections.max(tokens));
                 tokens.add(token);
-            } else
-                throw new ArrayIndexOutOfBoundsException("Cannot add tokens to " + type + ", container is full! level: " + level + " elements: " + tokens.size());
+            } else throw new ArrayIndexOutOfBoundsException("Cannot add tokens to " + type + ", container is full! level: " + level + " elements: " + tokens.size());
         } else tokens.add(token);
     }
 
@@ -63,13 +75,11 @@ public final class ContainerComponent extends Component {
         if (tokens.contains(token)) tokens.remove(token);
         else throw new IllegalTokenInComponentEcxeption("Token: " + token + " is not in the container!");
     }
-
     @Override
     public void removeToken() {
         if (tokens.isEmpty()) throw new ArrayIndexOutOfBoundsException("container is empty!");
         else tokens.removeLast();
     }
-
     @Override
     public void fillComponent(Token token) throws IllegalTokenInComponentEcxeption {
         if (!checkIfTokenIsValid(token))
@@ -78,7 +88,6 @@ public final class ContainerComponent extends Component {
             tokens.add(token);
         }
     }
-
     @Override
     public void clearComponent() {
         tokens.clear();
@@ -89,12 +98,10 @@ public final class ContainerComponent extends Component {
     public boolean getIsActive() {
         throw new IllegalMethodOnThisComponentException("getIsActive is not supported on ContainerComponent");
     }
-
     @Override
     public void turnOn() {
         throw new IllegalMethodOnThisComponentException("turnOn is not supported on ContainerComponent");
     }
-
     @Override
     public void turnOff() {
         throw new IllegalMethodOnThisComponentException("turnOff is not supported on ContainerComponent");
