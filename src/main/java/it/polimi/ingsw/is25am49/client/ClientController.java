@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.*;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
@@ -225,7 +226,7 @@ public class ClientController {
 
     public void playerJoin(String username) {
         try {
-            gameSession.getState().checkUserJoinLobby(playerId);
+            gameSession.getState().checkUserJoinLobby(playerId, username);
             Command command = new Command("playerJoin", this);
             command.addParameter(playerId);
             command.addParameter(username);
@@ -233,6 +234,9 @@ public class ClientController {
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException | GameSettingsException e) {
             throw new RuntimeException(e.getMessage());
+        }
+        catch (IllegalUsernameException e) {
+            throw new IllegalUsernameException(e.getMessage());
         }
     }
 

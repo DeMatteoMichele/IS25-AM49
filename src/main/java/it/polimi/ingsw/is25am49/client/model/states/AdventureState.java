@@ -21,19 +21,19 @@ public class AdventureState extends State {
     }
 
     @Override
-    public void checkUserJoinLobby(int playerID) {
-
+    public void checkUserJoinLobby(int playerID,String username) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
     @Override
     public void checkAdminCreateGame(int playerId) {
-
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
 
     @Override
     public void checkAdminEndGame(int playerId) {
-
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
     public void userJoinLobby(Color playerColor, String username, int playerID) {

@@ -7,7 +7,6 @@ import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.client.model.Player;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -23,8 +22,8 @@ public class InitState extends State {
 //    CHECK initState ↓
 //-----------------------------------------------------------------------------------------------------------
     @Override
-    public void checkUserJoinLobby(int playerId) throws GameSettingsException {
-        gameSession.checkJoinLobby(playerId);
+    public void checkUserJoinLobby(int playerId,String username) throws GameSettingsException {
+        gameSession.checkJoinLobby(playerId, username);
     }
 
     @Override

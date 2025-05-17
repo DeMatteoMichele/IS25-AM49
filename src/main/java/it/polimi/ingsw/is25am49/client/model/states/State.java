@@ -36,7 +36,7 @@ public abstract class State {
         return stateIndex;
     }
 
-    public abstract void checkUserJoinLobby(int playerID);
+    public abstract void checkUserJoinLobby(int playerID,String username);
 
     public abstract void checkAdminCreateGame(int playerId);
 

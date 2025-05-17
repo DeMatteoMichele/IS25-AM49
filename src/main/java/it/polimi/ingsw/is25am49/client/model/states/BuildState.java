@@ -24,7 +24,7 @@ public class BuildState extends State {
 //    CHECK buildState ↓
 //-----------------------------------------------------------------------------------------------------------
     @Override
-    public void checkUserJoinLobby(int playerID) {
+    public void checkUserJoinLobby(int playerID,String username){
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
     }
     @Override

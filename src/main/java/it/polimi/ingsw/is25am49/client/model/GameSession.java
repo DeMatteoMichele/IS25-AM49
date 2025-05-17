@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.BuildState;
 import it.polimi.ingsw.is25am49.client.model.states.InitState;
 import it.polimi.ingsw.is25am49.client.model.states.State;
@@ -77,15 +78,22 @@ public class GameSession {
         return game.map(g -> g.getListPlayers().stream().anyMatch(p -> p.getIdPlayer() == playerId))
                 .orElse(false);
     }
-    public void checkJoinLobby(int playerId) throws GameSettingsException {
+    public void checkJoinLobby(int playerId,String username) throws GameSettingsException {
         if (admin.isPresent()) {
             if (game.isPresent()) {
                 if (checkMaxPlayers()) {
                     if(checkIsInLobby(playerId))throw new GameSettingsException("you already joined the lobby");
+                    if(checkUsernameAlreadyTaken(username))throw new IllegalUsernameException("username already taken");
                 } else throw new GameSettingsException("too many players");
             }else throw new GameSettingsException("game is not ready yet");
         }
     }
+
+    private boolean checkUsernameAlreadyTaken(String username) {
+        return game.map(g -> g.getListPlayers().stream().anyMatch(p -> p.getUsername().equals(username)))
+                .orElse(false);
+    }
+
     public void checkSetupGame(int playerId) throws GameSettingsException {
         checkIsAdmin(playerId);
         if(game.isPresent())throw new GameSettingsException("game already exists!");

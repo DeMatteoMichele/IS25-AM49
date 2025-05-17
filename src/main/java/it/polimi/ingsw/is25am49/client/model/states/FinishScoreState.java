@@ -101,7 +101,7 @@ public class FinishScoreState extends State {
     public void adminEndGame(int playerId) {
         gameSession.adminEndGame(playerId);
     }
-    public void checkUserJoinLobby(int playerId) {
+    public void checkUserJoinLobby(int playerId,String username) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void checkAdminCreateGame(int playerId) {
