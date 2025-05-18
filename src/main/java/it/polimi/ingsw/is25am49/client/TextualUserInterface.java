@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
@@ -35,7 +33,7 @@ public class TextualUserInterface implements UserInterface {
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
-    private final Queue<String> graphicsQueue;
+    private final LinkedBlockingDeque<String> graphicsQueue;
 
     public Terminal terminal;
     public LineReader lineReader;
@@ -54,7 +52,7 @@ public class TextualUserInterface implements UserInterface {
             System.err.println("errore creazione terminale TUI: " + e.getMessage());
         }
         executor = Executors.newFixedThreadPool(5);
-        graphicsQueue = new LinkedList<String>();
+        graphicsQueue = new LinkedBlockingDeque<>();
     }
 
     @Override
@@ -217,10 +215,34 @@ public class TextualUserInterface implements UserInterface {
                 inputString = lineReader.readLine(prompt).trim();
                 if (inputString.equalsIgnoreCase("quit")) {
                     printUpdateMessage("Server: closing...");
+                    executor.shutdownNow(); // Interrompe entrambi i thread
                     System.exit(0);
                 }
                 handleInput(inputString.toLowerCase());
                 terminal.flush();
+            }
+        });
+        executor.submit(() -> {
+            try {
+                Thread.sleep(1000);//aspetto un attimo per far arrivare i pacchetti
+                while (true) {
+                    String graphic = graphicsQueue.take();
+                    if(!graphicsQueue.isEmpty()){
+                        printUpdateMessage("RECONNETTING ...");
+                        String next;
+                        while ((next = graphicsQueue.poll()) != null) {
+                            graphic = next;
+                            Thread.sleep(100);
+                        }
+                        printUpdateMessage("successfully reconnected");
+                        lineReader.printAbove(graphic);
+                    }else{
+                        clearConsole();
+                        lineReader.printAbove(graphic);
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // permette di fermare il thread in modo sicuro
             }
         });
     }
@@ -229,6 +251,7 @@ public class TextualUserInterface implements UserInterface {
             terminal.writer().println();
         }
     }
+
 
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
@@ -245,11 +268,25 @@ public class TextualUserInterface implements UserInterface {
             block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.BOLD.foreground(AttributedStyle.CYAN)).toAttributedString();
         lineReader.printAbove(block.toAnsi());
     }
+    @Override
+    public void updateStateTransition(int stateIndex) {
+        StringBuilder stringBuilder = new StringBuilder();
+        switch (stateIndex) {
+            case 1 -> {//BuildState
+                stringBuilder.append("\t+-------------------------------+\n")
+                             .append("\t|       BUILD STATE :)          |\n")
+                             .append("\t+-------------------------------+\n");
+                lineReader.printAbove(stringBuilder.toString());
+            }
+            default -> {
+                printUpdateMessage(error + "stateIndex: " + stateIndex);
+            }
+        }
+    }
 
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
         if (!gameSession.checkIsInLobby(myId)) {
-            clearConsole();
             StringBuilder str = new StringBuilder();
             str.append("welcome to the game ").append(username).append("!\n");
             str.append("__________________________________________________________________\n\n");
@@ -257,7 +294,7 @@ public class TextualUserInterface implements UserInterface {
             str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
             str.append("__________________________________________________________________\n");
             str.append("choose an option:");
-            lineReader.printAbove(str.toString());
+            graphicsQueue.add(str.toString());
         }
     }
 
@@ -270,7 +307,6 @@ public class TextualUserInterface implements UserInterface {
     public void updateGameNewPlayer(int playerId) {
         StringBuilder str = new StringBuilder();
         if (gameSession.getAdmin().map(a -> a.getIdPlayer() == myId).orElse(false) && gameSession.getGame().isEmpty()) {
-            clearConsole();
             str.append("__________________________________________________________________\n\n");
             str.append("+----------------------------------------------\n");
             str.append("| LOBBY : Config\tmaxPlayers - 4\tgameMode - DEFAULT\n");
@@ -280,16 +316,17 @@ public class TextualUserInterface implements UserInterface {
             str.append("choose an option:");
             lineReader.printAbove(str.toString());
         } else if (gameSession.checkIsInLobby(myId)) {
-            clearConsole();
             str.append("__________________________________________________________________\n\n").
                     append(" SERVER - ").append(serverIP).append("\tstatus - connected\n").
                     append(gameSession.getGame().get()).append("\n");
             str.append("GameLobby - commands: \n").append("1. join lobby\n2. setup game\n");
             str.append("__________________________________________________________________\n");
             str.append("choose an option:");
-            lineReader.printAbove(str.toString());
+            graphicsQueue.add(str.toString());
         }
     }
+
+
 
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
@@ -324,14 +361,13 @@ public class TextualUserInterface implements UserInterface {
                         controller.adminSetup(max, mode);
                     } catch (Exception e) {
                         printUpdateMessage(error+e.getMessage());
-                        //updateGameSessionCreateGame(myId, GameMode.DEFAULT, 4);
+                        updateGameSessionCreateGame(myId, GameMode.DEFAULT, 4);
                     }
                 }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {
             printUpdateMessage("(errore switch) "+error + e.getMessage());
-            e.printStackTrace();
         }
     }
 }

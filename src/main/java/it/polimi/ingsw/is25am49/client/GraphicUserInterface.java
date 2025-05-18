@@ -36,6 +36,11 @@ public class GraphicUserInterface implements UserInterface{
 
 
     @Override
+    public void updateStateTransition(int stateIndex) {
+
+    }
+
+    @Override
     public void printUpdateMessage(String msg) {
 
     }

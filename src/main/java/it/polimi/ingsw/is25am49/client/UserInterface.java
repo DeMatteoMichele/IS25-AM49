@@ -4,10 +4,14 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 
 public interface UserInterface {
-    void setClientId(int myId);
-    void updateGameSessionNewPlayer(int playerId);
-    void updateGameSessionCreateGame(int playerId,GameMode gameMode, int maxPlayers);
-    void updateGameNewPlayer(int playerId);
-    void printUpdateMessage(String msg);
-    void setGamesession(GameSession gameSession);
+    public void updateStateTransition(int stateIndex);
+    public void printUpdateMessage(String msg);
+
+    public void setClientId(int myId);
+    public void updateGameSessionNewPlayer(int playerId);
+    public void updateGameSessionCreateGame(int playerId,GameMode gameMode, int maxPlayers);
+    public void updateGameNewPlayer(int playerId);
+    public void setGamesession(GameSession gameSession);
+
+
 }
