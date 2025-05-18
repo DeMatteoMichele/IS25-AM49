@@ -60,9 +60,9 @@ public class ServerHandler {
         clientSocket = new Socket(serverIP, serverPort);
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
+        connected.set(true);
         executors.submit(this::listenToServer);
         executors.submit(this::processOutGoingQueue);
-        connected.set(true);
         startHeartBeat();
     }
 
@@ -173,7 +173,6 @@ public class ServerHandler {
             try {
                 numberOfTries++;
                 System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
-                connection();
                 handshake();
                 System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
                 break;
@@ -186,7 +185,7 @@ public class ServerHandler {
             System.out.println("Connection failed");
     }
 
-    private void handshake() {
+    private void handshake() throws IOException {
         clientSerializer.askControllerToStartRegistration();
     }
 

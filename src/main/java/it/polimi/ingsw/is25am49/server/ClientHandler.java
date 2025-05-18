@@ -92,8 +92,8 @@ public class ClientHandler {
             return serverSerializer.deserializeHandshake(fileJson);
         } catch (IOException e) {
             System.err.println("Error while reading the first message from new client ");
+            return -100;
         }
-        return -1;
     }
 
     /**
