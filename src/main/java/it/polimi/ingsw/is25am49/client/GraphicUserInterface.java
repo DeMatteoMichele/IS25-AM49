@@ -2,7 +2,7 @@ package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 
-public class GraphicUserInterface implements UserInterface{
+public class GraphicUserInterface{
     private ClientController controller;
 
     public GraphicUserInterface() {
@@ -13,29 +13,4 @@ public class GraphicUserInterface implements UserInterface{
         System.out.println("Hello GUI");
     }
 
-    @Override
-    public void setClientId(int myId) {
-
-    }
-
-    @Override
-    public void updateGameSessionNewPlayer(int playerId) {
-
-    }
-
-    @Override
-    public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
-
-    }
-
-    @Override
-    public void updateGameNewPlayer(int playerId) {
-
-    }
-
-
-    @Override
-    public void printUpdateMessage(String msg) {
-
-    }
 }

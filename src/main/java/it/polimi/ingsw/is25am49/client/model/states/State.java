@@ -29,7 +29,7 @@ public abstract class State {
     public void transition(State nextState) {
         gameSession.setState(nextState);
         stateIndex++;
-        userInterface.printUpdateMessage("NEW STATE: " + nextState.getClass().getSimpleName());
+        userInterface.updateStateTransition(stateIndex);
     }
 
     public int getStateIndex() {
@@ -79,7 +79,6 @@ public abstract class State {
     public abstract void checkAdminCalculateScore(int playerId);
 
     public abstract void checkAdminEndGame(int playerId);
-
 
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
 

@@ -203,7 +203,6 @@ public class ClientHandler {
             }
         }
     }
-
     /**
      * This method is used to send a file to the client with id=clientId.
      * It takes the file, converts it to a string and sends it to the client.

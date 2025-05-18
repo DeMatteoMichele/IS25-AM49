@@ -146,20 +146,6 @@ public class InitState extends State {
         gameSession.createNewGame(gamemode, maxPlayers);
         userInterface.updateGameSessionCreateGame(playerId, gamemode, maxPlayers);
     }
-    public void adminStartGame(int playerId) {
-        gameSession.checkIsAdmin(playerId);
-        if(!gameSession.checkGameMode())
-            throw new GameSettingsException("You cannot start the game yet, set gameMode");
-        else{
-            if(gameSession.getGame().map(g -> g.numOfPlayers() < 2).orElse(false)){
-                throw new GameSettingsException("You cannot start the game yet, not enough players");
-            }
-            else{
-                gameSession.configurateFlight();
-                transition(new BuildState(gameSession, userInterface));
-            }
-        }
-    }
 
 
     //Illegal Methods
@@ -219,8 +205,6 @@ public class InitState extends State {
     public void userQuitGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
-
-
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
