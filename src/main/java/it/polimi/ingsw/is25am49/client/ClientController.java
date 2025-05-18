@@ -194,7 +194,6 @@ public class ClientController {
     /**
      * This method is used to register the client socket on the server.
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
-     * @throws RemoteException if there is an error during the remote call
      */
     public void registerClientSocket() throws RemoteException {
         Command command = new Command("registerClientSocket", this);

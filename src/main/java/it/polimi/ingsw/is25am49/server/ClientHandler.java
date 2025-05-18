@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class ClientHandler {
@@ -26,12 +27,10 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, ArrayBlockingQueue<File>> OutGoingFileQueue;
     private final ConcurrentMap<Integer, DataOutputStream> playersOutputStreams;
     private final ArrayBlockingQueue<File> BroadcastQueue;
-    private final int maxClients;
     private final Thread serverThread;
     private boolean gameStarted;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
-        maxClients = 4;
         this.serverSerializer = serverSerializer;
         scheduler = Executors.newScheduledThreadPool(20);
         executors = Executors.newFixedThreadPool(20);
@@ -123,14 +122,14 @@ public class ClientHandler {
      */
     private void startCentralHeartBeatMonitor() {
         scheduler.scheduleAtFixedRate(() -> {
-//            for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
-//                if (connections.get(entry.getKey())) {
-//                    if (System.currentTimeMillis() - entry.getValue() > 20000) {
-//                        System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
-//                        shutDownClientRelated(entry.getKey());
-//                    }
-//                }
-//            }
+            for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
+                if (connections.get(entry.getKey())) {
+                    if (System.currentTimeMillis() - entry.getValue() > 20000) {
+                        System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+                        shutDownClientRelated(entry.getKey());
+                    }
+                }
+            }
         }, 0, 5, TimeUnit.SECONDS);
     }
 
