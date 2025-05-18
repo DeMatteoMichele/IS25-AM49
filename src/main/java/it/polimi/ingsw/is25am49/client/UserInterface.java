@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 
 public interface UserInterface {
@@ -10,6 +11,7 @@ public interface UserInterface {
     public void updateGameSessionNewPlayer(int playerId);
     public void updateGameSessionCreateGame(int playerId,GameMode gameMode, int maxPlayers);
     public void updateGameNewPlayer(int playerId);
+    public void setGamesession(GameSession gameSession);
 
 
 }

@@ -84,6 +84,8 @@ public abstract class State {
 
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
 
+    public abstract void userRotateTileClockWise(int playerId);
+
     public abstract void userPlaceTile(int playerId, Point coordinates);
 
     public abstract void userPickTile(int playerId, Point coordinates);
@@ -132,13 +134,6 @@ public abstract class State {
                 .map(game -> game.getPlayer(playerId))
                 .orElseThrow(() -> new IllegalStateException("Game or Player not found"));
     }
-
-    public Player getCurrentPlayer() {
-        return gameSession.getGame()
-                .map(g -> g.getGameboard().getCurrentPlayer())
-                .orElse(null);
-    }
-
 
 }
 

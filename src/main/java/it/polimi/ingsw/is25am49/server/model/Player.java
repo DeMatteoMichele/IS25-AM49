@@ -169,6 +169,7 @@ public class Player {
         smallAdventureDeckLooked = null;
         isWatching = false;
     }
-
-
+    public boolean shipBoardIsFullOfToken(){
+        return shipBoard.cabineAreFullOfToken();
+    }
 }

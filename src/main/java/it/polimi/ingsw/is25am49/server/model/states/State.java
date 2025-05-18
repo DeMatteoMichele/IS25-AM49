@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
@@ -27,6 +28,7 @@ public abstract class State {
     public abstract void userJoinLobby(String username, int playerId) throws GameSettingsException;
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException;
 
+    public abstract void userRotateTile(int playerId, Orientation orientation ) throws GameSettingsException;
     public abstract void userPlaceTile(int playerId, Point coordinates);
     public abstract void userPickTile(int playerId, Point coordinates);
     public abstract void userDiscardTile(int playerId);
@@ -60,10 +62,5 @@ public abstract class State {
                 .orElseThrow(() -> new IllegalStateException("Game or Player not found"));
     }
 
-    public Player getCurrentPlayer(){
-        return gameSession.getGame()
-                .map(g->g.getGameboard().getCurrentPlayer())
-                .orElse(null);
-    }
 }
 

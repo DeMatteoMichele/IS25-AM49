@@ -53,6 +53,10 @@ public class ClientSerializer implements RemoteServer {
         }
     }
 
+    public void setGamesession(GameSession gameSession) {
+        this.gameSession = gameSession;
+    }
+
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
 
     /**

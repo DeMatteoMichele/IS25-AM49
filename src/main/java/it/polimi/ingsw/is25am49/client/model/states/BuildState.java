@@ -148,13 +148,10 @@ public class BuildState extends State {
         player.placeTile(coordinates);
     }
 
-    //da discutere
-//    public void userRotateTileClockwise(Player player, Point coordinates) {
-//        player.rotateTile(true);
-//    }
-//    public void userRotateTileCounterClockwise(Player player, Point coordinates) {
-//        player.rotateTile(false);
-//    }
+    public void userRotateTileClockWise(int playerId) {
+        Player player = getPlayerById(playerId);
+        player.rotateTile(true);
+    }
     //ok
     public void userPickTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
@@ -202,9 +199,10 @@ public class BuildState extends State {
         gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
     }
-
+    //todo NON è stata ricopiata esattamente, Bisogna decidere bene cosa fare con le transizioni di stato
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-        //TODO
+        Player player = getPlayerById(playerId);
+        gameSession.userSelectTypeOfToken(player, token, coordinates);
     }
 
     //illegal
@@ -220,7 +218,6 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
-    @Override
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }

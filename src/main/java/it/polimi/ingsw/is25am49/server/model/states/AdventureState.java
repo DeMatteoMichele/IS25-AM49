@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
@@ -32,6 +33,9 @@ public class AdventureState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
    public void adminStartGame(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public void userRotateTile(int playerId, Orientation orientation) throws GameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
     public void userPlaceTile(int playerId, Point coordinates) {
@@ -142,5 +146,10 @@ public class AdventureState extends State {
     }
     public void userEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+    public Player getCurrentPlayer(){
+        return gameSession.getGame()
+                .map(g->g.getGameboard().getCurrentPlayer())
+                .orElse(null);
     }
 }

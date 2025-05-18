@@ -36,6 +36,10 @@ public class ClientRMI implements RemoteServer {
 
     }
 
+    public void setGamesession(GameSession gameSession) {
+        this.gameSession = gameSession;
+    }
+
     /**THIS METHOD IS CALLED BY THE SERVER
      *REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
      * SO: SERVER CAN CALL HIS INTERFACE METHOD(command_FromServerToClient) ONLY IF

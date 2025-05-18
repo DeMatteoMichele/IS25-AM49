@@ -18,7 +18,6 @@ public class FinishScoreState extends State {
     }
 
 
-    @Override
     public void checkAdminEndGame(int playerId) {
         gameSession.checkAdminEndGame(playerId);
     }
@@ -26,6 +25,11 @@ public class FinishScoreState extends State {
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+    public void userRotateTileClockWise(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
     public void userJoinLobby(Color playerColor, String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }

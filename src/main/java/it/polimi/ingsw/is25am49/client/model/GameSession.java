@@ -151,6 +151,11 @@ public class GameSession {
         game.ifPresent(g -> g.userPlaceTimer(player));
     }
 
+    public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
+        return game.map(game-> game.userSelectTypeOfToken(player, token, coordinates)).orElse(false);
+    }
+
+
     public void userThrowDices(Player player) {
         game.ifPresent(g -> g.userThrowDices(player));
     }

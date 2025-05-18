@@ -2,8 +2,8 @@ package it.polimi.ingsw.is25am49.server.model.states;
 
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
@@ -27,18 +27,24 @@ public class BuildState extends State {
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
+
+    public void userRotateTile(int playerId, Orientation orientation) throws GameSettingsException {
+        Player player = getPlayerById(playerId);
+        int i;
+        for(i = 0; i<orientation.ordinal(); i++){
+            userRotateTileClockwise(player);
+        }
+    }
+
     //ok
     public void userPlaceTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
         player.placeTile(coordinates);
     }
-    //da discutere
-//    public void userRotateTileClockwise(Player player, Point coordinates) {
-//        player.rotateTile(true);
-//    }
-//    public void userRotateTileCounterClockwise(Player player, Point coordinates) {
-//        player.rotateTile(false);
-//    }
+
+    public void userRotateTileClockwise(Player player) {
+        player.rotateTile(true);
+    }
     //ok
     public void userPickTile(int playerId, Point coordinates){
         Player player = getPlayerById(playerId);
@@ -81,7 +87,10 @@ public class BuildState extends State {
     }
     //riempi tutti i component, anche le batterie, ecc.
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){
-
+        Player player = getPlayerById(playerId);
+        if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
+            transition(new AdventureState(gameSession));
+        }
     }
     //illegal
     public void userThrowDices(int playerId) {

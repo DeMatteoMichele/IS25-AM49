@@ -185,6 +185,10 @@ public class GameSession {
         return game.flatMap(Game::userShowWinner);
     }
 
+    public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
+        return game.map(game-> game.userSelectTypeOfToken(player, token, coordinates)).orElse(false);
+    }
+
     public void addPlayersToLeaderBoard() {
         game.ifPresent(Game::addPlayersToLeaderBoard);
     }
