@@ -18,18 +18,15 @@ public class AdventureState extends State {
         super(gameSession,ui);
     }
 
-    @Override
     public void checkUserJoinLobby(int playerID,String username) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
-    @Override
     public void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
 
-    @Override
     public void checkAdminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
@@ -39,6 +36,10 @@ public class AdventureState extends State {
     }
 
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+
+    public void userRotateTileClockWise(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
@@ -225,5 +226,11 @@ public class AdventureState extends State {
     }
     public void checkUserEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+
+    public Player getCurrentPlayer() {
+        return gameSession.getGame()
+                .map(g -> g.getGameboard().getCurrentPlayer())
+                .orElse(null);
     }
 }

@@ -224,6 +224,13 @@ public class ShipBoard {
         for(Point p: grid.keySet()){
             getTile(p).lockTile();
         }
+        for(Point p: grid.keySet()){
+            try{
+                fillTileComponent(p,Token.BATTERY_CELLS);
+            } catch(Exception _) {
+
+            }
+        }
     }
 
     public void setDestroyedTiles(int n) {this.destroyedTiles = n;}
@@ -576,7 +583,7 @@ public class ShipBoard {
             try {
                 t.fillComponent(token);
             } catch (IllegalMethodOnThisComponentException | IllegalTokenInComponentEcxeption e) {
-                //System.out.println("cannot fill " + t.getComponentType() + " with token " + token + " --> " + e.getMessage());
+                throw new RuntimeException("cannot fill " + t.getComponentType() + " with token " + token + " --> " + e.getMessage());
             }
         }catch (InvalidCoordinatesException e) {
             throw new InvalidCoordinatesException("cannot FILL point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
@@ -776,6 +783,14 @@ public class ShipBoard {
             }
         }
         return sides;
+    }
+    /**
+     * check if the cabins are full of tokens
+     * @return true if all the cabins are full of tokens
+     */
+    public boolean cabineAreFullOfToken(){
+        ArrayList<Point> listOfCabins = getComponentsPositions(ComponentType.CABINE);
+        return listOfCabins.stream().anyMatch(point -> getTile(point).getComponent().getTokenList().isEmpty());
     }
 
     /**

@@ -495,4 +495,10 @@ public class ClientController {
             ui.printUpdateMessage("Errore durante l'inizializzazione dell'ID: " + e.getMessage());
         }
     }
+    public void clientReset(){
+        myId = -1;
+        gameSession = new GameSession(ui);
+        ui.setGamesession(gameSession);
+        serverMethods.setGamesession(gameSession);
+    }
 }

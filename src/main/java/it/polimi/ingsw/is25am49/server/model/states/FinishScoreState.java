@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
@@ -29,10 +30,7 @@ public class FinishScoreState extends State {
     public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-    public void userRotateTileClockwise(int playerId, Point coordinates) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
-    public void userRotateTileCounterClockwise(int playerId, Point coordinates) {
+    public void userRotateTile(int playerId, Orientation orientation) throws GameSettingsException {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
     public void userPickTile(int playerId, Point coordinates){

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model;
 
+import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -204,6 +205,22 @@ public class Game {
 
     public void userQuitGame(Player player) {
         board.userQuitGame(player);
+    }
+
+    public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
+        if (player.getShipBoard().getTile(coordinates).getComponent().getType().equals(ComponentType.CABINE)) {
+            if (token.equals(Token.ASTRONAUT)) {
+                player.getShipBoard().fillTileComponent(coordinates, token);
+            } else if (token.equals(Token.BROWN_ALIENS) || token.equals(Token.PURPLE_ALIENS)) {
+                if (player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))
+                    player.getShipBoard().addTokenToTile(coordinates, token);
+            }
+        }
+        return checkIfShipboardsAreFullOfToken();
+    }
+
+    public boolean checkIfShipboardsAreFullOfToken() {
+        return players.stream().allMatch(Player::shipBoardIsFullOfToken);
     }
 
     public void checkUserDrawAdventureCard(int playerId) throws GameSettingsException {

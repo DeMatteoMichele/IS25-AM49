@@ -146,6 +146,7 @@ public class InitState extends State {
         gameSession.createNewGame(gamemode, maxPlayers);
         userInterface.updateGameSessionCreateGame(playerId, gamemode, maxPlayers);
     }
+
     public void adminStartGame(int playerId) {
         gameSession.checkIsAdmin(playerId);
         if(!gameSession.checkGameMode())
@@ -163,6 +164,9 @@ public class InitState extends State {
 
 
     //Illegal Methods
+    public void userRotateTileClockWise(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
     public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }

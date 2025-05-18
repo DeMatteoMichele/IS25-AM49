@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model.states;
 
+import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.enums.Color;
@@ -31,6 +32,9 @@ public class InitState extends State {
         gameSession.createNewGame(gamemode, maxPlayers);
     }
     //Illegal
+    public void userRotateTile(int playerId, Orientation orientation) throws GameSettingsException {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
     public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }

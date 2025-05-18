@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client;
 
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 
 public class GraphicUserInterface implements UserInterface{
@@ -36,6 +37,11 @@ public class GraphicUserInterface implements UserInterface{
 
     @Override
     public void printUpdateMessage(String msg) {
+
+    }
+
+    @Override
+    public void setGamesession(GameSession gameSession) {
 
     }
 }

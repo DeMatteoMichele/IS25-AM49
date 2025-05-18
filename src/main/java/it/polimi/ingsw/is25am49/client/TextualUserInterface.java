@@ -29,7 +29,7 @@ public class TextualUserInterface implements UserInterface {
     //---------------------------------------
 
     private ClientController controller;
-    private final GameSession gameSession;
+    private GameSession gameSession;
     private String username;
     private int myId=-1;
 
@@ -60,6 +60,15 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void setClientId(int myId) {
         this.myId = myId;
+    }
+
+    /**
+     * This method is used to set the game session if a diconnnection occurs
+     * During the reconnection phase, the game session is resetted to allow the player
+     * to reconnect to the game
+     */
+    public void setGamesession(GameSession gameSession) {
+        this.gameSession = gameSession;
     }
 
 //----------------------------------------------------------------------------------------------------

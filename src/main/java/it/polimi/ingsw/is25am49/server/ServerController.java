@@ -109,6 +109,7 @@ public class ServerController {
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
         try {
             try {
+                gameSession.getState().userRotateTile(playerId, orientation);
                 gameSession.getState().userPlaceTile(playerId, coordinates);
                 Command command = new Command("userPlaceTileCallback", this, playerId);
                 command.addParameter(playerId);
