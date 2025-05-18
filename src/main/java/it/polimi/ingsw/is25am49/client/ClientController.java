@@ -491,7 +491,7 @@ public class ClientController {
         }
     }
     public void clientReset(){
-        myId = -1;
+        playerId = -1;
         gameSession = new GameSession(ui);
         ui.setGamesession(gameSession);
         serverMethods.setGamesession(gameSession);
