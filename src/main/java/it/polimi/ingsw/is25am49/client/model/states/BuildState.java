@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client.model.states;
 
 import it.polimi.ingsw.is25am49.client.UserInterface;
+import it.polimi.ingsw.is25am49.client.model.Game;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
@@ -57,31 +58,40 @@ public class BuildState extends State {
     }
     @Override
     public void checkUserDrawTile(int playerId, int idTIle) {
-
+        Player player = getPlayerById(playerId);
+        player.shipBoardIsNotCompletedYet();
     }
     @Override
     public void checkUserFinishShipboard(int playerId) {
-
+        Player player = getPlayerById(playerId);
+        player.shipBoardIsNotCompletedYet();
     }
     @Override
     public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-
+        Player player = getPlayerById(playerId);
+        player.shipBoardIsNotCompletedYet();
+        if(smallDeckIndex <0 || smallDeckIndex >3) throw new RuntimeException("selected smallDeck doesn't exist!");
     }
     @Override
     public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-
+        Player player = getPlayerById(playerId);
+        player.shipBoardIsNotCompletedYet();
+        if(smallDeckIndex <0 || smallDeckIndex >3) throw new RuntimeException("selected smallDeck doesn't exist!");
     }
     @Override
     public void checkUserPlaceTimer(int playerId) {
-
+        if (gameSession.getGame().map(Game::isTestFlight).orElse(true)) throw new GameSettingsException("This is a Test Flight");
     }
     @Override
     public void checkTimerIsDone() {
-
+        //non penso servano controlli
     }
     @Override
     public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-
+        Player player = getPlayerById(playerId);
+        player.shipBoardIsNotCompletedYet();
+        player.getShipBoard().checkCoordinates(coordinates);
+        player.getShipBoard().checkAddTokenToTile(coordinates, token);
     }
     @Override
     public void checkUserThrowDices(int playerId) {
