@@ -19,6 +19,7 @@ import java.util.Set;
 public class BuildState extends State {
     public BuildState(GameSession gameSession, UserInterface ui) {
         super(gameSession, ui);
+        stateIndex = 1;
     }
 
 //-----------------------------------------------------------------------------------------------------------
@@ -33,11 +34,7 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
     }
-    @Override
-    public void checkAdminStartGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal Method on this state");
 
-    }
     @Override
     public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
         Player player = getPlayerById(playerId);

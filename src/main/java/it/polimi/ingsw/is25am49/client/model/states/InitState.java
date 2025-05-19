@@ -16,6 +16,7 @@ import java.util.Set;
 public class InitState extends State {
     public InitState(GameSession gameSession, UserInterface userInterface) {
         super(gameSession, userInterface);
+        stateIndex = 0;
     }
 
 //-----------------------------------------------------------------------------------------------------------
@@ -29,11 +30,6 @@ public class InitState extends State {
     @Override
     public void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers) {
         gameSession.checkSetupGame(playerId,mode ,numberOfPlayers);
-    }
-
-    @Override
-    public void checkAdminStartGame(int playerId) throws GameSettingsException {
-        gameSession.checkStartGame(playerId);
     }
 
     @Override
@@ -139,6 +135,11 @@ public class InitState extends State {
         gameSession.JoinLobby(playerColor, username, playerId);
         userInterface.updateGameSessionNewPlayer(playerId);
         userInterface.updateGameNewPlayer(playerId);
+
+        //TODO per Maicals ho spostato qua l'eventuale transition al buildstate
+        if (gameSession.getGame().map(g->g.numOfPlayers() == g.getMaxPlayers()).orElse(false)) {
+            gameSession.configurateFlight();
+        }
     }
 
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException {

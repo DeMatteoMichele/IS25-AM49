@@ -11,7 +11,6 @@ import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import javafx.util.Pair;
-import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 import java.awt.*;
 import java.io.File;
@@ -493,7 +492,7 @@ public class ClientController {
     public void clientReset(){
         playerId = -1;
         gameSession = new GameSession(ui);
-        ui.setGamesession(gameSession);
+        ui.setGameSession(gameSession);
         serverMethods.setGamesession(gameSession);
     }
 }
