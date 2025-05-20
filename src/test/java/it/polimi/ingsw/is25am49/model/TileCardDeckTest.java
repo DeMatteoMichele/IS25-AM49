@@ -80,6 +80,7 @@ class TileCardDeckTest {
 
         System.out.println(deck.toString());
         gameSession.userDrawTile(player1, 78);
+
         gameSession.userDrawTile(player2, 98);
         gameSession.userDrawTile(player3, 11);
         System.out.println(deck.toString());
