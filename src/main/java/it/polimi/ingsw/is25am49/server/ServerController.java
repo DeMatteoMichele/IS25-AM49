@@ -37,6 +37,10 @@ public class ServerController {
 
     }
 
+    public void registerClientSocket(int playerId) {
+
+    }
+
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {

@@ -62,7 +62,7 @@ public class ClientController {
     }
 
     public void errorCallback(int playerId, String errorMessage) {
-        if (playerId == playerId) ui.printUpdateMessage(error + errorMessage);
+        if (this.playerId == playerId) ui.printUpdateMessage(error + errorMessage);
     }
 
     public void registerClientCallback(int playerId) {
@@ -187,18 +187,14 @@ public class ClientController {
         }
     }
 
-    public void registerClientRMI(RemoteServer client) throws RemoteException {
+    public void registerClientRMI(RemoteServer client) throws RemoteException, IOException {
         Command command = new Command("registerClientRMI", this);
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            File idFile = new File("$IdClient"+username+".json");
-            myId = mapper.readTree(idFile).get("playerId").asInt();
-        } catch (IOException e) {
-            System.out.println("Errore durante la lettura dell'ID: " + e.getMessage());
-        }
-        command.addParameter(myId);
-        serverMethods.command_FromClientToServer(command);
+        ObjectMapper mapper = new ObjectMapper();
+        File idFile = new File("$IdClient" + username + ".json");
+        playerId = mapper.readTree(idFile).get("playerId").asInt();
+        command.addParameter(client);
         serverHandler.connectCommand();
+        serverMethods.command_FromClientToServer(command);
     }
 
     /**
@@ -503,6 +499,5 @@ public class ClientController {
         playerId = -1;
         gameSession = new GameSession(ui);
         ui.setGameSession(gameSession);
-        serverMethods.setGamesession(gameSession);
     }
 }

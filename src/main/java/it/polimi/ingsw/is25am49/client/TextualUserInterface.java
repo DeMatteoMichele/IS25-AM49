@@ -22,7 +22,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "localhost";
+    private final String serverIP = "192.168.16.12";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -190,7 +190,7 @@ public class TextualUserInterface implements UserInterface {
 
                 //CONNESSSIONE SOCKET
                 case 2 -> {
-                    ClientSerializer clientSerializer = new ClientSerializer(gameSession, controller);
+                    ClientSerializer clientSerializer = new ClientSerializer(controller);
                     ServerHandler serverHandler = new ServerHandler(serverIP, serverPortSocket);
                     serverHandler.setClientSerializer(clientSerializer);
                     clientSerializer.setServerHandler(serverHandler);

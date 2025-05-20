@@ -204,5 +204,22 @@ public class LeaderBoard {
     public boolean contains(Player player){
         return mapLeaderboard.containsKey(player);
     }
+
+    public Optional<Player> getPlayerWithDays(int days){
+        int showableIndex = moduleNumberOfCells(days);
+        if(showableLeaderBoard.get(showableIndex).isPresent())
+            return showableLeaderBoard.get(showableIndex);
+        else
+            return Optional.empty();
+    }
+    public void addToNearestPosition(Player player, int days){
+        int i=0;
+        while(getPlayerWithDays(days-i).isPresent()){
+            i++;
+        }
+        mapLeaderboard.put(player, days-i);
+        arrayLeaderboard.add(Map.entry(player, days-i));
+        showableLeaderBoard.set(moduleNumberOfCells(days-i), Optional.of(player));
+    }
 }
 

@@ -24,21 +24,11 @@ public class ClientSerializer implements RemoteServer {
     private ServerHandler serverHandler;
     private BlockingQueue<File> filesFromSocketQueue;
     private final ExecutorService executors;
-    private GameSession gameSession;
-
-    public ClientSerializer(GameSession session, ClientController clientController) {
-        this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
-        executors = Executors.newFixedThreadPool(20);
-        executors.submit(this::processFilesFromSocketQueue);
-        gameSession = session;
-        this.clientController = clientController;
-    }
 
     public ClientSerializer(ClientController clientController) {
         this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
         executors = Executors.newFixedThreadPool(20);
         executors.submit(this::processFilesFromSocketQueue);
-        gameSession = null;
         this.clientController = clientController;
     }
 
@@ -51,10 +41,6 @@ public class ClientSerializer implements RemoteServer {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
         }
-    }
-
-    public void setGamesession(GameSession gameSession) {
-        this.gameSession = gameSession;
     }
 
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
