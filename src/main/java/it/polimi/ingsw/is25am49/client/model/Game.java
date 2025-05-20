@@ -273,8 +273,9 @@ public class Game {
             }
             str.append("TILES DECK:\n");
             str.append(getGameboard().getTilesDeck());
+            str.append(player.getShipBoard());
             str.append("HAND TILE\n");
-            if(player.getHandTile().isPresent())str.append(player.getHandTile());
+            if(player.getHandTile().isPresent())str.append(player.getHandTile().get());
             else str.append("""
                     ┌ ─ ─ ─ ─ ─ ┐
                     │           │
@@ -282,7 +283,6 @@ public class Game {
                     │           │
                     └ ─ ─ ─ ─ ─ ┘
                     """);
-            str.append(player.getShipBoard());
             return str.toString();
         }catch (IllegalArgumentException e){
             str.append("qualcuno ha passato un id sbagliato alla stampa del buildState :) ").append(e.getMessage());

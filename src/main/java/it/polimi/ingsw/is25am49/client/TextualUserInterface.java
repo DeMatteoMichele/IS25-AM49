@@ -23,7 +23,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "localhost";
+    private final String serverIP = "192.168.16.12";
     private final int serverPort = 8081;
     private int connectionType;
     //---------------------------------------
@@ -517,6 +517,7 @@ public class TextualUserInterface implements UserInterface {
             }
         } catch (Exception e) {
             printUpdateMessage("(errore switch) "+error + e.getMessage());
+            //e.printStackTrace();
         }
     }
 }

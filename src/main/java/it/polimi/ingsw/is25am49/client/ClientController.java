@@ -98,6 +98,7 @@ public class ClientController {
             gameSession.getState().userDrawTile(playerId, tileId);
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while drawing a card: --> " + e.getMessage());
+            e.printStackTrace();
         }
 
     }

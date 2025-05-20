@@ -29,13 +29,13 @@ public class ShipBoard {
 
     public ShipBoard() {
         grid = new HashMap<>();
-        lastPlacedPoint = null;
+        lastPlacedPoint = new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
     }
     public ShipBoard(int level, int playerID){
         grid = new HashMap<>();
-        lastPlacedPoint = null;
+        lastPlacedPoint =  new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
 
