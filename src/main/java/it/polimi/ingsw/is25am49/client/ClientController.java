@@ -6,7 +6,6 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.*;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -21,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ClientController {
-    public int playerId;
+    public int myId;
     private GameSession gameSession;
     private RemoteServer serverMethods;
     private ServerHandler serverHandler;
@@ -34,19 +33,14 @@ public class ClientController {
      * Solo per i test
      */
     public ClientController(GameSession gameSession) {
-        playerId = -1;  //non ancora assegnato
+        myId = -1;  //non ancora assegnato
         this.gameSession = gameSession;
     }
 
     public ClientController(GameSession gameSession, UserInterface ui) {
-        playerId = -1;  //non ancora assegnato
+        myId = -1;  //non ancora assegnato
         this.gameSession = gameSession;
         this.ui = ui;
-    }
-
-    public void userPlaceTile() {
-        //metodo chiamato dal callback, che aggiorna il model lato client
-        //clientModel.placeTile
     }
 
     public void setServerMethods(RemoteServer serverMethods) {
@@ -62,11 +56,13 @@ public class ClientController {
     }
 
     public void errorCallback(int playerId, String errorMessage) {
-        if (this.playerId == playerId) ui.printUpdateMessage(error + errorMessage);
+        if (myId == playerId) {
+            ui.printUpdateMessage(error + errorMessage);
+        }
     }
 
     public void registerClientCallback(int playerId) {
-        this.playerId = playerId;
+        this.myId = playerId;
         ui.setClientId(playerId);
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -75,7 +71,7 @@ public class ClientController {
             File idFile = new File("$IdClient" + username + ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(idFile, rootNode);
         } catch (IOException e) {
-            ui.printUpdateMessage("Errore durante il salvataggio dell'ID: " + e.getMessage());
+            ui.printUpdateMessage(error + "Error while saving ID: " + e.getMessage());
         }
     }
 
@@ -83,93 +79,173 @@ public class ClientController {
         try {
             gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
         } catch (Exception e) {
-            ui.printUpdateMessage(error + "Errore durante la configurazione del gioco --> " + e.getMessage());
+            ui.printUpdateMessage(error + "Error during game setup --> " + e.getMessage());
         }
     }
 
     public void playerJoinCallback(int playerId, String username, int seedForGeneration) {
-        gameSession.getState().userJoinLobby(gameSession.getColor(), username, playerId);
-        gameSession.setSeedForGeneration(seedForGeneration);
+        try{
+            gameSession.getState().userJoinLobby(gameSession.getColor(),username,playerId);
+            gameSession.setSeedForGeneration(seedForGeneration);
+        } catch(Exception e){
+            ui.printUpdateMessage(error + "Error during player join --> " + e.getMessage());
+        }
+
     }
 
-    public void gameStartedCallback() {
-
-    }
 
     public void userDrawTileCallback(int playerId, int tileId) {
+        try{
+            gameSession.getState().userDrawTile(playerId, tileId);
+        } catch (Exception e) {
+            ui.printUpdateMessage(error + "Error while drawing a card: --> " + e.getMessage());
+            e.printStackTrace();
+        }
 
     }
 
-    public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) {
-
+    public void userPlaceTileCallback(int playerId, Point coordinates,Orientation orientation) {
+        try{
+            gameSession.getState().userPlaceTile(playerId,coordinates);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while placing a tile: --> " + e.getMessage());
+        }
     }
 
     public void userPickTileCallback(int playerId, Point coordinates) {
-
+        try{
+            gameSession.getState().userPickTile(playerId,coordinates);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while picking a tile: --> " + e.getMessage());
+        }
     }
 
     public void userDiscardTileCallback(int playerId) {
-
+        try{
+            gameSession.getState().userDiscardTile(playerId);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while discarding a tile: --> " + e.getMessage());
+        }
     }
 
     public void userFinishShipboardCallback(int playerId) {
-
+        try{
+            gameSession.getState().userFinishShipboard(playerId);
+        } catch(Exception e){
+            ui.printUpdateMessage(error + "Error while finishing shipboard: --> " + e.getMessage());
+        }
     }
 
     public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
-
+        try{
+            gameSession.getState().userLookSmallAdventureCardDeck(playerId, smallDeckIndex);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while looking a small deck: --> " + e.getMessage());
+        }
     }
 
     public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
-
+        try{
+            gameSession.getState().userStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
+        } catch (Exception e){
+            ui.printUpdateMessage(error + "Error while stopping looking a small deck: --> " + e.getMessage());
+        }
     }
 
     public void userPlaceTimerCallback(int playerId) {
-
+        try{
+            gameSession.getState().userPlaceTimer(playerId);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while placing a timer: --> " + e.getMessage());
+        }
     }
 
     public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates) {
-
+        try{
+            gameSession.getState().userSelectTypeOfToken(playerId, token, coordinates);
+        }catch(Exception e){
+            ui.printUpdateMessage(error + "Error while selecting a token: --> " + e.getMessage());
+        }
     }
 
     public void userThrowDicesCallback(int playerId, int result) {
-
+        try{
+            gameSession.getState().userThrowDices(playerId);
+        }catch(Exception e){
+            ui.printUpdateMessage(error + "Error while throwing dices: --> " + e.getMessage());
+        }
     }
 
     public void userDrawAdventureCardCallback(int playerId) {
-
+        try{
+            gameSession.getState().userDrawAdventureCard(playerId);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while drawing an adventure card: --> " + e.getMessage());
+        }
     }
 
     public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates) {
-
+        try{
+            gameSession.getState().userFinishDecisionActivating(playerId, coordinates);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while finishing decision activating: --> " + e.getMessage());
+        }
     }
 
     public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
+        try{
+            gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while finishing decision token: --> " + e.getMessage());
+        }
     }
 
-    public void userAcceptPrizesCallback(int playerId) {
-
+    public void userAcceptPrizesCallback(int playerId, boolean isAccepted) {
+        try{
+            gameSession.getState().userAcceptPrizes(playerId, isAccepted);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while accepting prizes: --> " + e.getMessage());
+        }
     }
 
-    public void userLandOnPlanetCallback(int playerId, boolean isLanded, Planet planet) {
-
+    public void userLandOnPlanetCallback(int playerId, boolean isLanded, int planetId) {
+        try{
+            gameSession.getState().userLandOnPlanet(playerId, isLanded, planetId);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while landing on planet: --> " + e.getMessage());
+        }
     }
 
     public void userLandOnStationOrShipCallback(int playerId, boolean isLanded) {
-
+        try{
+            gameSession.getState().userLandOnStationOrShip(playerId, isLanded);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while landing on station or ship: --> " + e.getMessage());
+        }
     }
 
     public void userStopFlightCallback(int playerId) {
-
+        try{
+            gameSession.getState().userStopFlight(playerId);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while stopping flight: --> " + e.getMessage());
+        }
     }
 
     public void adminCalculateScoreCallback(int playerId) {
-
+        try{
+            gameSession.getState().adminCalculateScore(playerId);
+        }catch (Exception e){
+            ui.printUpdateMessage(error + "Error while calculating score: --> " + e.getMessage());
+        }
     }
 
     public void adminEndGameCallback(int playerId) {
-
+        try{
+            gameSession.getState().adminEndGame(playerId);
+        } catch (Exception e){
+            ui.printUpdateMessage(error + "Error while ending game: --> " + e.getMessage());
+        }
     }
 
     public void changeState(String state) {
@@ -191,7 +267,7 @@ public class ClientController {
         Command command = new Command("registerClientRMI", this);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
-        playerId = mapper.readTree(idFile).get("playerId").asInt();
+        myId = mapper.readTree(idFile).get("playerId").asInt();
         command.addParameter(client);
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
@@ -205,8 +281,8 @@ public class ClientController {
         Command command = new Command("registerClientSocket", this);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
-        playerId = mapper.readTree(idFile).get("playerId").asInt();
-        command.addParameter(playerId);
+        myId = mapper.readTree(idFile).get("playerId").asInt();
+        command.addParameter(myId);
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
     }
@@ -214,9 +290,9 @@ public class ClientController {
 
     public void adminSetup(int numberOfPlayers, int mode) {
         try {
-            gameSession.getState().checkAdminCreateGame(playerId, mode, numberOfPlayers);
+            gameSession.getState().checkAdminCreateGame(myId, mode, numberOfPlayers);
             Command command = new Command("adminSetup", this);
-            command.addParameter(playerId);
+            command.addParameter(myId);
             command.addParameter(numberOfPlayers);
             command.addParameter(GameMode.values()[mode]);
             serverMethods.command_FromClientToServer(command);
@@ -227,9 +303,9 @@ public class ClientController {
 
     public void playerJoin(String username) {
         try {
-            gameSession.getState().checkUserJoinLobby(playerId, username);
+            gameSession.getState().checkUserJoinLobby(myId, username);
             Command command = new Command("playerJoin", this);
-            command.addParameter(playerId);
+            command.addParameter(myId);
             command.addParameter(username);
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException | GameSettingsException e) {
@@ -477,7 +553,7 @@ public class ClientController {
     }
 
     public int getplayerId() {
-        return playerId;
+        return myId;
     }
 
     public void setUsername(String username) {
@@ -488,7 +564,7 @@ public class ClientController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode rootNode = mapper.createObjectNode();
-            rootNode.put("playerId", playerId);
+            rootNode.put("playerId", myId);
             File idFile = new File("$IdClient" + username + ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(idFile, rootNode);
         } catch (IOException e) {
@@ -496,7 +572,7 @@ public class ClientController {
         }
     }
     public void clientReset(){
-        playerId = -1;
+        myId = -1;
         gameSession = new GameSession(ui);
         ui.setGameSession(gameSession);
     }

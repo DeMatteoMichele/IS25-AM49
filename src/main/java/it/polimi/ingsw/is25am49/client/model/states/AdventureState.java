@@ -105,6 +105,11 @@ public class AdventureState extends State {
         gameSession.userAcceptPrizes(isAccepted);
     }
 
+    public void userStopFlight(int playerId) {
+        Player player = getPlayerById(playerId);
+        gameSession.userStopFlight(player);
+    }
+
 
 
     public void adminCalculateScore(int playerId) {

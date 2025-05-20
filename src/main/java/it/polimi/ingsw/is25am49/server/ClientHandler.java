@@ -24,8 +24,8 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, DataOutputStream> outputStreams;
     private final ConcurrentMap<Integer, DataInputStream> inputStreams;
     private final ConcurrentMap<Integer, ArrayBlockingQueue<String>> InGoingStringQueues;
-    private final ConcurrentMap<Integer, ArrayBlockingQueue<File>> OutGoingFileQueue;
-    private final ConcurrentMap<Integer, DataOutputStream> playersOutputStreams;
+    private final ConcurrentMap<Integer, LinkedBlockingDeque<File>> outGoingFileQueue;
+    private final ConcurrentMap<Integer, LinkedBlockingDeque<File>> playersOutgoingFileQueue;
     private final ArrayBlockingQueue<File> BroadcastQueue;
     private final Thread serverThread;
     private boolean gameStarted;
@@ -40,8 +40,8 @@ public class ClientHandler {
         connections = new ConcurrentHashMap<>();
         lastHeartBeats = new ConcurrentHashMap<>();
         InGoingStringQueues = new ConcurrentHashMap<>();
-        OutGoingFileQueue = new ConcurrentHashMap<>();
-        playersOutputStreams = new ConcurrentHashMap<>();
+        outGoingFileQueue = new ConcurrentHashMap<>();
+        playersOutgoingFileQueue = new ConcurrentHashMap<>();
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
         serverThread = new Thread(() -> {
@@ -65,7 +65,7 @@ public class ClientHandler {
     private void startServer(int port) throws IOException {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
-        startCentralHeartBeatMonitor();
+        //startCentralHeartBeatMonitor();
         startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
@@ -75,8 +75,8 @@ public class ClientHandler {
             if (!gameStarted || connections.containsKey(clientId)) {
                 executors.submit(() -> askForPreviousCommands(clientId));
             }
-            System.out.println("Client connected with id: " + clientId);
             connectClient(socket, inputStream, outputStream, clientId);
+            System.out.println("Client connected with id: " + clientId);
             System.out.println("size: " + clientSockets.size());
         }
     }
@@ -109,7 +109,8 @@ public class ClientHandler {
         outputStreams.put(clientId, clientOutputStream);
         inputStreams.put(clientId, clientInputStream);
         connections.put(clientId, true);
-        InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
+        if (InGoingStringQueues.get(clientId) == null)
+            InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
         executors.submit(() -> listenToClient(clientId));
     }
 
@@ -163,27 +164,27 @@ public class ClientHandler {
     }
 
     /**
-     * This method is called by serverserializer to put files in the OutGoingFileQueue specific to the client with id=clientid.
+     * This method is called by serverserializer to put files in the outGoingFileQueue specific to the client with id=clientid.
      * It is executed by an executor for each client.
      * It takes the file from the queue and sends it to the client.
      * The method put() is blocking, so it blocks until there is space in the queue to put the file.
      *
-     * @param filejson The file that has to be put in the OutGoingFileQueue.
+     * @param filejson The file that has to be put in the outGoingFileQueue.
      * @param clientId The int corresponding to the specific client
      */
     public void putFileInTheOutGoingFileQueue(File filejson, int clientId) {
         try {
-            if (OutGoingFileQueue.get(clientId) == null) {
-                OutGoingFileQueue.put(clientId, new ArrayBlockingQueue<>(1000, true));
+            if (outGoingFileQueue.get(clientId) == null) {
+                outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(1000));
             }
-            OutGoingFileQueue.get(clientId).put(filejson);
+            outGoingFileQueue.get(clientId).put(filejson);
         } catch (InterruptedException e) {
-            System.out.println("Error while putting the file in the OutGoingFileQueue, thread has been interrupted");
+            System.out.println("Error while putting the file in the outGoingFileQueue, thread has been interrupted");
         }
     }
 
     /**
-     * This method is used to process the OutGoingFileQueue.
+     * This method is used to process the outGoingFileQueue.
      * It is executed by an executor for each client.
      * It takes the file from the queue and sends it to the client.
      * The method take() is blocking, so it blocks until it finds an element in the queue to be taken.
@@ -191,17 +192,18 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     private void processOutGoingFileQueue(int clientId) {
-        System.out.println("Starting to process the OutGoingFileQueue for client " + clientId);
+        System.out.println("Starting to process the outGoingFileQueue for client " + clientId);
         while (connections.get(clientId)) {
             try {
-                File fileToSend = OutGoingFileQueue.get(clientId).take();
-                sendMessageToClient(clientId, fileToSend);
+                File fileToSend = outGoingFileQueue.get(clientId).take();
+                sendMessageToSpecificClient(clientId, fileToSend);
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the file from the Outgoing queue of the client " + clientId);
             }
         }
     }
+
     /**
      * This method is used to send a file to the client with id=clientId.
      * It takes the file, converts it to a string and sends it to the client.
@@ -210,16 +212,22 @@ public class ClientHandler {
      * @param clientId   The int of the client which we want to send the file.
      * @param fileToSend The file that has to be sent in broadcast.
      */
-    private void sendMessageToClient(int clientId, File fileToSend) {
+    private void sendMessageToSpecificClient(int clientId, File fileToSend) {
         try {
             String jsonContent = Files.readString(fileToSend.toPath());
             int length = jsonContent.length();
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
             DataOutputStream outputStream = outputStreams.get(clientId);
-            sendViaOutputStreams(clientId, outputStream, length, buffer);
+            System.out.println(jsonContent);
+            sendViaOutputStream(clientId, length, buffer);
         } catch (IOException e) {
-            System.out.println("Error while sending the file to client " + clientId + " shutting down his connection");
+            System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
             shutDownClientRelated(clientId);
+            try {
+                outGoingFileQueue.get(clientId).putFirst(fileToSend);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -255,7 +263,7 @@ public class ClientHandler {
      */
     private synchronized void shutDownClientRelated(int clientId) {
         try {
-            if (clientSockets.get(clientId) != null && !clientSockets.get(clientId).isClosed()) {
+            if (clientSockets.get(clientId) != null) {
                 connections.put(clientId, false);
                 inputStreams.get(clientId).close();
                 outputStreams.get(clientId).close();
@@ -274,13 +282,13 @@ public class ClientHandler {
      * This method is used to put files in the BroadcastQueue.
      * It is called by the server serializer.
      *
-     * @param filejson The file that has to be put in the OutGoingFileQueue.
+     * @param filejson The file that has to be put in the outGoingFileQueue.
      */
     public void putFileInTheBroadcastQueue(File filejson) {
         try {
             BroadcastQueue.put(filejson);
         } catch (InterruptedException e) {
-            System.out.println("Error while putting the file in the OutGoingFileQueue, thread has been interrupted");
+            System.out.println("Error while putting the file in the outGoingFileQueue, thread has been interrupted");
         }
     }
 
@@ -289,14 +297,14 @@ public class ClientHandler {
      * This method starts the outgoing broadcast service.
      * It is executed by an executor and is functioning until the server dies.
      * It uses the blocking method take() of the blockinqueue to take the file that has to be sent
-     * When it finds a file to be taken, it pass it to the sendMessageInBroadcast method
+     * When it finds a file to be taken, it pass it to the dispatchBroadcast method
      */
     private void startBroadCastService() {
         executors.submit(() -> {
             while (true) {
                 try {
                     File fileToSend = BroadcastQueue.take();
-                    sendMessageInBroadcast(fileToSend);
+                    dispatchBroadcast(fileToSend);
                 } catch (InterruptedException e) {
                     System.out.println("Error while taking the file from the queue");
                 }
@@ -305,50 +313,38 @@ public class ClientHandler {
     }
 
     /**
-     * This method is used to send a file in broadcast to all the clients connected.
-     * It takes the file, converts it to a string and sends it to all the clients connected.
-     * It uses the output streams of the clients to send the file.
-     * It differs its chosen outputstreams based on the gameStarted boolean.
-     *
-     * @param fileToSend The file that has to be sent in broadcast.
+     * This method is used to dispatch broadcast messages to all the
+     * @param fileToSend
      */
-    private void sendMessageInBroadcast(File fileToSend) {
-        try {
-            String jsonContent = Files.readString(fileToSend.toPath());
-            int length = jsonContent.length();
-            byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
-            if (!gameStarted) {
-                outputStreams.forEach((clientId, outputStream) ->
-                        sendViaOutputStreams(clientId, outputStream, length, buffer));
-            } else {
-                playersOutputStreams.forEach((clientId, outputStream) ->
-                        sendViaOutputStreams(clientId, outputStream, length, buffer));
-            }
-        } catch (IOException e) {
-            System.err.println("Error while converting the file in string to send in broadcast: " + e.getMessage());
+    private void dispatchBroadcast(File fileToSend) {
+        if (!gameStarted) {
+            outGoingFileQueue.forEach((clientId, queue) -> {
+                putFileInTheOutGoingFileQueue(fileToSend, clientId);
+            });
+        } else {
+            playersOutgoingFileQueue.forEach((clientId, queue) -> {
+                putFileInTheOutGoingFileQueue(fileToSend, clientId);
+            });
         }
     }
+
 
     /**
      * This method is used to flush the output stream of the client.
      * It checks if the client is still connected and if it is, it sends the file to the client via its outputstream.
      *
      * @param clientId     The int of the client which we want to send the file.
-     * @param outputStream The output stream of the client.
      * @param length       The length of the file to be sent.
      * @param buffer       The byte array of the file to be sent.
      */
-    private void sendViaOutputStreams(int clientId, DataOutputStream outputStream, int length, byte[] buffer) {
-        try {
-            if (connections.get(clientId)) {
-                outputStream.writeInt(length);
-                outputStream.write(buffer);
-                outputStream.flush();
-            }
-        } catch (IOException e) {
-            System.out.println("Error while sending the file in broadcast, in particular to client " + clientId);
-            shutDownClientRelated(clientId);
+    private void sendViaOutputStream(int clientId, int length, byte[] buffer) throws IOException {
+        while(!connections.get(clientId)) {};
+        if (connections.get(clientId)) {
+            outputStreams.get(clientId).writeInt(length);
+            outputStreams.get(clientId).write(buffer);
+            outputStreams.get(clientId).flush();
         }
+        else throw new IOException("Player is disconnected, putting this file in head of his queue");
     }
 
     public static void main(String[] args) {
@@ -372,7 +368,7 @@ public class ClientHandler {
     }
 
     public void playerHasJoined(int playerId) {
-        playersOutputStreams.put(playerId, outputStreams.get(playerId));
+        playersOutgoingFileQueue.put(playerId, new LinkedBlockingDeque<File>(1000));
     }
 
     public void gameStarted() {

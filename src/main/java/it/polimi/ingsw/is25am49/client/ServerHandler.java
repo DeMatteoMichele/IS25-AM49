@@ -101,6 +101,7 @@ public class ServerHandler {
                 byte[] buffer = new byte[length];
                 inputStream.readFully(buffer, 0, length);
                 String jsonString = new String(buffer, StandardCharsets.UTF_8);
+                System.err.println("Message received: " + jsonString);
                 InGoingStringQueue.put(jsonString);
             } catch (IOException e) {
                 System.out.println("Error while listening to server, putting the connection to false");
@@ -167,6 +168,7 @@ public class ServerHandler {
      * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again using the timer() method.
      */
     public void attemptToConnect() {
+        clientSerializer.askControllerToResetModel();
         System.out.println("Attempting to reconnect to the server...");
         int numberOfTries = 0;
         while (numberOfTries < thresholdTries) {

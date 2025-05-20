@@ -412,7 +412,10 @@ public class ServerSerializer implements RemoteClient {
      * @param clientId the id of the client that requested the history
      */
     public void giveMeCommandsHistory(int clientId) {
+        int counter = 0;
        for(File filejson: historyQueue) {
+           counter++;
+           System.err.println("\n" +" history:"+ counter+"\n");
             clientHandler.putFileInTheOutGoingFileQueue(filejson, clientId);
         }
     }

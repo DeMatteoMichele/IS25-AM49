@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import org.jline.reader.LineReader;
@@ -250,7 +251,7 @@ public class TextualUserInterface implements UserInterface {
         });
     }
     public void clearConsole() {
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 3; i++) {
             terminal.writer().println();
         }
     }
@@ -332,21 +333,26 @@ public class TextualUserInterface implements UserInterface {
     public String buildStateMenu(){
         return """
                 BuildState - commands:\s
-                1.  PickTile
-                2.  RotateTileClockWise
-                3.  DiscardTile
-                4.  DrawTile
-                5.  FinishShipboard
-                6.  LookSmallAdventureCardDeck
-                7.  StopLookSmallAdventureCardDeck
-                8.  PlaceTimer
-                9.  TimerIsDone
-                10. SelectTypeOfToken
+                0.  PlaceTile
+                1.  PickTile                            7.  StopLookSmallAdventureCardDeck
+                2.  RotateTileClockWise                 8.  PlaceTimer
+                3.  DiscardTile                         9.  TimerIsDone
+                4.  DrawTile                            10. SelectTypeOfToken
+                5.  FinishShipboard                     11. lookAtShipboard
+                6.  LookSmallAdventureCardDeck          13. ←-- go back
+               
                 """;
     }
     @Override
     public void updatePlaceTile(int playerId, Point coordinates) {
-
+        if(playerId == myId){
+            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+                    gameSession.getGame().get().buildStateToString(myId) +
+                    buildStateMenu() +
+                    "_".repeat( 200)+"\n" +
+                    "choose an option:";
+            graphicsQueue.add(str);
+        }
     }
 
     @Override
@@ -363,7 +369,7 @@ public class TextualUserInterface implements UserInterface {
     public void updateDiscardTile(int playerId) {
         if(playerId == myId){
             String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
-                    gameSession.getGame().get().getGameboard().getTilesDeck() +
+                   gameSession.getGame().get().buildStateToString(myId) +
                     buildStateMenu() +
                     "_".repeat( 200)+"\n" +
                     "choose an option:";
@@ -373,7 +379,14 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateDrawTile(int playerId, int idTIle) {
-
+        if(playerId == myId){
+            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+                    gameSession.getGame().get().buildStateToString(myId) +
+                    buildStateMenu() +
+                    "_".repeat( 200)+"\n" +
+                    "choose an option:";
+            graphicsQueue.add(str);
+        }
     }
 
     @Override
@@ -403,6 +416,11 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
+
+    }
+
+    @Override
+    public void lookAtShipboard(int playerId) {
 
     }
 
@@ -447,6 +465,18 @@ public class TextualUserInterface implements UserInterface {
                 }
 
                 //BUILD STATE
+                case "0:1"->{//
+                    try{
+                        String s = lineReader.readLine("Insert the coordinates (x y) >> ");
+                        String[] coordinates = s.trim().split("\\s+");
+                        int x = Integer.parseInt(coordinates[0]);
+                        int y = Integer.parseInt(coordinates[1]);
+                        controller.userPlaceTile(myId,new Point(x,y), gameSession.getGame().get().getPlayer(myId).getHandTile().get().getTileOrientation());//todo sistema sta sleppa
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        updatePlaceTile(myId,new Point(0,0));
+                    }
+                }
                 case "1:1"->{
                     printUpdateMessage("commando PickTile non ancora implementato\n");
                 }
@@ -456,8 +486,14 @@ public class TextualUserInterface implements UserInterface {
                 case "3:1"->{
                     printUpdateMessage("commando DiscardTile non ancora implementato\n");
                 }
-                case "4:1"->{
-                    printUpdateMessage("commando DrawTile non ancora implementato\n");
+                case "4:1"->{//DrawTile
+                    try{
+                        int id = Integer.parseInt(lineReader.readLine("select a IdTile from above>> ").trim());
+                        controller.userDrawTile(myId, id);
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        updateDrawTile(myId,0);
+                    }
                 }
                 case "5:1"->{
                     printUpdateMessage("commando FinishShipboard non ancora implementato\n");
@@ -477,10 +513,13 @@ public class TextualUserInterface implements UserInterface {
                 case "10:1"->{
                     printUpdateMessage("commando SelectTypeOfToken non ancora implementato\n");
                 }
+                case "11:1"->{}
+                case "12:1"->{}
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {
             printUpdateMessage("(errore switch) "+error + e.getMessage());
+            //e.printStackTrace();
         }
     }
 }

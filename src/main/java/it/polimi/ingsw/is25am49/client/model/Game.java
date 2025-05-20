@@ -145,6 +145,9 @@ public class Game {
         players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
     }
+    public void userStopFlight(Player player) {
+        board.userStopFlight(player);
+    }
 
     public void mergeSmallDecks() {
         board.mergeDecks();
@@ -156,27 +159,6 @@ public class Game {
 
     public void userThrowDices(Player player) {
         board.userThrowDices(player);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        str.append("+----------------------------------------------\n");
-        str.append("| LOBBY : Players - ").append(numOfPlayers());
-        str.append("/").
-                append(getMaxPlayers()).append(" \tMode: ").
-                append(getMode()).append("\n");
-        int i = 0;
-        for (Player player : getListPlayers()) {
-            str.append("| ").append(player.getIdPlayer()).append(")\t").
-                    append("[").append(player.getColor()).append("]\t").
-                    append(player.getUsername());
-            if (i == 0) str.append(" - ADMIN\n");
-            else str.append("\n");
-            i++;
-        }
-        str.append("+----------------------------------------------");
-        return str.toString();
     }
 
 
@@ -256,4 +238,56 @@ public class Game {
     public void checkAcceptPrizesState() {
         board.getCurrentCard().checkAcceptPrizesState();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("+----------------------------------------------\n");
+        str.append("| LOBBY : Players - ").append(numOfPlayers());
+        str.append("/").
+                append(getMaxPlayers()).append(" \tMode: ").
+                append(getMode()).append("\n");
+        int i = 0;
+        for (Player player : getListPlayers()) {
+            str.append("| ").append(player.getIdPlayer()).append(")\t").
+                    append("[").append(player.getColor()).append("]\t").
+                    append(player.getUsername());
+            if (i == 0) str.append(" - ADMIN\n");
+            else str.append("\n");
+            i++;
+        }
+        str.append("+----------------------------------------------");
+        return str.toString();
+    }
+
+    public String buildStateToString(int playerId) {
+        StringBuilder str = new StringBuilder();
+        try {
+            Player player =getPlayer(playerId);
+
+            if(!mode.equals(GameMode.FLIGHT_MODE)){
+                str.append("SMALL DECKS:\n")
+                        .append("+-----+-----+-----+-----+\n")
+                        .append("|  1  |  2  |  3  |  4  |\n")
+                        .append("+-----+-----+-----+-----+\n\n");
+            }
+            str.append("TILES DECK:\n");
+            str.append(getGameboard().getTilesDeck());
+            str.append(player.getShipBoard());
+            str.append("HAND TILE\n");
+            if(player.getHandTile().isPresent())str.append(player.getHandTile().get());
+            else str.append("""
+                    ┌ ─ ─ ─ ─ ─ ┐
+                    │           │
+                    │   empty   │
+                    │           │
+                    └ ─ ─ ─ ─ ─ ┘
+                    """);
+            return str.toString();
+        }catch (IllegalArgumentException e){
+            str.append("qualcuno ha passato un id sbagliato alla stampa del buildState :) ").append(e.getMessage());
+        }
+        return str.toString();
+    }
+
 }

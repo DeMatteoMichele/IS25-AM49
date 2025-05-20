@@ -28,6 +28,7 @@ public interface UserInterface {
     public void updatePlaceTimer(int playerId);
     public void updateTimerIsDone();
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates);
+    public void lookAtShipboard(int playerId);
 
 
     public void setGameSession(GameSession gameSession);//TODO sus non penso serva

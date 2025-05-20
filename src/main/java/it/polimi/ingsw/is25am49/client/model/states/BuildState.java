@@ -32,7 +32,6 @@ public class BuildState extends State {
     @Override
     public void checkAdminCreateGame(int playerId, int mode, int numberOfPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal Method on this state");
-
     }
 
     @Override
@@ -55,6 +54,7 @@ public class BuildState extends State {
     }
     @Override
     public void checkUserDrawTile(int playerId, int idTIle) {
+        if(idTIle<1 || idTIle>157)throw new RuntimeException("invalid idTIle");
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
     }
@@ -153,28 +153,33 @@ public class BuildState extends State {
     public void userPlaceTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
         player.placeTile(coordinates);
+        userInterface.updatePlaceTile(playerId,coordinates);
     }
 
     public void userRotateTileClockWise(int playerId) {
         Player player = getPlayerById(playerId);
         player.rotateTile(true);
+        userInterface.updateRotateTileClockWise(playerId);
     }
     //ok
     public void userPickTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
         player.pickTile(coordinates);
+        userInterface.updatePickTile(playerId,coordinates);
     }
 
     public void userDiscardTile(int playerId) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userDiscardTile(player);
+        userInterface.updateDiscardTile(playerId);
     }
 
     public void userDrawTile(int playerId, int idTIle) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userDrawTile(player, idTIle);
+        userInterface.updateDrawTile(playerId,idTIle);
     }
 
     public void userFinishShipboard(int playerId) {
@@ -183,28 +188,33 @@ public class BuildState extends State {
         if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
         }
+        userInterface.updateFinishShipboard(playerId);
     }
 
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userLookSmallAdventureCardDeck(player, smallDeckIndex);
+        userInterface.updateLookSmallAdventureCardDeck(playerId,smallDeckIndex);
     }
 
     public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userStopLookSmallAdventureCardDeck(player, smallDeckIndex);
+        userInterface.updateStopLookSmallAdventureCardDeck(playerId,smallDeckIndex);
     }
 
     public void userPlaceTimer(int playerId) {
         Player player = getPlayerById(playerId);
         gameSession.userPlaceTimer(player);
+        userInterface.updatePlaceTimer(playerId);
     }
 
     public void timerIsDone() {
         gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
+        userInterface.updateTimerIsDone();
     }
     //todo NON è stata ricopiata esattamente, Bisogna decidere bene cosa fare con le transizioni di stato
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
@@ -237,7 +247,12 @@ public class BuildState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
     }
 
-
+    public void userAcceptPrizes(int playerId, boolean isAccepted){
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+    }
+    public void userStopFlight(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
+    }
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in BuildState");
