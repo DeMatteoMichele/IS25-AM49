@@ -16,6 +16,7 @@ import java.util.Set;
 public class AdventureState extends State {
     public AdventureState(GameSession gameSession, UserInterface ui){
         super(gameSession,ui);
+        stateIndex = 2;
     }
 
     public void checkUserJoinLobby(int playerID,String username) {
@@ -124,9 +125,7 @@ public class AdventureState extends State {
     public void checkAdminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void checkAdminStartGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
-    }
+
     public void checkUserPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

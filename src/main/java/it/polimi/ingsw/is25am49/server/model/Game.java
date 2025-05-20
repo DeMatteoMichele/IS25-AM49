@@ -179,7 +179,7 @@ public class Game {
     }
 
     public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
-        if (player.getShipBoard().getTile(coordinates).getComponent().getType().equals(ComponentType.CABINE)) {
+        if (player.getShipBoard().getTile(coordinates).getComponentType().equals(ComponentType.CABINE)) {
             if (token.equals(Token.ASTRONAUT)) {
                 player.getShipBoard().fillTileComponent(coordinates, token);
             } else if (token.equals(Token.BROWN_ALIENS) || token.equals(Token.PURPLE_ALIENS)) {

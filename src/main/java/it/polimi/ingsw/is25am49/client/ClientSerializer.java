@@ -368,4 +368,12 @@ public class ClientSerializer implements RemoteServer {
     public void command_FromClientToServer(Command command) throws RemoteException {
         serializeObjectFromClient(command);
     }
+
+    public void askControllerToStartRegistration() throws IOException {
+        try {
+            clientController.registerClientSocket();
+        } catch (RemoteException e) {
+            System.err.println("Error while trying to register the client socket due to remoteexception");
+        }
+    }
 }

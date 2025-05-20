@@ -60,9 +60,9 @@ public class ServerHandler {
         clientSocket = new Socket(serverIP, serverPort);
         outputStream = new DataOutputStream(clientSocket.getOutputStream());
         inputStream = new DataInputStream(clientSocket.getInputStream());
+        connected.set(true);
         executors.submit(this::listenToServer);
         executors.submit(this::processOutGoingQueue);
-        connected.set(true);
         startHeartBeat();
     }
 
@@ -173,16 +173,20 @@ public class ServerHandler {
             try {
                 numberOfTries++;
                 System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
-                connection();
+                handshake();
                 System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
                 break;
             } catch (IOException e) {
-                disconnectAndTryToReconnect(); //Reminder: if the connection isn't established, does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
+                disconnectAndTryToReconnect(); //Reminder: if the connection isn't established, this does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
             }
             timer();
         }
         if (numberOfTries >= thresholdTries)
             System.out.println("Connection failed");
+    }
+
+    private void handshake() throws IOException {
+        clientSerializer.askControllerToStartRegistration();
     }
 
     /**
