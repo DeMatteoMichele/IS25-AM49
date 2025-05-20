@@ -706,8 +706,6 @@ public class GameBoard {
         return seedForGeneration;
     }
 
-
-
     public List<Player> getQuitPlayers(){
         return quitPlayers;
     }
@@ -715,4 +713,6 @@ public class GameBoard {
     public TileCardDeck getTilesDeck(){
         return tilesDeck;
     }
+
+
 }

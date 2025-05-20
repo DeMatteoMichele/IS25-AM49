@@ -44,11 +44,6 @@ public class ClientController {
         this.ui = ui;
     }
 
-    public void userPlaceTile() {
-        //metodo chiamato dal callback, che aggiorna il model lato client
-        //clientModel.placeTile
-    }
-
     public void setServerMethods(RemoteServer serverMethods) {
         this.serverMethods = serverMethods;
     }
