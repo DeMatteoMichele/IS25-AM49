@@ -38,8 +38,9 @@ public class GameBoard {
     private Player currentPlayer;
     private boolean isFirstCard;
     private final ArrayList<Player> landedPlayers;
+    private final ArrayList<Player> stopFlightPlayers;
     private int seedForGeneration;
-    private final List<Player> quitPlayers;
+
 
     /**
      * *********EXISTS ONLY FOR NOT BREAKING SOME TESTS*********************
@@ -52,7 +53,7 @@ public class GameBoard {
         mainAdventureDeck = new AdventureCardDeck();
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
-        quitPlayers = new ArrayList<>();
+        stopFlightPlayers = new ArrayList<>();
     }
 
     /**
@@ -66,7 +67,7 @@ public class GameBoard {
         mainAdventureDeck = new AdventureCardDeck();
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
-        quitPlayers = new ArrayList<>();
+        stopFlightPlayers = new ArrayList<>();
     }
 
     /**
@@ -408,16 +409,19 @@ public class GameBoard {
     }
 
     public void userQuitGame(Player player) throws GameSettingsException {
+
+    }
+
+    public void userStopFlight(Player player) {
         if(currentCard.getIsFinished()){
             playerNoMoreInFlight(player);
         }
         else{
-            quitPlayers.add(player);
+            stopFlightPlayers.add(player);
         }
     }
-
-    public void userStopFlight(Player player) {
-
+    public List<Player> getStopFlightPlayers() {
+        return stopFlightPlayers;
     }
 
     /**
@@ -692,11 +696,6 @@ public class GameBoard {
         return seedForGeneration;
     }
 
-
-
-    public List<Player> getQuitPlayers(){
-        return quitPlayers;
-    }
 
     public TileCardDeck getTilesDeck(){
         return tilesDeck;

@@ -87,7 +87,6 @@ public class FinishScoreState extends State {
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
@@ -96,6 +95,9 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
+    public void userStopFlight(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
 
 
     public void adminCalculateScore(int playerId) {

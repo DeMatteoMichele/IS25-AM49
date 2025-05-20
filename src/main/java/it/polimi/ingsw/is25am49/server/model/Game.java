@@ -165,6 +165,9 @@ public class Game {
     public void userQuitGame(Player player) throws GameSettingsException {
         board.userQuitGame(player);
     }
+    public void userStopFlight(Player player) {
+        board.userStopFlight(player);
+    }
 
     public void mergeSmallDecks() {
         board.mergeDecks();

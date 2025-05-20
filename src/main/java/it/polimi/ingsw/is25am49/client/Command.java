@@ -270,14 +270,6 @@ public class Command {
                     e.printStackTrace();
                 }
             }
-            case "gameStartedCallback" -> {
-                try {
-                    clientController.gameStartedCallback();
-                } catch (Exception e) {
-                    System.err.println("Errore in gameStartedCallback: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
             case "userDrawTileCallback" -> {
                 try {
                     clientController.userDrawTileCallback((int) parameters.get(0), (int) parameters.get(1));
@@ -384,7 +376,7 @@ public class Command {
             }
             case "userAcceptPrizesCallback" -> {
                 try {
-                    clientController.userAcceptPrizesCallback((int) parameters.get(0));
+                    clientController.userAcceptPrizesCallback((int) parameters.get(0),(boolean) parameters.get(1) );
                 } catch (Exception e) {
                     System.err.println("Errore in userAcceptPrizesCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -392,7 +384,7 @@ public class Command {
             }
             case "userLandOnPlanetCallback" -> {
                 try {
-                    clientController.userLandOnPlanetCallback((int) parameters.get(0), (boolean) parameters.get(1), (Planet) parameters.get(2));
+                    clientController.userLandOnPlanetCallback((int) parameters.get(0), (boolean) parameters.get(1), (int) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userLandOnPlanetCallback: " + e.getMessage());
                     e.printStackTrace();

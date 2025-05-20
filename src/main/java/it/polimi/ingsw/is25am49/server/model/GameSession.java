@@ -59,15 +59,16 @@ public class GameSession {
     public void setState(State nextState) {
         currentState = nextState;
     }
+
     public Color getColor() {
-        if(game.isEmpty()){
+        if (game.isEmpty()) {
             return Color.values()[0];
-        }else return Color.values()[game.get().numOfPlayers()];
+        } else return Color.values()[game.get().numOfPlayers()];
     }
 
     public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
         if (game.isEmpty()) {
-            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
+            game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers, seedForGeneration));
         } else throw new GameSettingsException("Game already exists!");
     }
 
@@ -97,7 +98,7 @@ public class GameSession {
     }
 
     public void userJoinLobby(String username, int playerID) throws GameSettingsException {
-        Player tempPlayer = new Player(username,getColor() , playerID);
+        Player tempPlayer = new Player(username, getColor(), playerID);
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
         } else if (game.isPresent()) {
@@ -143,22 +144,24 @@ public class GameSession {
         game.ifPresent(g -> g.userLandOnPlanet(isLanded, planetId));
     }
 
-    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens){
-        game.ifPresent(game-> game.userFinishDecisionToken(listOfTokens));
+    public void userFinishDecisionToken(ArrayList<Pair<Point, Token>> listOfTokens) {
+        game.ifPresent(game -> game.userFinishDecisionToken(listOfTokens));
     }
 
-    public void userLandOnStationOrShip(boolean isLanded){
-        game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
-    }
-    public void userFinishDecisionActivating(Set<Point> coordinates){
-        game.ifPresent(game->game.userFinishDecisionActivating(coordinates));
+    public void userLandOnStationOrShip(boolean isLanded) {
+        game.ifPresent(game -> game.userLandOnStationOrShip(isLanded));
     }
 
-    public void userAcceptPrizes(boolean isAccepted){
-        game.ifPresent(game->game.userAcceptPrizes(isAccepted));
+    public void userFinishDecisionActivating(Set<Point> coordinates) {
+        game.ifPresent(game -> game.userFinishDecisionActivating(coordinates));
     }
-    public void userQuitGame(Player player)  {
-        game.ifPresent(game->game.userQuitGame(player));
+
+    public void userAcceptPrizes(boolean isAccepted) {
+        game.ifPresent(game -> game.userAcceptPrizes(isAccepted));
+    }
+
+    public void userQuitGame(Player player) {
+        game.ifPresent(game -> game.userQuitGame(player));
     }
 
     public void calculateScore(int playerId) throws GameSettingsException {
@@ -186,7 +189,7 @@ public class GameSession {
     }
 
     public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
-        return game.map(game-> game.userSelectTypeOfToken(player, token, coordinates)).orElse(false);
+        return game.map(game -> game.userSelectTypeOfToken(player, token, coordinates)).orElse(false);
     }
 
     public void addPlayersToLeaderBoard() {
@@ -204,4 +207,8 @@ public class GameSession {
     public void signalToControllerThatGameStarted() {
         serverController.signalThatGameStarted();
     }
+    public void userStopFlight(Player player) {
+        game.ifPresent(g -> g.userStopFlight(player));
+    }
+
 }
