@@ -101,6 +101,7 @@ public class ServerHandler {
                 byte[] buffer = new byte[length];
                 inputStream.readFully(buffer, 0, length);
                 String jsonString = new String(buffer, StandardCharsets.UTF_8);
+                System.err.println("Message received: " + jsonString);
                 InGoingStringQueue.put(jsonString);
             } catch (IOException e) {
                 System.out.println("Error while listening to server, putting the connection to false");

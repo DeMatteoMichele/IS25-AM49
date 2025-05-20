@@ -218,7 +218,7 @@ public class ClientHandler {
             int length = jsonContent.length();
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
             DataOutputStream outputStream = outputStreams.get(clientId);
-            //System.out.println(jsonContent);
+            System.out.println(jsonContent);
             sendViaOutputStream(clientId, length, buffer);
         } catch (IOException e) {
             System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
