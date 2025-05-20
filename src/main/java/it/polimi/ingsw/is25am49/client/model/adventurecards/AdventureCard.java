@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.client.model.states.AdventureState;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -104,11 +105,20 @@ public abstract class AdventureCard {
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
-    //TODO a fine update bisogna rimuovere i player in landedPlayers dalla leaderboard, ATTENZIONE: GUARDA CODICE LEADERBOARD
+
     protected void update(){
         currentState = AdventureStatesTypes.UPDATE;
         gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
+        if(!gameBoard.getStopFlightPlayers().isEmpty()){
+            for(Player player : gameBoard.getStopFlightPlayers()){
+                try{
+                    gameBoard.playerNoMoreInFlight(player);
+                }catch (GameSettingsException e){
+                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
+                }
+            }
+        }
         isFinished= true;
     }
 

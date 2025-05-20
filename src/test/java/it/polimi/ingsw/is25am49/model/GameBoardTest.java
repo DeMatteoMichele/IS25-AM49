@@ -268,6 +268,13 @@ class GameBoardTest {
     }
 
     @Test
+    void testString(){
+        gameBoard.generateSmallDecks(GameMode.LEVEL_2);
+        AdventureCardDeck deck2 = gameBoard.getSmallAdventureDeck(2);
+        System.out.println(deck2.toString());
+
+    }
+    @Test
     void updateLeaderboard() {
         assertEquals(4,gameBoard.getLeaderBoard().getDays(player1));
         assertEquals(2,gameBoard.getLeaderBoard().getDays(player2));

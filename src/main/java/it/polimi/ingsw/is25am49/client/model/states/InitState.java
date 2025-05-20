@@ -198,6 +198,9 @@ public class InitState extends State {
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+    public void userStopFlight(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
 
     public void userLandOnPlanet(int playerId,boolean isLanded, int planetId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
@@ -211,6 +214,9 @@ public class InitState extends State {
     }
 
     public void adminCalculateScore(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 

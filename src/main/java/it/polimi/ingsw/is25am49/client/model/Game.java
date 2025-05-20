@@ -145,6 +145,9 @@ public class Game {
         players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
     }
+    public void userStopFlight(Player player) {
+        board.userStopFlight(player);
+    }
 
     public void mergeSmallDecks() {
         board.mergeDecks();
