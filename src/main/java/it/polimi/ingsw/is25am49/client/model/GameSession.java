@@ -252,7 +252,9 @@ public class GameSession {
     public void userAcceptPrizes(boolean isAccepted){
         game.ifPresent(game->game.userAcceptPrizes(isAccepted));
     }
-
+    public void userStopFlight(Player player) {
+        game.ifPresent(g -> g.userStopFlight(player));
+    }
     public void userLandOnStationOrShip(boolean isLanded){
         game.ifPresent(game->game.userLandOnStationOrShip(isLanded));
     }

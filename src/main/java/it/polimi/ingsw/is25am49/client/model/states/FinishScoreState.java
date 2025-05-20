@@ -15,6 +15,7 @@ import java.util.Set;
 public class FinishScoreState extends State {
     public FinishScoreState(GameSession gameSession, UserInterface ui) {
         super(gameSession,ui);
+        stateIndex=3;
     }
 
 
@@ -86,7 +87,6 @@ public class FinishScoreState extends State {
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
-
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
@@ -95,6 +95,9 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
+    public void userStopFlight(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
 
 
     public void adminCalculateScore(int playerId) {
@@ -116,9 +119,6 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
-    public void checkAdminStartGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
-    }
     public void checkUserPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }

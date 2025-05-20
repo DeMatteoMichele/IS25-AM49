@@ -52,7 +52,7 @@ public class TileCardDeck {
             int index = entry.get().getKey();
             return draw(index, player); // utilizza draw esistente
         } else {
-            throw new OutOfDeckExceptions("Tessera con ID " + tileId + " non disponibile o già pescata");
+            throw new OutOfDeckExceptions("Tessera non disponibile o già pescata");
         }
     }
     public Stream<Map.Entry<Integer, Tile>> stream(){

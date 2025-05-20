@@ -57,4 +57,12 @@ public class AdventureCardDeck {
         }
         return deck.get(i);
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(AdventureCard card : deck) {
+            sb.append(card.toString()).append("\n");
+        }
+        return sb.toString();
+    }
 }
