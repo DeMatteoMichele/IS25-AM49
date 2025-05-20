@@ -376,4 +376,8 @@ public class ClientSerializer implements RemoteServer {
             System.err.println("Error while trying to register the client socket due to remoteexception");
         }
     }
+
+    public void askControllerToResetModel() {
+        clientController.clientReset();
+    }
 }
