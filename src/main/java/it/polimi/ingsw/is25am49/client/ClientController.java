@@ -6,7 +6,6 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.*;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
@@ -21,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ClientController {
-    public int playerId;
+    public int myId;
     private GameSession gameSession;
     private RemoteServer serverMethods;
     private ServerHandler serverHandler;
@@ -34,12 +33,12 @@ public class ClientController {
      * Solo per i test
      */
     public ClientController(GameSession gameSession) {
-        playerId = -1;  //non ancora assegnato
+        myId = -1;  //non ancora assegnato
         this.gameSession = gameSession;
     }
 
     public ClientController(GameSession gameSession, UserInterface ui) {
-        playerId = -1;  //non ancora assegnato
+        myId = -1;  //non ancora assegnato
         this.gameSession = gameSession;
         this.ui = ui;
     }
@@ -57,11 +56,13 @@ public class ClientController {
     }
 
     public void errorCallback(int playerId, String errorMessage) {
-        if (this.playerId == playerId) ui.printUpdateMessage(error + errorMessage);
+        if (myId == playerId) {
+            ui.printUpdateMessage(error + errorMessage);
+        }
     }
 
     public void registerClientCallback(int playerId) {
-        this.playerId = playerId;
+        this.myId = playerId;
         ui.setClientId(playerId);
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -274,8 +275,8 @@ public class ClientController {
         Command command = new Command("registerClientSocket", this);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
-        playerId = mapper.readTree(idFile).get("playerId").asInt();
-        command.addParameter(playerId);
+        myId = mapper.readTree(idFile).get("playerId").asInt();
+        command.addParameter(myId);
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
     }
@@ -283,9 +284,9 @@ public class ClientController {
 
     public void adminSetup(int numberOfPlayers, int mode) {
         try {
-            gameSession.getState().checkAdminCreateGame(playerId, mode, numberOfPlayers);
+            gameSession.getState().checkAdminCreateGame(myId, mode, numberOfPlayers);
             Command command = new Command("adminSetup", this);
-            command.addParameter(playerId);
+            command.addParameter(myId);
             command.addParameter(numberOfPlayers);
             command.addParameter(GameMode.values()[mode]);
             serverMethods.command_FromClientToServer(command);
@@ -296,9 +297,9 @@ public class ClientController {
 
     public void playerJoin(String username) {
         try {
-            gameSession.getState().checkUserJoinLobby(playerId, username);
+            gameSession.getState().checkUserJoinLobby(myId, username);
             Command command = new Command("playerJoin", this);
-            command.addParameter(playerId);
+            command.addParameter(myId);
             command.addParameter(username);
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException | GameSettingsException e) {
@@ -546,7 +547,7 @@ public class ClientController {
     }
 
     public int getplayerId() {
-        return playerId;
+        return myId;
     }
 
     public void setUsername(String username) {
@@ -557,7 +558,7 @@ public class ClientController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode rootNode = mapper.createObjectNode();
-            rootNode.put("playerId", playerId);
+            rootNode.put("playerId", myId);
             File idFile = new File("$IdClient" + username + ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(idFile, rootNode);
         } catch (IOException e) {
@@ -565,7 +566,7 @@ public class ClientController {
         }
     }
     public void clientReset(){
-        playerId = -1;
+        myId = -1;
         gameSession = new GameSession(ui);
         ui.setGameSession(gameSession);
         serverMethods.setGamesession(gameSession);
