@@ -1,12 +1,13 @@
 package it.polimi.ingsw.is25am49.server;
 
+import it.polimi.ingsw.is25am49.client.RemoteServer;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
+public class ServerRMI extends UnicastRemoteObject implements RemoteClient, RemoteServer {
     ServerController serverController;
     HashMap<Integer, RemoteClient> clients;
 
@@ -26,6 +27,10 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
 
     }
 
+    public void signalThatGameStarted() {
+
+    }
+
     /**THIS METHOD IS CALLED BY THE CLIENT
      *REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
      * SO: CLIENT CAN CALL HIS INTERFACE METHOD(command_FromClientToServer) ONLY IF
@@ -33,10 +38,14 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
      * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
      * EXAMPLE: TO CALL PLACETILE ON THE SHIPBOARD, THE SHIPBOARD MUST HAVE PLACETILE ON ITS CODE.
      */
-    public void command_FromClientToServer(Command command) throws RemoteException {
-        //DO NOT CANCEL THIS METHOD
+
+    @Override
+    public void command_FromClientToServer(it.polimi.ingsw.is25am49.client.Command command) throws RemoteException {
+
     }
 
-    public void signalThatGameStarted() {
+    @Override
+    public void setGamesession(it.polimi.ingsw.is25am49.client.model.GameSession gameSession) {
+
     }
 }

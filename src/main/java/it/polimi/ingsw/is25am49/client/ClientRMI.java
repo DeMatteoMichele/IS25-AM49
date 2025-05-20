@@ -9,7 +9,6 @@ import java.rmi.registry.Registry;
 
 public class ClientRMI implements RemoteServer {
     public GameSession gameSession;
-    private Integer playerID;
 
     private boolean isConnected;
 

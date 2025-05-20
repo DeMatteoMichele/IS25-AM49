@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.client;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.LinkedList;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
@@ -22,7 +21,9 @@ import org.jline.utils.AttributedStyle;
 public class TextualUserInterface implements UserInterface {
     //Server settings:
     private final String serverIP = "localhost";
-    private final int serverPort = 8081;
+    private final int serverPortSocket = 8081;
+    private final int serverPortRMI = 1099;
+
     private int connectionType;
     //---------------------------------------
 
@@ -156,7 +157,7 @@ public class TextualUserInterface implements UserInterface {
                 case 1 -> {
                     ClientRMI clientRMI = new ClientRMI(gameSession);
                     try {
-                        controller.setServerMethods(clientRMI.connect(serverIP, serverPort));
+                        controller.setServerMethods(clientRMI.connect(serverIP, serverPortRMI));
                         try {
                             //todo registerClientRmi con settaggio dell'id
                             System.out.println("trying to log in to the server ...");
@@ -188,7 +189,7 @@ public class TextualUserInterface implements UserInterface {
                 //CONNESSSIONE SOCKET
                 case 2 -> {
                     ClientSerializer clientSerializer = new ClientSerializer(gameSession, controller);
-                    ServerHandler serverHandler = new ServerHandler(serverIP, serverPort);
+                    ServerHandler serverHandler = new ServerHandler(serverIP, serverPortSocket);
                     serverHandler.setClientSerializer(clientSerializer);
                     clientSerializer.setServerHandler(serverHandler);
                     controller.setServerMethods(clientSerializer);

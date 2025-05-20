@@ -188,7 +188,17 @@ public class ClientController {
     }
 
     public void registerClientRMI(RemoteServer client) throws RemoteException {
-
+        Command command = new Command("registerClientRMI", this);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            File idFile = new File("$IdClient"+username+".json");
+            myId = mapper.readTree(idFile).get("playerId").asInt();
+        } catch (IOException e) {
+            System.out.println("Errore durante la lettura dell'ID: " + e.getMessage());
+        }
+        command.addParameter(myId);
+        serverMethods.command_FromClientToServer(command);
+        serverHandler.connectCommand();
     }
 
     /**

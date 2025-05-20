@@ -36,6 +36,7 @@ public class ServerSerializer implements RemoteClient {
         filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
         historyQueue = new ArrayBlockingQueue<File>(50000, true);
         executorService = Executors.newFixedThreadPool(10);
+
         executorService.submit(this::processFilesFromSocketQueue);
     }
 
