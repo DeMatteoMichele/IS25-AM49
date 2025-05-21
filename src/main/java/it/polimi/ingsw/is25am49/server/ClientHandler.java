@@ -24,11 +24,12 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, DataOutputStream> outputStreams;
     private final ConcurrentMap<Integer, DataInputStream> inputStreams;
     private final ConcurrentMap<Integer, ArrayBlockingQueue<String>> InGoingStringQueues;
-    private final ConcurrentMap<Integer, LinkedBlockingDeque<File>> outGoingFileQueue;
-    private final ConcurrentMap<Integer, LinkedBlockingDeque<File>> playersOutgoingFileQueue;
+    private final ConcurrentMap<Integer, LinkedBlockingDeque<String>> outGoingFileQueue;
+    private final ConcurrentMap<Integer, LinkedBlockingDeque<String>> playersOutgoingFileQueue;
     private final ArrayBlockingQueue<File> BroadcastQueue;
     private final Thread serverThread;
     private boolean gameStarted;
+    private final File directory;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         this.serverSerializer = serverSerializer;
@@ -44,6 +45,11 @@ public class ClientHandler {
         playersOutgoingFileQueue = new ConcurrentHashMap<>();
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
+        directory = new File("$FilesFromClients");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -87,7 +93,8 @@ public class ClientHandler {
             byte[] buffer = new byte[length];
             inputStream.readFully(buffer, 0, length);
             String jsonString = new String(buffer, StandardCharsets.UTF_8);
-            File fileJson = new File("$first_received.json");
+            File fileJson = new File(directory,"$"+java.util.UUID.randomUUID()+"first_received.json");
+            fileJson.deleteOnExit();
             Files.writeString(fileJson.toPath(), jsonString);
             return serverSerializer.deserializeHandshake(fileJson);
         } catch (IOException e) {
@@ -215,9 +222,8 @@ public class ClientHandler {
     private void sendMessageToSpecificClient(int clientId, File fileToSend) {
         try {
             String jsonContent = Files.readString(fileToSend.toPath());
-            int length = jsonContent.length();
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
-            DataOutputStream outputStream = outputStreams.get(clientId);
+            int length = buffer.length;
             System.out.println(jsonContent);
             sendViaOutputStream(clientId, length, buffer);
         } catch (IOException e) {
@@ -243,7 +249,8 @@ public class ClientHandler {
         while (connections.get(clientId)) {
             try {
                 String jsonString = InGoingStringQueues.get(clientId).take();
-                File fileJson = new File("$" + clientId + "_received.json");
+                File fileJson = new File(directory,"$" + clientId + "_received"+java.util.UUID.randomUUID()+".json");
+                fileJson.deleteOnExit();
                 Files.writeString(fileJson.toPath(), jsonString);
                 serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {

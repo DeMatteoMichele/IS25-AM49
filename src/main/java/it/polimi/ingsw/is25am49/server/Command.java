@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Command {
+public class Command implements java.io.Serializable {
     private ServerController serverController;
     private ClientController clientController;
     private String methodName;

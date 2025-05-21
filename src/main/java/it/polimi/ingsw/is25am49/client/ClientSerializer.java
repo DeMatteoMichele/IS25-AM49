@@ -11,6 +11,8 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,9 +24,10 @@ import java.util.concurrent.Executors;
 public class ClientSerializer implements RemoteServer {
     private ClientController clientController;
     private ServerHandler serverHandler;
-    private BlockingQueue<File> filesFromSocketQueue;
+    private BlockingQueue<String> filesFromSocketQueue;
     private final ExecutorService executors;
     private GameSession gameSession;
+    private final File directory;
 
     public ClientSerializer(GameSession session, ClientController clientController) {
         this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
@@ -32,6 +35,11 @@ public class ClientSerializer implements RemoteServer {
         executors.submit(this::processFilesFromSocketQueue);
         gameSession = session;
         this.clientController = clientController;
+        directory = new File("$FilesFromClientSerializer");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
     }
 
     public ClientSerializer(ClientController clientController) {
@@ -40,14 +48,19 @@ public class ClientSerializer implements RemoteServer {
         executors.submit(this::processFilesFromSocketQueue);
         gameSession = null;
         this.clientController = clientController;
+        directory = new File("$FilesFromClientSerializer");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
     }
 
     private void processFilesFromSocketQueue() {
         while (true) {
             try {
-                File json = filesFromSocketQueue.take();
+                String string = filesFromSocketQueue.take();
                 System.out.println("Processing file: ");
-                deSerializeStringFromServer(json);
+                deSerializeStringFromServer(string);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
@@ -58,34 +71,36 @@ public class ClientSerializer implements RemoteServer {
         this.gameSession = gameSession;
     }
 
-    //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
+    //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA SUA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
 
     /**
      * This method is used to put files in the queue.
      * It is called by ServerHandler after receiving a message from server
      */
-    public void putFileFromSocketInQueue(File file) {
+    public void putFileFromSocketInQueue(String string) {
         try {
-            filesFromSocketQueue.put(file);
+            filesFromSocketQueue.put(string);
         } catch (InterruptedException e) {
             System.out.println("Error while putting the file in the filesFromSocketQueue, thread has been interrupted");
         }
     }
 
-    public void placetile() {
-        //traduci in un pacchetto serializzato
-    }
-
-    public Command deSerializeStringFromServer(File fileJson) {
+    public Command deSerializeStringFromServer(String string) {
         try {
             System.out.println("Deserializing file: ");
+//            String jsonContent = Files.readString(fileJson.toPath(), StandardCharsets.UTF_8).trim();
+            string = string.replaceAll("[\\x00-\\x1F&&[^\\r\\n\\t]]", "");
+            System.out.println("File content after cleaning: " + string);
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, it.polimi.ingsw.is25am49.client.PairMixIn.class);
-            JsonNode rootNode = mapper.readTree(fileJson);
+            JsonNode rootNode = mapper.readTree(string);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
+            //System.out.println("Type of message: " + typeOfMessage);
             String methodName = rootNode.get("methodName").asText();
+            //System.out.println("Method name: " + methodName);
             Command command = new Command(methodName, clientController);
             ArrayNode params = (ArrayNode) rootNode.get("params");
+            //System.out.println("Params: " + params);
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
                     ArrayList<Object> collectionList = null;
@@ -256,12 +271,13 @@ public class ClientSerializer implements RemoteServer {
         } catch (IOException e) {
             System.err.println("porcatr " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e);
+            return new Command("EXCEPTION", clientController);
         }
     }
 
     public File serializeObjectFromClient(Command command) {
-        File jsonFile = new File("$commandToServer.json");
+        File jsonFile = new File(directory,"$commandToServer"+java.util.UUID.randomUUID() +".json");
+        jsonFile.deleteOnExit();
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();

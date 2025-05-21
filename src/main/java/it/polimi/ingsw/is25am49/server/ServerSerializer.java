@@ -14,6 +14,7 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -28,6 +29,7 @@ public class ServerSerializer implements RemoteClient {
     private final BlockingQueue<File> historyQueue;
     private final ExecutorService executorService;
     private int idCounter;
+    private final File directory;
 
 
     public ServerSerializer(ServerController serverController) {
@@ -35,6 +37,11 @@ public class ServerSerializer implements RemoteClient {
         this.idCounter = -1;
         filesFromSocketQueue = new ArrayBlockingQueue<File>(4000, true);
         historyQueue = new ArrayBlockingQueue<File>(50000, true);
+        directory = new File("$FilesFromServerSerializer");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
         executorService = Executors.newFixedThreadPool(10);
         executorService.submit(this::processFilesFromSocketQueue);
     }
@@ -62,9 +69,11 @@ public class ServerSerializer implements RemoteClient {
     //se cambiano i parametri dei metodi bisogna modificare questo codice
     public Command deSerializeStringFromClient(File fileJson) {
         try {
+            String jsonContent = Files.readString(fileJson.toPath()).trim();
+            jsonContent = jsonContent.replaceAll("[\\x00-\\x1F&&[^\\r\\n\\t]]", "");
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, PairMixIn.class);
-            JsonNode rootNode = mapper.readTree(fileJson);
+            JsonNode rootNode = mapper.readTree(jsonContent);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
             Command command = new Command(methodName, serverController, -1);
@@ -229,6 +238,7 @@ public class ServerSerializer implements RemoteClient {
                     if (contentObject == -1) {
                         idCounter++;
                     }
+                    else idCounter = contentObject;
                     command.addParameter(idCounter);
                     command.setPlayerId(idCounter);
                 }
@@ -239,18 +249,13 @@ public class ServerSerializer implements RemoteClient {
             System.err.println("Messaggio di errore: " + e.getMessage());
             System.err.println("Dimensione file: " + fileJson.length() + " bytes");
             e.printStackTrace();
-            throw new RuntimeException(e);
+            return new Command("EXCEPTION", serverController, -100);
         }
     }
 
     public File serializeObjectFromServer(Command command, boolean toSpecificClient, int clientId) {
-        File jsonFile = null;
-        try {
-            jsonFile = File.createTempFile("server_response", ".json");
-        } catch (IOException e) {
-            System.out.println("Error creating temp file: " + e.getMessage());
-        }
-        //jsonFile.deleteOnExit();
+        File jsonFile= new File(directory,"$commandToServer"+java.util.UUID.randomUUID() +".json");
+        jsonFile.deleteOnExit();
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
