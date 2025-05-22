@@ -7,9 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;

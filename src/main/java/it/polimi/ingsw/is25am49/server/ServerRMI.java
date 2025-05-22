@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.server.model.GameSession;
+import it.polimi.ingsw.is25am49.shared.Command;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

@@ -1,14 +1,14 @@
 package it.polimi.ingsw.is25am49.client.model;
 
 import it.polimi.ingsw.is25am49.client.UserInterface;
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.BuildState;
 import it.polimi.ingsw.is25am49.client.model.states.InitState;
 import it.polimi.ingsw.is25am49.client.model.states.State;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
 
 import java.awt.*;

@@ -1,20 +1,16 @@
 package it.polimi.ingsw.is25am49.client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import it.polimi.ingsw.is25am49.shared.Command;
 
 public class ServerHandler {
     private ClientSerializer clientSerializer;
     private Socket clientSocket;
-    private DataOutputStream outputStream;
-    private DataInputStream inputStream;
+    private ObjectOutputStream objectOutputStream;
+    private ObjectInputStream objectInputStream;
     private final ExecutorService executors;
     private final ScheduledExecutorService scheduler;
     private ScheduledFuture<?> heartBeatTask;
@@ -25,8 +21,8 @@ public class ServerHandler {
     private final String serverIP;
     private final int serverPort;
     private final Object outputStreamLock;
-    private final BlockingQueue<String> InGoingStringQueue;
-    private final BlockingQueue<File> OutGoingFileQueue;
+    private final BlockingQueue<Command> InGoingStringQueue;
+    private final BlockingQueue<Command> OutGoingFileQueue;
     private final File directory;
 
     /**
@@ -64,8 +60,8 @@ public class ServerHandler {
      */
     private void connection() throws IOException {
         clientSocket = new Socket(serverIP, serverPort);
-        outputStream = new DataOutputStream(clientSocket.getOutputStream());
-        inputStream = new DataInputStream(clientSocket.getInputStream());
+        objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+        objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
         connected.set(true);
         executors.submit(this::listenToServer);
         executors.submit(this::processOutGoingQueue);
@@ -79,19 +75,19 @@ public class ServerHandler {
      * If it fails, it disconnects and tries to reconnect.
      */
     private void heartBeat() {
-        String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
-        if (connected.get()) {
-            synchronized (outputStreamLock) {
-                try {
-                    outputStream.writeInt(HeartBeat.length());
-                    outputStream.writeBytes(HeartBeat);
-                    outputStream.flush();
-                    //System.out.println("Client still alive");
-                } catch (IOException e) {
-                    disconnectAndTryToReconnect();
-                }
-            }
-        }
+//        String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
+//        if (connected.get()) {
+//            synchronized (outputStreamLock) {
+//                try {
+//                    objectOutputStream.writeInt(HeartBeat.length());
+//                    objectOutputStream.writeBytes(HeartBeat);
+//                    objectOutputStream.flush();
+//                    //System.out.println("Client still alive");
+//                } catch (IOException e) {
+//                    disconnectAndTryToReconnect();
+//                }
+//            }
+//        }
     }
 
     /**
@@ -103,17 +99,15 @@ public class ServerHandler {
         executors.submit(this::processStringQueueToSerializer);
         while (connected.get()) {
             try {
-                int length = inputStream.readInt();
-                byte[] buffer = new byte[length];
-                inputStream.readFully(buffer, 0, length);
-                String jsonString = new String(buffer, StandardCharsets.UTF_8);
-                //System.err.println("Message received: " + jsonString);
-                InGoingStringQueue.put(jsonString);
+                Command command = (Command) objectInputStream.readObject();
+                InGoingStringQueue.put(command);
             } catch (IOException e) {
                 System.out.println("Error while listening to server, putting the connection to false");
                 disconnectAndTryToReconnect();
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the message in the queue, thread has been interrupted");
+            } catch (ClassNotFoundException e) {
+                System.out.println("Error reading command in serverhandler from inputstream");
             }
         }
     }
@@ -127,13 +121,8 @@ public class ServerHandler {
     private void processStringQueueToSerializer() {
         while (connected.get()) {
             try {
-                String jsonString = InGoingStringQueue.take();
-//                File fileJson = new File(directory, "$jsonFileFromServer" + java.util.UUID.randomUUID() + ".json");
-//                fileJson.deleteOnExit();
-//                Files.writeString(fileJson.toPath(), jsonString);
-                clientSerializer.putFileFromSocketInQueue(jsonString);
-//            } catch (IOException e) {
-//                System.out.println("Error while writing the message to the file");
+                Command command = InGoingStringQueue.take();
+                clientSerializer.putFileFromSocketInQueue(command);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
@@ -151,11 +140,11 @@ public class ServerHandler {
         if (connected.get()) {
             connected.set(false);
             try {
-                if (inputStream != null) {
-                    inputStream.close();
+                if (objectInputStream != null) {
+                    objectInputStream.close();
                 }
-                if (outputStream != null) {
-                    outputStream.close();
+                if (objectOutputStream != null) {
+                    objectOutputStream.close();
                 }
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();
@@ -218,11 +207,11 @@ public class ServerHandler {
      * It uses a BlockingQueue to ensure thread safety.
      * If the queue is full, it waits until space becomes available.
      *
-     * @param fileJson The JSON file to be put in the OutGoingFileQueue.
+     * @param command The JSON file to be put in the OutGoingFileQueue.
      */
-    public void putInTheOutGoingFileQueue(File fileJson) {
+    public void putInTheOutGoingFileQueue(Command command) {
         try {
-            OutGoingFileQueue.put(fileJson);
+            OutGoingFileQueue.put(command);
         } catch (InterruptedException e) {
             System.out.println("Error while putting the file in the OutGoingQueue, thread has been interrupted");
         }
@@ -237,10 +226,8 @@ public class ServerHandler {
     private void processOutGoingQueue() {
         while (connected.get()) {
             try {
-                File fileJson = OutGoingFileQueue.take();
-                sendMessageToServer(fileJson);
-            } catch (IOException e) {
-                System.out.println("Error while sending the message to the server");
+                Command command = OutGoingFileQueue.take();
+                sendMessageToServer(command);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
@@ -253,16 +240,14 @@ public class ServerHandler {
      * It synchronizes on the outputStreamLock object to ensure thread safety.
      * If an IOException occurs, it disconnects and tries to reconnect.
      *
-     * @param fileJson The JSON file to be sent to the server.
+     * @param command The JSON file to be sent to the server.
      * @throws IOException If an I/O error occurs while sending the message.
      */
-    private void sendMessageToServer(File fileJson) throws IOException {
+    private void sendMessageToServer(Command command) {
         synchronized (outputStreamLock) {
             try {
-                byte[] bytes = Files.readAllBytes(fileJson.toPath());
-                outputStream.writeInt(bytes.length);
-                outputStream.write(bytes);
-                outputStream.flush();
+                objectOutputStream.writeObject(command);
+                objectOutputStream.flush();
             } catch (IOException e) {
                 System.out.println("Error while sending message to server, disconnecting");
                 disconnectAndTryToReconnect();

@@ -3,8 +3,8 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectModifyCrew;
-import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 
 import java.util.ArrayList;

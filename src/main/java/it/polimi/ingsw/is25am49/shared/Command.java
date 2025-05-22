@@ -1,12 +1,12 @@
-package it.polimi.ingsw.is25am49.server;
+package it.polimi.ingsw.is25am49.shared;
 
 import it.polimi.ingsw.is25am49.client.ClientController;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import javafx.util.Pair;
+import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.server.ServerController;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
+//import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,14 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Command implements java.io.Serializable {
-    private ServerController serverController;
-    private ClientController clientController;
+    private transient ServerController serverController;
+    private transient ClientController clientController;
     private String methodName;
     private final String typeOfMessage;
     private final ArrayList<Object> parameters;
     private int playerId;
 
-    public Command(String methodName, ServerController serverController, int playerId) {
+    public Command(String methodName, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.serverController = serverController;
@@ -182,14 +182,14 @@ public class Command implements java.io.Serializable {
                     e.printStackTrace();
                 }
             }
-            case "userFinishDecisionToken" -> {
-                try {
-                    serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
-                } catch (Exception e) {
-                    System.out.println("Error in finishDecisionToken: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+//            case "userFinishDecisionToken" -> {
+//                try {
+//                    serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
+//                } catch (Exception e) {
+//                    System.out.println("Error in finishDecisionToken: " + e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            }
             case "userAcceptPrizes" -> {
                 try {
                     serverController.userAcceptPrizes((int) parameters.get(0), (boolean) parameters.get(1));
@@ -256,7 +256,7 @@ public class Command implements java.io.Serializable {
             }
             case "registerClientCallback" -> {
                 try {
-                    clientController.registerClientCallback((int) parameters.get(0));
+                    clientController.registerClientCallback(playerId);
                 } catch (Exception e) {
                     System.err.println("Errore durante registerClientCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -264,7 +264,7 @@ public class Command implements java.io.Serializable {
             }
             case "adminSetupCallback" -> {
                 try {
-                    clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.client.model.enums.GameMode) parameters.get(2));
+                    clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.GameMode) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in adminSetupCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -288,7 +288,7 @@ public class Command implements java.io.Serializable {
             }
             case "userPlaceTileCallback" -> {
                 try {
-                    clientController.userPlaceTileCallback((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.client.model.enums.Orientation) parameters.get(2));
+                    clientController.userPlaceTileCallback((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.Orientation) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userPlaceTileCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -344,7 +344,7 @@ public class Command implements java.io.Serializable {
             }
             case "userSelectTypeOfTokenCallback" -> {
                 try {
-                    clientController.userSelectTypeOfTokenCallback((int) parameters.get(0), (it.polimi.ingsw.is25am49.client.model.enums.Token) parameters.get(1), (Point) parameters.get(2));
+                    clientController.userSelectTypeOfTokenCallback((int) parameters.get(0), (it.polimi.ingsw.is25am49.shared.enums.Token) parameters.get(1), (Point) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userSelectTypeOfTokenCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -374,14 +374,14 @@ public class Command implements java.io.Serializable {
                     e.printStackTrace();
                 }
             }
-            case "userFinishDecisionTokenCallback" -> {
-                try {
-                    clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.client.model.enums.Token>>) parameters.get(1));
-                } catch (Exception e) {
-                    System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+//            case "userFinishDecisionTokenCallback" -> {
+//                try {
+//                    clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
+//                } catch (Exception e) {
+//                    System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            }
             case "userAcceptPrizesCallback" -> {
                 try {
                     clientController.userAcceptPrizesCallback((int) parameters.get(0), (boolean) parameters.get(1));

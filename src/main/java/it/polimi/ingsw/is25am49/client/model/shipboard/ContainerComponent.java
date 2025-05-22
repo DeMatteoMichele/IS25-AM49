@@ -1,7 +1,7 @@
 package it.polimi.ingsw.is25am49.client.model.shipboard;
 
-import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalTokenInComponentEcxeption;
 

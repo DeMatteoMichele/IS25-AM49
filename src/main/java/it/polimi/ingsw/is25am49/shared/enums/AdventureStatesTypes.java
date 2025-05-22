@@ -1,4 +1,4 @@
-package it.polimi.ingsw.is25am49.server.model.enums;
+package it.polimi.ingsw.is25am49.shared.enums;
 
 public enum AdventureStatesTypes {
     CHECK_REQUIREMENTS,

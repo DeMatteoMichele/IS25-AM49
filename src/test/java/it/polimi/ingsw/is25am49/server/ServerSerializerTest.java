@@ -1,8 +1,9 @@
 package it.polimi.ingsw.is25am49.server;
 
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.shared.Command;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
