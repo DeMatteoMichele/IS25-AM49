@@ -1,7 +1,6 @@
-package it.polimi.ingsw.is25am49.client;
+package it.polimi.ingsw.is25am49.shared;
 
-import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.RemoteClient;
+import it.polimi.ingsw.is25am49.client.ClientController;
 import it.polimi.ingsw.is25am49.server.ServerController;
 import javafx.util.Pair;
 
@@ -13,21 +12,33 @@ import java.util.Set;
 public class Command {
     private ClientController clientController;
     private ServerController serverController;
-    private final String methodName;
-    private final String typeOfMessage;
+    private String methodName;
+    private int playerId;
+    private String typeOfMessage;
     private final ArrayList<Object> parameters;
 
     public Command(String methodName, ClientController clientController) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.clientController = clientController;
+        this.playerId = -5;
         if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
             typeOfMessage = "HSK";
         } else {
             typeOfMessage = "MSG";
         }
     }
-
+    public Command(String methodName, ServerController serverController, int playerId) {
+        this.methodName = methodName;
+        this.parameters = new ArrayList<>();
+        this.serverController = serverController;
+        this.playerId = playerId;
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+            typeOfMessage = "HSK";
+        } else {
+            typeOfMessage = "MSG";
+        }
+    }
     public static String compactJsonString(String json) {
         StringBuilder compactedJsonString = new StringBuilder();
         int i;
@@ -38,6 +49,14 @@ public class Command {
         }
         return compactedJsonString.toString();
     }
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
 
     public String getTypeOfMessage() {
         return typeOfMessage;
@@ -53,6 +72,15 @@ public class Command {
 
     public String getMethodName() {
         return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+            typeOfMessage = "HSK";
+        } else {
+            typeOfMessage = "MSG";
+        }
     }
 
     public int sizeParameters() {
