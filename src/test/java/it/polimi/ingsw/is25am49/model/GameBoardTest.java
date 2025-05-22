@@ -49,10 +49,10 @@ class GameBoardTest {
         player5 = new Player("rojo", Color.RED,8);
         player6 = new Player("verde", Color.BLUE,6);
         player7 = new Player("azul", Color.BLUE,9);
-        ship1 = new ShipBoard(1,3);
-        ship2 = new ShipBoard(1,2);
-        ship3 = new ShipBoard(1,1);
-        ship4 = new ShipBoard(1,12);
+        ship1 = new ShipBoard(1,3, Color.RED);
+        ship2 = new ShipBoard(1,2, Color.BLUE);
+        ship3 = new ShipBoard(1,1, Color.GREEN);
+        ship4 = new ShipBoard(1,12 , Color.YELLOW);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         player3.setShipBoard(ship3);

@@ -1,8 +1,5 @@
 package it.polimi.ingsw.is25am49.server.model.shipboard;
-import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.server.model.enums.ConnectorType;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.enums.*;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
 
 
@@ -28,18 +25,24 @@ public class ShipBoard {
 
     public ShipBoard() {
         grid = new HashMap<>();
-        lastPlacedPoint = null;
+        lastPlacedPoint = new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
     }
-    public ShipBoard(int level, int playerID){
+    public ShipBoard(int level, int playerID, Color color){
         grid = new HashMap<>();
-        lastPlacedPoint = null;
+        lastPlacedPoint =  new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
 
-        var centerCabinTile = new Tile(playerID, new ContainerComponent(ComponentType.CABINE,2));
-        centerCabinTile.setConnectors(ConnectorType.UNIVERSAL,ConnectorType.UNIVERSAL,ConnectorType.UNIVERSAL,ConnectorType.UNIVERSAL);
+        HashMap<Integer,Tile> tiles = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
+        var centerCabinTile = switch (color){
+            case RED -> tiles.get(52);
+            case BLUE -> tiles.get(33);
+            case GREEN -> tiles.get(34);
+            case YELLOW -> tiles.get(61);
+        };
+        centerCabinTile.lockTile();
 
         switch (level){
             case 0,1:
@@ -207,7 +210,7 @@ public class ShipBoard {
         try{
             Tile t = getTile(coordinates);
             if (!t.isLocked()){
-                grid.remove(coordinates);
+                grid.put(coordinates,Optional.empty());
                 return t;
             }
             else throw new InvalidCoordinatesException("cannot REMOVE a tile i<" + coordinates.x + "," + coordinates.y + "> --> tile is locked");
@@ -385,6 +388,7 @@ public class ShipBoard {
             } else throw new InvalidCoordinatesException("cannot checkIfAlienArePossible --> point<"+coordinates.x+","+coordinates.y+"> is not a cabin");
         }catch (InvalidCoordinatesException e){
             System.out.println("cannot checkIfAlienArePossible ---> "+e.getMessage());
+            throw new InvalidCoordinatesException("cannot checkIfAlienArePossible ---> "+e.getMessage());
         }
         return crew;
     }
@@ -442,7 +446,7 @@ public class ShipBoard {
                 t.addToken(token);
             } catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
                      IllegalMethodOnThisComponentException e) {
-                System.out.println("cannot add " + token + " to " + t.getComponentType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
+                throw new RuntimeException("cannot add " + token + " to " + t.getComponentType() + " point<" + coordinates.x + "," + coordinates.y + "> --> " + e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot add "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+ e.getMessage());
@@ -478,7 +482,7 @@ public class ShipBoard {
             try{t.removeToken(token);}
             catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
                    IllegalMethodOnThisComponentException e) {
-                System.out.println("cannot remove "+token+" from " + t.getComponentType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
+                throw new RuntimeException("cannot remove "+token+" from " + t.getComponentType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot ADD "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+e.getMessage());
@@ -498,8 +502,7 @@ public class ShipBoard {
                 try {
                     t.removeToken();
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
-                    throw e;
+                    throw new ArrayIndexOutOfBoundsException("not enough BATTERY in " + t.getComponentType() + " point<" + donator.x + "," + donator.y + "> --> " + e.getMessage());
                 }
             }else throw new IllegalMethodOnThisComponentException("cannot donate a BATTERY from" + t.getComponentType() + " point<" + donator.x + "," + donator.y+">");
 
@@ -516,8 +519,7 @@ public class ShipBoard {
             Tile t=getTile(coordinates);
             try{t.turnOn();}
             catch(IllegalMethodOnThisComponentException e){
-                System.out.println("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
-                throw e;
+                throw new IllegalMethodOnThisComponentException("cannot turn on " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot turn ON point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
@@ -551,7 +553,7 @@ public class ShipBoard {
             Tile t=getTile(coordinates);
             try{t.turnOff();}
             catch(IllegalMethodOnThisComponentException e){
-                System.out.println("cannot turn off " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
+                throw new IllegalMethodOnThisComponentException("cannot turn off " + t.getComponentType()+ "in point<"+coordinates.x+","+coordinates.y+"> -->  "+e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot turn OFF point<" + coordinates.x + "," + coordinates.y +"> --> "+e.getMessage());
@@ -832,7 +834,7 @@ public class ShipBoard {
         int n=level==1?19:28;
         if(nTiles>n)nTiles=n;
 
-        ShipBoard ship=new ShipBoard(level,999);
+        ShipBoard ship=new ShipBoard(level,999,Color.RED);
         ArrayList<Tile> tiles=new ArrayList<>(Objects.requireNonNull(Tile.generateTiles()).values());
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         Orientation o;

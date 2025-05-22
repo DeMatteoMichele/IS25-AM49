@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.client.model.shipboard;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.is25am49.client.model.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
@@ -33,14 +34,20 @@ public class ShipBoard {
         isCompleted = false;
         destroyedTiles = 0;
     }
-    public ShipBoard(int level, int playerID){
+    public ShipBoard(int level, int playerID, Color color){
         grid = new HashMap<>();
         lastPlacedPoint =  new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
 
-        var centerCabinTile = new Tile(playerID, new ContainerComponent(ComponentType.CABINE,2));
-        centerCabinTile.setConnectors(ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL, ConnectorType.UNIVERSAL);
+        HashMap<Integer, Tile> tiles = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
+        var centerCabinTile = switch (color){
+            case RED -> tiles.get(52);
+            case BLUE -> tiles.get(33);
+            case GREEN -> tiles.get(34);
+            case YELLOW -> tiles.get(61);
+        };
+        centerCabinTile.lockTile();
 
         switch (level){
             case 0,1:
@@ -329,7 +336,7 @@ public class ShipBoard {
         try{
             Tile t = getTile(coordinates);
             if (!t.isLocked()){
-                grid.remove(coordinates);
+                grid.put(coordinates,Optional.empty());
                 return t;
             }
             else throw new InvalidCoordinatesException("cannot REMOVE a tile i<" + coordinates.x + "," + coordinates.y + "> --> tile is locked");
@@ -962,7 +969,7 @@ public class ShipBoard {
         int n=level==1?19:28;
         if(nTiles>n)nTiles=n;
 
-        ShipBoard ship=new ShipBoard(level,999);
+        ShipBoard ship=new ShipBoard(level,999, Color.RED);
         ArrayList<Tile> tiles=new ArrayList<>(Objects.requireNonNull(Tile.generateTiles()).values());
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         Orientation o;
@@ -1008,16 +1015,16 @@ public class ShipBoard {
             ConnectorType s=t.getConnector(Orientation.SOUTH);
             ConnectorType w=t.getConnector(Orientation.WEST);
             rows.add(String.format("┌ ─ %s ─ ┐", hConnToStr(n)));
-            rows.add(String.format("│   %5s   │",compToStr(c)));
+            rows.add(String.format("│   %5s  %s│",compToStr(c),lockedToStr(t)));
             rows.add(String.format("%s     %s     %s",vConnToStr(w,1),orientToStr(o,0),vConnToStr(e,1)));
-            rows.add(String.format("%s   %s %s %s   %s",vConnToStr(w,2),orientToStr(o,3),"■",orientToStr(o,1),vConnToStr(e,2)));
+            rows.add(String.format("%s   %s %s %s   %s",vConnToStr(w,2),orientToStr(o,3),centerToStr(t),orientToStr(o,1),vConnToStr(e,2)));
             rows.add(String.format("%s     %s     %s",vConnToStr(w,3),orientToStr(o,2),vConnToStr(e,3)));
             rows.add(String.format("│   %5s   │",compDescToStr(t)));
             rows.add(String.format("└ ─ %s ─ ┘", hConnToStr(s)));
         }
         return rows;
     }
-    public String hConnToStr(ConnectorType c){
+    private String hConnToStr(ConnectorType c){
         return switch(c){
             case FLAT -> "─ ─ ─";
             case SINGLE -> "─ ║ ─";
@@ -1025,7 +1032,7 @@ public class ShipBoard {
             case UNIVERSAL -> "║ ║ ║";
         };
     }
-    public String vConnToStr(ConnectorType c, int row){
+    private String vConnToStr(ConnectorType c, int row){
         return switch(c.ordinal()+":"+row){
             case "0:1"-> "│";
             case "0:2"-> "│";
@@ -1080,7 +1087,27 @@ public class ShipBoard {
             default -> " ";
         };
     }
-    public String orientToStr(Orientation o, int dir){
+    private String centerToStr(Tile t){
+        switch (t.getIdTile()){
+            case 52 -> {
+                return "\u001B[31m■\u001B[0m";
+            }
+            case 33 -> {
+                return "\u001B[34m■\u001B[0m";
+            }
+            case 34 -> {
+                return "\u001B[32m■\u001B[0m";
+            }
+            case 61 -> {
+                return "\u001B[33m■\u001B[0m";
+            }
+            default -> {
+                return "■";
+            }
+        }
+    }
+
+    private String orientToStr(Orientation o, int dir){
         if(o.ordinal()==dir){
             return switch(o){
                 case NORTH -> "↑";
@@ -1090,7 +1117,7 @@ public class ShipBoard {
             };
         }else return " ";
     }
-    public String compDescToStr(Tile t){
+    private String compDescToStr(Tile t){
         switch (t.getComponent()){
             case BasicComponent ignored -> {
                return " ";
@@ -1102,6 +1129,9 @@ public class ShipBoard {
                 return " "+t.getComponent().getNumberOfTokens()+"/"+t.getComponent().getLevel()+" ";
             }
         }
+    }
+    String lockedToStr(Tile t){
+        return t.isLocked() ? "L" : "U";
     }
 
     @Override
@@ -1140,6 +1170,7 @@ public class ShipBoard {
             }
         }
         str.append("\n\t      4            5            6            7            8            9            10       \t \n");
+        if (isCompleted)str.append("\n!!!! SHIPBOARD COMPLETE !!!!\n");
         return str.toString();
     }
 

@@ -92,9 +92,9 @@ public class GameBoard {
             default -> throw new GameSettingsException("Illegal gameMode");
         };
         players.stream().forEach(player ->
-                player.setShipBoard(new ShipBoard(level, player.getPlayerNumber()))
+                player.setShipBoard(new ShipBoard(level, player.getPlayerNumber(),player.getColor()))
         );
-        setLeaderBoard(gameMode);
+                setLeaderBoard(gameMode);
     }
 
     /**
@@ -713,5 +713,9 @@ public class GameBoard {
 
     public TileCardDeck getTilesDeck(){
         return tilesDeck;
+    }
+
+    public String smallDeckToString(int index) {
+        return mapSmallAdventureDecks.get(index).toString();
     }
 }

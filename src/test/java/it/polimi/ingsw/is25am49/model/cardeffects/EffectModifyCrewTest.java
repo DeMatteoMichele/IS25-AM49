@@ -36,7 +36,7 @@ class EffectModifyCrewTest {
     @BeforeEach
     void init(){
         player = new Player("io", Color.RED,2);
-        shipBoard = new ShipBoard(1,2);
+        shipBoard = new ShipBoard(1,2,Color.RED);
         coordinates = new ArrayList<>();
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));

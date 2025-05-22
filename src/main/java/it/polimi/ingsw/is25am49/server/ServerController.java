@@ -96,7 +96,7 @@ public class ServerController {
             } catch (Exception e) {
                 Command command = new Command("errorCallback", this, playerId);
                 command.addParameter(playerId);
-                command.addParameter("Draw tile hasn't worked in Server ->  " + e.getMessage());
+                command.addParameter("Tile with id "+tileId+" not available or already drawn");
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             }
@@ -155,7 +155,7 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userDiscardTile(playerId);
-                Command command = new Command("userDiscardTile", this, playerId);
+                Command command = new Command("userDiscardTileCallback", this, playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
