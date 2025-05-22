@@ -1,29 +1,42 @@
 package it.polimi.ingsw.is25am49.server;
 
-import it.polimi.ingsw.is25am49.server.model.GameSession;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
+import it.polimi.ingsw.is25am49.shared.Command;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
-    ServerController serverController;
-    HashMap<Integer, RemoteClient> clients;
+public class ServerRMI extends UnicastRemoteObject implements RemoteClient, RemoteServer {
+    private boolean gameStarted;
+    private ServerController serverController;
+    private HashMap<Integer, RemoteClient> clients;
+    private HashMap<Integer, RemoteClient> matchPlayers;
+    private int idCounter;
 
-    public ServerRMI() throws RemoteException {
+    public ServerRMI(ServerController serverController) throws RemoteException {
         super();
-        serverController=new ServerController(new GameSession());
-        clients=new HashMap<>();
+        this.serverController = serverController;
     }
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
+        if(command.getTypeOfMessage().equals("HSK")){
 
+        }
+        else {
+
+        }
     }
 
     @Override
     public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
 
+    }
+
+    public void signalThatGameStarted() {
+        gameStarted = true;
     }
 
     /**THIS METHOD IS CALLED BY THE CLIENT
@@ -33,10 +46,20 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient {
      * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
      * EXAMPLE: TO CALL PLACETILE ON THE SHIPBOARD, THE SHIPBOARD MUST HAVE PLACETILE ON ITS CODE.
      */
-    public void command_FromClientToServer(Command command) throws RemoteException {
-        //DO NOT CANCEL THIS METHOD
-    }
 
-    public void signalThatGameStarted() {
+    @Override
+    public void command_FromClientToServer(Command command) throws RemoteException {
+        if(command.getTypeOfMessage().equals("HSK")) {
+            Command tempCommand = new Command("registerClientCallback", serverController, idCounter);
+            idCounter++;
+
+        }
+        else if(command.getTypeOfMessage().equals("MSG")) {
+            command.setServerController(serverController);
+            command.callMethod();
+        }
+    }
+    public void sayToClientHandlerWhoHasJoined(int playerId){
+        matchPlayers.put(playerId, clients.get(playerId));
     }
 }

@@ -1,15 +1,17 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.shared.Command;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class ClientRMI implements RemoteServer {
+public class ClientRMI implements RemoteServer, RemoteClient {
     public GameSession gameSession;
-    private Integer playerID;
 
     private boolean isConnected;
 
@@ -22,7 +24,7 @@ public class ClientRMI implements RemoteServer {
         RemoteServer serverStub = null;
         try {
             Registry reg = LocateRegistry.getRegistry(serverIP, 1099);//eventualmente serverPort
-            serverStub = (RemoteServer) reg.lookup("ServerController");//nome serverController da cambiare
+            serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
             System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
 
         }catch(RemoteException | NotBoundException e){
@@ -47,8 +49,15 @@ public class ClientRMI implements RemoteServer {
      * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
      * EXAMPLE: TO CALL PLACETILE ON THE SHIPBOARD, THE SHIPBOARD MUST HAVE PLACETILE ON ITS CODE.
      */
+
+    @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-        //DO NOT CANCEL THIS METHOD
+
+    }
+
+    @Override
+    public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
+
     }
 }
 

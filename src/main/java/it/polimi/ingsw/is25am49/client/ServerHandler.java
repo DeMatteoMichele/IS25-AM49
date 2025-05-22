@@ -27,7 +27,7 @@ public class ServerHandler {
     private final Object outputStreamLock;
     private final BlockingQueue<String> InGoingStringQueue;
     private final BlockingQueue<File> OutGoingFileQueue;
-
+    private final File directory;
 
     /**
      * Constructor for the ServerHandler class.
@@ -47,6 +47,11 @@ public class ServerHandler {
         secondsForReconnection = 5;
         outputStreamLock = new Object();
         executors = Executors.newFixedThreadPool(10);
+        directory = new File("$FilesFromServer");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
     }
 
     /**
@@ -54,6 +59,7 @@ public class ServerHandler {
      * It creates a new socket with serverIp and serverPort and initializes the input and output streams.
      * If the connection is successful, it sets the connected variable to true (this variable is useful to stop the attemptConnection method).
      * Starts the executor to make it listen to the server. Starts the heart beat agent.
+     *
      * @throws IOException If an error occurs while establishing the connection.
      */
     private void connection() throws IOException {
@@ -77,8 +83,9 @@ public class ServerHandler {
         if (connected.get()) {
             synchronized (outputStreamLock) {
                 try {
-                    outputStream.writeInt(HeartBeat.length());
-                    outputStream.writeBytes(HeartBeat);
+                    byte[] heartBeatBytes = HeartBeat.getBytes(StandardCharsets.UTF_8);
+                    outputStream.writeInt(heartBeatBytes.length);
+                    outputStream.write(heartBeatBytes);
                     outputStream.flush();
                     //System.out.println("Client still alive");
                 } catch (IOException e) {
@@ -101,6 +108,7 @@ public class ServerHandler {
                 byte[] buffer = new byte[length];
                 inputStream.readFully(buffer, 0, length);
                 String jsonString = new String(buffer, StandardCharsets.UTF_8);
+                //System.err.println("Message received: " + jsonString);
                 InGoingStringQueue.put(jsonString);
             } catch (IOException e) {
                 System.out.println("Error while listening to server, putting the connection to false");
@@ -121,8 +129,9 @@ public class ServerHandler {
         while (connected.get()) {
             try {
                 String jsonString = InGoingStringQueue.take();
-                File fileJson = new File("$jsonFileFromServer.json");
-                Files.writeString(fileJson.toPath(), jsonString);
+                File fileJson = new File(directory, "$jsonFileFromServer" + java.util.UUID.randomUUID() + ".json");
+                fileJson.deleteOnExit();
+                Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
                 clientSerializer.putFileFromSocketInQueue(fileJson);
             } catch (IOException e) {
                 System.out.println("Error while writing the message to the file");
@@ -167,6 +176,7 @@ public class ServerHandler {
      * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again using the timer() method.
      */
     public void attemptToConnect() {
+        clientSerializer.askControllerToResetModel();
         System.out.println("Attempting to reconnect to the server...");
         int numberOfTries = 0;
         while (numberOfTries < thresholdTries) {
@@ -250,11 +260,10 @@ public class ServerHandler {
     private void sendMessageToServer(File fileJson) throws IOException {
         synchronized (outputStreamLock) {
             try {
-                String jsonContent = Files.readString(fileJson.toPath());
-                outputStream.writeInt(jsonContent.length());
-                outputStream.write(jsonContent.getBytes(StandardCharsets.UTF_8));
+                byte[] bytes = Files.readAllBytes(fileJson.toPath());
+                outputStream.writeInt(bytes.length);
+                outputStream.write(bytes);
                 outputStream.flush();
-                //System.out.println("Message sent: " + jsonContent);
             } catch (IOException e) {
                 System.out.println("Error while sending message to server, disconnecting");
                 disconnectAndTryToReconnect();
@@ -290,4 +299,5 @@ public class ServerHandler {
         }
     }
 }
+
 

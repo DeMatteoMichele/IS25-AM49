@@ -1,4 +1,4 @@
-package it.polimi.ingsw.is25am49.server;
+package it.polimi.ingsw.is25am49.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,11 +1,10 @@
-package it.polimi.ingsw.is25am49.server;
+package it.polimi.ingsw.is25am49.shared;
 
 import it.polimi.ingsw.is25am49.client.ClientController;
+import it.polimi.ingsw.is25am49.client.ClientController;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.server.ServerController;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -14,13 +13,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Command {
-    private ServerController serverController;
     private ClientController clientController;
+    private ServerController serverController;
     private String methodName;
-    private final String typeOfMessage;
-    private final ArrayList<Object> parameters;
     private int playerId;
+    private String typeOfMessage;
+    private final ArrayList<Object> parameters;
 
+    public Command(String methodName, ClientController clientController) {
+        this.methodName = methodName;
+        this.parameters = new ArrayList<>();
+        this.clientController = clientController;
+        this.playerId = -5;
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+            typeOfMessage = "HSK";
+        } else {
+            typeOfMessage = "MSG";
+        }
+    }
     public Command(String methodName, ServerController serverController, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
@@ -32,7 +42,6 @@ public class Command {
             typeOfMessage = "MSG";
         }
     }
-
     public static String compactJsonString(String json) {
         StringBuilder compactedJsonString = new StringBuilder();
         int i;
@@ -43,6 +52,14 @@ public class Command {
         }
         return compactedJsonString.toString();
     }
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
 
     public String getTypeOfMessage() {
         return typeOfMessage;
@@ -60,6 +77,15 @@ public class Command {
         return methodName;
     }
 
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+            typeOfMessage = "HSK";
+        } else {
+            typeOfMessage = "MSG";
+        }
+    }
+
     public int sizeParameters() {
         return parameters.size();
     }
@@ -69,9 +95,9 @@ public class Command {
             case "registerClientRMI" -> serverController.registerClientRMI((RemoteClient) parameters.get(0));
             case "adminSetup" -> {
                 try {
-                    serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
+                    serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.server.model.enums.GameMode) parameters.get(2));
                 } catch (Exception e) {
-                    System.err.println("Error in adminSetup: " + e.getMessage());
+                    System.err.println("Errore in adminSetup: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -79,7 +105,7 @@ public class Command {
                 try {
                     serverController.playerJoin((int) parameters.get(0), parameters.get(1).toString());
                 } catch (Exception e) {
-                    System.err.println("Error in playerJoin: " + e.getMessage());
+                    System.err.println("Errore in playerJoin: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -87,34 +113,31 @@ public class Command {
                 try {
                     serverController.userDrawTile((int) parameters.get(0), (int) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in drawTile: " + e.getMessage());
+                    System.err.println("Errore in userDrawTile: " + e.getMessage());
                     e.printStackTrace();
                 }
-
             }
             case "userPlaceTile" -> {
                 try {
-                    serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (Orientation) parameters.get(2));
+                    serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.server.model.enums.Orientation) parameters.get(2));
                 } catch (Exception e) {
-                    System.out.println("Error in placeTile: " + e.getMessage());
+                    System.err.println("Errore in userPlaceTile: " + e.getMessage());
                     e.printStackTrace();
                 }
-
             }
             case "userPickTile" -> {
                 try {
                     serverController.userPickTile((int) parameters.get(0), (Point) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in pickTile: " + e.getMessage());
+                    System.err.println("Errore in userPickTile: " + e.getMessage());
                     e.printStackTrace();
                 }
-
             }
             case "userDiscardTile" -> {
                 try {
                     serverController.userDiscardTile((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.out.println("Error in discardTile: " + e.getMessage());
+                    System.err.println("Errore in userDiscardTile: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -122,7 +145,7 @@ public class Command {
                 try {
                     serverController.userFinishShipboard((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.out.println("Error in finishShipboard: " + e.getMessage());
+                    System.err.println("Errore in userFinishShipboard: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -130,7 +153,7 @@ public class Command {
                 try {
                     serverController.userLookSmallAdventureCardDeck((int) parameters.get(0), (int) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in lookSmallAdventureCardDeck: " + e.getMessage());
+                    System.err.println("Errore in userLookSmallAdventureCardDeck: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -138,7 +161,7 @@ public class Command {
                 try {
                     serverController.userStopLookSmallAdventureCardDeck((int) parameters.get(0), (int) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in stopLookSmallAdventureCardDeck: " + e.getMessage());
+                    System.err.println("Errore in userStopLookSmallAdventureCardDeck: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -146,15 +169,15 @@ public class Command {
                 try {
                     serverController.userPlaceTimer((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.out.println("Error in placeTimer: " + e.getMessage());
+                    System.err.println("Errore in userPlaceTimer: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
             case "userSelectTypeOfToken" -> {
                 try {
-                    serverController.userSelectTypeOfToken((int) parameters.get(0), (Token) parameters.get(1), (Point) parameters.get(2));
+                    serverController.userSelectTypeOfToken((int) parameters.get(0), (it.polimi.ingsw.is25am49.server.model.enums.Token) parameters.get(1), (Point) parameters.get(2));
                 } catch (Exception e) {
-                    System.out.println("Error in selectTypeOfToken: " + e.getMessage());
+                    System.err.println("Errore in userSelectTypeOfToken: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -162,7 +185,7 @@ public class Command {
                 try {
                     serverController.userThrowDices((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.out.println("Error in throwDices: " + e.getMessage());
+                    System.err.println("Errore in userThrowDices: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -170,7 +193,7 @@ public class Command {
                 try {
                     serverController.userDrawAdventureCard((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.out.println("Error in drawAdventureCard: " + e.getMessage());
+                    System.err.println("Errore in userDrawAdventureCard: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -178,15 +201,15 @@ public class Command {
                 try {
                     serverController.userFinishDecisionActivating((int) parameters.get(0), (HashSet<Point>) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in finishDecisionActivating: " + e.getMessage());
+                    System.err.println("Errore in userFinishDecisionActivating: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
             case "userFinishDecisionToken" -> {
                 try {
-                    serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
+                    serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.server.model.enums.Token>>) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in finishDecisionToken: " + e.getMessage());
+                    System.err.println("Errore in userFinishDecisionToken: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -194,7 +217,7 @@ public class Command {
                 try {
                     serverController.userAcceptPrizes((int) parameters.get(0), (boolean) parameters.get(1));
                 } catch (Exception e) {
-                    System.out.println("Error in acceptPrizes: " + e.getMessage());
+                    System.err.println("Errore in userAcceptPrizes: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -384,7 +407,7 @@ public class Command {
             }
             case "userAcceptPrizesCallback" -> {
                 try {
-                    clientController.userAcceptPrizesCallback((int) parameters.get(0), (boolean) parameters.get(1));
+                    clientController.userAcceptPrizesCallback((int) parameters.get(0),(boolean) parameters.get(1) );
                 } catch (Exception e) {
                     System.err.println("Errore in userAcceptPrizesCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -443,18 +466,6 @@ public class Command {
         return true;
     }
 
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
-
-    public void setPlayerId(int idPlayer) {
-        this.playerId = idPlayer;
-    }
-
     public void setClientController(ClientController clientController) {
         this.clientController = clientController;
     }
@@ -463,8 +474,7 @@ public class Command {
         this.serverController = serverController;
     }
 
-
     public String toString() {
-        return typeOfMessage + " " + methodName + " " + playerId + " (" + parameters.toString() + ")";
+        return typeOfMessage + " " + methodName + " (" + parameters.toString() + ")";
     }
 }
