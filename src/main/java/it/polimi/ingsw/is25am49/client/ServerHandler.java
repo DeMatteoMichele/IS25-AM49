@@ -104,6 +104,7 @@ public class ServerHandler {
             } catch (IOException e) {
                 System.out.println("Error while listening to server, putting the connection to false");
                 disconnectAndTryToReconnect();
+                break;
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the message in the queue, thread has been interrupted");
             } catch (ClassNotFoundException e) {

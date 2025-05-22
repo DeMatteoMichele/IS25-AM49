@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import it.polimi.ingsw.is25am49.shared.Command;
 
 import java.rmi.RemoteException;
@@ -49,15 +50,17 @@ public class ServerSerializer implements RemoteClient {
     //se cambiano i parametri dei metodi bisogna modificare questo codice
     public Command deSerializeStringFromClient(Command command) {
         command.setServerController(serverController);
-        if (command.getTypeOfMessage().equals("HSK")) {
+        if (command.getTypeOfMessage().equals("MSG")) {
+            command.callMethod();
+        } else if (command.getTypeOfMessage().equals("HSK")) {
             if (command.getPlayerId() == -1) {
                 idCounter++;
-                command.addParameter(idCounter);
-                command.setPlayerId(idCounter);
+            } else {
+                idCounter = command.getPlayerId();
             }
-            return command;
+            command.addParameter(idCounter);
+            command.setPlayerId(idCounter);
         }
-        else command.callMethod();
         return command;
     }
 
