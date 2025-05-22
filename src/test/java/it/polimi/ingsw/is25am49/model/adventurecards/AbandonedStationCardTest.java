@@ -48,7 +48,7 @@ class AbandonedStationCardTest {
         gameBoard = new GameBoard();
         player1 = new Player("pippo", Color.RED, 1);
         player2 = new Player("pluto", Color.BLUE, 2);
-        shipBoard = new ShipBoard(1,2);
+        shipBoard = new ShipBoard(1,2,Color.RED);
         player1.setShipBoard(shipBoard);
         component = new ContainerComponent(ComponentType.CABINE, 5);
         component2 = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 4);

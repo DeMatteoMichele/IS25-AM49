@@ -1,6 +1,9 @@
 package it.polimi.ingsw.is25am49.shared;
 
 import it.polimi.ingsw.is25am49.client.ClientController;
+import it.polimi.ingsw.is25am49.client.ClientController;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.server.ServerController;
 import javafx.util.Pair;
 

@@ -64,13 +64,22 @@ public class ClientController {
     }
 
     public void registerClientCallback(int playerId) {
+        ui.printUpdateMessage("DEBUG: In registerClientCallback - playerId: " + playerId);
         this.myId = playerId;
         ui.setClientId(playerId);
+        if (username == null || username.trim().isEmpty()) {
+            ui.printUpdateMessage(error + "Username is not set. Cannot save ID file.");
+            return;
+        }
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode rootNode = mapper.createObjectNode();
             rootNode.put("playerId", playerId);
             File idFile = new File("$IdClient" + username + ".json");
+            if (idFile.exists()) {
+                idFile.delete();
+            }
+            idFile = new File("$IdClient" + username + ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(idFile, rootNode);
         } catch (IOException e) {
             ui.printUpdateMessage(error + "Error while saving ID: " + e.getMessage());
@@ -284,6 +293,7 @@ public class ClientController {
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
+        ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
         command.addParameter(myId);
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
@@ -563,14 +573,20 @@ public class ClientController {
     }
 
     public void createMyIdJson() {
+        ui.printUpdateMessage("DEBUG: In createMyIdJson - Tentativo di scrivere myId: " + myId + " per username: " + username + " nel file: $IdClient" + username + ".json");
+        File idFile = new File("$IdClient" + username + ".json");
         try {
+            if (idFile.exists()) {
+                idFile.delete();
+            }
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode rootNode = mapper.createObjectNode();
             rootNode.put("playerId", myId);
-            File idFile = new File("$IdClient" + username + ".json");
+            idFile = new File("$IdClient" + username + ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(idFile, rootNode);
+            ui.printUpdateMessage("DEBUG: File " + idFile.getAbsolutePath() + " scritto con successo in createMyIdJson.");
         } catch (IOException e) {
-            ui.printUpdateMessage("Errore durante l'inizializzazione dell'ID: " + e.getMessage());
+            ui.printUpdateMessage(error + "Errore durante l'inizializzazione dell'ID (scrittura file): " + e.getMessage() + " per file: " + idFile.getAbsolutePath());
         }
     }
     public void clientReset(){

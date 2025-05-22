@@ -42,8 +42,8 @@ class PlanetCardTest {
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         player1 = new Player("pippo", Color.RED,2);
         player2 = new Player("marco", Color.BLUE,1);
-        ship1 = new ShipBoard(1,2);
-        ship2 = new ShipBoard(1,1);
+        ship1 = new ShipBoard(1,2,Color.RED);
+        ship2 = new ShipBoard(1,1,Color.BLUE);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);

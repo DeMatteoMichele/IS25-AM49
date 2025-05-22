@@ -29,6 +29,7 @@ public class ClientHandler {
     private final ArrayBlockingQueue<File> BroadcastQueue;
     private final Thread serverThread;
     private boolean gameStarted;
+    private final File directory;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         this.serverSerializer = serverSerializer;
@@ -44,6 +45,11 @@ public class ClientHandler {
         playersOutgoingFileQueue = new ConcurrentHashMap<>();
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
+        directory = new File("$FilesFromClients");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -87,8 +93,9 @@ public class ClientHandler {
             byte[] buffer = new byte[length];
             inputStream.readFully(buffer, 0, length);
             String jsonString = new String(buffer, StandardCharsets.UTF_8);
-            File fileJson = new File("$first_received.json");
-            Files.writeString(fileJson.toPath(), jsonString);
+            File fileJson = new File(directory,"$"+java.util.UUID.randomUUID()+"first_received.json");
+            fileJson.deleteOnExit();
+            Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
             return serverSerializer.deserializeHandshake(fileJson);
         } catch (IOException e) {
             System.err.println("Error while reading the first message from new client ");
@@ -214,11 +221,9 @@ public class ClientHandler {
      */
     private void sendMessageToSpecificClient(int clientId, File fileToSend) {
         try {
-            String jsonContent = Files.readString(fileToSend.toPath());
-            int length = jsonContent.length();
+            String jsonContent = Files.readString(fileToSend.toPath(), StandardCharsets.UTF_8);
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
-            DataOutputStream outputStream = outputStreams.get(clientId);
-            System.out.println(jsonContent);
+            int length = buffer.length;
             sendViaOutputStream(clientId, length, buffer);
         } catch (IOException e) {
             System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
@@ -243,8 +248,9 @@ public class ClientHandler {
         while (connections.get(clientId)) {
             try {
                 String jsonString = InGoingStringQueues.get(clientId).take();
-                File fileJson = new File("$" + clientId + "_received.json");
-                Files.writeString(fileJson.toPath(), jsonString);
+                File fileJson = new File(directory,"$" + clientId + "_received"+java.util.UUID.randomUUID()+".json");
+                fileJson.deleteOnExit();
+                Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
                 serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the String from the queue for client " + clientId + " cause thread was interrupted");
@@ -341,7 +347,7 @@ public class ClientHandler {
         while(!connections.get(clientId)) {};
         if (connections.get(clientId)) {
             outputStreams.get(clientId).writeInt(length);
-            outputStreams.get(clientId).write(buffer);
+            outputStreams.get(clientId).write(buffer, 0, length);
             outputStreams.get(clientId).flush();
         }
         else throw new IOException("Player is disconnected, putting this file in head of his queue");
@@ -352,7 +358,7 @@ public class ClientHandler {
         ServerController serverController = new ServerController(gameSession);
         gameSession.setServerController(serverController);
         ServerSerializer serverSerializer = new ServerSerializer(serverController);
-        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8081);
+        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8080);
         System.out.println("Server socket accesso!");
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);

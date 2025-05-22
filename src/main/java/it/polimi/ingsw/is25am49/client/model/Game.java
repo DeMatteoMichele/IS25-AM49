@@ -125,7 +125,9 @@ public class Game {
         if (player.getHandTile().isPresent()) {
             board.addDiscardedTile(player);
         }
-        player.lockLastTile();
+        if (!player.getShipBoard().getLastPlacedPoint().equals(new Point(9, 5)) && !player.getShipBoard().getLastPlacedPoint().equals(new Point(10, 5))) {
+            player.lockLastTile();
+        }
         player.setHandTile(board.drawTile(idTile, player));
     }
 
@@ -260,33 +262,16 @@ public class Game {
         return str.toString();
     }
 
-    public String buildStateToString(int playerId) {
+    public String decksToString() {
         StringBuilder str = new StringBuilder();
-        try {
-            Player player =getPlayer(playerId);
-
-            if(!mode.equals(GameMode.FLIGHT_MODE)){
-                str.append("SMALL DECKS:\n")
-                        .append("+-----+-----+-----+-----+\n")
-                        .append("|  1  |  2  |  3  |  4  |\n")
-                        .append("+-----+-----+-----+-----+\n\n");
-            }
-            str.append("TILES DECK:\n");
-            str.append(getGameboard().getTilesDeck());
-            str.append(player.getShipBoard());
-            str.append("HAND TILE\n");
-            if(player.getHandTile().isPresent())str.append(player.getHandTile().get());
-            else str.append("""
-                    ┌ ─ ─ ─ ─ ─ ┐
-                    │           │
-                    │   empty   │
-                    │           │
-                    └ ─ ─ ─ ─ ─ ┘
-                    """);
-            return str.toString();
-        }catch (IllegalArgumentException e){
-            str.append("qualcuno ha passato un id sbagliato alla stampa del buildState :) ").append(e.getMessage());
+        if(!mode.equals(GameMode.FLIGHT_MODE)){
+            str.append("SMALL DECKS:\n")
+                    .append("+-----+-----+-----+-----+\n")
+                    .append("|  0  |  1  |  2  |  3  |\n")
+                    .append("+-----+-----+-----+-----+\n\n");
         }
+        str.append("TILES DECK:\n");
+        str.append(getGameboard().getTilesDeck());
         return str.toString();
     }
 

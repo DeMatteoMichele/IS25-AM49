@@ -24,7 +24,7 @@ class EffectCannonataTest {
     @BeforeEach
     void init(){
         player = new Player("Marco", Color.RED, 2);
-        ship = new ShipBoard(1,2);
+        ship = new ShipBoard(1,2,Color.RED);
         player.setShipBoard(ship);
 
         component1 = new ContainerComponent(ComponentType.STORAGE,2);

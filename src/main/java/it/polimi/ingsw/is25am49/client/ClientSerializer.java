@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.shared.Command;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.util.Pair;
@@ -12,6 +13,8 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,54 +28,83 @@ public class ClientSerializer implements RemoteServer {
     private ServerHandler serverHandler;
     private BlockingQueue<File> filesFromSocketQueue;
     private final ExecutorService executors;
+    private GameSession gameSession;
+    private final File directory;
+
+    public ClientSerializer(GameSession session, ClientController clientController) {
+        this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
+        executors = Executors.newFixedThreadPool(20);
+        executors.submit(this::processFilesFromSocketQueue);
+        gameSession = session;
+        this.clientController = clientController;
+        directory = new File("$FilesFromClientSerializer");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
+    }
 
     public ClientSerializer(ClientController clientController) {
         this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
         executors = Executors.newFixedThreadPool(20);
         executors.submit(this::processFilesFromSocketQueue);
         this.clientController = clientController;
+        directory = new File("$FilesFromClientSerializer");
+        if (!directory.exists()) {
+            System.out.println("Directory doesn't exist, creating it");
+            directory.mkdirs();
+        }
     }
 
     private void processFilesFromSocketQueue() {
         while (true) {
             try {
-                File json = filesFromSocketQueue.take();
+                File jsonFile = filesFromSocketQueue.take();
                 System.out.println("Processing file: ");
-                deSerializeStringFromServer(json);
+                deSerializeStringFromServer(jsonFile);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
         }
     }
 
+    public void setGamesession(GameSession gameSession) {
+        this.gameSession = gameSession;
+    }
+
+    //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA SUA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
 
     /**
      * This method is used to put files in the queue.
      * It is called by ServerHandler after receiving a message from server
      */
-    public void putFileFromSocketInQueue(File file) {
+    public void putFileFromSocketInQueue(File fileJson) {
         try {
-            filesFromSocketQueue.put(file);
+            filesFromSocketQueue.put(fileJson);
         } catch (InterruptedException e) {
             System.out.println("Error while putting the file in the filesFromSocketQueue, thread has been interrupted");
         }
     }
 
-    public void placetile() {
-        //traduci in un pacchetto serializzato
-    }
-
     public Command deSerializeStringFromServer(File fileJson) {
         try {
-            System.out.println("Deserializing file: ");
+            String jsonContent = Files.readString(fileJson.toPath(), StandardCharsets.UTF_8).trim();
+            // Regex Definitiva Potenziata: Rimuove tutti i caratteri Unicode della categoria "Other" (C)
+            // e rimuove anche il carattere di sostituzione Unicode (U+FFFD).
+//            jsonContent = jsonContent.replaceAll("[\\p{C}]|\\uFFFD", "");
+            jsonContent = jsonContent.replaceAll("[\\p{C}&&[^\\t\\n\\r]]|\\uFFFD", "");
+            // Tenta di bilanciare le parentesi come workaround rischioso
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, it.polimi.ingsw.is25am49.client.PairMixIn.class);
-            JsonNode rootNode = mapper.readTree(fileJson);
+            JsonNode rootNode = mapper.readTree(jsonContent);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
+            //System.out.println("Type of message: " + typeOfMessage);
             String methodName = rootNode.get("methodName").asText();
+            //System.out.println("Method name: " + methodName);
             Command command = new Command(methodName, clientController);
             ArrayNode params = (ArrayNode) rootNode.get("params");
+            //System.out.println("Params: " + params);
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
                     ArrayList<Object> collectionList = null;
@@ -238,17 +270,18 @@ public class ClientSerializer implements RemoteServer {
             }
             System.out.println("EXECUTING COMMAND");
             command.callMethod();
-            System.out.println("COMMAND EXECUTED:"+command.toString());
+            System.out.println("COMMAND EXECUTED:" + command.toString());
             return command;
         } catch (IOException e) {
             System.err.println("porcatr " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e);
+            return new Command("EXCEPTION", clientController);
         }
     }
 
     public File serializeObjectFromClient(Command command) {
-        File jsonFile = new File("$commandToServer.json");
+        File jsonFile = new File(directory, "$commandToServer" + java.util.UUID.randomUUID() + ".json");
+        jsonFile.deleteOnExit();
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
         ObjectNode rootNode = mapper.createObjectNode();
@@ -373,5 +406,5 @@ public class ClientSerializer implements RemoteServer {
 
     public void askControllerToResetModel() {
         clientController.clientReset();
-    }
-}
+    }}
+

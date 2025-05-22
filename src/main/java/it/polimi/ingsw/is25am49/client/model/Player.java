@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client.model;
 
 import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
@@ -44,6 +45,13 @@ public class Player {
     public void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");
+    }
+    public Orientation getHandTileOrientation(){
+        if (handTile.isPresent()) {
+            return handTile.get().getTileOrientation();
+        } else {
+            throw new IllegalStateException("There is no tile in hand");
+        }
     }
     public void shipBoardIsNotCompletedYet(){
         if(shipBoard.isCompleted())
@@ -108,9 +116,11 @@ public class Player {
 
     public void checkPickTile(Point coordinates) throws GameSettingsException {
         shipBoardIsNotCompletedYet();
-        if(handTile.isEmpty());
-        else
-            throw new GameSettingsException("You cannot pick this tile");
+        if(handTile.isEmpty()){
+            Tile t= shipBoard.getTile(coordinates);
+            if (t.isLocked())throw new GameSettingsException("You cannot pick this tile");
+        }
+        else throw new GameSettingsException("You cannot pick this tile");
     }
     // da testare
     public void pickTile(Point coordinates){
@@ -176,5 +186,24 @@ public class Player {
     }
     public boolean shipBoardIsFullOfToken(){
         return shipBoard.cabineAreFullOfToken();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append(shipBoard);
+        str.append("HAND TILE\n");
+        if(getHandTile().isPresent())str.append(getHandTile().get());
+        else str.append("""
+                    ┌ ─ ─ ─ ─ ─ ┐
+                    │           │
+                    │   empty   │
+                    │           │
+                    └ ─ ─ ─ ─ ─ ┘
+                    """);
+        return str.toString();
+    }
+    public String shipToString() {
+        return "Player["+idPlayer+"] - "+username+"\n"+shipBoard.toString();
     }
 }

@@ -7,8 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import org.jline.reader.LineReader;
@@ -24,7 +24,7 @@ import org.jline.utils.AttributedStyle;
 public class TextualUserInterface implements UserInterface {
     //Server settings:
     private final String serverIP = "localhost";
-    private final int serverPortSocket = 8081;
+    private final int serverPortSocket = 8080;
     private final int serverPortRMI = 1099;
 
     private int connectionType;
@@ -42,6 +42,8 @@ public class TextualUserInterface implements UserInterface {
     public Terminal terminal;
     public LineReader lineReader;
     ExecutorService executor ;
+
+    int smallDeckIndex=-1; //todo hardcoddato, non ho un modo per capire che deck sta guardando il player
 
     public TextualUserInterface() {
         gameSession = new GameSession(this);
@@ -334,12 +336,18 @@ public class TextualUserInterface implements UserInterface {
         return """
                 BuildState - commands:\s
                 0.  PlaceTile
-                1.  PickTile                            7.  StopLookSmallAdventureCardDeck
-                2.  RotateTileClockWise                 8.  PlaceTimer
-                3.  DiscardTile                         9.  TimerIsDone
-                4.  DrawTile                            10. SelectTypeOfToken
-                5.  FinishShipboard                     11. lookAtShipboard
-                6.  LookSmallAdventureCardDeck          13. ←-- go back
+                1.  PickTile
+                2.  RotateTileClockWise
+                3.  DiscardTile
+                4.  DrawTile
+                5.  LookSmallAdventureCardDeck
+                6.  StopLookSmallAdventureCardDeck
+                7.  PlaceTimer
+                8.  SelectTypeOfToken
+                9.  LookAtShipboard
+                10. FinishShipboard
+                11. LookUncoveredTile
+                12. ←-- go back
                
                 """;
     }
@@ -347,7 +355,8 @@ public class TextualUserInterface implements UserInterface {
     public void updatePlaceTile(int playerId, Point coordinates) {
         if(playerId == myId){
             String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
-                    gameSession.getGame().get().buildStateToString(myId) +
+                    gameSession.getGame().get().decksToString() +
+                    gameSession.getPlayer(myId).get()+
                     buildStateMenu() +
                     "_".repeat( 200)+"\n" +
                     "choose an option:";
@@ -357,19 +366,34 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updatePickTile(int playerId, Point coordinates) {
-
+        if(playerId == myId){
+            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+                    gameSession.getGame().get().decksToString()+
+                    gameSession.getPlayer(myId).get()+
+                    buildStateMenu() +
+                    "_".repeat( 200)+"\n" +
+                    "choose an option:";
+            graphicsQueue.add(str);
+        }
     }
 
     @Override
     public void updateRotateTileClockWise(int playerId) {
-
+        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getGame().get().decksToString() +
+                gameSession.getPlayer(myId).get()+
+                buildStateMenu() +
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+                graphicsQueue.add(str);
     }
 
     @Override
     public void updateDiscardTile(int playerId) {
         if(playerId == myId){
             String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
-                   gameSession.getGame().get().buildStateToString(myId) +
+                    gameSession.getGame().get().decksToString() +
+                    gameSession.getPlayer(myId).get()+
                     buildStateMenu() +
                     "_".repeat( 200)+"\n" +
                     "choose an option:";
@@ -381,7 +405,8 @@ public class TextualUserInterface implements UserInterface {
     public void updateDrawTile(int playerId, int idTIle) {
         if(playerId == myId){
             String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
-                    gameSession.getGame().get().buildStateToString(myId) +
+                    gameSession.getGame().get().decksToString() +
+                    gameSession.getPlayer(myId).get()+
                     buildStateMenu() +
                     "_".repeat( 200)+"\n" +
                     "choose an option:";
@@ -391,17 +416,26 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateFinishShipboard(int playerId) {
-
+        updatePlaceTile(myId,new Point(7,7));
     }
 
     @Override
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-
+        if(playerId == myId) {
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
+                    gameSession.getGame().get().getGameboard().smallDeckToString(smallDeckIndex) +
+                    "BuildState - commands:\n 6. ←-- stop looking \n\n" +
+                    "_".repeat(200) + "\n" +
+                    "choose an option:";
+            graphicsQueue.add(str);
+        }
     }
 
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-
+        if(playerId == myId){
+        updatePlaceTile(myId,new Point(7,7));
+        }
     }
 
     @Override
@@ -411,7 +445,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateTimerIsDone() {
-
+        //non penso serva
     }
 
     @Override
@@ -421,7 +455,12 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
-
+        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getPlayer(playerId).get().shipToString()+
+                "BuildState - commands:\n 12. ←-- go back \n\n"+
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+        graphicsQueue.add(str);
     }
 
 
@@ -465,26 +504,46 @@ public class TextualUserInterface implements UserInterface {
                 }
 
                 //BUILD STATE
-                case "0:1"->{//
+                case "0:1"->{//placeTile
                     try{
-                        String s = lineReader.readLine("Insert the coordinates (x y) >> ");
+                        String s = lineReader.readLine("Insert the coordinates (x,y) >> ");
                         String[] coordinates = s.trim().split("\\s+");
                         int x = Integer.parseInt(coordinates[0]);
                         int y = Integer.parseInt(coordinates[1]);
-                        controller.userPlaceTile(myId,new Point(x,y), gameSession.getGame().get().getPlayer(myId).getHandTile().get().getTileOrientation());//todo sistema sta sleppa
+                        controller.userPlaceTile(myId,new Point(x,y), gameSession.getPlayer(myId).get().getHandTileOrientation());//todo sistema sta sleppa
                     }catch (Exception e){
                         printUpdateMessage(error+e.getMessage());
-                        updatePlaceTile(myId,new Point(0,0));
+                        //updatePlaceTile(myId,new Point(0,0));
                     }
                 }
-                case "1:1"->{
-                    printUpdateMessage("commando PickTile non ancora implementato\n");
+                case "1:1"->{//PickTile
+                    try {
+                        String s = lineReader.readLine("Insert the coordinates (x,y) >> ");
+                        String[] coordinates = s.trim().split("\\s+");
+                        int x = Integer.parseInt(coordinates[0]);
+                        int y = Integer.parseInt(coordinates[1]);
+                        controller.userPickTile(myId, new Point(x, y));
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        //updatePickTile(myId,new Point(0,0));
+                    }
                 }
-                case "2:1"->{
-                    printUpdateMessage("commando RotateTileClockWise non ancora implementato\n");
+                case "2:1"->{//rotateTile
+                    try {
+                        gameSession.getState().userRotateTileClockWise(myId);
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        //updateRotateTileClockWise(myId);
+                    }
                 }
-                case "3:1"->{
-                    printUpdateMessage("commando DiscardTile non ancora implementato\n");
+                case "3:1"->{//discardTile
+                    try {
+                        controller.userDiscardTile(myId);
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        //updateDiscardTile(myId);
+                    }
+
                 }
                 case "4:1"->{//DrawTile
                     try{
@@ -492,29 +551,58 @@ public class TextualUserInterface implements UserInterface {
                         controller.userDrawTile(myId, id);
                     }catch (Exception e){
                         printUpdateMessage(error+e.getMessage());
-                        updateDrawTile(myId,0);
+                        //updateDrawTile(myId,0);
                     }
                 }
-                case "5:1"->{
-                    printUpdateMessage("commando FinishShipboard non ancora implementato\n");
+                case "5:1"->{//lookSmallAdventureCardDeck
+                    try {//todo volendo si può fare che finché non smetto di guardare non posso fare nulla
+                        smallDeckIndex = Integer.parseInt(lineReader.readLine("insert deck index (0-3) >> ").trim());
+                        controller.userLookSmallAdventureCardDeck(myId, smallDeckIndex);
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        //updateLookSmallAdventureCardDeck(myId,0);
+                    }
                 }
-                case "6:1"->{
-                    printUpdateMessage("commando LookSmallAdventureCardDeck non ancora implementato\n");
+                case "6:1"->{//stopLookSmallAdventureCardDeck
+                    try {
+                        controller.userStopLookSmallAdventureCardDeck(myId,smallDeckIndex);
+                        updateStopLookSmallAdventureCardDeck(myId,0);
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        //updateStopLookSmallAdventureCardDeck(myId,0);
+                    }
                 }
                 case "7:1"->{
-                    printUpdateMessage("commando StopLookSmallAdventureCardDeck non ancora implementato\n");
-                }
-                case "8:1"->{
                     printUpdateMessage("commando PlaceTimer non ancora implementato\n");
                 }
-                case "9:1"->{
-                    printUpdateMessage("commando TimerIsDone non ancora implementato\n");
-                }
-                case "10:1"->{
+                case "8:1"->{
                     printUpdateMessage("commando SelectTypeOfToken non ancora implementato\n");
                 }
-                case "11:1"->{}
-                case "12:1"->{}
+                case "9:1"->{//lookAtShipboard
+                    lineReader.printAbove("which ship do you want to see?\n");
+                    try{
+                        for (Player p:gameSession.getGame().get().getListPlayers()){
+                            terminal.writer().println(p.getIdPlayer()+" --> [" + p.getUsername()+"]");
+                        }
+                        int id = Integer.parseInt(lineReader.readLine("insert the playerId >> ").trim());
+                        if(gameSession.getPlayer(id).isPresent())lookAtShipboard(id);
+                        else printUpdateMessage(error+"player not found");
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                        //updatePlaceTile(myId,new Point(7,7));
+                    }
+                }
+                case "10:1"->{
+                    controller.userFinishShipboard(myId);
+
+                }
+                case "11:1"->{//lookUncoveredTile
+                    //secondo me non serve
+                    printUpdateMessage("commando LookUncoveredTile non ancora implementato\n");
+                }
+                case "12:1"->{//go back
+                    updatePlaceTile(myId,new Point(7,7));
+                }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {

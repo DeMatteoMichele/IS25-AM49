@@ -121,7 +121,9 @@ public class Game {
         if (player.getHandTile().isPresent()) {
             board.addDiscardedTile(player);
         }
-        player.lockLastTile();
+        if (!player.getShipBoard().getLastPlacedPoint().equals(new Point(9, 5)) && !player.getShipBoard().getLastPlacedPoint().equals(new Point(10, 5))) {
+            player.lockLastTile();
+        }
         player.setHandTile(board.drawTile(idTile, player));
     }
 

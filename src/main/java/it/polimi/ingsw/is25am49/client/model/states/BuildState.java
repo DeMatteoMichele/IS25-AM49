@@ -158,6 +158,7 @@ public class BuildState extends State {
 
     public void userRotateTileClockWise(int playerId) {
         Player player = getPlayerById(playerId);
+        if(player.getHandTile().isEmpty())throw new RuntimeException("there is no tile in hand to rotate");
         player.rotateTile(true);
         userInterface.updateRotateTileClockWise(playerId);
     }

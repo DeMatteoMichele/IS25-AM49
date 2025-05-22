@@ -38,7 +38,7 @@ class TileCardDeckTest {
         player2 = new Player("Device", Color.BLUE, 2);
         player3 = new Player("Compus", Color.GREEN, 3);
         player4 = new Player("Cefa", Color.YELLOW, 4);
-        ship1 = new ShipBoard(1,1);
+        ship1 = new ShipBoard(1,1,Color.RED);
         player1.setShipBoard(ship1);
         game = new Game(player1, gameSession, GameMode.DEFAULT,999,400);
         deck = game.getGameboard().getTilesDeck();

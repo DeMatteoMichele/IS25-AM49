@@ -37,9 +37,9 @@ class SabotageCardTest {
         player1 = new Player("pippo", Color.RED,2);
         player2 = new Player("marco", Color.BLUE,3);
         player3 = new Player("luca", Color.GREEN,4);
-        ship1 = new ShipBoard(1,2);
-        ship2 = new ShipBoard(1,3);
-        ship3 = new ShipBoard(1,4);
+        ship1 = new ShipBoard(1,2,Color.RED);
+        ship2 = new ShipBoard(1,3,Color.BLUE);
+        ship3 = new ShipBoard(1,4,Color.GREEN);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         player3.setShipBoard(ship3);

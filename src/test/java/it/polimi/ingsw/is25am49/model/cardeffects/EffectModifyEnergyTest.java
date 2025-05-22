@@ -37,7 +37,7 @@ class EffectModifyEnergyTest {
     void init(){
 
         player = new Player("io",Color.RED,2);
-        shipBoard = new ShipBoard(1,2);
+        shipBoard = new ShipBoard(1,2,Color.RED);
         player.setShipBoard(shipBoard);
         coordinates = new ArrayList<>();
         coordinates.add(new Pair<>(coordinate,Token.BATTERY_CELLS));

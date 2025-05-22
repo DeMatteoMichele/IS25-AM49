@@ -41,9 +41,9 @@ class EpidemyCardTest {
         player1 = new Player("Michele", Color.RED, 2);
         player2 = new Player("Daniele", Color.BLUE, 1);
         player3 = new Player("Sean", Color.GREEN, 3);
-        ship1 = new ShipBoard(1,2);
-        ship2 = new ShipBoard(1,1);
-        ship3 = new ShipBoard(1,3);
+        ship1 = new ShipBoard(1,2,Color.RED);
+        ship2 = new ShipBoard(1,1,Color.RED);
+        ship3 = new ShipBoard(1,3,Color.RED);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         player3.setShipBoard(ship3);
