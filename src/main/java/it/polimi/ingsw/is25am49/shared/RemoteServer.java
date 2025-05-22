@@ -1,11 +1,10 @@
 package it.polimi.ingsw.is25am49.client;
 
-import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.shared.Command;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RemoteServer extends Remote {
     void command_FromClientToServer(Command command) throws RemoteException;
-    void setGamesession(GameSession gameSession);
 }

@@ -46,7 +46,6 @@ public class ClientSerializer implements RemoteServer {
         this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
         executors = Executors.newFixedThreadPool(20);
         executors.submit(this::processFilesFromSocketQueue);
-        gameSession = null;
         this.clientController = clientController;
         directory = new File("$FilesFromClientSerializer");
         if (!directory.exists()) {
@@ -72,6 +71,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA SUA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
+    //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA UA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
 
     /**
      * This method is used to put files in the queue.

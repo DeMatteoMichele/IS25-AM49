@@ -9,7 +9,6 @@ import java.rmi.registry.Registry;
 
 public class ClientRMI implements RemoteServer {
     public GameSession gameSession;
-    private Integer playerID;
 
     private boolean isConnected;
 
@@ -22,7 +21,7 @@ public class ClientRMI implements RemoteServer {
         RemoteServer serverStub = null;
         try {
             Registry reg = LocateRegistry.getRegistry(serverIP, 1099);//eventualmente serverPort
-            serverStub = (RemoteServer) reg.lookup("ServerController");//nome serverController da cambiare
+            serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
             System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
 
         }catch(RemoteException | NotBoundException e){

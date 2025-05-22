@@ -44,6 +44,7 @@ public class ServerSerializer implements RemoteClient {
             directory.mkdirs();
         }
         executorService = Executors.newFixedThreadPool(10);
+
         executorService.submit(this::processFilesFromSocketQueue);
     }
 

@@ -272,8 +272,14 @@ public class ClientController {
         }
     }
 
-    public void registerClientRMI(RemoteServer client) throws RemoteException {
-
+    public void registerClientRMI(RemoteServer client) throws RemoteException, IOException {
+        Command command = new Command("registerClientRMI", this);
+        ObjectMapper mapper = new ObjectMapper();
+        File idFile = new File("$IdClient" + username + ".json");
+        myId = mapper.readTree(idFile).get("playerId").asInt();
+        command.addParameter(client);
+        serverHandler.connectCommand();
+        serverMethods.command_FromClientToServer(command);
     }
 
     /**
@@ -585,6 +591,5 @@ public class ClientController {
         myId = -1;
         gameSession = new GameSession(ui);
         ui.setGameSession(gameSession);
-        serverMethods.setGamesession(gameSession);
     }
 }

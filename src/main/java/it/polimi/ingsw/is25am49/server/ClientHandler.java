@@ -364,9 +364,9 @@ public class ClientHandler {
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
         try {
-            ServerRMI serverRMI = new ServerRMI();
+            ServerRMI serverRMI = new ServerRMI(serverController);
             Registry reg = LocateRegistry.createRegistry(1099);
-            reg.rebind("ServerController", serverRMI);
+            reg.rebind("Server", serverRMI);
             System.out.println("server RMI acceso!");
             serverController.setServerRMI(serverRMI);
         } catch (RemoteException e) {

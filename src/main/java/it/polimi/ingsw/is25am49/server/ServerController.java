@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server;
 
+import it.polimi.ingsw.is25am49.shared.Command;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -34,6 +35,10 @@ public class ServerController {
     }
 
     public void registerClientRMI(RemoteClient client) {
+
+    }
+
+    public void registerClientSocket(int playerId) {
 
     }
 
