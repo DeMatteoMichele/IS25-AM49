@@ -9,6 +9,8 @@ import it.polimi.ingsw.is25am49.client.model.states.*;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.Command;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.util.Pair;
 
 import java.awt.*;

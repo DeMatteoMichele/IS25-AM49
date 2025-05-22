@@ -6,6 +6,8 @@ import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.Command;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -514,5 +516,6 @@ public class ServerController {
     public void signalThatGameStarted() {
         serverSerializer.signalThatGameStarted();
         serverRMI.signalThatGameStarted();
+        System.out.println("Game started");
     }
 }

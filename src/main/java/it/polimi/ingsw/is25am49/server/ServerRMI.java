@@ -1,17 +1,19 @@
 package it.polimi.ingsw.is25am49.server;
 
-import it.polimi.ingsw.is25am49.client.RemoteServer;
-import it.polimi.ingsw.is25am49.server.model.GameSession;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
+import it.polimi.ingsw.is25am49.shared.Command;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class ServerRMI extends UnicastRemoteObject implements RemoteClient, RemoteServer {
-    ServerController serverController;
-    HashMap<Integer, RemoteClient> clients;
+    private boolean gameStarted;
+    private ServerController serverController;
+    private HashMap<Integer, RemoteClient> clients;
+    private HashMap<Integer, RemoteClient> matchPlayers;
+    private int idCounter;
 
     public ServerRMI(ServerController serverController) throws RemoteException {
         super();
@@ -20,7 +22,12 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
+        if(command.getTypeOfMessage().equals("HSK")){
 
+        }
+        else {
+
+        }
     }
 
     @Override
@@ -29,7 +36,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
     }
 
     public void signalThatGameStarted() {
-
+        gameStarted = true;
     }
 
     /**THIS METHOD IS CALLED BY THE CLIENT
@@ -41,9 +48,18 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
      */
 
     @Override
-    public void command_FromClientToServer(it.polimi.ingsw.is25am49.client.Command command) throws RemoteException {
+    public void command_FromClientToServer(Command command) throws RemoteException {
         if(command.getTypeOfMessage().equals("HSK")) {
+            Command tempCommand = new Command("registerClientCallback", serverController, idCounter);
+            idCounter++;
 
         }
+        else if(command.getTypeOfMessage().equals("MSG")) {
+            command.setServerController(serverController);
+            command.callMethod();
+        }
+    }
+    public void sayToClientHandlerWhoHasJoined(int playerId){
+        matchPlayers.put(playerId, clients.get(playerId));
     }
 }
