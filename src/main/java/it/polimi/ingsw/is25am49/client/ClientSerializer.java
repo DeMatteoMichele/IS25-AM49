@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 public class ClientSerializer implements RemoteServer {
     private ClientController clientController;
     private ServerHandler serverHandler;
-    private BlockingQueue<String> filesFromSocketQueue;
+    private BlockingQueue<File> filesFromSocketQueue;
     private final ExecutorService executors;
     private GameSession gameSession;
     private final File directory;
@@ -58,9 +58,9 @@ public class ClientSerializer implements RemoteServer {
     private void processFilesFromSocketQueue() {
         while (true) {
             try {
-                String string = filesFromSocketQueue.take();
+                File jsonFile = filesFromSocketQueue.take();
                 System.out.println("Processing file: ");
-                deSerializeStringFromServer(string);
+                deSerializeStringFromServer(jsonFile);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
@@ -77,23 +77,27 @@ public class ClientSerializer implements RemoteServer {
      * This method is used to put files in the queue.
      * It is called by ServerHandler after receiving a message from server
      */
-    public void putFileFromSocketInQueue(String string) {
+    public void putFileFromSocketInQueue(File fileJson) {
         try {
-            filesFromSocketQueue.put(string);
+            filesFromSocketQueue.put(fileJson);
         } catch (InterruptedException e) {
             System.out.println("Error while putting the file in the filesFromSocketQueue, thread has been interrupted");
         }
     }
 
-    public Command deSerializeStringFromServer(String string) {
+    public Command deSerializeStringFromServer(File fileJson) {
         try {
             System.out.println("Deserializing file: ");
-//            String jsonContent = Files.readString(fileJson.toPath(), StandardCharsets.UTF_8).trim();
-            string = string.replaceAll("[\\x00-\\x1F&&[^\\r\\n\\t]]", "");
-            System.out.println("File content after cleaning: " + string);
+            String jsonContent = Files.readString(fileJson.toPath(), StandardCharsets.UTF_8).trim();
+            // Regex Definitiva Potenziata: Rimuove tutti i caratteri Unicode della categoria "Other" (C)
+            // e rimuove anche il carattere di sostituzione Unicode (U+FFFD).
+//            jsonContent = jsonContent.replaceAll("[\\p{C}]|\\uFFFD", "");
+            jsonContent = jsonContent.replaceAll("[\\p{C}&&[^\\t\\n\\r]]|\\uFFFD", "");
+            // Tenta di bilanciare le parentesi come workaround rischioso
+            System.out.println("File content after cleaning: " + jsonContent);
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, it.polimi.ingsw.is25am49.client.PairMixIn.class);
-            JsonNode rootNode = mapper.readTree(string);
+            JsonNode rootNode = mapper.readTree(jsonContent);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             //System.out.println("Type of message: " + typeOfMessage);
             String methodName = rootNode.get("methodName").asText();
@@ -266,7 +270,7 @@ public class ClientSerializer implements RemoteServer {
             }
             System.out.println("EXECUTING COMMAND");
             command.callMethod();
-            System.out.println("COMMAND EXECUTED:"+command.toString());
+            System.out.println("COMMAND EXECUTED:" + command.toString());
             return command;
         } catch (IOException e) {
             System.err.println("porcatr " + e.getMessage());
@@ -276,7 +280,7 @@ public class ClientSerializer implements RemoteServer {
     }
 
     public File serializeObjectFromClient(Command command) {
-        File jsonFile = new File(directory,"$commandToServer"+java.util.UUID.randomUUID() +".json");
+        File jsonFile = new File(directory, "$commandToServer" + java.util.UUID.randomUUID() + ".json");
         jsonFile.deleteOnExit();
         ObjectMapper mapper = new ObjectMapper();
         mapper.addMixIn(Pair.class, PairMixIn.class);
@@ -402,5 +406,5 @@ public class ClientSerializer implements RemoteServer {
 
     public void askControllerToResetModel() {
         clientController.clientReset();
-    }
-}
+    }}
+

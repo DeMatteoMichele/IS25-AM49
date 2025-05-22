@@ -24,8 +24,8 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, DataOutputStream> outputStreams;
     private final ConcurrentMap<Integer, DataInputStream> inputStreams;
     private final ConcurrentMap<Integer, ArrayBlockingQueue<String>> InGoingStringQueues;
-    private final ConcurrentMap<Integer, LinkedBlockingDeque<String>> outGoingFileQueue;
-    private final ConcurrentMap<Integer, LinkedBlockingDeque<String>> playersOutgoingFileQueue;
+    private final ConcurrentMap<Integer, LinkedBlockingDeque<File>> outGoingFileQueue;
+    private final ConcurrentMap<Integer, LinkedBlockingDeque<File>> playersOutgoingFileQueue;
     private final ArrayBlockingQueue<File> BroadcastQueue;
     private final Thread serverThread;
     private boolean gameStarted;
@@ -95,7 +95,7 @@ public class ClientHandler {
             String jsonString = new String(buffer, StandardCharsets.UTF_8);
             File fileJson = new File(directory,"$"+java.util.UUID.randomUUID()+"first_received.json");
             fileJson.deleteOnExit();
-            Files.writeString(fileJson.toPath(), jsonString);
+            Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
             return serverSerializer.deserializeHandshake(fileJson);
         } catch (IOException e) {
             System.err.println("Error while reading the first message from new client ");
@@ -221,7 +221,7 @@ public class ClientHandler {
      */
     private void sendMessageToSpecificClient(int clientId, File fileToSend) {
         try {
-            String jsonContent = Files.readString(fileToSend.toPath());
+            String jsonContent = Files.readString(fileToSend.toPath(), StandardCharsets.UTF_8);
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
             int length = buffer.length;
             System.out.println(jsonContent);
@@ -251,7 +251,7 @@ public class ClientHandler {
                 String jsonString = InGoingStringQueues.get(clientId).take();
                 File fileJson = new File(directory,"$" + clientId + "_received"+java.util.UUID.randomUUID()+".json");
                 fileJson.deleteOnExit();
-                Files.writeString(fileJson.toPath(), jsonString);
+                Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
                 serverSerializer.putFileFromClientSocketInQueue(fileJson);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the String from the queue for client " + clientId + " cause thread was interrupted");
@@ -359,7 +359,7 @@ public class ClientHandler {
         ServerController serverController = new ServerController(gameSession);
         gameSession.setServerController(serverController);
         ServerSerializer serverSerializer = new ServerSerializer(serverController);
-        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8081);
+        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8082);
         System.out.println("Server socket accesso!");
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);

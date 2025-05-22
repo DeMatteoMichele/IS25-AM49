@@ -14,6 +14,7 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -69,8 +70,11 @@ public class ServerSerializer implements RemoteClient {
     //se cambiano i parametri dei metodi bisogna modificare questo codice
     public Command deSerializeStringFromClient(File fileJson) {
         try {
-            String jsonContent = Files.readString(fileJson.toPath()).trim();
-            jsonContent = jsonContent.replaceAll("[\\x00-\\x1F&&[^\\r\\n\\t]]", "");
+            String jsonContent = Files.readString(fileJson.toPath(), StandardCharsets.UTF_8).trim();
+            // Regex Definitiva Potenziata: Rimuove tutti i caratteri Unicode della categoria "Other" (C)
+            // (Control (inclusi \t, \n, \r letterali), Format, Surrogate, Private Use, Unassigned)
+            // e rimuove anche il carattere di sostituzione Unicode (U+FFFD).
+            jsonContent = jsonContent.replaceAll("[\\p{C}&&[^\\t\\n\\r]]|\\uFFFD", "");
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, PairMixIn.class);
             JsonNode rootNode = mapper.readTree(jsonContent);

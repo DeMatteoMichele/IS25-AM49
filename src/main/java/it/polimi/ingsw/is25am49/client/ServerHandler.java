@@ -83,8 +83,9 @@ public class ServerHandler {
         if (connected.get()) {
             synchronized (outputStreamLock) {
                 try {
-                    outputStream.writeInt(HeartBeat.length());
-                    outputStream.writeBytes(HeartBeat);
+                    byte[] heartBeatBytes = HeartBeat.getBytes(StandardCharsets.UTF_8);
+                    outputStream.writeInt(heartBeatBytes.length);
+                    outputStream.write(heartBeatBytes);
                     outputStream.flush();
                     //System.out.println("Client still alive");
                 } catch (IOException e) {
@@ -128,12 +129,13 @@ public class ServerHandler {
         while (connected.get()) {
             try {
                 String jsonString = InGoingStringQueue.take();
-//                File fileJson = new File(directory, "$jsonFileFromServer" + java.util.UUID.randomUUID() + ".json");
-//                fileJson.deleteOnExit();
-//                Files.writeString(fileJson.toPath(), jsonString);
-                clientSerializer.putFileFromSocketInQueue(jsonString);
-//            } catch (IOException e) {
-//                System.out.println("Error while writing the message to the file");
+                System.err.println("Message received: " + jsonString);
+                File fileJson = new File(directory, "$jsonFileFromServer" + java.util.UUID.randomUUID() + ".json");
+                fileJson.deleteOnExit();
+                Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
+                clientSerializer.putFileFromSocketInQueue(fileJson);
+            } catch (IOException e) {
+                System.out.println("Error while writing the message to the file");
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
