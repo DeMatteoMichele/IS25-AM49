@@ -89,14 +89,12 @@ public class ClientSerializer implements RemoteServer {
 
     public Command deSerializeStringFromServer(File fileJson) {
         try {
-            System.out.println("Deserializing file: ");
             String jsonContent = Files.readString(fileJson.toPath(), StandardCharsets.UTF_8).trim();
             // Regex Definitiva Potenziata: Rimuove tutti i caratteri Unicode della categoria "Other" (C)
             // e rimuove anche il carattere di sostituzione Unicode (U+FFFD).
 //            jsonContent = jsonContent.replaceAll("[\\p{C}]|\\uFFFD", "");
             jsonContent = jsonContent.replaceAll("[\\p{C}&&[^\\t\\n\\r]]|\\uFFFD", "");
             // Tenta di bilanciare le parentesi come workaround rischioso
-            System.out.println("File content after cleaning: " + jsonContent);
             ObjectMapper mapper = new ObjectMapper();
             mapper.addMixIn(Pair.class, it.polimi.ingsw.is25am49.client.PairMixIn.class);
             JsonNode rootNode = mapper.readTree(jsonContent);

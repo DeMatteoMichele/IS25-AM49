@@ -129,7 +129,6 @@ public class ServerHandler {
         while (connected.get()) {
             try {
                 String jsonString = InGoingStringQueue.take();
-                System.err.println("Message received: " + jsonString);
                 File fileJson = new File(directory, "$jsonFileFromServer" + java.util.UUID.randomUUID() + ".json");
                 fileJson.deleteOnExit();
                 Files.writeString(fileJson.toPath(), jsonString, StandardCharsets.UTF_8);
@@ -300,4 +299,5 @@ public class ServerHandler {
         }
     }
 }
+
 

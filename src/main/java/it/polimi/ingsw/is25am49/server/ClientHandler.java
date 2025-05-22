@@ -224,7 +224,6 @@ public class ClientHandler {
             String jsonContent = Files.readString(fileToSend.toPath(), StandardCharsets.UTF_8);
             byte[] buffer = jsonContent.getBytes(StandardCharsets.UTF_8);
             int length = buffer.length;
-            System.out.println(jsonContent);
             sendViaOutputStream(clientId, length, buffer);
         } catch (IOException e) {
             System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
@@ -348,7 +347,7 @@ public class ClientHandler {
         while(!connections.get(clientId)) {};
         if (connections.get(clientId)) {
             outputStreams.get(clientId).writeInt(length);
-            outputStreams.get(clientId).write(buffer);
+            outputStreams.get(clientId).write(buffer, 0, length);
             outputStreams.get(clientId).flush();
         }
         else throw new IOException("Player is disconnected, putting this file in head of his queue");
@@ -359,7 +358,7 @@ public class ClientHandler {
         ServerController serverController = new ServerController(gameSession);
         gameSession.setServerController(serverController);
         ServerSerializer serverSerializer = new ServerSerializer(serverController);
-        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8082);
+        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8080);
         System.out.println("Server socket accesso!");
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
