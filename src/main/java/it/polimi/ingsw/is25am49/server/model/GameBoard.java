@@ -700,4 +700,28 @@ public class GameBoard {
     public TileCardDeck getTilesDeck(){
         return tilesDeck;
     }
+
+
+    /**
+     * This method is used to get the string representation of the final ranking
+     * It's based on the total credits for each player
+     * @return a string representation of the final ranking
+     */
+    public  String toString(){
+        StringBuilder str = new StringBuilder();
+        int width = 60;
+        String border = "+" + "-".repeat(width - 2) + "+\n";
+        str.append(border);
+        int i = 1;
+        List<Player> finalRanking = leaderBoard.stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
+        for(Player player : finalRanking){
+            str.append("|      POSITION: "+ i + "----->   ");
+            str.append(player.getUsername()).append("         CREDITS: ");
+            str.append(player.getCredits()).append(" ".repeat(width- (String.valueOf(player.getCredits()).length()+("|      POSITION: "+ i + "----->   ").length()+player.getUsername().length()+("         CREDITS: ").length()) - 1)).append("|\n");
+            i++;
+            str.append(border);
+        }
+
+        return str.toString();
+    }
 }
