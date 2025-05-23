@@ -106,12 +106,13 @@ public class ShipBoard {
             afterBuildCheckShipboard();
             for(Point p: grid.keySet()){
                 getTile(p).lockTile();
-            }
-            for(Point p: grid.keySet()){
                 try{
                     fillTileComponent(p, Token.BATTERY_CELLS);
-                } catch(Exception _) {
-
+                } catch(Exception _) {}
+                if (checkIfAlienArePossible(p).size() == 1) {
+                    try{
+                        fillTileComponent(p, Token.ASTRONAUT);
+                    } catch(Exception _) {}
                 }
             }
         }
