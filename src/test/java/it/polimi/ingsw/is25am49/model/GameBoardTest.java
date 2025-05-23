@@ -95,6 +95,10 @@ class GameBoardTest {
                 ConnectorType.FLAT
         );
         player4.getShipBoard().insertTile(coordinate4,tile4);
+        player1.addCredits(23);
+        player2.addCredits(34);
+        player3.addCredits(12);
+        player4.addCredits(27);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player3);
@@ -156,6 +160,10 @@ class GameBoardTest {
 
     @Test
     void getLeader() {
+    }
+    @Test
+    void TetstoString() {
+        System.out.println(gameBoard.toString());
     }
 
     @Test
