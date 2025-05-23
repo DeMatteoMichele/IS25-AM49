@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model.states;
 
+import it.polimi.ingsw.is25am49.server.model.Game;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
@@ -63,8 +64,15 @@ public class BuildState extends State {
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
-        if(gameSession.userFinishShipboard(player)) {
+        if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
+            if(gameSession.getGame().isPresent()) {
+                Game game = gameSession.getGame().get();
+                for (Player p : game.getListPlayers()) {
+                    if(p.getShipBoard().getAlienPoint().isPresent()) return;
+                }
+                transition(new AdventureState(gameSession));
+            }
         }
     }
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {

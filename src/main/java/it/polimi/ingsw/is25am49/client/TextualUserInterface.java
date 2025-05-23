@@ -10,6 +10,7 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -143,7 +144,7 @@ public class TextualUserInterface implements UserInterface {
             if (risposta.equalsIgnoreCase("y")) lineReader.printAbove("Insert your EXACT PREVIOUS username:");
             else lineReader.printAbove("Insert your username:");
             username = lineReader.readLine(prompt).trim();
-            if (username.length() > 20 || username.isEmpty()) {
+            if (username.length() > 20 || username.isEmpty() || username.contains(" ")) {
                 printUpdateMessage(error + "username non valid");
             } else break;
         }
@@ -258,6 +259,34 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    public void insertAliens(int playerId) {
+        Player p=gameSession.getPlayer(playerId).get();
+        if(p.getShipBoard().isCompleted()){
+            lineReader.printAbove("insert aliens on the Shipboard\n");
+            if (p.getShipBoard().getAlienPoint().isPresent()){
+                try {
+                    Point alienPoint=p.getShipBoard().getAlienPoint().get();
+                    String selection = lineReader.readLine("insert alien on coordinates: "+alienPoint+"\n" +
+                            "a --> astronaut\n" +
+                            "p --> purple aliens\n" +
+                            "b --> brown aliens\n" +
+                            ">> "
+                    ).trim();
+                    switch (selection.toLowerCase()){
+                        case "p" : controller.userSelectTypeOfToken(playerId,Token.PURPLE_ALIENS,alienPoint);break;
+                        case "b" : controller.userSelectTypeOfToken(playerId,Token.BROWN_ALIENS,alienPoint);break;
+                        case "a" : controller.userSelectTypeOfToken(playerId,Token.ASTRONAUT,alienPoint);break;
+                        default: printUpdateMessage(error + "invalid choice");
+                    }
+                }catch (RemoteException e){
+                    printUpdateMessage(error+e.getMessage());
+                }
+            }else {
+                printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
+            }
+        }else throw new GameSettingsException("shipboard not completed yet");
+    }
+
 
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
@@ -285,8 +314,14 @@ public class TextualUserInterface implements UserInterface {
                 lineReader.printAbove(stringBuilder.toString()); //TODO eventualmente fare graphicQueue.add
                 updateDiscardTile(myId);
             }
+            case 2 -> {//AdventureState
+                stringBuilder.append("+-------------------------------+\n")
+                        .append("|       ADVENTURE STATE :)      |\n")
+                        .append("+-------------------------------+\n");
+                lineReader.printAbove(stringBuilder.toString());
+            }
             default -> {
-                printUpdateMessage(error + "stateIndex: " + stateIndex);
+                printUpdateMessage("stateIndex: " + stateIndex);
             }
         }
     }
@@ -335,20 +370,13 @@ public class TextualUserInterface implements UserInterface {
     public String buildStateMenu(){
         return """
                 BuildState - commands:\s
-                0.  PlaceTile
-                1.  PickTile
-                2.  RotateTileClockWise
-                3.  DiscardTile
-                4.  DrawTile
-                5.  LookSmallAdventureCardDeck
-                6.  StopLookSmallAdventureCardDeck
-                7.  PlaceTimer
-                8.  SelectTypeOfToken
-                9.  LookAtShipboard
-                10. FinishShipboard
-                11. LookUncoveredTile
+                0.  PlaceTile                           6.  StopLookSmallAdventureCardDeck
+                1.  PickTile                            7.  PlaceTimer
+                2.  RotateTileClockWise                 8.  LookUncoveredTile
+                3.  DiscardTile                         9.  LookAtShipboard
+                4.  DrawTile                            10. FinishShipboard
+                5.  LookSmallAdventureCardDeck          11. SelectTypeOfToken
                 12. ←-- go back
-               
                 """;
     }
     @Override
@@ -416,7 +444,14 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateFinishShipboard(int playerId) {
-        updatePlaceTile(myId,new Point(7,7));
+        if(playerId == myId){
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
+                    gameSession.getPlayer(playerId).get().shipToString() +
+                   "\nSHIPBOARD COMPLETE !!!!\n └──> .11  SelectTypeOfToken\n"+
+                    "_".repeat(200) + "\n" +
+                    "choose an option:";
+            graphicsQueue.add(str);
+        }
     }
 
     @Override
@@ -434,23 +469,36 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         if(playerId == myId){
-        updatePlaceTile(myId,new Point(7,7));
+            updatePlaceTile(myId,new Point(7,7));
         }
     }
 
     @Override
     public void updatePlaceTimer(int playerId) {
-
+        var p= gameSession.getPlayer(playerId).get();
+        printUpdateMessage("user: "+p.getUsername() +"placed the timer on the board\n"+gameSession.getGame().get().getTimer());
     }
 
     @Override
     public void updateTimerIsDone() {
-        //non penso serva
+        printUpdateMessage("+-----------------------+\n" +
+                                "| !!! TIMER IS DONE !!! |\n" +
+                                "+-----------------------+\n");
     }
 
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
+        if(playerId == myId){
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
+                    gameSession.getPlayer(playerId).get().shipToString() +
+                    "\nSHIPBOARD COMPLETE !!!!\n └──> .11  SelectTypeOfToken\n"+
+                    "token: "+token+" added on coordinates: "+coordinates+"\n" +
+                    "_".repeat(200) + "\n" +
+                    "choose an option:";
+            graphicsQueue.add(str);
 
+            updateFinishShipboard(playerId);
+        }
     }
 
     @Override
@@ -573,10 +621,18 @@ public class TextualUserInterface implements UserInterface {
                     }
                 }
                 case "7:1"->{
-                    printUpdateMessage("commando PlaceTimer non ancora implementato\n");
+                    controller.userPlaceTimer(myId);
                 }
-                case "8:1"->{
-                    printUpdateMessage("commando SelectTypeOfToken non ancora implementato\n");
+                case "8:1"->{//lookUncoveredTile
+                    try{
+                        int id = Integer.parseInt(lineReader.readLine("select a IdTile from above>> ").trim());
+                        String s= gameSession.getGame().get().getGameboard().getTilesDeck().getTileById(id)+"\n"+
+                                "BuildState - commands:\n8. LookUncoveredTile\n12. ←-- go back \n\n";
+                        graphicsQueue.add(s);
+                    }catch (Exception e ){
+                        printUpdateMessage(error+e.getMessage());
+                        //updateLookUncoveredTile(myId,new Point(0,0));
+                    }
                 }
                 case "9:1"->{//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
@@ -594,11 +650,13 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "10:1"->{
                     controller.userFinishShipboard(myId);
-
                 }
-                case "11:1"->{//lookUncoveredTile
-                    //secondo me non serve
-                    printUpdateMessage("commando LookUncoveredTile non ancora implementato\n");
+                case "11:1"->{//selectTypeOfToken
+                    try {
+                        insertAliens(myId);
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                    }
                 }
                 case "12:1"->{//go back
                     updatePlaceTile(myId,new Point(7,7));

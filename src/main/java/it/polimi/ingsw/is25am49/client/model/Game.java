@@ -54,6 +54,8 @@ public class Game {
         return board;
     }
 
+    public Timer getTimer() {return timer;}
+
     public int getMaxPlayers() {
         return maxPlayers;
     }

@@ -48,6 +48,7 @@ public class ShipBoard {
             case YELLOW -> tiles.get(61);
         };
         centerCabinTile.lockTile();
+        centerCabinTile.fillComponent(Token.ASTRONAUT);
 
         switch (level){
             case 0,1:
@@ -518,6 +519,13 @@ public class ShipBoard {
         return crew;
     }
 
+    public Optional<Point> getAlienPoint(){
+        ArrayList<Point> aliens = new ArrayList<>(getComponentsPositions(ComponentType.CABINE));
+        return aliens.stream()
+                .filter(p -> checkIfAlienArePossible(p).size() > 1 && getTile(p).getComponent().getNumberOfTokens() == 0)
+                .findFirst();
+    }
+
     /**
      * @return an integer indicating the number of exposed connectors in the shipboard
      */
@@ -797,7 +805,7 @@ public class ShipBoard {
      */
     public boolean cabineAreFullOfToken(){
         ArrayList<Point> listOfCabins = getComponentsPositions(ComponentType.CABINE);
-        return listOfCabins.stream().anyMatch(point -> getTile(point).getComponent().getTokenList().isEmpty());
+        return listOfCabins.stream().noneMatch(point -> getTile(point).getComponent().getNumberOfTokens()==0);
     }
 
     /**
@@ -1169,8 +1177,7 @@ public class ShipBoard {
                 str.append("\n");
             }
         }
-        str.append("\n\t      4            5            6            7            8            9            10       \t \n");
-        if (isCompleted)str.append("\n!!!! SHIPBOARD COMPLETE !!!!\n");
+        str.append("\n\t      4            5            6            7            8            9            10       \t \n\n");
         return str.toString();
     }
 

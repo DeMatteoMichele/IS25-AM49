@@ -43,6 +43,7 @@ public class ShipBoard {
             case YELLOW -> tiles.get(61);
         };
         centerCabinTile.lockTile();
+        centerCabinTile.fillComponent(Token.ASTRONAUT);
 
         switch (level){
             case 0,1:
@@ -391,6 +392,12 @@ public class ShipBoard {
             throw new InvalidCoordinatesException("cannot checkIfAlienArePossible ---> "+e.getMessage());
         }
         return crew;
+    }
+    public Optional<Point> getAlienPoint(){
+        ArrayList<Point> aliens = new ArrayList<>(getComponentsPositions(ComponentType.CABINE));
+        return aliens.stream()
+                .filter(p -> checkIfAlienArePossible(p).size() > 1 && getTile(p).getComponent().getNumberOfTokens() == 0)
+                .findFirst();
     }
 
     /**
@@ -855,7 +862,7 @@ public class ShipBoard {
     }
     public boolean cabineAreFullOfToken(){
         ArrayList<Point> listOfCabins = getComponentsPositions(ComponentType.CABINE);
-        return listOfCabins.stream().anyMatch(point -> getTile(point).getComponent().getTokenList().isEmpty());
+        return listOfCabins.stream().noneMatch(point -> getTile(point).getComponent().getNumberOfTokens()==0);
     }
 
 
