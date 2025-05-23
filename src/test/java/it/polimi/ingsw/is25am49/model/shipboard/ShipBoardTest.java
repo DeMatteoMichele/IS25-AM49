@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.server.model.enums.ConnectorType;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
@@ -22,9 +23,9 @@ class ShipBoardTest {
 
     @BeforeEach
     void setUp() {
-        ship1 = new ShipBoard(1,501);
-        ship2 = new ShipBoard(2,502);
-        shipTest= new ShipBoard(2,555);
+        ship1 = new ShipBoard(1,501, Color.RED);
+        ship2 = new ShipBoard(2,502,Color.BLUE);
+        shipTest= new ShipBoard(2,555,Color.GREEN);
 
         Map<Integer, Tile> tiles= Tile.generateTiles();
         ship1.insertTile(new Point(7,6), tiles.get(151));

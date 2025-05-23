@@ -99,33 +99,19 @@ public class Tile {
     public void setTileOrientation(Orientation tileOrientation) {
         int oldOrientation = this.tileOrientation.ordinal();
         int newOrientation = tileOrientation.ordinal();
+        int diff = (newOrientation - oldOrientation + 4) % 4;
 
+        if (diff == 0) {
+            this.tileOrientation = tileOrientation;
+            return;
+        }
+
+        HashMap<Integer, ConnectorType> newConnectors = new HashMap<>(4);
+        for (int i = 0; i < 4; i++) {
+            newConnectors.put((i + diff) % 4, connectors.get(i));
+        }
+        connectors = newConnectors;
         this.tileOrientation = tileOrientation;
-        int diff= Math.abs(newOrientation-oldOrientation);
-
-        //calc GCD
-        int numOfCycles=4;
-        int k=diff;
-        while (k != 0) {
-            int temp = k;
-            k = numOfCycles % k;
-            numOfCycles = temp;
-        }
-
-        //Rotation cycles
-        for (int i = 0; i < numOfCycles; i++) {
-            int currIndex=i;
-            ConnectorType currType=connectors.get(currIndex);
-            //System.out.println("ciclo="+i +"\nNorth: " + getConnector(Orientation.NORTH)+"\nEast: "+getConnector(Orientation.EAST)+"\nSouth: "+getConnector(Orientation.SOUTH)+"\nWest: "+getConnector(Orientation.WEST));
-            do {
-                int newIndex=(currIndex+diff)%4;
-                ConnectorType newType=connectors.get(newIndex);
-                connectors.put(newIndex, currType);
-                currType=newType;
-
-                currIndex=newIndex;
-            }while(currIndex!=i);
-        }
     }
     public void rotateTileClockwise(){
         Orientation newTileRotation= Orientation.values()[(tileOrientation.ordinal()+1)%4];

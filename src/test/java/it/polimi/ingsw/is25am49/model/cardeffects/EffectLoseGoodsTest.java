@@ -37,7 +37,7 @@ class EffectLoseGoodsTest {
     void init(){
 
         player = new Player("io",Color.RED,3);
-        shipBoard = new ShipBoard(1,3);
+        shipBoard = new ShipBoard(1,3,Color.RED);
         player.setShipBoard(shipBoard);
         component3 = new ContainerComponent(ComponentType.SPECIAL_STORAGE, 2);
         component2 = new ContainerComponent(ComponentType.BATTERY,4);

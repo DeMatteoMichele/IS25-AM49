@@ -49,10 +49,10 @@ class GameBoardTest {
         player5 = new Player("rojo", Color.RED,8);
         player6 = new Player("verde", Color.BLUE,6);
         player7 = new Player("azul", Color.BLUE,9);
-        ship1 = new ShipBoard(1,3);
-        ship2 = new ShipBoard(1,2);
-        ship3 = new ShipBoard(1,1);
-        ship4 = new ShipBoard(1,12);
+        ship1 = new ShipBoard(1,3, Color.RED);
+        ship2 = new ShipBoard(1,2, Color.BLUE);
+        ship3 = new ShipBoard(1,1, Color.GREEN);
+        ship4 = new ShipBoard(1,12 , Color.YELLOW);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         player3.setShipBoard(ship3);
@@ -95,6 +95,10 @@ class GameBoardTest {
                 ConnectorType.FLAT
         );
         player4.getShipBoard().insertTile(coordinate4,tile4);
+        player1.addCredits(23);
+        player2.addCredits(34);
+        player3.addCredits(12);
+        player4.addCredits(27);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player3);
@@ -156,6 +160,10 @@ class GameBoardTest {
 
     @Test
     void getLeader() {
+    }
+    @Test
+    void TetstoString() {
+        System.out.println(gameBoard.toString());
     }
 
     @Test

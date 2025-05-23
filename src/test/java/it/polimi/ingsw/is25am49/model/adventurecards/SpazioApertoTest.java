@@ -74,8 +74,8 @@ class SpazioApertoTest {
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         deck = new AdventureCardDeck();
         deck.add(new SpazioAperto(gameBoard,"spazio aperto",1,"spazio aperto"));
-        ship1 = new ShipBoard(1, 1);
-        ship2 = new ShipBoard(1, 2);
+        ship1 = new ShipBoard(1, 1, Color.RED);
+        ship2 = new ShipBoard(1, 2, Color.GREEN);
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         component1 = new ContainerComponent(ComponentType.BATTERY,3);

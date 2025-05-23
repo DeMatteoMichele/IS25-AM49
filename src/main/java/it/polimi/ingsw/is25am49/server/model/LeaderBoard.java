@@ -221,5 +221,6 @@ public class LeaderBoard {
         arrayLeaderboard.add(Map.entry(player, days-i));
         showableLeaderBoard.set(moduleNumberOfCells(days-i), Optional.of(player));
     }
+
 }
 
