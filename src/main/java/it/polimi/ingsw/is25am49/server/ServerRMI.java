@@ -18,21 +18,41 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
     public ServerRMI(ServerController serverController) throws RemoteException {
         super();
         this.serverController = serverController;
+        this.clients = new HashMap<>();
+        this.matchPlayers = new HashMap<>();
+        this.idCounter = 0;
     }
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-        if(command.getTypeOfMessage().equals("HSK")){
-
+        if (gameStarted) {
+            matchPlayers.forEach((id, client) -> {
+                try {
+                    client.command_FromServerToClient(command);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
         }
         else {
-
+            clients.forEach((id, client) -> {
+                try {
+                    client.command_FromServerToClient(command);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
-    @Override
     public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
-
+        RemoteClient specificClient = clients.get(clientId);
+        if (specificClient != null) {
+            command.setServerController(serverController);
+            specificClient.command_FromServerToClient(command);
+        } else {
+            System.out.println("Client with ID " + clientId + " not found.");
+        }
     }
 
     public void signalThatGameStarted() {
@@ -50,16 +70,20 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
     @Override
     public void command_FromClientToServer(Command command) throws RemoteException {
         if(command.getTypeOfMessage().equals("HSK")) {
-            Command tempCommand = new Command("registerClientCallback", serverController, idCounter);
+            command.setServerController(serverController);
+            serverController.addPlayerToLobbyRMI(idCounter);
+            clients.put(idCounter, (RemoteClient) command.getParameters().getFirst());
+            Command response = new Command("registerClientCallback", idCounter);
+            response.addParameter(idCounter);
+            command_FromServerToSpecificClient(response, idCounter);
             idCounter++;
-
         }
         else if(command.getTypeOfMessage().equals("MSG")) {
             command.setServerController(serverController);
             command.callMethod();
         }
     }
-    public void sayToClientHandlerWhoHasJoined(int playerId){
+    public void sayToServerRMIWhoHasJoined(int playerId){
         matchPlayers.put(playerId, clients.get(playerId));
     }
 }

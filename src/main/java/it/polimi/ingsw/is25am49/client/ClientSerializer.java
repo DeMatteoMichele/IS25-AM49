@@ -102,7 +102,7 @@ public class ClientSerializer implements RemoteServer {
             //System.out.println("Type of message: " + typeOfMessage);
             String methodName = rootNode.get("methodName").asText();
             //System.out.println("Method name: " + methodName);
-            Command command = new Command(methodName, clientController);
+            Command command = new Command(methodName);
             ArrayNode params = (ArrayNode) rootNode.get("params");
             //System.out.println("Params: " + params);
             if (typeOfMessage.equals("MSG")) {
@@ -268,14 +268,13 @@ public class ClientSerializer implements RemoteServer {
                     command.addParameter(idPlayer);
                 }
             }
-            System.out.println("EXECUTING COMMAND");
+            command.setClientController(clientController);
             command.callMethod();
-            System.out.println("COMMAND EXECUTED:" + command.toString());
             return command;
         } catch (IOException e) {
             System.err.println("porcatr " + e.getMessage());
             e.printStackTrace();
-            return new Command("EXCEPTION", clientController);
+            return new Command("EXCEPTION");
         }
     }
 

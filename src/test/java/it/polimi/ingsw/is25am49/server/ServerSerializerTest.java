@@ -36,7 +36,7 @@ class ServerSerializerTest {
         serverController.setSerializer(serverSerializer);
 
         Command serObject1;
-        serObject1 = new Command("userPlaceTile", serverController, -1);
+        serObject1 = new Command("userPlaceTile", -1);
         serObject1.addParameter(0);
         Point point = new Point(6, 6);
         Orientation orientation = Orientation.NORTH;
@@ -45,7 +45,7 @@ class ServerSerializerTest {
         serObjectArray.add(serObject1);
 
         Command serObject2;
-        serObject2 = new Command("userFinishDecisionToken", serverController, -1);
+        serObject2 = new Command("userFinishDecisionToken", -1);
         serObject2.addParameter(0);
         ArrayList<Pair<Point, Token>> listOfTokens = new ArrayList<>();
         Pair<Point, Token> pair;
@@ -58,7 +58,7 @@ class ServerSerializerTest {
         serObjectArray.add(serObject2);
 
         Command serObject3;
-        serObject3 = new Command("registerClientSocket", serverController, -1);
+        serObject3 = new Command("registerClientSocket", -1);
         serObject3.addParameter(-1);
         serObjectArray.add(serObject3);
 

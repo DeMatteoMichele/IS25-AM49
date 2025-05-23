@@ -9,37 +9,15 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
-public class ClientRMI implements RemoteServer, RemoteClient {
-    public GameSession gameSession;
-
+public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
+    private final ClientController clientController;
     private boolean isConnected;
 
-    public ClientRMI() {}
-    public ClientRMI(GameSession session) {
-        gameSession = session;
-    }
-
-    RemoteServer connect(String serverIP, int serverPort) throws RemoteException {
-        RemoteServer serverStub = null;
-        try {
-            Registry reg = LocateRegistry.getRegistry(serverIP, 1099);//eventualmente serverPort
-            serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
-            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
-
-        }catch(RemoteException | NotBoundException e){
-            System.out.println("errore creazione stub --> "+e.getMessage());
-        }
-        return serverStub;
-    }
-
-    @Override
-    public void command_FromClientToServer(Command command) throws RemoteException {
-
-    }
-
-    public void setGamesession(GameSession gameSession) {
-        this.gameSession = gameSession;
+    public ClientRMI(ClientController clientController) throws RemoteException {
+        super();
+        this.clientController = clientController;
     }
 
     /**THIS METHOD IS CALLED BY THE SERVER
@@ -52,12 +30,8 @@ public class ClientRMI implements RemoteServer, RemoteClient {
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-
-    }
-
-    @Override
-    public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
-
+        command.setClientController(clientController);
+        command.callMethod();
     }
 }
 

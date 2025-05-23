@@ -83,7 +83,7 @@ public class ServerSerializer implements RemoteClient {
             JsonNode rootNode = mapper.readTree(jsonContent);
             String typeOfMessage = rootNode.get("typeOfMessage").asText();
             String methodName = rootNode.get("methodName").asText();
-            Command command = new Command(methodName, serverController, -1);
+            Command command = new Command(methodName, -1);
             ArrayNode params = (ArrayNode) rootNode.get("params");
             if (typeOfMessage.equals("MSG")) {
                 for (JsonNode paramNode : params) {
@@ -237,6 +237,7 @@ public class ServerSerializer implements RemoteClient {
                         command.addParameter(object);
                     }
                 }
+                command.setServerController(serverController);
                 command.callMethod();
             } else if (typeOfMessage.equals("HSK")) {
                 for (JsonNode paramNode : params) {
@@ -256,7 +257,7 @@ public class ServerSerializer implements RemoteClient {
             System.err.println("Messaggio di errore: " + e.getMessage());
             System.err.println("Dimensione file: " + fileJson.length() + " bytes");
             e.printStackTrace();
-            return new Command("EXCEPTION", serverController, -100);
+            return new Command("EXCEPTION", -100);
         }
     }
 
@@ -387,6 +388,7 @@ public class ServerSerializer implements RemoteClient {
         Command commandTemp;
         commandTemp = deSerializeStringFromClient(fileJson);
         commandTemp.setMethodName("registerClientCallback");
+        serverController.addPlayerToLobbySocket(commandTemp.getPlayerId());
         serializeObjectFromServer(commandTemp, true, commandTemp.getPlayerId());
         return commandTemp.getPlayerId();
     }
@@ -397,7 +399,7 @@ public class ServerSerializer implements RemoteClient {
         serializeObjectFromServer(command, false, 99);
     }
 
-    @Override
+
     public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
         serializeObjectFromServer(command, true, clientId);
     }

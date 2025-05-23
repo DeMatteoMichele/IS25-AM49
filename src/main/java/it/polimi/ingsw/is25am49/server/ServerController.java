@@ -6,7 +6,6 @@ import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.shared.Command;
 import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import javafx.util.Pair;
 
@@ -19,43 +18,41 @@ import java.util.concurrent.Executors;
 public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
-    private final ArrayList<Integer> players;
+    private final HashSet<Integer> playersRMI;
+    private final HashSet<Integer> playersSocket;
     private ServerRMI serverRMI;
     private final ExecutorService executors = Executors.newFixedThreadPool(10);
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
-        this.players = new ArrayList<>();
+        this.playersRMI = new HashSet<>();
+        this.playersSocket = new HashSet<>();
     }
 
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
 
-    public void addPlayerToLobby(int playerId) {
-        players.add(playerId);
+    public void addPlayerToLobbyRMI(int playerId) {
+        playersRMI.add(playerId);
     }
 
-    public void registerClientRMI(RemoteClient client) {
-
-    }
-
-    public void registerClientSocket(int playerId) {
-
+    public void addPlayerToLobbySocket(int playerId) {
+        playersSocket.add(playerId);
     }
 
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
                 gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);
-                Command command = new Command("adminSetupCallback", this, playerId);
+                Command command = new Command("adminSetupCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(numberOfPlayers);
                 command.addParameter(mode);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (GameSettingsException e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("AdminSetup hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -67,19 +64,26 @@ public class ServerController {
     }
 
     public void playerJoin(int playerId, String username) {
-        addPlayerToLobby(playerId);
         try {
             try {
                 gameSession.getState().userJoinLobby(username, playerId);
-                serverSerializer.sayToClientHandlerWhoHasJoined(playerId);
-                Command command = new Command("playerJoinCallback", this, playerId);
+                Command command = new Command("playerJoinCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(username);
                 command.addParameter(gameSession.getSeedForGeneration());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                if(playersRMI.contains(playerId)) {
+                    serverRMI.sayToServerRMIWhoHasJoined(playerId);
+                }
+                else if(playersSocket.contains(playerId)) {
+                    serverSerializer.sayToClientHandlerWhoHasJoined(playerId);
+                }
+                else {
+                    throw new GameSettingsException("Player not found");
+                }
             } catch (GameSettingsException e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("PlayerJoin hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -95,13 +99,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userDrawTile(playerId, tileId);
-                Command command = new Command("userDrawTileCallback", this, playerId);
+                Command command = new Command("userDrawTileCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(tileId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Tile with id "+tileId+" not available or already drawn");
                 serverSerializer.command_FromServerToClient(command);
@@ -118,14 +122,14 @@ public class ServerController {
             try {
                 gameSession.getState().userRotateTile(playerId, orientation);
                 gameSession.getState().userPlaceTile(playerId, coordinates);
-                Command command = new Command("userPlaceTileCallback", this, playerId);
+                Command command = new Command("userPlaceTileCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
                 command.addParameter(orientation);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Place tile hasn't worked in Server ->  " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -141,13 +145,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userPickTile(playerId, coordinates);
-                Command command = new Command("userPickTileCallback", this, playerId);
+                Command command = new Command("userPickTileCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Pick tile hasn't worked in Server ->  " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -162,12 +166,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userDiscardTile(playerId);
-                Command command = new Command("userDiscardTileCallback", this, playerId);
+                Command command = new Command("userDiscardTileCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Discard tile hasn't worked in Server ->  " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -182,12 +186,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userFinishShipboard(playerId);
-                Command command = new Command("userFinishShipboardCallback", this, playerId);
+                Command command = new Command("userFinishShipboardCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish shipboard hasn't worked in Server ->  " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -202,13 +206,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-                Command command = new Command("userLookSmallAdventureCardDeckCallback", this, playerId);
+                Command command = new Command("userLookSmallAdventureCardDeckCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(smallDeckIndex);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Look small adventure card deck hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -223,13 +227,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-                Command command = new Command("userStopLookSmallAdventureCardDeckCallback", this, playerId);
+                Command command = new Command("userStopLookSmallAdventureCardDeckCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(smallDeckIndex);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Stop look small adventure card deck hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -244,12 +248,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userPlaceTimer(playerId);
-                Command command = new Command("userPlaceTimerCallback", this, playerId);
+                Command command = new Command("userPlaceTimerCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Place timer hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -265,14 +269,14 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userSelectTypeOfToken(playerId, token, coordinates);
-                Command command = new Command("userSelectTypeOfTokenCallback", this, playerId);
+                Command command = new Command("userSelectTypeOfTokenCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(token);
                 command.addParameter(coordinates);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Select type of token hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -287,12 +291,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userThrowDices(playerId);
-                Command command = new Command("userThrowDicesCallback", this, playerId);
+                Command command = new Command("userThrowDicesCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Throw dices hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -307,12 +311,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userDrawAdventureCard(playerId);
-                Command command = new Command("userDrawAdventureCardCallback", this, playerId);
+                Command command = new Command("userDrawAdventureCardCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Draw adventure card hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -327,13 +331,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userFinishDecisionActivating(playerId, coordinates);
-                Command command = new Command("userFinishDecisionActivatingCallback", this, playerId);
+                Command command = new Command("userFinishDecisionActivatingCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(coordinates);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision activating hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -348,13 +352,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
-                Command command = new Command("userFinishDecisionTokenCallback", this, playerId);
+                Command command = new Command("userFinishDecisionTokenCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(listOfTokens);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision token hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -369,13 +373,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userAcceptPrizes(playerId, wantsRewards);
-                Command command = new Command("userAcceptPrizesCallback", this, playerId);
+                Command command = new Command("userAcceptPrizesCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(wantsRewards);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Accept prizes hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -390,14 +394,14 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userLandOnPlanet(playerId, isLanded, planetId);
-                Command command = new Command("userLandOnPlanetCallback", this, playerId);
+                Command command = new Command("userLandOnPlanetCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(isLanded);
                 command.addParameter(planetId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Land on planet hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -412,13 +416,13 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userLandOnStationOrShip(playerId, isLanded);
-                Command command = new Command("userLandOnStationOrShipCallback", this, playerId);
+                Command command = new Command("userLandOnStationOrShipCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(isLanded);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Land on station or ship hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -433,12 +437,12 @@ public class ServerController {
         try{
             try {
                 gameSession.getState().userStopFlight(playerId);
-                Command command = new Command("userStopFlightCallback", this, playerId);
+                Command command = new Command("userStopFlightCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Stop flight hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -453,12 +457,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userQuitGame(playerId);
-                Command command = new Command("userQuitGameCallback", this, playerId);
+                Command command = new Command("userQuitGameCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Quit game hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -473,12 +477,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().adminCalculateScore(playerId);
-                Command command = new Command("adminCalculateScoreCallback", this, playerId);
+                Command command = new Command("adminCalculateScoreCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Calculate score hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
@@ -493,12 +497,12 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userEndGame(playerId);
-                Command command = new Command("adminEndGameCallback", this, playerId);
+                Command command = new Command("adminEndGameCallback", playerId);
                 command.addParameter(playerId);
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                Command command = new Command("errorCallback", this, playerId);
+                Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("End game hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
