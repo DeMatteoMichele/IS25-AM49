@@ -55,11 +55,12 @@ public class ServerSerializer implements RemoteClient {
         } else if (command.getTypeOfMessage().equals("HSK")) {
             if (command.getPlayerId() == -1) {
                 idCounter++;
+                command.addParameter(idCounter);
+                command.setPlayerId(idCounter);
             } else {
-                idCounter = command.getPlayerId();
+                command.addParameter(command.getPlayerId());
+                command.setPlayerId(command.getPlayerId());
             }
-            command.addParameter(idCounter);
-            command.setPlayerId(idCounter);
         }
         return command;
     }
@@ -70,6 +71,7 @@ public class ServerSerializer implements RemoteClient {
         }
         if (!toSpecificClient) {
             clientHandler.putFileInTheBroadcastQueue(command);
+            System.out.println("putting file in the broadcast queue");
         } else {
             clientHandler.putFileInTheOutGoingFileQueue(command, clientId);
         }

@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.server;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.shared.Command;
 
+import javax.xml.transform.Source;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -85,7 +86,7 @@ public class ClientHandler {
             }
             if (!connections.containsKey(clientId)) {
                 connect(socket, inputStream, outputStream, clientId);
-                submitToExecutor(clientId);
+                submitToScheduler(clientId);
             } else connect(socket, inputStream, outputStream, clientId);
             System.out.println("Client connected with id: " + clientId);
             System.out.println("size: " + clientSockets.size());
@@ -119,13 +120,12 @@ public class ClientHandler {
         inputStreams.put(clientId, clientInputStream);
         connections.put(clientId, true);
         InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
-        outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(1000));
     }
 
-    private void submitToExecutor(int clientId) {
-        executors.submit(() -> listenToClient(clientId));
-        executors.submit(() -> processStringQueueToServerSerializer(clientId));
-        executors.submit(() -> processOutGoingFileQueue(clientId));
+    private void submitToScheduler(int clientId) {
+        scheduler.scheduleWithFixedDelay(() -> listenToClient(clientId), 0, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processStringQueueToServerSerializer(clientId), 1000, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processOutGoingFileQueue(clientId), 1000, 200, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -157,12 +157,16 @@ public class ClientHandler {
      */
     private void listenToClient(int clientId) {
         ObjectInputStream clientInputStream = inputStreams.get(clientId);
-        while (connections.get(clientId)) {
+        if (connections.get(clientId)) {
             try {
                 Command command = (Command) clientInputStream.readObject();
+                System.out.println("available");
                 lastHeartBeats.put(clientId, System.currentTimeMillis());
                 if (!command.getTypeOfMessage().equals("HTB"))
                     InGoingStringQueues.get(clientId).put(command);
+            } catch (EOFException e) {
+                System.out.println(clientId + " closed his outputstream");
+                shutDownClientRelated(clientId);
             } catch (IOException e) {
                 System.out.println("Error while listening to client " + clientId + " shutting down his connection");
                 e.printStackTrace();
@@ -186,6 +190,9 @@ public class ClientHandler {
      */
     public void putFileInTheOutGoingFileQueue(Command command, int clientId) {
         try {
+            if (outGoingFileQueue.get(clientId) == null || !connections.get(clientId)) {
+                outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(10000));
+            }
             outGoingFileQueue.get(clientId).put(command);
         } catch (InterruptedException e) {
             System.out.println("Error while putting the file in the outGoingFileQueue, thread has been interrupted");
@@ -209,15 +216,11 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     private void processOutGoingFileQueue(int clientId) {
-        System.out.println("Starting to process the outGoingFileQueue for client " + clientId);
-        while (connections.get(clientId)) {
-            try {
-                Command command = outGoingFileQueue.get(clientId).poll();
-                if (command != null)
-                    sendMessageToSpecificClient(clientId, command);
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                System.out.println("Error while taking the file from the Outgoing queue of the client " + clientId);
+        if (connections.get(clientId)) {
+            Command command = outGoingFileQueue.get(clientId).poll();
+            if (command != null) {
+                System.out.println("sending message");
+                sendMessageToSpecificClient(clientId, command);
             }
         }
     }
@@ -232,16 +235,16 @@ public class ClientHandler {
      */
     private void sendMessageToSpecificClient(int clientId, Command command) {
         try {
-            sendViaOutputStream(clientId, command);
+            if (connections.get(clientId)) {
+                outputStreams.get(clientId).writeObject(command);
+                outputStreams.get(clientId).flush();
+            } else
+                outGoingFileQueue.get(clientId).push(command);
         } catch (IOException e) {
+            shutDownClientRelated(clientId);
             System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
             e.printStackTrace();
-            shutDownClientRelated(clientId);
-            try {
-                outGoingFileQueue.get(clientId).putFirst(command);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            outGoingFileQueue.get(clientId).push(command);
         }
     }
 
@@ -254,12 +257,10 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     private void processStringQueueToServerSerializer(int clientId) {
-        while (connections.get(clientId)) {
-            try {
-                Command command = InGoingStringQueues.get(clientId).take();
+        if (connections.get(clientId)) {
+            Command command = InGoingStringQueues.get(clientId).poll();
+            if (command != null) {
                 serverSerializer.putFileFromClientSocketInQueue(command);
-            } catch (InterruptedException e) {
-                System.out.println("Error while taking the String from the queue for client " + clientId + " cause thread was interrupted");
             }
         }
     }
@@ -272,22 +273,20 @@ public class ClientHandler {
      * @param clientId The int of the client which we want shutdown.
      */
     private synchronized void shutDownClientRelated(int clientId) {
-//        try {
-        connections.put(clientId, false);
-//            if (clientSockets.get(clientId) != null) {
-//                connections.put(clientId, false);
-//                inputStreams.get(clientId).close();
-//                outputStreams.get(clientId).close();
-//                clientSockets.get(clientId).close();
-//            }
-//        } catch (IOException e) {
-//            System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
-//        }
+        try {
+            connections.put(clientId, false);
+            if (!clientSockets.get(clientId).isClosed()) {
+                connections.put(clientId, false);
+                inputStreams.get(clientId).close();
+                outputStreams.get(clientId).close();
+                clientSockets.get(clientId).close();
+            }
+        } catch (IOException e) {
+            System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
+        }
     }
 
     private void askForPreviousCommands(int clientId) {
-        while (!connections.get(clientId)) {
-        }
         for (Command command : historyQueue) {
             try {
                 outGoingFileQueue.get(clientId).put(command);
@@ -346,22 +345,6 @@ public class ClientHandler {
                 putFileInTheOutGoingFileQueue(command, clientId);
             });
         }
-    }
-
-
-    /**
-     * This method is used to flush the output stream of the client.
-     * It checks if the client is still connected and if it is, it sends the file to the client via its outputstream.
-     *
-     * @param clientId The int of the client which we want to send the file.
-     */
-    private void sendViaOutputStream(int clientId, Command command) throws IOException {
-        while (!connections.get(clientId)) {
-        }
-        if (connections.get(clientId)) {
-            outputStreams.get(clientId).writeObject(command);
-            outputStreams.get(clientId).flush();
-        } else throw new IOException("Player is disconnected, putting this file in head of his queue");
     }
 
     public static void main(String[] args) {
