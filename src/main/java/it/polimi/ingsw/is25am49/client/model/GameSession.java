@@ -42,6 +42,10 @@ public class GameSession {
         return admin;
     }
 
+    public UserInterface getUserInterface(){
+        return ui;
+    }
+
     public Optional<Player> getPlayer(int id) {
         if (game.isEmpty()) {
             if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;

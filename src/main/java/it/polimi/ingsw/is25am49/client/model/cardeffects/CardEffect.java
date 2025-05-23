@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model.cardeffects;
 
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import javafx.util.Pair;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public abstract class CardEffect {
     protected final String name_effect;
+    private UserInterface userInterface;
 
     /**
      * Constructor of CardEffect
@@ -72,4 +74,7 @@ public abstract class CardEffect {
      */
     public abstract int getLostCrew();
 
+    public void setUserInterface(UserInterface userInterface) {
+        this.userInterface = userInterface;
+    }
 }

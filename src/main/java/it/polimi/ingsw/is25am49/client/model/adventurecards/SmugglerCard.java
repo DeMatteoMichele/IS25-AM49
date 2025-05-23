@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectLoseGoods;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectWinGoods;
 import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
@@ -13,10 +14,13 @@ import java.util.ArrayList;
 
 public class SmugglerCard extends Enemy {
 
-    public SmugglerCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
-        super(gameBoard, description, level,name, dayslost, minimumFirePower);
+    public SmugglerCard(String cardId,GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
+        super(cardId, gameBoard, description, level, name, dayslost, minimumFirePower);
         listEffects.add(new EffectWinGoods("WinGoods", redGoods, yellowGoods, greenGoods, blueGoods));
         listEffects.add(new EffectLoseGoods("LoseGoods", lostGoods));
+        for(CardEffect effect : listEffects){
+            effect.setUserInterface(userInterface);
+        }
     }
 
 
@@ -28,19 +32,19 @@ public class SmugglerCard extends Enemy {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have more firepower to defeat the smugglers! Choose where you want to put your new goods");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have more firepower to defeat the smugglers! Choose where you want to put your new goods");
             isDefeated = true;
-            System.out.println("Now decide if you want to accept the rewards ");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have drawn with the smugglers!");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have drawn with the smugglers!");
             tryNextPlayer();
         } else {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have been defeated by the smugglers! You lose some goods");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have been defeated by the smugglers! You lose some goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
@@ -52,7 +56,7 @@ public class SmugglerCard extends Enemy {
     public void applyEffect() {
         super.applyEffect();
         Player currentPlayer = gameBoard.getCurrentPlayer();
-        System.out.println("You are in applyeffect, yur goods will be modified");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You are in applyeffect, yur goods will be modified");
         currentEffect.action(currentPlayer);
         currentPlayer.setDaysThisTurn(-daysLost);
         if (isDefeated) {
@@ -74,14 +78,14 @@ public class SmugglerCard extends Enemy {
 
     @Override
     protected void handleRewards() {
-        System.out.println("You have accepted the rewards! You can now choose where to put your new goods");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have accepted the rewards! You can now choose where to put your new goods");
         currentEffect = listEffects.get(WIN_GOODS_INDEX); //the curreffect is wingoods
         currentState = AdventureStatesTypes.DECISION_GOODS;
     }
 
     @Override
     protected void handleRefuseOfRewards() {
-        System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have refused the rewards. The card is defeated and you don't lose days");
         update();
     }
 

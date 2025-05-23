@@ -13,15 +13,15 @@ import java.util.List;
 
 public class EpidemyCard extends AdventureCard {
 
-    public EpidemyCard(GameBoard gameBoard, String description, int level, String name) {
-        super(gameBoard,description, level,name);
+    public EpidemyCard(String cardId,GameBoard gameBoard, String description, int level, String name) {
+        super(cardId, gameBoard, description, level, name);
     }
     List<Point> coordinatesOfAllCabins = new ArrayList<>();
 
     @Override
     public void drawCard() {
         super.drawCard();
-        System.out.println("You have found an epidemy card! For each player remove one crew member for each cabin interconnected to another cabin");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found an epidemy card! For each player remove one crew member for each cabin interconnected to another cabin");
         checkRequirements();
     }
 
@@ -44,16 +44,16 @@ public class EpidemyCard extends AdventureCard {
     }
     @Override
     public void checkRequirements() {
-        System.out.println("Now i check if "+ gameBoard.getCurrentPlayer().getUsername() + " has interconnected cabins");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now i check if "+ gameBoard.getCurrentPlayer().getUsername() + " has interconnected cabins");
         checkInterconnectedCabin();
         if(coordinatesOfAllCabins.isEmpty()){
-            System.out.println(gameBoard.getCurrentPlayer().getUsername() + " has not interconnected cabins, no crew members will be removed");
-            System.out.println("Now i check on next player");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),gameBoard.getCurrentPlayer().getUsername() + " has not interconnected cabins, no crew members will be removed");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now i check on next player");
             checkNextPlayer();
 
         }
         else{
-            System.out.println(gameBoard.getCurrentPlayer().getUsername() + " it has interconnected cabins and for each one you will lose one crew memeber");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),gameBoard.getCurrentPlayer().getUsername() + " it has interconnected cabins and for each one you will lose one crew memeber");
             currentState= AdventureStatesTypes.EFFECT;
             applyEffect();
 
@@ -62,12 +62,12 @@ public class EpidemyCard extends AdventureCard {
     private void checkNextPlayer() {
         try {
             gameBoard.nextPlayer();
-            System.out.println("it wasn't the last player, go on");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it wasn't the last player, go on");
             currentState = AdventureStatesTypes.DRAW;
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
-            System.out.println("It was the last player, end of the turn");
-            System.out.println("it goes to update state");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"It was the last player, end of the turn");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it goes to update state");
             update();
         }
     }

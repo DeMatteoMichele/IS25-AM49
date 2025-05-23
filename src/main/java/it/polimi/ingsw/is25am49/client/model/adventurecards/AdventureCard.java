@@ -1,4 +1,5 @@
 package it.polimi.ingsw.is25am49.client.model.adventurecards;
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
@@ -6,7 +7,6 @@ import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.client.model.states.AdventureState;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
@@ -27,14 +27,18 @@ public abstract class AdventureCard {
     protected GameBoard gameBoard;
     protected String  name;
     protected Random random;
+    protected UserInterface userInterface;
+    protected String cardId;
 
-    public AdventureCard(GameBoard gameBoard, String description, int level, String name) {
+    public AdventureCard(String cardId, GameBoard gameBoard, String description, int level, String name) {
+        this.cardId = cardId;
         this.gameBoard = gameBoard;
         this.description = description;
         this.isFinished = false;
         this.level = level;
         this.name = name;
         random = new Random(gameBoard.getSeedForGeneration());
+        this.userInterface = gameBoard.getUserInterface();
     }
 
     public String getDescription() {
@@ -45,7 +49,7 @@ public abstract class AdventureCard {
     public abstract String toString();
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
-        System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
+        userInterface.updateDrawAdventureCard(gameBoard.getCurrentPlayer().getIdPlayer(),cardId);
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 
@@ -73,7 +77,7 @@ public abstract class AdventureCard {
         int firstDice = random.nextInt(6) + 1;
         int secondDice = random.nextInt(6) + 1;
         dicesResult = firstDice + secondDice;
-        System.out.println("The dices have been rolled. Result: " + dicesResult);
+        userInterface.updateThrowDices(gameBoard.getCurrentPlayer().getIdPlayer(), firstDice, secondDice);
         currentEffect.setPosition(dicesResult);
     }
 

@@ -22,8 +22,8 @@ public abstract class Enemy extends AdventureCard {
     protected final int daysLost;
     protected final List<CardEffect> listEffects;
 
-    public Enemy(GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumFirePower) {
-        super(gameBoard, description, level,name);
+    public Enemy(String cardId,GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumFirePower) {
+        super(cardId, gameBoard, description, level, name);
         this.minimumFirePower = minimumFirePower;
         this.daysLost = daysLost;
         listEffects = new ArrayList<>();

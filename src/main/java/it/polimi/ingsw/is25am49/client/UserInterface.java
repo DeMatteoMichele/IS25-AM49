@@ -3,8 +3,11 @@ package it.polimi.ingsw.is25am49.client;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Set;
 
 public interface UserInterface {
     public void updateStateTransition(int stateIndex);
@@ -30,6 +33,16 @@ public interface UserInterface {
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates);
     public void lookAtShipboard(int playerId);
 
+    //ADVENTURE STATE:
+    public void updateGenericCardMessage(int playerId, String message);
+    public void updateThrowDices(int playerId, int firstDice, int secondDice);
+    public void updateDrawAdventureCard(int playerId, String cardId);
+    public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates);
+    public void updateFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
+    public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId);
+    public void updateLandOnStationOrShip(int playerId, boolean isLanded) ;
+    public void updateAcceptPrizes(int playerId, boolean isAccepted);
+    public void updateStopFlight(int playerId);
 
     public void setGameSession(GameSession gameSession);//TODO sus non penso serva
 

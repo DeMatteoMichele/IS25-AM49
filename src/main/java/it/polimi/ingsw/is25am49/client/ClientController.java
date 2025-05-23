@@ -515,7 +515,6 @@ public class ClientController {
         } catch (Exception e) {
             ui.printUpdateMessage(e.getMessage());
         }
-
     }
 
     public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
