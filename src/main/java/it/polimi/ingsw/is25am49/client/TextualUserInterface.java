@@ -311,14 +311,14 @@ public class TextualUserInterface implements UserInterface {
                 stringBuilder.append("+-------------------------------+\n")
                         .append("|       BUILD STATE :)          |\n")
                         .append("+-------------------------------+\n");
-                lineReader.printAbove(stringBuilder.toString()); //TODO eventualmente fare graphicQueue.add
+                graphicsQueue.add(stringBuilder.toString());
                 updateDiscardTile(myId);
             }
             case 2 -> {//AdventureState
                 stringBuilder.append("+-------------------------------+\n")
                         .append("|       ADVENTURE STATE :)      |\n")
                         .append("+-------------------------------+\n");
-                lineReader.printAbove(stringBuilder.toString());
+                graphicsQueue.add(stringBuilder.toString());
             }
             default -> {
                 printUpdateMessage("stateIndex: " + stateIndex);

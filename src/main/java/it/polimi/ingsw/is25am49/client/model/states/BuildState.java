@@ -229,15 +229,23 @@ public class BuildState extends State {
     }
 
     public void timerIsDone() {
-        gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
         userInterface.updateTimerIsDone();
+        if (gameSession.getGame().isPresent()) {
+            for (Player p: gameSession.getGame().get().getListPlayers()) {
+                try {
+                    gameSession.getState().userFinishShipboard(p.getIdPlayer());
+                }catch (Exception _){}
+            }
+        }else throw new RuntimeException("timer is done GAME NON SETTATO non so perch'");
     }
     //todo NON è stata ricopiata esattamente, Bisogna decidere bene cosa fare con le transizioni di stato
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
         if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
+            userInterface.updateSelectTypeOfToken(playerId,token,coordinates);
             transition(new AdventureState(gameSession, userInterface));
+            return;
         }
         userInterface.updateSelectTypeOfToken(playerId,token,coordinates);
     }

@@ -90,8 +90,14 @@ public class BuildState extends State {
         gameSession.userPlaceTimer(player);
     }
     public void timerIsDone(){
-        gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
+        if (gameSession.getGame().isPresent()) {
+            for (Player p: gameSession.getGame().get().getListPlayers()) {
+                try {
+                    gameSession.getState().userFinishShipboard(p.getIdPlayer());
+                }catch (Exception _){}
+            }
+        }else throw new RuntimeException("timer is done GAME NON SETTATO non so perch'");
     }
     //riempi tutti i component, anche le batterie, ecc.
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){

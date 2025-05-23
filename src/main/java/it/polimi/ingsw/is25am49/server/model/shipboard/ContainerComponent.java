@@ -75,7 +75,9 @@ public final class ContainerComponent extends Component {
         if (!checkIfTokenIsValid(token))
             throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a " + type);
         for (int i = 0; i < level; i++) {
-            tokens.add(token);
+            try {
+                addToken(token);
+            } catch (Exception _) {    }
         }
     }
 
