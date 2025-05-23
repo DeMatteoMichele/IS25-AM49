@@ -66,7 +66,7 @@ public class ServerSerializer implements RemoteClient {
 
     public Command serializeObjectFromServer(Command command, boolean toSpecificClient, int clientId) {
         if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
-            historyQueue.add(command);
+            clientHandler.putFileInTheHistoryQueue(command);
         }
         if (!toSpecificClient) {
             clientHandler.putFileInTheBroadcastQueue(command);
@@ -119,18 +119,4 @@ public class ServerSerializer implements RemoteClient {
         clientHandler.gameStarted();
     }
 
-    /**
-     * This method is used to give the commands history to the client.
-     * It takes the files from the history queue and puts them in the outgoing file queue in clienthandler.
-     *
-     * @param clientId the id of the client that requested the history
-     */
-    public void giveMeCommandsHistory(int clientId) {
-        int counter = 0;
-        for (Command command : historyQueue) {
-            counter++;
-            System.err.println("\n" + " history:" + counter + "\n");
-            clientHandler.putFileInTheOutGoingFileQueue(command, clientId);
-        }
-    }
 }

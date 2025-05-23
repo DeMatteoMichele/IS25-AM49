@@ -102,7 +102,8 @@ public class ServerHandler {
                 Command command = (Command) objectInputStream.readObject();
                 InGoingStringQueue.put(command);
             } catch (IOException e) {
-                System.out.println("Error while listening to server, putting the connection to false");
+                System.out.println("Error while listening to server, putting the connection to false Time" +System.currentTimeMillis());
+                e.printStackTrace();
                 disconnectAndTryToReconnect();
                 break;
             } catch (InterruptedException e) {
@@ -140,22 +141,22 @@ public class ServerHandler {
     private synchronized void disconnectAndTryToReconnect() {
         if (connected.get()) {
             connected.set(false);
-            try {
-                if (objectInputStream != null) {
-                    objectInputStream.close();
-                }
-                if (objectOutputStream != null) {
-                    objectOutputStream.close();
-                }
-                if (clientSocket != null && !clientSocket.isClosed()) {
-                    clientSocket.close();
-                }
+//            try {
+//                if (objectInputStream != null) {
+//                    objectInputStream.close();
+//                }
+//                if (objectOutputStream != null) {
+//                    objectOutputStream.close();
+//                }
+//                if (clientSocket != null && !clientSocket.isClosed()) {
+//                    clientSocket.close();
+//                }
                 stopHeartBeat();
                 System.out.println("submitting the connection attempt");
                 executors.submit(this::attemptToConnect);
-            } catch (IOException e) {
-                System.err.println("Errore durante la chiusura delle risorse per la disconnesione: " + e.getMessage());
-            }
+//            } catch (IOException e) {
+//                System.err.println("Errore durante la chiusura delle risorse per la disconnesione: " + e.getMessage());
+//            }
         }
     }
 
@@ -165,23 +166,23 @@ public class ServerHandler {
      * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again using the timer() method.
      */
     public void attemptToConnect() {
-        clientSerializer.askControllerToResetModel();
-        System.out.println("Attempting to reconnect to the server...");
-        int numberOfTries = 0;
-        while (numberOfTries < thresholdTries) {
-            try {
-                numberOfTries++;
-                System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
-                handshake();
-                System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
-                break;
-            } catch (IOException e) {
-                disconnectAndTryToReconnect(); //Reminder: if the connection isn't established, this does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
-            }
-            timer();
-        }
-        if (numberOfTries >= thresholdTries)
-            System.out.println("Connection failed");
+//        clientSerializer.askControllerToResetModel();
+//        System.out.println("Attempting to reconnect to the server...");
+//        int numberOfTries = 0;
+//        while (numberOfTries < thresholdTries) {
+//            try {
+//                numberOfTries++;
+//                System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
+//                handshake();
+//                System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
+//                break;
+//            } catch (IOException e) {
+//                disconnectAndTryToReconnect(); //Reminder: if the connection isn't established, this does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
+//            }
+//            timer();
+//        }
+//        if (numberOfTries >= thresholdTries)
+//            System.out.println("Connection failed");
     }
 
     private void handshake() throws IOException {
@@ -284,4 +285,7 @@ public class ServerHandler {
         }
     }
 }
+
+
+
 

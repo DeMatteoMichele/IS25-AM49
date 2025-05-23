@@ -26,6 +26,8 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, LinkedBlockingDeque<Command>> outGoingFileQueue;
     private final ConcurrentMap<Integer, LinkedBlockingDeque<Command>> playersOutgoingFileQueue;
     private final ArrayBlockingQueue<Command> BroadcastQueue;
+    private final ArrayBlockingQueue<Command> historyQueue;
+
     private final Thread serverThread;
     private boolean gameStarted;
     private final File directory;
@@ -42,6 +44,7 @@ public class ClientHandler {
         InGoingStringQueues = new ConcurrentHashMap<>();
         outGoingFileQueue = new ConcurrentHashMap<>();
         playersOutgoingFileQueue = new ConcurrentHashMap<>();
+        historyQueue = new ArrayBlockingQueue<>(50000, true);
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
         directory = new File("$FilesFromClients");
@@ -80,7 +83,10 @@ public class ClientHandler {
             if (!gameStarted || connections.containsKey(clientId)) {
                 executors.submit(() -> askForPreviousCommands(clientId));
             }
-            connectClient(socket, inputStream, outputStream, clientId);
+            if (!connections.containsKey(clientId)) {
+                connect(socket, inputStream, outputStream, clientId);
+                submitToExecutor(clientId);
+            } else connect(socket, inputStream, outputStream, clientId);
             System.out.println("Client connected with id: " + clientId);
             System.out.println("size: " + clientSockets.size());
         }
@@ -93,8 +99,7 @@ public class ClientHandler {
         } catch (IOException e) {
             System.err.println("Error while reading the first message from new client ");
             return -100;
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             System.err.println("Error while reading the object from the input stream for handshake : classnotfound");
             return -100;
         }
@@ -107,15 +112,20 @@ public class ClientHandler {
      * @param socket   The socket of the client.
      * @param clientId The clientId of the client being connected.
      */
-    private void connectClient(Socket socket, ObjectInputStream clientInputStream, ObjectOutputStream clientOutputStream, int clientId) {
+    private void connect(Socket socket, ObjectInputStream clientInputStream, ObjectOutputStream clientOutputStream, int clientId) {
         lastHeartBeats.put(clientId, System.currentTimeMillis());
         clientSockets.put(clientId, socket);
         outputStreams.put(clientId, clientOutputStream);
         inputStreams.put(clientId, clientInputStream);
         connections.put(clientId, true);
-        if (InGoingStringQueues.get(clientId) == null)
-            InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
+        InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
+        outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(1000));
+    }
+
+    private void submitToExecutor(int clientId) {
         executors.submit(() -> listenToClient(clientId));
+        executors.submit(() -> processStringQueueToServerSerializer(clientId));
+        executors.submit(() -> processOutGoingFileQueue(clientId));
     }
 
     /**
@@ -146,8 +156,6 @@ public class ClientHandler {
      * @param clientId The int of the client being handled.
      */
     private void listenToClient(int clientId) {
-        executors.submit(() -> processStringQueueToServerSerializer(clientId));
-        executors.submit(() -> processOutGoingFileQueue(clientId));
         ObjectInputStream clientInputStream = inputStreams.get(clientId);
         while (connections.get(clientId)) {
             try {
@@ -157,6 +165,7 @@ public class ClientHandler {
                     InGoingStringQueues.get(clientId).put(command);
             } catch (IOException e) {
                 System.out.println("Error while listening to client " + clientId + " shutting down his connection");
+                e.printStackTrace();
                 shutDownClientRelated(clientId);
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the String in the queue for client " + clientId + " cause thread was interrupted");
@@ -177,12 +186,17 @@ public class ClientHandler {
      */
     public void putFileInTheOutGoingFileQueue(Command command, int clientId) {
         try {
-            if (outGoingFileQueue.get(clientId) == null) {
-                outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(1000));
-            }
             outGoingFileQueue.get(clientId).put(command);
         } catch (InterruptedException e) {
             System.out.println("Error while putting the file in the outGoingFileQueue, thread has been interrupted");
+        }
+    }
+
+    public void putFileInTheHistoryQueue(Command command) {
+        try {
+            historyQueue.put(command);
+        } catch (InterruptedException e) {
+            System.out.println("Error while putting the file in the historyqueue, thread has been interrupted");
         }
     }
 
@@ -198,8 +212,9 @@ public class ClientHandler {
         System.out.println("Starting to process the outGoingFileQueue for client " + clientId);
         while (connections.get(clientId)) {
             try {
-                Command command = outGoingFileQueue.get(clientId).take();
-                sendMessageToSpecificClient(clientId, command);
+                Command command = outGoingFileQueue.get(clientId).poll();
+                if (command != null)
+                    sendMessageToSpecificClient(clientId, command);
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the file from the Outgoing queue of the client " + clientId);
@@ -220,6 +235,7 @@ public class ClientHandler {
             sendViaOutputStream(clientId, command);
         } catch (IOException e) {
             System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
+            e.printStackTrace();
             shutDownClientRelated(clientId);
             try {
                 outGoingFileQueue.get(clientId).putFirst(command);
@@ -256,20 +272,29 @@ public class ClientHandler {
      * @param clientId The int of the client which we want shutdown.
      */
     private synchronized void shutDownClientRelated(int clientId) {
-        try {
-            if (clientSockets.get(clientId) != null) {
-                connections.put(clientId, false);
-                inputStreams.get(clientId).close();
-                outputStreams.get(clientId).close();
-                clientSockets.get(clientId).close();
-            }
-        } catch (IOException e) {
-            System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
-        }
+//        try {
+        connections.put(clientId, false);
+//            if (clientSockets.get(clientId) != null) {
+//                connections.put(clientId, false);
+//                inputStreams.get(clientId).close();
+//                outputStreams.get(clientId).close();
+//                clientSockets.get(clientId).close();
+//            }
+//        } catch (IOException e) {
+//            System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
+//        }
     }
 
     private void askForPreviousCommands(int clientId) {
-        serverSerializer.giveMeCommandsHistory(clientId);
+        while (!connections.get(clientId)) {
+        }
+        for (Command command : historyQueue) {
+            try {
+                outGoingFileQueue.get(clientId).put(command);
+            } catch (InterruptedException e) {
+                System.out.println("Error while putting the file in the outGoingFileQueue from historyqueue, thread has been interrupted");
+            }
+        }
     }
 
     /**
@@ -333,7 +358,6 @@ public class ClientHandler {
     private void sendViaOutputStream(int clientId, Command command) throws IOException {
         while (!connections.get(clientId)) {
         }
-        ;
         if (connections.get(clientId)) {
             outputStreams.get(clientId).writeObject(command);
             outputStreams.get(clientId).flush();
