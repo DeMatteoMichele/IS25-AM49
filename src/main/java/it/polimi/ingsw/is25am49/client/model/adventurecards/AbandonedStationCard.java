@@ -80,14 +80,13 @@ public class AbandonedStationCard extends AdventureCard {
         //vado nello stato dove decido le merci da caricare e le rispettive posizioni
         super.landingOnStationOrShip(IsLanded);
         if(IsLanded){
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have landed on A station");
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),true, cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to decide where you want to add your win goods and which ones");
             currentState= AdventureStatesTypes.DECISION_GOODS;
             currentEffect = listEffects.getFirst();
-
         }
         else{
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have decided not to land on the station ");
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),false, cardId);
             try{
                 gameBoard.nextPlayer();
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now check on next player");
@@ -112,11 +111,10 @@ public class AbandonedStationCard extends AdventureCard {
         switch (currentState) {
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
             case DECISION_GOODS -> {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have decided your goods to add ");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates,coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
-
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");
         }

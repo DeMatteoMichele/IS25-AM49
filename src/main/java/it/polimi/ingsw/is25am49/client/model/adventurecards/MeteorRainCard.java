@@ -105,7 +105,7 @@ public class MeteorRainCard extends AdventureCard {
                     applyEffect();
                     return;
                 }
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have decided the coord for the batteries.");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfBatteries, coordinatesOfBatteries.size(), true);
                 currentState = determineStateAfterBatteries();
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
@@ -121,6 +121,7 @@ public class MeteorRainCard extends AdventureCard {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
                     List<Point> coordinatesOfCannons = new ArrayList<>(coordinates);
                     activateComponentWithBatteries(coordinatesOfCannons, shipBoard);
+                    userInterface.updateFinishDecisionActivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates);
                     currentState = AdventureStatesTypes.EFFECT;
                     applyEffect();
                 } catch (IllegalNumOfActivableException e) {
@@ -132,6 +133,7 @@ public class MeteorRainCard extends AdventureCard {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
                     List<Point> coordinatesOfShield = new ArrayList<>(coordinates);
                     activateComponentWithBatteries(coordinatesOfShield, shipBoard);
+                    userInterface.updateFinishDecisionActivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates);
                     currentState = AdventureStatesTypes.EFFECT;
                     applyEffect();
                 } catch (IllegalNumOfActivableException e) {
@@ -170,6 +172,7 @@ public class MeteorRainCard extends AdventureCard {
 
     protected void deactivateComponents(ShipBoard shipBoard) {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
+        userInterface.updateDeactivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfActivable);
     }
 
     private void tryNextPlayerDefeated() {

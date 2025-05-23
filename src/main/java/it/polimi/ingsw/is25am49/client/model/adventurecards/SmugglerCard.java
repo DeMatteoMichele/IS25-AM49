@@ -135,8 +135,4 @@ public class SmugglerCard extends Enemy {
         return str.toString();
 
         }
-
-
-
-
     }

@@ -461,12 +461,13 @@ public class ShipBoard {
     /**
      * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
      */
-    public void destroyDisconnectedTiles(){
+    public Set<Point> destroyDisconnectedTiles(){
         Set<Point> elimina = new HashSet<>(grid.keySet());
         elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
         for(Point p: elimina){
             destroyTile(p);
         }
+        return elimina;
     }
 
     /**

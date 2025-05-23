@@ -72,6 +72,7 @@ public class PiratesCard extends Enemy {
     @Override
     protected void handleRewards() {
         gameBoard.getCurrentPlayer().addCredits(creditsEarned);
+        userInterface.updateEarnedCredits(gameBoard.getCurrentPlayer().getIdPlayer(), creditsEarned);
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
         handleDefeatedPlayers();
     }

@@ -84,8 +84,6 @@ public class WarZoneCard extends AdventureCard {
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You lost 3 travel days");
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
         gameBoard.updateLeaderboard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"leader updated! now is : " + gameBoard.getLeader().getUsername());
-
         //now current player is the leader again
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
         checkRequirements2();
@@ -146,7 +144,7 @@ public class WarZoneCard extends AdventureCard {
                     } else if (coordinates.size() > ship.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size()) {
                         throw new IllegalArgumentException("you have chosen" + coordinates.size() + "but you have less engine ");
                     }
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have chosen " + coordinates.size() + " batteries");
+                    userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(),true);
                     this.batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to choose which motors you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_MOTOR;
@@ -155,16 +153,15 @@ public class WarZoneCard extends AdventureCard {
                     if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
                         throw new IllegalArgumentException("you have chosen more batteries than you have");
                     }
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have chosen " + coordinates.size() + " batteries");
+                    userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(),true);
                     this.batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to choose which cannons you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_CANNON;
-
                 } else {
                     if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
                         throw new IllegalArgumentException("you have chosen more batteries than you have");
                     }
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have chosen " + coordinates.size() + " batteries to activate your shield");
+                    userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(),true);
                     this.batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to choose which shields you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_SHIELDS;
@@ -174,9 +171,8 @@ public class WarZoneCard extends AdventureCard {
                 //i have to choose which astroauts or aliens to lose
                 gameBoard.setCurrentPlayer(playerWithMinimumEnginePower);
                 currentEffect.setListOfCoordinates(coordinates);
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have chosen the astronauts or aliens you wanna lose");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(),true);
                 currentEffect.action(gameBoard.getCurrentPlayer());
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),gameBoard.getCurrentPlayer().getUsername() + " has lost two crew members");
                 gameBoard.setCurrentPlayer(gameBoard.getLeader());
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The leader is " + gameBoard.getLeader().getUsername());
                 checkRequirements3();

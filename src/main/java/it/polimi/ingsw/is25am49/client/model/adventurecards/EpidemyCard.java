@@ -50,7 +50,6 @@ public class EpidemyCard extends AdventureCard {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),gameBoard.getCurrentPlayer().getUsername() + " has not interconnected cabins, no crew members will be removed");
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now i check on next player");
             checkNextPlayer();
-
         }
         else{
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),gameBoard.getCurrentPlayer().getUsername() + " it has interconnected cabins and for each one you will lose one crew memeber");
@@ -79,15 +78,16 @@ public class EpidemyCard extends AdventureCard {
         coordinatesOfAllCabins.forEach(point ->{
             if(ship.getPositionsOfaToken(Token.ASTRONAUT).contains(point)){
                 ship.removeTokenFromTile(point, Token.ASTRONAUT);
+                userInterface.updateEffectModifyCrew(gameBoard.getCurrentPlayer().getIdPlayer(),point,Token.ASTRONAUT);
             }
             else if(ship.getPositionsOfaToken(Token.BROWN_ALIENS).contains(point)){
                 ship.removeTokenFromTile(point, Token.BROWN_ALIENS);
-
+                userInterface.updateEffectModifyCrew(gameBoard.getCurrentPlayer().getIdPlayer(),point,Token.BROWN_ALIENS);
             }
             else{
                 ship.removeTokenFromTile(point, Token.PURPLE_ALIENS);
+                userInterface.updateEffectModifyCrew(gameBoard.getCurrentPlayer().getIdPlayer(),point,Token.PURPLE_ALIENS);
             }
-
         });
         coordinatesOfAllCabins.clear();
         checkNextPlayer();

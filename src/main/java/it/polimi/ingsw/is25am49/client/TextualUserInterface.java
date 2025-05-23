@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Set;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
@@ -24,7 +25,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "localhost";
+    private final String serverIP = "192.168.193.12";
     private final int serverPortSocket = 8080;
     private final int serverPortRMI = 1099;
 
@@ -511,6 +512,51 @@ public class TextualUserInterface implements UserInterface {
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
+    }
+
+    @Override
+    public void updateGenericCardMessage(int playerId, String message) {
+
+    }
+
+    @Override
+    public void updateThrowDices(int playerId, int firstDice, int secondDice) {
+
+    }
+
+    @Override
+    public void updateDrawAdventureCard(int playerId, String cardId) {
+
+    }
+
+    @Override
+    public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
+
+    }
+
+    @Override
+    public void updateFinishDecisionToken(int playerId, List listOfTokens) {
+
+    }
+
+    @Override
+    public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+
+    }
+
+    @Override
+    public void updateLandOnStationOrShip(int playerId, boolean isLanded) {
+
+    }
+
+    @Override
+    public void updateAcceptPrizes(int playerId, boolean isAccepted) {
+
+    }
+
+    @Override
+    public void updateStopFlight(int playerId) {
+
     }
 
 

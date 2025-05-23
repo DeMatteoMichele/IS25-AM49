@@ -51,12 +51,12 @@ public class EffectWinGoods extends CardEffect {
                 }
                 Token tokenToRemove = minValueToken(component.getTokenList());
                 player.getShipBoard().removeTokenFromTile(coordinate.getKey(), tokenToRemove);
-                System.out.println("rimozione di "+ tokenToRemove + " dalla posizione "+ coordinate.getKey());
+                userInterface.updateEffectLoseGoods(player.getIdPlayer(), coordinate.getKey(), tokenToRemove);
                 if(coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
                     throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
                 }
                 player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
-                System.out.println("aggiunta di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
+                userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
             }
             else{
                 if(coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
@@ -68,7 +68,7 @@ public class EffectWinGoods extends CardEffect {
                     continue;
                 }
                 player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
-                System.out.println("aggiunta di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
+                userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
             }
 
     }}
@@ -98,7 +98,7 @@ private boolean addTokenToTile(Point coordinate, Token token, Player player) {
       if (canAdd) {
           return true; // si può aggiungere
       } else {
-          System.out.println("you are trying to add a token that the card didn't give you or you have already added it the maximum number of times");
+          userInterface.updateGenericCardMessage(player.getIdPlayer(), "you are trying to add a token that the card didn't give you or you have already added it the maximum number of times");
           return false; //non si può aggiungere
       }
   }

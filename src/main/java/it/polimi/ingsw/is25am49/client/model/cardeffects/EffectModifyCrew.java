@@ -25,8 +25,8 @@ public class EffectModifyCrew extends CardEffect {
         //per tutte le coordinate nella lista rimuovo il rispettivo Token
         for(Pair<Point, Token> coordinate : coordinates) {
             player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
-            System.out.println("rimozione di "+ coordinate.getValue() + " dalla posizione "+ coordinate.getKey());
-
+            userInterface.updateGenericCardMessage(player.getIdPlayer(),"rimozione di "+ coordinate.getValue() + " dalla posizione "+ coordinate.getKey());
+            userInterface.updateEffectModifyCrew(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
         }
     }
 

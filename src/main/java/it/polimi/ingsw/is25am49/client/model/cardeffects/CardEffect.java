@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class CardEffect {
     protected final String name_effect;
-    private UserInterface userInterface;
+    protected UserInterface userInterface;
 
     /**
      * Constructor of CardEffect

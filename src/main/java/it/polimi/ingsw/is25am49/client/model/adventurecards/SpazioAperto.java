@@ -15,12 +15,12 @@ import java.util.Set;
 
 public class SpazioAperto extends AdventureCard {
 
-    public SpazioAperto(String cardId,GameBoard gameBoard, String description, int level, String name) {
+    public SpazioAperto(String cardId, GameBoard gameBoard, String description, int level, String name) {
         super(cardId, gameBoard, description, level, name);
     }
 
     private List<Pair<Point, Token>> batteries;
-    private List<Point> cannons;
+    private List<Point> motors;
 
     private List<Player> playersProcess;
     private int currentPlayerIndex;
@@ -31,7 +31,7 @@ public class SpazioAperto extends AdventureCard {
     public void drawCard() {
         //chiamo il super
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found an open space! You can choose if you wanna activate your double motors for travel days");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have found an open space! You can choose if you wanna activate your double motors for travel days");
         //passo alla richiesta di requisiti
         currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
 
@@ -63,28 +63,27 @@ public class SpazioAperto extends AdventureCard {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
         if (totalNumberOfBatteries > 0) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have enough batteries to activate your double motors. One battery activates one motor. " +
-                    "Now choose which batteries you wanna use and how much");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double motors. One battery activates one motor. " + "Now choose which batteries you wanna use and how much");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
         } else {
             //non ho abbastanza batterie per attivare i doppi motori
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You don't have enough batteries to activate your double motors");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries to activate your double motors");
             int daysEarned = ship.getTotalEnginePower();
             //imposto i giorni che gudagna il player alla potenza dei motori singoli e aggiorno la leaderboard
             gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
             gameBoard.updateLeaderboard();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"player " + currentPlayer.getClass() + " has earned " + daysEarned + " travel days");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"now i check if it was the last player");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "player " + currentPlayer.getClass() + " has earned " + daysEarned + " travel days");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now i check if it was the last player");
 
             //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
             currentPlayerIndex++;
             if (currentPlayerIndex >= playersProcess.size()) {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it was the last player, end of the turn");
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it goes to draw state");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the turn");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it goes to draw state");
                 currentState = AdventureStatesTypes.DRAW;
             } else {
 
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"It wasn't the last player, go on with the next player");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
                 checkRequirements();
 
             }
@@ -105,9 +104,9 @@ public class SpazioAperto extends AdventureCard {
                 }
                 //ho deciso quali batterie attivare, setto la lista di coordinate della batterie con quella passata
                 //dall'utente e passo allo stato in cui in base alle batterie decide i cannoni da attivare
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have choosen " + coordinates.size() + " batteries, so you will activate " + coordinates.size() + " motors");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 this.batteries = new ArrayList<>(coordinates);
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"now choose which motors you wanna activate");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now choose which motors you wanna activate");
                 currentState = AdventureStatesTypes.DECISION_MOTOR;
             }
 
@@ -122,10 +121,10 @@ public class SpazioAperto extends AdventureCard {
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
-        this.cannons = new ArrayList<>(coordinates);
+        this.motors = new ArrayList<>(coordinates);
         switch (currentState) {
             case DECISION_MOTOR -> {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have decided the coordinates of the motors you wanna activate");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have decided the coordinates of the motors you wanna activate");
 
                 //controllo che il numero dei cannoni da attivare corrisponda al numero delle batterie
                 if (batteries.size() != coordinates.size()) {
@@ -133,8 +132,8 @@ public class SpazioAperto extends AdventureCard {
                 }
                 //attivo i cannoni e passo allo stato in cui applico l'effetto
                 for (int i = 0; i < batteries.size(); i++) {
-                    ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"turning on the motor at " + cannons.get(i).x + " " + cannons.get(i).y);
+                    ship.turnOnComponent(motors.get(i), batteries.get(i).getKey());
+                    userInterface.updateFinishDecisionActivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates);
                 }
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
@@ -153,29 +152,29 @@ public class SpazioAperto extends AdventureCard {
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you are in apply effect, now i will calculate the days you have earned");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you are in apply effect, now i will calculate the days you have earned");
         //calcolo i giorni guadagnati in base alla potenza dei motori attivati
         int daysEarned = ship.getTotalEnginePower();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have earned " + daysEarned + " travel days");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have earned " + daysEarned + " travel days");
         //spengo i motori
         for (int i = 0; i < batteries.size(); i++) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"turning off the motor at " + cannons.get(i).x + " " + cannons.get(i).y);
-            ship.turnOff(cannons.get(i));
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "turning off the motor at " + motors.get(i).x + " " + motors.get(i).y);
+            ship.turnOff(motors.get(i));
         }
+        userInterface.updateDeactivating(gameBoard.getCurrentPlayer().getIdPlayer(), motors);
         gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
         //aggiorno la leaderboard
         gameBoard.updateLeaderboard();
         //controllo se era l'ultimo giocatore
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"now i check if it was the last player");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now i check if it was the last player");
         currentPlayerIndex++;
         if (currentPlayerIndex >= playersProcess.size()) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it was the last player, end of the turn");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it goes to draw state");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the turn");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it goes to draw state");
             isFinished = true;
             currentState = AdventureStatesTypes.DRAW;
         } else {
-
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"It wasn't the last player, go on with the next player");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
 

@@ -54,7 +54,7 @@ public class PlanetCard extends AdventureCard {
             throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
         }
         if(isLanded && !planet.isOccupied()){
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have landed on the planet!");
+            userInterface.updateLandOnPlanet(gameBoard.getCurrentPlayer().getIdPlayer(),true, planetId);
             planet.setOccupied(true);
             planets.remove(planet);
             planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
@@ -98,7 +98,7 @@ public class PlanetCard extends AdventureCard {
     public void finishDecision(List<Pair<Point, Token>> coordinates){
         if(currentState== AdventureStatesTypes.DECISION_GOODS){
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have decided the position of the goods");
+            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), false);
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
@@ -118,7 +118,7 @@ public class PlanetCard extends AdventureCard {
         //applico l'effetto, aggiorno il player con i giorni persi
         currentEffect.action(gameBoard.getCurrentPlayer());
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
-        gameBoard.updateLeaderboard();
+        //gameBoard.updateLeaderboard();
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have lost " + daysLost + " travel days");
         if(planets.isEmpty()){
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have no more planets to land on, you have to go on with the game");

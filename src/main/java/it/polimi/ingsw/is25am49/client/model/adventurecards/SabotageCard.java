@@ -8,7 +8,9 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisState
 import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 
 import java.awt.*;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class SabotageCard extends AdventureCard {
 
@@ -77,12 +79,14 @@ public class SabotageCard extends AdventureCard {
         //se è pari lancio i dadi e setto la colonna da cui rimuovere il componente e poi rilancio i dadi
         if(diceRollCount%2==0){
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
+            userInterface.updateThrowDices(gameBoard.getCurrentPlayer().getIdPlayer(), firstDice, secondDice);
             column = dicesResult;
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have set the column to: " + column + ", now roll the dices again to set the row");
         }
         else{
             //se è dispari lancio i dadi e setto la riga da cui rimuovere il componente e passo a apply effect
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The dices have been rolled: " + firstDice + " and " + secondDice + ". Row: " + dicesResult);
+            userInterface.updateThrowDices(gameBoard.getCurrentPlayer().getIdPlayer(), firstDice, secondDice);
             row = dicesResult;
             currentState= AdventureStatesTypes.EFFECT;
             applyEffect();
@@ -95,11 +99,17 @@ public class SabotageCard extends AdventureCard {
     public void applyEffect() {
         //imposto le coordinate
         Point coordinate = new Point(row, column);
+
+
         try{
             //rimuovo il componente, se non lancia eccezioni lo ho rimosso altrimenti catturo l'eccezione
             gameBoard.getCurrentPlayer().getShipBoard().destroyTile(coordinate);
+            Set <Point> destroyedTile= new HashSet<>();
+            destroyedTile.add(coordinate);
+            userInterface.updateDestroyedTiles(gameBoard.getCurrentPlayer().getIdPlayer(), destroyedTile);
             gameBoard.getCurrentPlayer().addLostComponents(1);
-            gameBoard.getCurrentPlayer().getShipBoard().destroyDisconnectedTiles();
+            Set<Point> destroyedTiles= gameBoard.getCurrentPlayer().getShipBoard().destroyDisconnectedTiles();
+            userInterface.updateDestroyedTiles(gameBoard.getCurrentPlayer().getIdPlayer(), destroyedTiles);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The component at row: " + row + " and column: " + column + " has been destroyed");
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Your lostComponent has been added to your discard pile");
             currentState = AdventureStatesTypes.DRAW;

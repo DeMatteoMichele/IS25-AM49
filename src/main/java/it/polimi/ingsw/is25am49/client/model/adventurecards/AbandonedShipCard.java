@@ -57,12 +57,12 @@ public class AbandonedShipCard extends AdventureCard {
     public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {
         super.landingOnStationOrShip(isLanded);
         if (isLanded) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have landed on the ship");
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),true, cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to decide where you want to remove your astronauts");
             currentEffect = listEffects.getFirst();
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
         } else {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have decided not to land on the ship");
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),false, cardId);
             tryNextPlayer();
         }
     }
@@ -79,11 +79,11 @@ public class AbandonedShipCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(List<Pair<Point, Token>> coordinates) {
+    public void finishDecision(List<Pair<Point, Token>> coordinatesOfAstronauts) {
         switch (currentState) {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have decided to remove astronauts");
-                currentEffect.setListOfCoordinates(coordinates);
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinatesOfAstronauts, lostAstronauts, true);
+                currentEffect.setListOfCoordinates(coordinatesOfAstronauts);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
@@ -98,7 +98,7 @@ public class AbandonedShipCard extends AdventureCard {
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You are in applyeffect, you lose astronauts");
         currentEffect.action(currentPlayer);
         currentPlayer.addCredits(creditsEarned);
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have earned " + creditsEarned + " credits");
+        userInterface.updateEarnedCredits(gameBoard.getCurrentPlayer().getIdPlayer(),creditsEarned);
         currentPlayer.setDaysThisTurn(-daysLost);
         update();
     }

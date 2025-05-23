@@ -60,6 +60,7 @@ public class SlaverCard extends Enemy {
         currentPlayer.setDaysThisTurn(-daysLost);
         if (isDefeated) {
             currentPlayer.addCredits(creditsEarned);
+            userInterface.updateEarnedCredits(gameBoard.getCurrentPlayer().getIdPlayer(),creditsEarned);
             update();
         } else {
             currentEffect.action(currentPlayer);
