@@ -69,6 +69,7 @@ public class GameSession {
     public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
         if (game.isEmpty()) {
             game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers, seedForGeneration));
+            game.get().setTimer(new Timer(gameMode, this));
         } else throw new GameSettingsException("Game already exists!");
     }
 

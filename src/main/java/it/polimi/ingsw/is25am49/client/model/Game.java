@@ -55,6 +55,7 @@ public class Game {
     }
 
     public Timer getTimer() {return timer;}
+    public void setTimer(Timer timer) {this.timer = timer;}
 
     public int getMaxPlayers() {
         return maxPlayers;

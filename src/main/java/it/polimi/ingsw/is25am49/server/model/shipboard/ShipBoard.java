@@ -101,16 +101,18 @@ public class ShipBoard {
      * this method prepare the shipboard for the flight setting isCompleted to True and destroying all the miss-placed tiles
      */
     public void completeShipBoard() {
-        isCompleted = true;
-        afterBuildCheckShipboard();
-        for(Point p: grid.keySet()){
-            getTile(p).lockTile();
-        }
-        for(Point p: grid.keySet()){
-            try{
-                fillTileComponent(p, Token.BATTERY_CELLS);
-            } catch(Exception _) {
+        if(!isCompleted){
+            isCompleted = true;
+            afterBuildCheckShipboard();
+            for(Point p: grid.keySet()){
+                getTile(p).lockTile();
+            }
+            for(Point p: grid.keySet()){
+                try{
+                    fillTileComponent(p, Token.BATTERY_CELLS);
+                } catch(Exception _) {
 
+                }
             }
         }
     }

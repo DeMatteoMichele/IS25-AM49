@@ -63,6 +63,9 @@ public class Game {
         this.mode = mode;
         timer = new Timer(mode, session);
     }
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
 
     public boolean checkPlayers() {
         return numPlayers < maxPlayers;

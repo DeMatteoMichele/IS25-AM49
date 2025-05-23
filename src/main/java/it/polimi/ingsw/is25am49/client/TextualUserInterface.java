@@ -476,14 +476,16 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updatePlaceTimer(int playerId) {
         var p= gameSession.getPlayer(playerId).get();
-        printUpdateMessage("user: "+p.getUsername() +"placed the timer on the board\n"+gameSession.getGame().get().getTimer());
+        printUpdateMessage("user: "+p.getUsername() +" placed the timer on the board\n"+gameSession.getGame().get().getTimer());
     }
 
     @Override
     public void updateTimerIsDone() {
-        printUpdateMessage("+-----------------------+\n" +
-                                "| !!! TIMER IS DONE !!! |\n" +
-                                "+-----------------------+\n");
+        printUpdateMessage("""
+                +-----------------------+
+                | !!! TIMER IS DONE !!! |
+                +-----------------------+
+                """);
     }
 
     @Override

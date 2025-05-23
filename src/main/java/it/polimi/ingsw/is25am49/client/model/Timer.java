@@ -65,6 +65,6 @@ public class Timer {
 
     @Override
     public String toString() {
-        return "Timer[" +usageCounter+"] - " + "lifetime=" + lifetime;
+        return "Timer[" +usageCounter+"] - " + "lifetime=" + lifetime + " seconds";
     }
 }
