@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import it.polimi.ingsw.is25am49.shared.Command;
 
 public class ServerHandler {
@@ -11,19 +12,15 @@ public class ServerHandler {
     private Socket clientSocket;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private final ExecutorService executors;
     private final ScheduledExecutorService scheduler;
     private ScheduledFuture<?> heartBeatTask;
-    private volatile boolean timeIsDone;
-    private final int thresholdTries;
     private final AtomicBoolean connected;
-    private final int secondsForReconnection;
     private final String serverIP;
     private final int serverPort;
-    private final Object outputStreamLock;
     private final BlockingQueue<Command> InGoingStringQueue;
-    private final BlockingQueue<Command> OutGoingFileQueue;
+    private final LinkedBlockingDeque<Command> OutGoingFileQueue;
     private final File directory;
+    private int myId;
 
     /**
      * Constructor for the ServerHandler class.
@@ -36,18 +33,11 @@ public class ServerHandler {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
         InGoingStringQueue = new ArrayBlockingQueue<>(1000, true);
-        OutGoingFileQueue = new ArrayBlockingQueue<>(1000, true);
+        OutGoingFileQueue = new LinkedBlockingDeque<>(1000);
         connected = new AtomicBoolean(false);
         scheduler = Executors.newScheduledThreadPool(10);
-        thresholdTries = 20;
-        secondsForReconnection = 5;
-        outputStreamLock = new Object();
-        executors = Executors.newFixedThreadPool(10);
         directory = new File("$FilesFromServer");
-        if (!directory.exists()) {
-            System.out.println("Directory doesn't exist, creating it");
-            directory.mkdirs();
-        }
+        submitToScheduler();
     }
 
     /**
@@ -63,9 +53,15 @@ public class ServerHandler {
         objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
         objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
         connected.set(true);
-        executors.submit(this::listenToServer);
-        executors.submit(this::processOutGoingQueue);
         startHeartBeat();
+    }
+
+    private void submitToScheduler() {
+        scheduler.scheduleWithFixedDelay(() -> listenToServer(), 0, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processStringQueueToSerializer(), 700, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processOutGoingQueue(), 700, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> connectionHealthControl(), 0, 500, TimeUnit.MILLISECONDS);
+        heartBeatTask = scheduler.scheduleWithFixedDelay(this::heartBeat, 10, 5, TimeUnit.SECONDS);
     }
 
     /**
@@ -75,19 +71,8 @@ public class ServerHandler {
      * If it fails, it disconnects and tries to reconnect.
      */
     private void heartBeat() {
-//        String HeartBeat = "HTB"; // se non è un HeartBeat "MSG"
-//        if (connected.get()) {
-//            synchronized (outputStreamLock) {
-//                try {
-//                    objectOutputStream.writeInt(HeartBeat.length());
-//                    objectOutputStream.writeBytes(HeartBeat);
-//                    objectOutputStream.flush();
-//                    //System.out.println("Client still alive");
-//                } catch (IOException e) {
-//                    disconnectAndTryToReconnect();
-//                }
-//            }
-//        }
+        Command command = new Command("HTB", myId);
+        putInTheOutGoingFileQueue(command);
     }
 
     /**
@@ -96,16 +81,14 @@ public class ServerHandler {
      * The BlockingQueue is processed by the processStringQueue method.
      */
     private void listenToServer() {
-        executors.submit(this::processStringQueueToSerializer);
-        while (connected.get()) {
+        if (connected.get()) {
             try {
                 Command command = (Command) objectInputStream.readObject();
                 InGoingStringQueue.put(command);
             } catch (IOException e) {
-                System.out.println("Error while listening to server, putting the connection to false Time" +System.currentTimeMillis());
+                System.out.println("Error while listening to server, putting the connection to false Time" + System.currentTimeMillis());
                 e.printStackTrace();
-                disconnectAndTryToReconnect();
-                break;
+                disconnect();
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the message in the queue, thread has been interrupted");
             } catch (ClassNotFoundException e) {
@@ -121,13 +104,10 @@ public class ServerHandler {
      * It keeps processing messages until the client is connected.
      */
     private void processStringQueueToSerializer() {
-        while (connected.get()) {
-            try {
-                Command command = InGoingStringQueue.take();
+        if (connected.get()) {
+            Command command = InGoingStringQueue.poll();
+            if (command != null)
                 clientSerializer.putFileFromSocketInQueue(command);
-            } catch (InterruptedException e) {
-                System.out.println("Error while taking the message from the queue, thread has been interrupted");
-            }
         }
     }
 
@@ -138,25 +118,22 @@ public class ServerHandler {
      * It sets the connected flag to false.
      * It closes the input/output streams and the socket, then submits a new connection attempt to the executor service.
      */
-    private synchronized void disconnectAndTryToReconnect() {
+    private synchronized void disconnect() {
         if (connected.get()) {
-            connected.set(false);
-//            try {
-//                if (objectInputStream != null) {
-//                    objectInputStream.close();
-//                }
-//                if (objectOutputStream != null) {
-//                    objectOutputStream.close();
-//                }
-//                if (clientSocket != null && !clientSocket.isClosed()) {
-//                    clientSocket.close();
-//                }
+            try {
+                connected.set(false);
+                if (!clientSocket.isClosed()) {
+                    objectInputStream.close();
+                    objectOutputStream.close();
+                    clientSocket.close();
+                }
                 stopHeartBeat();
-                System.out.println("submitting the connection attempt");
-                executors.submit(this::attemptToConnect);
-//            } catch (IOException e) {
-//                System.err.println("Errore durante la chiusura delle risorse per la disconnesione: " + e.getMessage());
-//            }
+            } catch (IOException e) {
+                System.err.println("Errore durante la chiusura delle risorse per la disconnesione: " + e.getMessage());
+            }
+//        catch (SocketException e) {
+//            System.err.println("Socket already closed: " + e.getMessage());
+//        }
         }
     }
 
@@ -165,43 +142,36 @@ public class ServerHandler {
      * It tries to connect to the server a certain number of times (thresholdTries).
      * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again using the timer() method.
      */
-    public void attemptToConnect() {
-//        clientSerializer.askControllerToResetModel();
-//        System.out.println("Attempting to reconnect to the server...");
-//        int numberOfTries = 0;
-//        while (numberOfTries < thresholdTries) {
-//            try {
-//                numberOfTries++;
-//                System.out.println("Connecting to " + serverIP + ":" + serverPort + "\nTentative number: " + numberOfTries);
-//                handshake();
-//                System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
-//                break;
-//            } catch (IOException e) {
-//                disconnectAndTryToReconnect(); //Reminder: if the connection isn't established, this does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
-//            }
-//            timer();
-//        }
-//        if (numberOfTries >= thresholdTries)
-//            System.out.println("Connection failed");
+    public void connectionHealthControl() {
+        if (!connected.get()) {
+            clientSerializer.askControllerToResetModel();
+            System.out.println("Attempting to reconnect to the server...");
+            try {
+                handshake();
+                System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
+            } catch (IOException e) {
+                disconnect(); //Reminder: if the connection isn't established, this does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
+            }
+        }
     }
 
     private void handshake() throws IOException {
         clientSerializer.askControllerToStartRegistration();
     }
 
-    /**
-     * This method is used to set a timer for the reconnection attempts.
-     * It uses a ScheduledExecutorService to schedule a task that sets the timeIsNotDone variable to false after a certain amount of time (secondsForReconnection).
-     * The while ensures that the thread is really waiting until timeIsNotDone becomes false.
-     */
-    private void timer() {
-        timeIsDone = true;
-        scheduler.schedule(() -> {
-            timeIsDone = false;
-        }, secondsForReconnection, TimeUnit.SECONDS);
-        while (timeIsDone) {
-        }
-    }
+//    /**
+//     * This method is used to set a timer for the reconnection attempts.
+//     * It uses a ScheduledExecutorService to schedule a task that sets the timeIsNotDone variable to false after a certain amount of time (secondsForReconnection).
+//     * The while ensures that the thread is really waiting until timeIsNotDone becomes false.
+//     */
+//    private void timer() {
+//        timeIsDone = true;
+//        scheduler.schedule(() -> {
+//            timeIsDone = false;
+//        }, secondsForReconnection, TimeUnit.SECONDS);
+//        while (timeIsDone) {
+//        }
+//    }
 
 
     /**
@@ -212,11 +182,7 @@ public class ServerHandler {
      * @param command The JSON file to be put in the OutGoingFileQueue.
      */
     public void putInTheOutGoingFileQueue(Command command) {
-        try {
-            OutGoingFileQueue.put(command);
-        } catch (InterruptedException e) {
-            System.out.println("Error while putting the file in the OutGoingQueue, thread has been interrupted");
-        }
+        OutGoingFileQueue.add(command);
     }
 
     /**
@@ -226,12 +192,10 @@ public class ServerHandler {
      * The method take() blocks itself until a message is available in the queue.
      */
     private void processOutGoingQueue() {
-        while (connected.get()) {
-            try {
-                Command command = OutGoingFileQueue.take();
+        if (connected.get()) {
+            Command command = OutGoingFileQueue.poll();
+            if (command == null) {
                 sendMessageToServer(command);
-            } catch (InterruptedException e) {
-                System.out.println("Error while taking the message from the queue, thread has been interrupted");
             }
         }
     }
@@ -246,14 +210,17 @@ public class ServerHandler {
      * @throws IOException If an I/O error occurs while sending the message.
      */
     private void sendMessageToServer(Command command) {
-        synchronized (outputStreamLock) {
-            try {
+        try {
+            if (connected.get()) {
                 objectOutputStream.writeObject(command);
                 objectOutputStream.flush();
-            } catch (IOException e) {
-                System.out.println("Error while sending message to server, disconnecting");
-                disconnectAndTryToReconnect();
-            }
+            }else
+                OutGoingFileQueue.push(command);
+        } catch (IOException e) {
+            System.out.println("Error while sending message to server, disconnecting");
+            disconnect();
+            e.printStackTrace();
+            OutGoingFileQueue.push(command);
         }
     }
 
@@ -283,6 +250,10 @@ public class ServerHandler {
         } catch (IOException e) {
             throw new RuntimeException("Error while trying to connect to the server - " + e.getMessage());
         }
+    }
+
+    public void setMyId(int playerId) {
+        myId = playerId;
     }
 }
 

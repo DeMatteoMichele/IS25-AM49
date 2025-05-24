@@ -66,6 +66,7 @@ public class ClientController {
         ui.printUpdateMessage("DEBUG: In registerClientCallback - playerId: " + playerId);
         this.myId = playerId;
         ui.setClientId(playerId);
+        serverHandler.setMyId(playerId);
         if (username == null || username.trim().isEmpty()) {
             ui.printUpdateMessage(error + "Username is not set. Cannot save ID file.");
             return;

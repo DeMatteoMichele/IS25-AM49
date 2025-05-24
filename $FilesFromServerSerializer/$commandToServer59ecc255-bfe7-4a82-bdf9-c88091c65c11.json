@@ -1,0 +1,23 @@
+{
+  "typeOfMessage" : "MSG",
+  "methodName" : "playerJoinCallback",
+  "params" : [ {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "java.lang.Integer",
+      "content" : 2
+    }
+  }, {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "java.lang.String",
+      "content" : "a"
+    }
+  }, {
+    "typeOfCollection" : "",
+    "content" : {
+      "className" : "java.lang.Integer",
+      "content" : -218854675
+    }
+  } ]
+}

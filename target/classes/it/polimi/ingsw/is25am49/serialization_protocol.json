@@ -1,0 +1,44 @@
+{
+  "typeOfMessage": "MSG",
+  "methodName": "Nome del Metodo sull'interfaccia",
+  "params": [
+    {
+      "typeOfCollection": "Nome della classe della collezione oppure stringa vuota se non lo è",
+      "content": [
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        },
+        {
+          "className": "",
+          "content": {}
+        }
+      ]
+    },
+    {
+      "typeOfCollection": "ArrayList",
+      "content": [
+        {
+          "className": "Pair",
+          "content": {}
+        },
+        {
+          "className": "Pair",
+          "content": {}
+        }
+      ]
+    }
+  ]
+}

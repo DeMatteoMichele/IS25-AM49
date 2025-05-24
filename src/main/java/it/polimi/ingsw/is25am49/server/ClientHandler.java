@@ -124,8 +124,8 @@ public class ClientHandler {
 
     private void submitToScheduler(int clientId) {
         scheduler.scheduleWithFixedDelay(() -> listenToClient(clientId), 0, 200, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> processStringQueueToServerSerializer(clientId), 1000, 200, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> processOutGoingFileQueue(clientId), 1000, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processStringQueueToServerSerializer(clientId), 700, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processOutGoingFileQueue(clientId), 700, 200, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -189,14 +189,10 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     public void putFileInTheOutGoingFileQueue(Command command, int clientId) {
-        try {
             if (outGoingFileQueue.get(clientId) == null || !connections.get(clientId)) {
                 outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(10000));
             }
-            outGoingFileQueue.get(clientId).put(command);
-        } catch (InterruptedException e) {
-            System.out.println("Error while putting the file in the outGoingFileQueue, thread has been interrupted");
-        }
+            outGoingFileQueue.get(clientId).add(command);
     }
 
     public void putFileInTheHistoryQueue(Command command) {
