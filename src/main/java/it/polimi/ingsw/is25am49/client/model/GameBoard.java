@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.client.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectCannonata;
@@ -38,6 +39,7 @@ public class GameBoard {
     private final ArrayList<Player> landedPlayers;
     private final ArrayList<Player> stopFlightPlayers;
     private int seedForGeneration;
+    private UserInterface ui;
 
 
     /**
@@ -57,7 +59,7 @@ public class GameBoard {
     /**
      * New main constructor of the GameBoard class, uses a seed for the generation od dices, decks and tiles
      */
-    public GameBoard(int seedForGeneration) {
+    public GameBoard(int seedForGeneration, UserInterface ui) {
         this.seedForGeneration = seedForGeneration;
         mapSmallAdventureDecks = new ConcurrentHashMap<>();
         // Nel costruttore è presente la generate() e lo shuffle() integrati.
@@ -66,6 +68,7 @@ public class GameBoard {
         isFirstCard = true;
         landedPlayers = new ArrayList<>();
         stopFlightPlayers = new ArrayList<>();
+        this.ui = ui;
     }
 
     /**
@@ -134,12 +137,13 @@ public class GameBoard {
                 JsonNode rootNode = mapper.readTree(file);
                 AdventureCard card;
                 for (JsonNode node : rootNode) {
+                    String cardId = node.get("cardId").asText();
                     int level = node.get("level").asInt();
                     String name = node.get("name").asText();
                     String description = node.get("description").asText();
                     card = switch (name) {
-                        case "SpazioAperto" -> new SpazioAperto(this, description, level,name);
-                        case "StarDustCard" -> new StarDustCard(this, description, level,name);
+                        case "SpazioAperto" -> new SpazioAperto(cardId, this, description, level, name);
+                        case "StarDustCard" -> new StarDustCard(cardId, this, description, level, name);
                         case "PlanetCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             List<Planet> planets = new ArrayList<>();
@@ -155,13 +159,13 @@ public class GameBoard {
                                     planets.add(planet);
                                 }
                             }
-                            yield new PlanetCard(this, description, level,name, daysLost, planets);
+                            yield new PlanetCard(cardId, this, description, level, name, daysLost, planets);
                         }
                         case "AbandonedShipCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new AbandonedShipCard(this, description, level,name,daysLost,creditsEarned,lostAstronauts);
+                            yield new AbandonedShipCard(cardId, this, description, level, name, daysLost, creditsEarned, lostAstronauts);
                         }
                         case "AbandonedStationCard"->{
                             int daysLost = node.get("daysLost").asInt();
@@ -170,9 +174,9 @@ public class GameBoard {
                             int yellowGoods = node.get("yellowGoods").asInt();
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
-                            yield new AbandonedStationCard(this, description,level, name,daysLost,minimumAstronauts,redGoods,yellowGoods,greenGoods,blueGoods);
+                            yield new AbandonedStationCard(cardId, this, description, level, name, daysLost, minimumAstronauts, redGoods, yellowGoods, greenGoods, blueGoods);
                         }
-                        case "SabotageCard" -> new SabotageCard(this, description, level,name);
+                        case "SabotageCard" -> new SabotageCard(cardId, this, description, level, name);
                         case "WarZoneCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int loseAstronauts = node.get("lostAstronauts").asInt();
@@ -184,7 +188,7 @@ public class GameBoard {
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
                                 effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new WarZoneCard(this, description, level,name, daysLost, loseAstronauts,effects);
+                            yield new WarZoneCard(cardId,this, description, level,name, daysLost, loseAstronauts,effects);
 
                         }
                         case "SmugglerCard"->{
@@ -195,7 +199,7 @@ public class GameBoard {
                             int greenGoods = node.get("greenGoods").asInt();
                             int blueGoods = node.get("blueGoods").asInt();
                             int lostGoods = node.get("number").asInt();
-                            yield new SmugglerCard(this, description,level,name, daysLost,minimumFirePower,redGoods,yellowGoods,greenGoods,blueGoods,lostGoods);
+                            yield new SmugglerCard(cardId, this, description, level, name, daysLost, minimumFirePower, redGoods, yellowGoods, greenGoods, blueGoods, lostGoods);
 
                         }
                         case "MeteorRainCard"->{
@@ -207,7 +211,7 @@ public class GameBoard {
                                 Orientation orientation = Orientation.valueOf(effect.get("orientation").asText());
                                 effects.add(new EffectMeteoriti(name2, power, orientation));
                             }
-                            yield new MeteorRainCard(this, description, level,name, effects);
+                            yield new MeteorRainCard(cardId, this, description, level, name, effects);
 
                         }
                         case "PiratesCard" -> {
@@ -222,16 +226,16 @@ public class GameBoard {
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
                                 effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new PiratesCard(this, description, level, name,daysLost, minimumFirePower, creditsEarned, effects);
+                            yield new PiratesCard(cardId, this, description, level, name, daysLost, minimumFirePower, creditsEarned, effects);
                         }
                         case "SlaverCard"->{
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new SlaverCard(this,description,level,name,daysLost,minimumFirePower,creditsEarned,lostAstronauts);
+                            yield new SlaverCard(cardId,this,description,level,name,daysLost,minimumFirePower,creditsEarned,lostAstronauts);
                         }
-                        case "EpidemyCard"->new EpidemyCard(this,description,level,name);
+                        case "EpidemyCard"->new EpidemyCard(cardId,this,description,level,name);
                         default -> null;
                     };
 
@@ -713,6 +717,10 @@ public class GameBoard {
 
     public TileCardDeck getTilesDeck(){
         return tilesDeck;
+    }
+
+    public UserInterface getUserInterface() {
+        return ui;
     }
 
     public String smallDeckToString(int index) {

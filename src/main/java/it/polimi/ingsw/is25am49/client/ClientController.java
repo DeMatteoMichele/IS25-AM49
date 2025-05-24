@@ -118,6 +118,7 @@ public class ClientController {
 
     public void userPlaceTileCallback(int playerId, Point coordinates,Orientation orientation) {
         try{
+            gameSession.getState().userRotateHandTile(playerId, orientation);
             gameSession.getState().userPlaceTile(playerId,coordinates);
         }catch (Exception e){
             ui.printUpdateMessage(error + "Error while placing a tile: --> " + e.getMessage());
@@ -145,6 +146,7 @@ public class ClientController {
             gameSession.getState().userFinishShipboard(playerId);
         } catch(Exception e){
             ui.printUpdateMessage(error + "Error while finishing shipboard: --> " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -515,7 +517,6 @@ public class ClientController {
         } catch (Exception e) {
             ui.printUpdateMessage(e.getMessage());
         }
-
     }
 
     public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {

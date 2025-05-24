@@ -6,6 +6,8 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 
@@ -44,6 +46,11 @@ public class AdventureState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
 
+    @Override
+    public void userRotateHandTile(int playerId, Orientation orientation) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+
     public void adminStartGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
@@ -78,6 +85,8 @@ public class AdventureState extends State {
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
+
+
     public void userThrowDices(int playerId){
         Player player = getPlayerById(playerId);
         gameSession.userThrowDices(player);

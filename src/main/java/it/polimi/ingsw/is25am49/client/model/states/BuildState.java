@@ -7,9 +7,12 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
+import it.polimi.ingsw.is25am49.client.model.states.AdventureState;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -86,7 +89,6 @@ public class BuildState extends State {
     @Override
     public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
-        player.shipBoardIsNotCompletedYet();
         player.getShipBoard().checkCoordinates(coordinates);
         player.getShipBoard().checkAddTokenToTile(coordinates, token);
     }
@@ -162,6 +164,12 @@ public class BuildState extends State {
         player.rotateTile(true);
         userInterface.updateRotateTileClockWise(playerId);
     }
+    public void userRotateHandTile(int playerId, Orientation orientation) {
+        Player player = getPlayerById(playerId);
+        if(player.getHandTile().isPresent()){
+            player.getHandTile().get().setTileOrientation(orientation);
+        }else throw new RuntimeException("there is no tile in hand to rotate");
+    }
     //ok
     public void userPickTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
@@ -188,6 +196,15 @@ public class BuildState extends State {
         player.shipBoardIsNotCompletedYet();
         if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
+            if(gameSession.getGame().isPresent()) {
+                Game game = gameSession.getGame().get();
+                for (Player p : game.getListPlayers()) {
+                    if(p.getShipBoard().getAlienPoint().isPresent()) return;
+                }
+                userInterface.updateFinishShipboard(playerId);
+                transition(new AdventureState(gameSession, userInterface));
+                return;
+            }
         }
         userInterface.updateFinishShipboard(playerId);
     }
@@ -213,14 +230,25 @@ public class BuildState extends State {
     }
 
     public void timerIsDone() {
-        gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
         userInterface.updateTimerIsDone();
+        if (gameSession.getGame().isPresent()) {
+            for (Player p: gameSession.getGame().get().getListPlayers()) {
+                try {
+                    gameSession.getState().userFinishShipboard(p.getIdPlayer());
+                }catch (Exception _){}
+            }
+        }else throw new RuntimeException("timer is done GAME NON SETTATO non so perch'");
     }
     //todo NON è stata ricopiata esattamente, Bisogna decidere bene cosa fare con le transizioni di stato
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
-        gameSession.userSelectTypeOfToken(player, token, coordinates);
+        if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
+            userInterface.updateSelectTypeOfToken(playerId,token,coordinates);
+            transition(new AdventureState(gameSession, userInterface));
+            return;
+        }
+        userInterface.updateSelectTypeOfToken(playerId,token,coordinates);
     }
 
     //illegal

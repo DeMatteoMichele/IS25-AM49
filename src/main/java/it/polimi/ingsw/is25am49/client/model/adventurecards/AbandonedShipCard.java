@@ -22,18 +22,21 @@ public class AbandonedShipCard extends AdventureCard {
     protected int daysLost;
     List<CardEffect> listEffects = new ArrayList<>();
 
-    public AbandonedShipCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int creditsEarned, int lostAstronauts) {
-        super(gameBoard, description, level,name);
+    public AbandonedShipCard(String cardId,GameBoard gameBoard, String description, int level, String name, int dayslost, int creditsEarned, int lostAstronauts) {
+        super(cardId, gameBoard, description, level, name);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         this.daysLost = dayslost;
         listEffects.add(new EffectModifyCrew("Remove astronauts", lostAstronauts));
+        for(CardEffect effect : listEffects){
+            effect.setUserInterface(userInterface);
+        }
     }
 
     @Override
     public void drawCard() {
         super.drawCard();
-        System.out.println("You have found an abandoned ship! You can sell it to your crew members for some credits");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found an abandoned ship! You can sell it to your crew members for some credits");
         checkRequirements();
     }
 
@@ -42,10 +45,10 @@ public class AbandonedShipCard extends AdventureCard {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         int numCrew = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT)+shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS)+shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
         if (numCrew >= lostAstronauts) {
-            System.out.println("You have " + numCrew + " astronauts on your ship. If you decide to land on the ship, you win " + creditsEarned + " credits but if your crew is too small you have to quit");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have " + numCrew + " astronauts on your ship. If you decide to land on the ship, you win " + creditsEarned + " credits but if your crew is too small you have to quit");
             currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
         } else {
-            System.out.println("You don't have enough astronauts to land on the ship");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You don't have enough astronauts to land on the ship");
             tryNextPlayer();
         }
     }
@@ -54,12 +57,12 @@ public class AbandonedShipCard extends AdventureCard {
     public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {
         super.landingOnStationOrShip(isLanded);
         if (isLanded) {
-            System.out.println("You have landed on the ship");
-            System.out.println("Now you have to decide where you want to remove your astronauts");
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),true, cardId);
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to decide where you want to remove your astronauts");
             currentEffect = listEffects.getFirst();
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
         } else {
-            System.out.println("You have decided not to land on the ship");
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),false, cardId);
             tryNextPlayer();
         }
     }
@@ -67,20 +70,20 @@ public class AbandonedShipCard extends AdventureCard {
     private void tryNextPlayer() {
         try {
             gameBoard.nextPlayer();
-            System.out.println("Now check on next player");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
-            System.out.println("No more players, now to update");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"No more players, now to update");
             update();
         }
     }
 
     @Override
-    public void finishDecision(List<Pair<Point, Token>> coordinates) {
+    public void finishDecision(List<Pair<Point, Token>> coordinatesOfAstronauts) {
         switch (currentState) {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
-                System.out.println("You have decided to remove astronauts");
-                currentEffect.setListOfCoordinates(coordinates);
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinatesOfAstronauts, lostAstronauts, true);
+                currentEffect.setListOfCoordinates(coordinatesOfAstronauts);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
@@ -92,10 +95,10 @@ public class AbandonedShipCard extends AdventureCard {
     public void applyEffect() {
         super.applyEffect();
         Player currentPlayer = gameBoard.getCurrentPlayer();
-        System.out.println("You are in applyeffect, you lose astronauts");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You are in applyeffect, you lose astronauts");
         currentEffect.action(currentPlayer);
         currentPlayer.addCredits(creditsEarned);
-        System.out.println("You have earned " + creditsEarned + " credits");
+        userInterface.updateEarnedCredits(gameBoard.getCurrentPlayer().getIdPlayer(),creditsEarned);
         currentPlayer.setDaysThisTurn(-daysLost);
         update();
     }

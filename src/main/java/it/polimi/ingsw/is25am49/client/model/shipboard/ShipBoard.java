@@ -47,6 +47,7 @@ public class ShipBoard {
             case YELLOW -> tiles.get(61);
         };
         centerCabinTile.lockTile();
+        centerCabinTile.fillComponent(Token.ASTRONAUT);
 
         switch (level){
             case 0,1:
@@ -225,16 +226,19 @@ public class ShipBoard {
      * this method prepare the shipboard for the flight setting isCompleted to True and destroying all the miss-placed tiles
      */
     public void completeShipBoard() {
-        isCompleted = true;
-        afterBuildCheckShipboard();
-        for(Point p: grid.keySet()){
-            getTile(p).lockTile();
-        }
-        for(Point p: grid.keySet()){
-            try{
-                fillTileComponent(p,Token.BATTERY_CELLS);
-            } catch(Exception _) {
-
+        if(!isCompleted){
+            isCompleted = true;
+            afterBuildCheckShipboard();
+            for(Point p: grid.keySet()){
+                getTile(p).lockTile();
+                try{
+                    fillTileComponent(p, Token.BATTERY_CELLS);
+                } catch(Exception _) {}
+                if (checkIfAlienArePossible(p).size() == 1) {
+                    try{
+                        fillTileComponent(p, Token.ASTRONAUT);
+                    } catch(Exception _) {}
+                }
             }
         }
     }
@@ -457,12 +461,13 @@ public class ShipBoard {
     /**
      * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
      */
-    public void destroyDisconnectedTiles(){
+    public Set<Point> destroyDisconnectedTiles(){
         Set<Point> elimina = new HashSet<>(grid.keySet());
         elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
         for(Point p: elimina){
             destroyTile(p);
         }
+        return elimina;
     }
 
     /**
@@ -515,6 +520,13 @@ public class ShipBoard {
             System.out.println("cannot checkIfAlienArePossible ---> "+e.getMessage());
         }
         return crew;
+    }
+
+    public Optional<Point> getAlienPoint(){
+        ArrayList<Point> aliens = new ArrayList<>(getComponentsPositions(ComponentType.CABINE));
+        return aliens.stream()
+                .filter(p -> checkIfAlienArePossible(p).size() > 1 && getTile(p).getComponent().getNumberOfTokens() == 0)
+                .findFirst();
     }
 
     /**
@@ -796,7 +808,7 @@ public class ShipBoard {
      */
     public boolean cabineAreFullOfToken(){
         ArrayList<Point> listOfCabins = getComponentsPositions(ComponentType.CABINE);
-        return listOfCabins.stream().anyMatch(point -> getTile(point).getComponent().getTokenList().isEmpty());
+        return listOfCabins.stream().noneMatch(point -> getTile(point).getComponent().getNumberOfTokens()==0);
     }
 
     /**
@@ -1168,8 +1180,7 @@ public class ShipBoard {
                 str.append("\n");
             }
         }
-        str.append("\n\t      4            5            6            7            8            9            10       \t \n");
-        if (isCompleted)str.append("\n!!!! SHIPBOARD COMPLETE !!!!\n");
+        str.append("\n\t      4            5            6            7            8            9            10       \t \n\n");
         return str.toString();
     }
 

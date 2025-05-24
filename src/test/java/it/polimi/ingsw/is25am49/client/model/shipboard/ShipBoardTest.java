@@ -1,5 +1,9 @@
 package it.polimi.ingsw.is25am49.client.model.shipboard;
 
+import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import org.junit.jupiter.api.BeforeEach;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import org.junit.jupiter.api.Test;
@@ -9,8 +13,11 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class ShipBoardTest {
     ShipBoard ship;
+    ShipBoard shipTest;
 
 
     @Test
@@ -42,5 +49,38 @@ class ShipBoardTest {
         System.out.println(ship);
         ship.completeShipBoard();
         System.out.println(ship);
+    }
+    @Test
+    void testGetAlienPoint(){
+        shipTest = new ShipBoard(2, 501, Color.RED);
+        Map<Integer, Tile> tiles= Tile.generateTiles();
+
+        shipTest.insertTile(new Point(7,6), tiles.get(153));
+        shipTest.insertTile(new Point(6,6), tiles.get(152));
+        shipTest.getTile(new Point(6,6)).setTileOrientation(Orientation.WEST);
+        shipTest.insertTile(new Point(8,6), tiles.get(16));
+        shipTest.getTile(new Point(8,6)).setTileOrientation(Orientation.WEST);
+        shipTest.insertTile(new Point(6,7), tiles.get(46));
+
+        shipTest.insertTile(new Point(8,7), tiles.get(43));
+        shipTest.insertTile(new Point(9,7), tiles.get(138));
+        shipTest.insertTile(new Point(8,8), tiles.get(148));
+        shipTest.insertTile(new Point(7,8), tiles.get(143));
+
+        shipTest.insertTile(new Point(6,8), tiles.get(137));
+        shipTest.insertTile(new Point(8,5), tiles.get(126));
+        shipTest.insertTile(new Point(9,6), tiles.get(116));
+        shipTest.insertTile(new Point(5,7), tiles.get(104));
+        shipTest.getTile(new Point(5,7)).setTileOrientation(Orientation.WEST);
+
+        System.out.println(shipTest);
+        System.out.println(shipTest.getAlienPoint());
+        shipTest.addTokenToTile(shipTest.getAlienPoint().get(), Token.PURPLE_ALIENS);
+        System.out.println(shipTest);
+        System.out.println(shipTest.getAlienPoint());
+        shipTest.addTokenToTile(shipTest.getAlienPoint().get(), Token.BROWN_ALIENS);
+        System.out.println(shipTest);
+        System.out.println(shipTest.getAlienPoint());
+        shipTest.printShipboard();
     }
 }

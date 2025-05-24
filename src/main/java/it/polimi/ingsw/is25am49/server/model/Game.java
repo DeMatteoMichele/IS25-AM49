@@ -63,6 +63,9 @@ public class Game {
         this.mode = mode;
         timer = new Timer(mode, session);
     }
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
 
     public boolean checkPlayers() {
         return numPlayers < maxPlayers;
@@ -190,8 +193,9 @@ public class Game {
             } else if (token.equals(Token.BROWN_ALIENS) || token.equals(Token.PURPLE_ALIENS)) {
                 if (player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))
                     player.getShipBoard().addTokenToTile(coordinates, token);
-            }
-        }
+                else throw new GameSettingsException("Token not allowed here");
+            } else throw new GameSettingsException("Token not allowed");
+        } else throw new GameSettingsException("This is not a cabin");
         return checkIfShipboardsAreFullOfToken();
     }
 

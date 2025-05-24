@@ -62,4 +62,9 @@ public class Timer {
             gameSession.getState().timerIsDone();
         }, seconds, TimeUnit.SECONDS);
     }
+
+    @Override
+    public String toString() {
+        return "Timer[" +usageCounter+"] - " + "lifetime=" + lifetime + " seconds";
+    }
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model.states;
 
+import it.polimi.ingsw.is25am49.server.model.Game;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
@@ -63,8 +64,15 @@ public class BuildState extends State {
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
-        if(gameSession.userFinishShipboard(player)) {
+        if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
+            if(gameSession.getGame().isPresent()) {
+                Game game = gameSession.getGame().get();
+                for (Player p : game.getListPlayers()) {
+                    if(p.getShipBoard().getAlienPoint().isPresent()) return;
+                }
+                transition(new AdventureState(gameSession));
+            }
         }
     }
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
@@ -82,8 +90,14 @@ public class BuildState extends State {
         gameSession.userPlaceTimer(player);
     }
     public void timerIsDone(){
-        gameSession.addPlayersToLeaderBoard();
         gameSession.mergeSmallDecks();
+        if (gameSession.getGame().isPresent()) {
+            for (Player p: gameSession.getGame().get().getListPlayers()) {
+                try {
+                    gameSession.getState().userFinishShipboard(p.getIdPlayer());
+                }catch (Exception _){}
+            }
+        }else throw new RuntimeException("timer is done GAME NON SETTATO non so perch'");
     }
     //riempi tutti i component, anche le batterie, ecc.
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){

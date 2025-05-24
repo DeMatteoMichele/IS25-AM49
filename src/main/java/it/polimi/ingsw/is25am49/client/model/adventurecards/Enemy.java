@@ -22,8 +22,8 @@ public abstract class Enemy extends AdventureCard {
     protected final int daysLost;
     protected final List<CardEffect> listEffects;
 
-    public Enemy(GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumFirePower) {
-        super(gameBoard, description, level,name);
+    public Enemy(String cardId, GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumFirePower) {
+        super(cardId, gameBoard, description, level, name);
         this.minimumFirePower = minimumFirePower;
         this.daysLost = daysLost;
         listEffects = new ArrayList<>();
@@ -36,7 +36,7 @@ public abstract class Enemy extends AdventureCard {
     @Override
     public void drawCard() {
         super.drawCard();
-        System.out.println("You have found a " + this.getClass().getSimpleName() + "! You can defeat them if you have enough firepower");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have found a " + this.getClass().getSimpleName() + "! You can defeat them if you have enough firepower");
         checkRequirements();
     }
 
@@ -47,7 +47,7 @@ public abstract class Enemy extends AdventureCard {
             evaluateBattleOutcome(shipBoard);
         } else {
             if (canDefeatOrDrawOnlyUsingBatteries(shipBoard)) {
-                System.out.println("You have enough batteries to defeat/draw with a " + this.getClass().getSimpleName() + "! Choose what batteries do you want to use");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have enough batteries to defeat/draw with a " + this.getClass().getSimpleName() + "! Choose what batteries do you want to use");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
             } else {
                 if (checkDrawFirePower(shipBoard)) {
@@ -86,7 +86,7 @@ public abstract class Enemy extends AdventureCard {
         if (coordinatesOfActivable.size() != coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
         }
-        System.out.println("You have decided the coord for the components");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided the coord for the components");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
             shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
         }
@@ -94,6 +94,7 @@ public abstract class Enemy extends AdventureCard {
 
     protected void deactivateComponents(ShipBoard shipBoard) {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
+        userInterface.updateDeactivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfActivable);
     }
 
     protected abstract void evaluateBattleOutcome(ShipBoard shipBoard);
@@ -101,10 +102,10 @@ public abstract class Enemy extends AdventureCard {
     protected void tryNextPlayer() {
         try {
             gameBoard.nextPlayer();
-            System.out.println("Now check on next player");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
-            System.out.println("No more players, now to update");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "No more players, now to update");
             update();
         }
     }
@@ -122,26 +123,26 @@ public abstract class Enemy extends AdventureCard {
             case DECISION_BATTERIES -> {
                 int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
                 if (coordinates.size() > maxActivatableComponents) {
-                    System.out.println("Hai selezionato troppe batterie! Puoi attivare al massimo " + maxActivatableComponents + " componenti.");
+                    userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), true);
                     return; // Mantiene lo stato corrente
                 }
                 coordinatesOfBatteries = coordinates;
                 if (coordinatesOfBatteries.isEmpty()) {
-                    System.out.println("You have decided not to use batteries");
+                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided not to use batteries");
                     handleEmptyBatteryDecision(shipBoard);
                     return;
                 }
-                System.out.println("You have decided the coord for the batteries.");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided the coord for the batteries.");
                 currentState = determineStateAfterBatteries();
             }
             case DECISION_GOODS -> {
-                System.out.println("You have decided the coord for the goods");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
-                System.out.println("You have decided the coord for the crew");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), true);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
@@ -158,19 +159,21 @@ public abstract class Enemy extends AdventureCard {
                 try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
                     activateComponentsWithBatteries(shipBoard);
+                    userInterface.updateFinishDecisionActivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates);
                     evaluateBattleOutcome(shipBoard);
                 } catch (IllegalNumOfActivableException e) {
-                    System.out.println("Rechoose correctly the number of cannons as the same as batteries");
+                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Rechoose correctly the number of cannons as the same as batteries");
                 }
             }
             case DECISION_SHIELDS -> {
                 try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
                     activateComponentsWithBatteries(shipBoard);
+                    userInterface.updateFinishDecisionActivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates);
                     currentState = AdventureStatesTypes.EFFECT;
                     applyEffect();
                 } catch (IllegalNumOfActivableException e) {
-                    System.out.println("Rechoose correctly the number of shields as the same as batteries");
+                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Rechoose correctly the number of shields as the same as batteries");
                 }
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
@@ -182,10 +185,10 @@ public abstract class Enemy extends AdventureCard {
         if (currentState != AdventureStatesTypes.DECISION_REWARDS)
             throw new IllegalStateException("Wrong State");
         else if (wantsRewards) {
-            System.out.println("You have accepted the rewards. You lose " + daysLost + " days");
+            userInterface.updateAcceptPrizes(gameBoard.getCurrentPlayer().getIdPlayer(), true);
             handleRewards();
         } else {
-            System.out.println("You have refused the rewards");
+            userInterface.updateAcceptPrizes(gameBoard.getCurrentPlayer().getIdPlayer(), false);
             handleRefuseOfRewards();
         }
     }

@@ -9,6 +9,7 @@ import it.polimi.ingsw.is25am49.client.model.states.BuildState;
 import it.polimi.ingsw.is25am49.client.model.states.InitState;
 import it.polimi.ingsw.is25am49.client.model.states.State;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.client.model.Timer;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -40,6 +41,10 @@ public class GameSession {
 
     public Optional<Player> getAdmin() {
         return admin;
+    }
+
+    public UserInterface getUserInterface(){
+        return ui;
     }
 
     public Optional<Player> getPlayer(int id) {
@@ -124,6 +129,7 @@ public class GameSession {
     public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
         if (game.isEmpty()) {
             game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers,seedForGeneration));
+            game.get().setTimer(new Timer(gameMode, this));
         } else throw new GameSettingsException("Game already exists!");
     }
 
