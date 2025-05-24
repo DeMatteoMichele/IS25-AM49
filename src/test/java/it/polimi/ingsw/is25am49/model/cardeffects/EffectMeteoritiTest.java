@@ -3,16 +3,14 @@ package it.polimi.ingsw.is25am49.model.cardeffects;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
-import it.polimi.ingsw.is25am49.server.model.enums.*;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class EffectMeteoritiTest {
     Player player;

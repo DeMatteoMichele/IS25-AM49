@@ -3,10 +3,9 @@ package it.polimi.ingsw.is25am49.server;
 import it.polimi.ingsw.is25am49.shared.Command;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -22,13 +21,20 @@ public class ServerController {
     private final HashSet<Integer> playersSocket;
     private ServerRMI serverRMI;
     private final ExecutorService executors = Executors.newFixedThreadPool(10);
+    private int idCounter;
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
         this.playersRMI = new HashSet<>();
         this.playersSocket = new HashSet<>();
+        this.idCounter = -1;
     }
-
+    public int getIdCounter() {
+        return idCounter;
+    }
+    public void updateIdCounter() {
+        this.idCounter++;
+    }
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
@@ -67,12 +73,6 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(username, playerId);
-                Command command = new Command("playerJoinCallback", playerId);
-                command.addParameter(playerId);
-                command.addParameter(username);
-                command.addParameter(gameSession.getSeedForGeneration());
-                serverSerializer.command_FromServerToClient(command);
-                serverRMI.command_FromServerToClient(command);
                 if(playersRMI.contains(playerId)) {
                     serverRMI.sayToServerRMIWhoHasJoined(playerId);
                 }
@@ -82,6 +82,13 @@ public class ServerController {
                 else {
                     throw new GameSettingsException("Player not found");
                 }
+                Command command = new Command("playerJoinCallback", playerId);
+                command.addParameter(playerId);
+                command.addParameter(username);
+                command.addParameter(gameSession.getSeedForGeneration());
+                serverSerializer.command_FromServerToClient(command);
+                serverRMI.command_FromServerToClient(command);
+
             } catch (GameSettingsException e) {
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);

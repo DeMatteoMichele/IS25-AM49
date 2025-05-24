@@ -2,17 +2,16 @@ package it.polimi.ingsw.is25am49.client.model.shipboard;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
-import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.client.model.enums.ConnectorType;
-import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.ConnectorType;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalTokenInComponentEcxeption;
 import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 
 import java.awt.*;
-import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.is25am49.server.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSizeToRemove;
 import javafx.util.Pair;

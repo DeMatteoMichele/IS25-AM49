@@ -1,5 +1,4 @@
 package it.polimi.ingsw.is25am49.server.model.shipboard;
-import it.polimi.ingsw.is25am49.server.model.enums.*;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
 
 
@@ -7,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokenInComponentEcxeption;
 import it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException;
+import it.polimi.ingsw.is25am49.shared.enums.*;
 
 import java.awt.Point;
 import java.io.File;

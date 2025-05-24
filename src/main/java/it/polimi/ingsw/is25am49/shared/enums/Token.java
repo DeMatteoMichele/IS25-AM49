@@ -1,4 +1,4 @@
-package it.polimi.ingsw.is25am49.client.model.enums;
+package it.polimi.ingsw.is25am49.shared.enums;
 
 public enum Token {
     RED_GOODS,

@@ -1,18 +1,13 @@
 package it.polimi.ingsw.is25am49.client.model.shipboard;
 
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
-import org.junit.jupiter.api.BeforeEach;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ShipBoardTest {
     ShipBoard ship;
