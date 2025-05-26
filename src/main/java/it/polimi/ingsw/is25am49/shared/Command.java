@@ -281,7 +281,7 @@ public class Command implements Serializable {
             }
             case "registerClientCallback" -> {
                 try {
-                    clientController.registerClientCallback((int) parameters.get(0));
+                    clientController.registerClientCallback(playerId);
                 } catch (Exception e) {
                     System.err.println("Errore durante registerClientCallback: " + e.getMessage());
                     e.printStackTrace();
