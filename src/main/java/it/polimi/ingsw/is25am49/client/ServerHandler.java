@@ -210,6 +210,7 @@ public class ServerHandler {
             timeIsDone = false;
         }, secondsForReconnection, TimeUnit.SECONDS);
         while (timeIsDone) {
+            Thread.onSpinWait();
         }
     }
 

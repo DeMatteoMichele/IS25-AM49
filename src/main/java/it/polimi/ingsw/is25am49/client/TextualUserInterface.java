@@ -31,7 +31,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.193.12";
+    private final String serverIP = "localhost";
     private final int serverPortSocket = 8080;
     private final int serverPortRMI = 1099;
 
@@ -170,10 +170,10 @@ public class TextualUserInterface implements UserInterface {
                 case 1 -> {
                     try {
                         RemoteClient remoteClient;
-                        ClientRMI clientRMI = new ClientRMI(controller);
                         RemoteServer serverStub;
                         Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);//eventualmente serverPort
                         serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
+                        ClientRMI clientRMI = new ClientRMI(controller, serverStub);
                         System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
                         controller.setServerMethods(serverStub);
                         try {
@@ -276,7 +276,6 @@ public class TextualUserInterface implements UserInterface {
         if(p.getShipBoard().isCompleted()){
             lineReader.printAbove("insert aliens on the Shipboard\n");
             if (p.getShipBoard().getAlienPoint().isPresent()){
-                try {
                     Point alienPoint=p.getShipBoard().getAlienPoint().get();
                     String selection = lineReader.readLine("insert alien on coordinates: "+alienPoint+"\n" +
                             "a --> astronaut\n" +
@@ -290,9 +289,6 @@ public class TextualUserInterface implements UserInterface {
                         case "a" : controller.userSelectTypeOfToken(playerId,Token.ASTRONAUT,alienPoint);break;
                         default: printUpdateMessage(error + "invalid choice");
                     }
-                }catch (RemoteException e){
-                    printUpdateMessage(error+e.getMessage());
-                }
             }else {
                 printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
             }
@@ -640,6 +636,9 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error+e.getMessage());
                         userSettings();
                         updateGameSessionNewPlayer(myId);
+                    } catch (Exception e) {
+                        printUpdateMessage(error+e.getMessage());
+                        // ????
                     }
                 }
                 case "2:0" -> { //SETUP GAME

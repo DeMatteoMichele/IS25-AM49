@@ -17,23 +17,31 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private final ClientController clientController;
-    private RemoteServer serverRMI;
+    private final RemoteServer serverRMI;
     private final int thresholdTries;
+    private final int initialDelay;
     private int reconnectionTries;
-    private final int secondsForReconnection;
+    private final int secondsDelayForReconnection;
     private final ExecutorService executorService;
     private final int triesForReconnection;
     private boolean isConnected;
+    private boolean hasResetted;
+    private volatile boolean timeIsDone;
+    private final ScheduledExecutorService scheduler;
+
 
     public ClientRMI(ClientController clientController, RemoteServer serverRMI) throws RemoteException {
         super();
         this.clientController = clientController;
         this.serverRMI = serverRMI;
+        this.initialDelay = 10;
         reconnectionTries = 0;
         thresholdTries = 20;
-        secondsForReconnection = 5;
-        executorService = Executors.newScheduledThreadPool(10);
+        secondsDelayForReconnection = 5;
+        executorService = Executors.newFixedThreadPool(10);
+        scheduler = Executors.newScheduledThreadPool(10);
         triesForReconnection = 10;
+        hasResetted = false;
         isConnected = false;
         executorService.submit(this::startHeartBeat);
     }
@@ -55,23 +63,49 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         command.callMethod();
     }
 
-    public void sendHeartBeat() {
+    private void sendHeartBeat() {
         if (isConnected) {
             try {
                 serverRMI.command_FromClientToServer(new Command("heartbeat", clientController.getplayerId()));
+                if(hasResetted) {
+                    System.out.println("Reconnected to ServerRMI after " + reconnectionTries + " attempts.");
+                    hasResetted = false;
+                }
                 reconnectionTries = 0;
+                isConnected = true;
             } catch (RemoteException e) {
-                isConnected = false;
+                if(!hasResetted) {
+                    clientController.clientReset();
+                    hasResetted = true;
+                }
+                reconnectionTries++;
+                if(reconnectionTries > thresholdTries) {
+                    isConnected = false;
+                    System.out.println("Impossible to reconnect to ServerRMI after " + thresholdTries + " attempts. Shutting down client.");
+                    clientController.clientReset();
+                }
+                else {
+                    System.out.println("Failed to send heartbeat to ServerRMI, retrying in " + secondsDelayForReconnection + " seconds. Attempt " + reconnectionTries + "/" + thresholdTries);
+                }
             }
         }
     }
 
     private void startHeartBeat() {
-        sendHeartBeat();
-        try {
-            Thread.sleep(secondsForReconnection);
-        } catch (InterruptedException e) {
-            System.out.println("Error while putting the message in the queue, thread has been interrupted");
+        timer(initialDelay);
+        while(isConnected) {
+            sendHeartBeat();
+            timer(secondsDelayForReconnection);
+        }
+    }
+
+    private void timer(int secondsTime) {
+        timeIsDone = true;
+        scheduler.schedule(() -> {
+            timeIsDone = false;
+        }, secondsTime, TimeUnit.SECONDS);
+        while (timeIsDone) {
+            Thread.onSpinWait(); //to improve performance while waiting
         }
     }
 }

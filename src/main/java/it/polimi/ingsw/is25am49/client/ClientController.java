@@ -96,10 +96,10 @@ public class ClientController {
     }
 
     public void playerJoinCallback(int playerId, String username, int seedForGeneration) {
-        try{
-            gameSession.getState().userJoinLobby(gameSession.getColor(),username,playerId);
+        try {
+            gameSession.getState().userJoinLobby(gameSession.getColor(), username, playerId);
             gameSession.setSeedForGeneration(seedForGeneration);
-        } catch(Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error during player join --> " + e.getMessage());
         }
 
@@ -107,7 +107,7 @@ public class ClientController {
 
 
     public void userDrawTileCallback(int playerId, int tileId) {
-        try{
+        try {
             gameSession.getState().userDrawTile(playerId, tileId);
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while drawing a card: --> " + e.getMessage());
@@ -116,148 +116,148 @@ public class ClientController {
 
     }
 
-    public void userPlaceTileCallback(int playerId, Point coordinates,Orientation orientation) {
-        try{
+    public void userPlaceTileCallback(int playerId, Point coordinates, Orientation orientation) {
+        try {
             gameSession.getState().userRotateHandTile(playerId, orientation);
-            gameSession.getState().userPlaceTile(playerId,coordinates);
-        }catch (Exception e){
+            gameSession.getState().userPlaceTile(playerId, coordinates);
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while placing a tile: --> " + e.getMessage());
         }
     }
 
     public void userPickTileCallback(int playerId, Point coordinates) {
-        try{
-            gameSession.getState().userPickTile(playerId,coordinates);
-        }catch (Exception e){
+        try {
+            gameSession.getState().userPickTile(playerId, coordinates);
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while picking a tile: --> " + e.getMessage());
         }
     }
 
     public void userDiscardTileCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().userDiscardTile(playerId);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while discarding a tile: --> " + e.getMessage());
         }
     }
 
     public void userFinishShipboardCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().userFinishShipboard(playerId);
-        } catch(Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while finishing shipboard: --> " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     public void userLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
-        try{
+        try {
             gameSession.getState().userLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while looking a small deck: --> " + e.getMessage());
         }
     }
 
     public void userStopLookSmallAdventureCardDeckCallback(int playerId, int smallDeckIndex) {
-        try{
+        try {
             gameSession.getState().userStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-        } catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while stopping looking a small deck: --> " + e.getMessage());
         }
     }
 
     public void userPlaceTimerCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().userPlaceTimer(playerId);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while placing a timer: --> " + e.getMessage());
         }
     }
 
     public void userSelectTypeOfTokenCallback(int playerId, Token token, Point coordinates) {
-        try{
+        try {
             gameSession.getState().userSelectTypeOfToken(playerId, token, coordinates);
-        }catch(Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while selecting a token: --> " + e.getMessage());
         }
     }
 
     public void userThrowDicesCallback(int playerId, int result) {
-        try{
+        try {
             gameSession.getState().userThrowDices(playerId);
-        }catch(Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while throwing dices: --> " + e.getMessage());
         }
     }
 
     public void userDrawAdventureCardCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().userDrawAdventureCard(playerId);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while drawing an adventure card: --> " + e.getMessage());
         }
     }
 
     public void userFinishDecisionActivatingCallback(int playerId, Set<Point> coordinates) {
-        try{
+        try {
             gameSession.getState().userFinishDecisionActivating(playerId, coordinates);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while finishing decision activating: --> " + e.getMessage());
         }
     }
 
     public void userFinishDecisionTokenCallback(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-        try{
+        try {
             gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while finishing decision token: --> " + e.getMessage());
         }
     }
 
     public void userAcceptPrizesCallback(int playerId, boolean isAccepted) {
-        try{
+        try {
             gameSession.getState().userAcceptPrizes(playerId, isAccepted);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while accepting prizes: --> " + e.getMessage());
         }
     }
 
     public void userLandOnPlanetCallback(int playerId, boolean isLanded, int planetId) {
-        try{
+        try {
             gameSession.getState().userLandOnPlanet(playerId, isLanded, planetId);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while landing on planet: --> " + e.getMessage());
         }
     }
 
     public void userLandOnStationOrShipCallback(int playerId, boolean isLanded) {
-        try{
+        try {
             gameSession.getState().userLandOnStationOrShip(playerId, isLanded);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while landing on station or ship: --> " + e.getMessage());
         }
     }
 
     public void userStopFlightCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().userStopFlight(playerId);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while stopping flight: --> " + e.getMessage());
         }
     }
 
     public void adminCalculateScoreCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().adminCalculateScore(playerId);
-        }catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while calculating score: --> " + e.getMessage());
         }
     }
 
     public void adminEndGameCallback(int playerId) {
-        try{
+        try {
             gameSession.getState().adminEndGame(playerId);
-        } catch (Exception e){
+        } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while ending game: --> " + e.getMessage());
         }
     }
@@ -277,11 +277,12 @@ public class ClientController {
         }
     }
 
-    public void registerClientRMI(RemoteClient client) throws RemoteException, IOException {
+    public void registerClientRMI(RemoteClient client) throws IOException {
         Command command = new Command("registerClientRMI", myId);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
+        command.setPlayerId(myId);
         command.addParameter(client);
         serverMethods.command_FromClientToServer(command);
     }
@@ -290,12 +291,12 @@ public class ClientController {
      * This method is used to register the client socket on the server.
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
      */
-    public void registerClientSocket() throws RemoteException, IOException {
+    public void registerClientSocket() throws IOException {
         Command command = new Command("registerClientSocket", myId);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
-        ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
+        ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId + " using idFile: " + idFile.getAbsolutePath());
         command.addParameter(myId);
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
@@ -310,8 +311,8 @@ public class ClientController {
             command.addParameter(numberOfPlayers);
             command.addParameter(GameMode.values()[mode]);
             serverMethods.command_FromClientToServer(command);
-        } catch (RemoteException | GameSettingsException e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
@@ -322,216 +323,218 @@ public class ClientController {
             command.addParameter(myId);
             command.addParameter(username);
             serverMethods.command_FromClientToServer(command);
-        } catch (RemoteException | GameSettingsException e) {
-            throw new RuntimeException(e.getMessage());
-        } catch (IllegalUsernameException e) {
-            throw new IllegalUsernameException(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
-    public void userDrawTile(int playerId, int tileId) throws RemoteException {
+    public void userDrawTile(int playerId, int tileId) {
+
+        gameSession.getState().checkUserDrawTile(playerId, tileId);
+        Command command = new Command("userDrawTile", myId);
+        command.addParameter(playerId);
+        command.addParameter(tileId);
         try {
-            gameSession.getState().checkUserDrawTile(playerId, tileId);
-            Command command = new Command("userDrawTile", myId);
-            command.addParameter(playerId);
-            command.addParameter(tileId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
+    public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
+        gameSession.getState().checkUserPlaceTile(playerId, coordinates);
+        Command command = new Command("userPlaceTile", myId);
+        command.addParameter(playerId);
+        command.addParameter(coordinates);
+        command.addParameter(orientation);
         try {
-            gameSession.getState().checkUserPlaceTile(playerId, coordinates);
-            Command command = new Command("userPlaceTile", myId);
-            command.addParameter(playerId);
-            command.addParameter(coordinates);
-            command.addParameter(orientation);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userPickTile(int playerId, Point coordinates) throws RemoteException {
+    public void userPickTile(int playerId, Point coordinates) {
+        gameSession.getState().checkUserPickTile(playerId, coordinates);
+        Command command = new Command("userPickTile", myId);
+        command.addParameter(playerId);
+        command.addParameter(coordinates);
         try {
-            gameSession.getState().checkUserPickTile(playerId, coordinates);
-            Command command = new Command("userPickTile", myId);
-            command.addParameter(playerId);
-            command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
-    public void userDiscardTile(int playerId) throws RemoteException {
+    public void userDiscardTile(int playerId) {
+        gameSession.getState().checkUserDiscardTile(playerId);
+        Command command = new Command("userDiscardTile", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkUserDiscardTile(playerId);
-            Command command = new Command("userDiscardTile", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userFinishShipboard(int playerId) throws RemoteException {
+    public void userFinishShipboard(int playerId) {
+        gameSession.getState().checkUserFinishShipboard(playerId);
+        Command command = new Command("userFinishShipboard", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkUserFinishShipboard(playerId);
-            Command command = new Command("userFinishShipboard", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+    public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+        gameSession.getState().checkUserLookSmallAdventureCardDeck(playerId, smallDeckIndex);
+        Command command = new Command("userLookSmallAdventureCardDeck", myId);
+        command.addParameter(playerId);
+        command.addParameter(smallDeckIndex);
         try {
-            gameSession.getState().checkUserLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-            Command command = new Command("userLookSmallAdventureCardDeck", myId);
-            command.addParameter(playerId);
-            command.addParameter(smallDeckIndex);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
+    public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+
+        gameSession.getState().checkUserStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
+        Command command = new Command("userStopLookSmallAdventureCardDeck", myId);
+        command.addParameter(playerId);
+        command.addParameter(smallDeckIndex);
         try {
-            gameSession.getState().checkUserStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-            Command command = new Command("userStopLookSmallAdventureCardDeck", myId);
-            command.addParameter(playerId);
-            command.addParameter(smallDeckIndex);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userPlaceTimer(int playerId) throws RemoteException {
+    public void userPlaceTimer(int playerId) {
+        gameSession.getState().checkUserPlaceTimer(playerId);
+        Command command = new Command("userPlaceTimer", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkUserPlaceTimer(playerId);
-            Command command = new Command("userPlaceTimer", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
+    public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
+        gameSession.getState().checkUserSelectTypeOfToken(playerId, token, coordinates);
+        Command command = new Command("userSelectTypeOfToken", myId);
+        command.addParameter(playerId);
+        command.addParameter(token);
+        command.addParameter(coordinates);
         try {
-            gameSession.getState().checkUserSelectTypeOfToken(playerId, token, coordinates);
-            Command command = new Command("userSelectTypeOfToken", myId);
-            command.addParameter(playerId);
-            command.addParameter(token);
-            command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userThrowDices(int playerId) throws RemoteException {
+    public void userThrowDices(int playerId) {
+        gameSession.getState().checkUserThrowDices(playerId);
+        Command command = new Command("userThrowDices", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkUserThrowDices(playerId);
-            Command command = new Command("userThrowDices", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userDrawAdventureCard(int playerId) throws RemoteException {
+    public void userDrawAdventureCard(int playerId) {
+        gameSession.getState().checkUserDrawAdventureCard(playerId);
+        Command command = new Command("userDrawAdventureCard", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkUserDrawAdventureCard(playerId);
-            Command command = new Command("userDrawAdventureCard", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
+    public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) {
+        gameSession.getState().checkUserFinishDecisionActivating(playerId, coordinates);
+        Command command = new Command("userFinishDecisionActivating", myId);
+        command.addParameter(playerId);
+        command.addParameter(coordinates);
         try {
-            gameSession.getState().checkUserFinishDecisionActivating(playerId, coordinates);
-            Command command = new Command("userFinishDecisionActivating", myId);
-            command.addParameter(playerId);
-            command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
+    public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
+
+        gameSession.getState().checkUserFinishDecisionToken(playerId, listOfTokens);
+        Command command = new Command("userFinishDecisionToken", myId);
+        command.addParameter(playerId);
+        command.addParameter(listOfTokens);
         try {
-            gameSession.getState().checkUserFinishDecisionToken(playerId, listOfTokens);
-            Command command = new Command("userFinishDecisionToken", myId);
-            command.addParameter(playerId);
-            command.addParameter(listOfTokens);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
 
-    public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
+    public void userAcceptPrizes(int playerId, boolean wantsRewards) {
+
+        gameSession.getState().checkUserAcceptPrizes(playerId, wantsRewards);
+        Command command = new Command("userAcceptPrizes", myId);
+        command.addParameter(playerId);
+        command.addParameter(wantsRewards);
         try {
-            gameSession.getState().checkUserAcceptPrizes(playerId, wantsRewards);
-            Command command = new Command("userAcceptPrizes", myId);
-            command.addParameter(playerId);
-            command.addParameter(wantsRewards);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
-    public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) throws RemoteException {
+    public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
+        gameSession.getState().checkUserLandOnPlanet(playerId, isLanded, planetId);
+        Command command = new Command("userLandOnPlanet", myId);
+        command.addParameter(playerId);
+        command.addParameter(isLanded);
+        command.addParameter(planetId);
         try {
-            gameSession.getState().checkUserLandOnPlanet(playerId, isLanded, planetId);
-            Command command = new Command("userLandOnPlanet", myId);
-            command.addParameter(playerId);
-            command.addParameter(isLanded);
-            command.addParameter(planetId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
-    public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
+    public void userLandOnStationOrShip(int playerId, boolean isLanded) {
+        gameSession.getState().checkUserLandOnStationOrShip(playerId, isLanded);
+        Command command = new Command("userLandOnStationOrShip", myId);
+        command.addParameter(playerId);
+        command.addParameter(isLanded);
         try {
-            gameSession.getState().checkUserLandOnStationOrShip(playerId, isLanded);
-            Command command = new Command("userLandOnStationOrShip", myId);
-            command.addParameter(playerId);
-            command.addParameter(isLanded);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
-    public void userQuitGame(int playerId) throws RemoteException {
+    public void userQuitGame(int playerId) {
         try {
             Command command = new Command("userQuitGame", myId);
             command.addParameter(playerId);
@@ -542,25 +545,25 @@ public class ClientController {
 
     }
 
-    public void adminCalculateScore(int playerId) throws RemoteException {
+    public void adminCalculateScore(int playerId) {
+        gameSession.getState().checkAdminCalculateScore(playerId);
+        Command command = new Command("adminCalculateScore", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkAdminCalculateScore(playerId);
-            Command command = new Command("adminCalculateScore", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
     }
 
-    public void adminEndGame(int playerId) throws RemoteException {
+    public void adminEndGame(int playerId) {
+        gameSession.getState().checkAdminEndGame(playerId);
+        Command command = new Command("adminEndGame", myId);
+        command.addParameter(playerId);
         try {
-            gameSession.getState().checkAdminEndGame(playerId);
-            Command command = new Command("adminEndGame", myId);
-            command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
-        } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
 
     }
@@ -590,7 +593,8 @@ public class ClientController {
             ui.printUpdateMessage(error + "Errore durante l'inizializzazione dell'ID (scrittura file): " + e.getMessage() + " per file: " + idFile.getAbsolutePath());
         }
     }
-    public void clientReset(){
+
+    public void clientReset() {
         myId = -1;
         gameSession = new GameSession(ui);
         ui.setGameSession(gameSession);

@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import it.polimi.ingsw.is25am49.shared.Command;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
@@ -18,6 +19,8 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
     private final BlockingQueue<Command> historyQueue;
     private final BlockingQueue<Command> commandsFromClientQueue;
     private final ExecutorService executorService;
+    private volatile boolean timeIsDone;
+    private final ScheduledExecutorService scheduler;
 
     public ServerRMI(ServerController serverController) throws RemoteException {
         super();
@@ -28,8 +31,9 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         historyQueue = new ArrayBlockingQueue<Command>(50000, true);
         commandsFromClientQueue = new ArrayBlockingQueue<Command>(50000, true);
         gameStarted = false;
-        executorService = Executors.newFixedThreadPool(10);
-
+        executorService = Executors.newFixedThreadPool(100);
+        scheduler = Executors.newScheduledThreadPool(100);
+        executorService.submit(this::startHeartBeatMonitoring);
         executorService.submit(this::processFilesFromClientQueue);
     }
 
@@ -58,7 +62,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         }
     }
 
-    public void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
+    private void command_FromServerToSpecificClient(Command command, int clientId) throws RemoteException {
         RemoteClient specificClient = clients.get(clientId);
         if (specificClient != null) {
             command.setServerController(serverController);
@@ -82,12 +86,17 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
 
     @Override
     public void command_FromClientToServer(Command command) throws RemoteException {
-        putFileFromClientInQueue(command);
+        if(command.getTypeOfMessage().equals("HTB")) {
+            lastHeartBeats.put(command.getPlayerId(), System.currentTimeMillis());
+        }
+        else {
+            putFileFromClientInQueue(command);
+        }
     }
     public void sayToServerRMIWhoHasJoined(int playerId){
         matchPlayers.put(playerId, clients.get(playerId));
     }
-    public void processFilesFromClientQueue(){
+    private void processFilesFromClientQueue(){
         while (true) {
             try {
                 Command command = commandsFromClientQueue.take();
@@ -128,7 +137,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             }
         }
     }
-    public void giveMeCommandsHistory(int clientId) {
+    private void giveMeCommandsHistory(int clientId) {
         for(Command commandBefore: historyQueue) {
             try {
                 command_FromServerToSpecificClient(commandBefore, clientId);
@@ -137,11 +146,33 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             }
         }
     }
-    public void putFileFromClientInQueue(Command command) {
+    private void putFileFromClientInQueue(Command command) {
         try {
             commandsFromClientQueue.put(command);
         } catch (InterruptedException e) {
             System.err.println("Error putting file from Client in queue in ServerRMI cause thread was interrupted: " + e.getMessage());
+        }
+    }
+    private void startHeartBeatMonitoring() {
+        for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
+            if (clients.containsKey(entry.getKey())) {
+                if (System.currentTimeMillis() - entry.getValue() > 20000) {
+                    System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+                    clients.remove(entry.getKey());
+                    matchPlayers.remove(entry.getKey());
+                }
+            }
+        }
+        timer(5);
+    }
+
+    private void timer(int secondsTime) {
+        timeIsDone = true;
+        scheduler.schedule(() -> {
+            timeIsDone = false;
+        }, secondsTime, TimeUnit.SECONDS);
+        while (timeIsDone) {
+            Thread.onSpinWait(); //to improve performance while waiting
         }
     }
 }
