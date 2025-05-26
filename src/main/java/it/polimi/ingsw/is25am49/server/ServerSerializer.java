@@ -89,8 +89,8 @@ public class ServerSerializer implements RemoteClient {
     public int deserializeHandshake(Command command) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
         Command commandTemp = deSerializeStringFromClient(command);
-        commandTemp.setMethodName("registerClientCallback");
-        serializeObjectFromServer(commandTemp, true, commandTemp.getPlayerId());
+        Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
+        serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
         return commandTemp.getPlayerId();
     }
 

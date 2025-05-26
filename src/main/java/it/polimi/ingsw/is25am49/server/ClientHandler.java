@@ -74,7 +74,7 @@ public class ClientHandler {
     private void startServer(int port) throws IOException {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
-        //startCentralHeartBeatMonitor();
+        scheduler.scheduleAtFixedRate(() -> centralHeartBeatMonitor(), 0, 5, TimeUnit.SECONDS);
         startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
@@ -123,9 +123,9 @@ public class ClientHandler {
     }
 
     private void submitToScheduler(int clientId) {
-        scheduler.scheduleWithFixedDelay(() -> listenToClient(clientId), 0, 200, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> processStringQueueToServerSerializer(clientId), 700, 200, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> processOutGoingFileQueue(clientId), 700, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleWithFixedDelay(() -> listenToClient(clientId), 0, 25, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processStringQueueToServerSerializer(clientId), 512, 25, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processOutGoingFileQueue(clientId), 512, 25, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -135,17 +135,15 @@ public class ClientHandler {
      * If it is, it shuts down the connection with that client.
      * Beware that this method is used as a double check for disconnections in case the catches for IOException in other methods fail.
      */
-    private void startCentralHeartBeatMonitor() {
-        scheduler.scheduleAtFixedRate(() -> {
-            for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
-                if (connections.get(entry.getKey())) {
-                    if (System.currentTimeMillis() - entry.getValue() > 20000) {
-                        System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
-                        shutDownClientRelated(entry.getKey());
-                    }
+    private void centralHeartBeatMonitor() {
+        for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
+            if (connections.get(entry.getKey())) {
+                if (System.currentTimeMillis() - entry.getValue() > 20000) {
+                    System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+                    shutDownClientRelated(entry.getKey());
                 }
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -160,7 +158,6 @@ public class ClientHandler {
         if (connections.get(clientId)) {
             try {
                 Command command = (Command) clientInputStream.readObject();
-                System.out.println("available");
                 lastHeartBeats.put(clientId, System.currentTimeMillis());
                 if (!command.getTypeOfMessage().equals("HTB"))
                     InGoingStringQueues.get(clientId).put(command);
@@ -215,7 +212,6 @@ public class ClientHandler {
         if (connections.get(clientId)) {
             Command command = outGoingFileQueue.get(clientId).poll();
             if (command != null) {
-                System.out.println("sending message");
                 sendMessageToSpecificClient(clientId, command);
             }
         }

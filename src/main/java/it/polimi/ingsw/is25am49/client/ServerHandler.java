@@ -19,8 +19,8 @@ public class ServerHandler {
     private final int serverPort;
     private final BlockingQueue<Command> InGoingStringQueue;
     private final LinkedBlockingDeque<Command> OutGoingFileQueue;
-    private final File directory;
     private int myId;
+    private boolean serverKnowsMe;
 
     /**
      * Constructor for the ServerHandler class.
@@ -36,7 +36,7 @@ public class ServerHandler {
         OutGoingFileQueue = new LinkedBlockingDeque<>(1000);
         connected = new AtomicBoolean(false);
         scheduler = Executors.newScheduledThreadPool(10);
-        directory = new File("$FilesFromServer");
+        serverKnowsMe = false;
         submitToScheduler();
     }
 
@@ -53,13 +53,13 @@ public class ServerHandler {
         objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
         objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
         connected.set(true);
-        startHeartBeat();
+        serverKnowsMe = true;
     }
 
     private void submitToScheduler() {
-        scheduler.scheduleWithFixedDelay(() -> listenToServer(), 0, 200, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> processStringQueueToSerializer(), 700, 200, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> processOutGoingQueue(), 700, 200, TimeUnit.MILLISECONDS);
+        scheduler.scheduleWithFixedDelay(() -> listenToServer(), 0, 25, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processStringQueueToSerializer(), 512, 25, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> processOutGoingQueue(), 512, 25, TimeUnit.MILLISECONDS);
         scheduler.scheduleAtFixedRate(() -> connectionHealthControl(), 0, 500, TimeUnit.MILLISECONDS);
         heartBeatTask = scheduler.scheduleWithFixedDelay(this::heartBeat, 10, 5, TimeUnit.SECONDS);
     }
@@ -71,8 +71,10 @@ public class ServerHandler {
      * If it fails, it disconnects and tries to reconnect.
      */
     private void heartBeat() {
-        Command command = new Command("HTB", myId);
-        putInTheOutGoingFileQueue(command);
+        if (connected.get()) {
+            Command command = new Command("HTB", myId);
+            putInTheOutGoingFileQueue(command);
+        }
     }
 
     /**
@@ -86,7 +88,7 @@ public class ServerHandler {
                 Command command = (Command) objectInputStream.readObject();
                 InGoingStringQueue.put(command);
             } catch (IOException e) {
-                System.out.println("Error while listening to server, putting the connection to false Time" + System.currentTimeMillis());
+                System.out.println("Error while listening to server, putting the connection to false");
                 e.printStackTrace();
                 disconnect();
             } catch (InterruptedException e) {
@@ -143,12 +145,12 @@ public class ServerHandler {
      * If it can't make the connection, it waits for a certain amount of time (secondsForReconnection) before trying again using the timer() method.
      */
     public void connectionHealthControl() {
-        if (!connected.get()) {
+        if (!connected.get() && serverKnowsMe) {
             clientSerializer.askControllerToResetModel();
             System.out.println("Attempting to reconnect to the server...");
             try {
                 handshake();
-                System.out.println("Connection succesful to: " + serverIP + ":" + serverPort);
+                System.err.println("Connection succesful to: " + serverIP + ":" + serverPort);
             } catch (IOException e) {
                 disconnect(); //Reminder: if the connection isn't established, this does nothing. Seems redundant but it's not: maybe the socket in tryconnection has been created but the creation of stream gone wrong
             }
@@ -194,7 +196,7 @@ public class ServerHandler {
     private void processOutGoingQueue() {
         if (connected.get()) {
             Command command = OutGoingFileQueue.poll();
-            if (command == null) {
+            if (command != null) {
                 sendMessageToServer(command);
             }
         }
@@ -214,7 +216,7 @@ public class ServerHandler {
             if (connected.get()) {
                 objectOutputStream.writeObject(command);
                 objectOutputStream.flush();
-            }else
+            } else
                 OutGoingFileQueue.push(command);
         } catch (IOException e) {
             System.out.println("Error while sending message to server, disconnecting");
@@ -226,13 +228,6 @@ public class ServerHandler {
 
     public void setClientSerializer(ClientSerializer clientSerializer) {
         this.clientSerializer = clientSerializer;
-    }
-
-    /**
-     * Starts the heartbeat task.
-     */
-    private void startHeartBeat() {
-        heartBeatTask = scheduler.scheduleWithFixedDelay(this::heartBeat, 10, 5, TimeUnit.SECONDS);
     }
 
     /**
