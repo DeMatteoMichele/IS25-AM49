@@ -55,7 +55,10 @@ public class ServerSerializer implements RemoteClient {
             command.callMethod();
         } else if (command.getTypeOfMessage().equals("HSK")) {
             if (command.getPlayerId() == -1) {
-                idCounter++;
+                synchronized (serverController) {
+                    serverController.updateIdCounter();
+                    idCounter = serverController.getIdCounter();
+                }
                 command.addParameter(idCounter);
                 command.setPlayerId(idCounter);
             } else {
@@ -89,10 +92,13 @@ public class ServerSerializer implements RemoteClient {
 
     public int deserializeHandshake(Command command) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
-        Command commandTemp = deSerializeStringFromClient(command);
-        Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
-        serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
-        return commandTemp.getPlayerId();
+        synchronized (serverController) {
+            Command commandTemp = deSerializeStringFromClient(command);
+            Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
+            serverController.addPlayerToLobbySocket(commandToSend.getPlayerId());
+            serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
+            return commandTemp.getPlayerId();
+        }
     }
 
 
