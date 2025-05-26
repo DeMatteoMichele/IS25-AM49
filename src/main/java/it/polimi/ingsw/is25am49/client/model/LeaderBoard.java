@@ -206,5 +206,80 @@ public class LeaderBoard {
     }
 
 
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("""
+        
+                              ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○
+                          ○                                           ○
+                        ○                  LEADERBOARD                  ○
+        """).append(String.format("\t\t\t\t○                     [%3d]                     ○\n",numberOfCells)).
+         append( """
+                                ○                                               ○
+                                ○                                               ○
+                                  ○                                           ○
+                """ );
+        str.append(playersToString());
+
+        str.append("\n");
+        for(Map.Entry<Player, Integer> entry : arrayLeaderboard){
+            str.append(String.format("%d) [%-6s] %-20s --> %3d travel days\n", getPos(entry.getKey()),entry.getKey().getColor(),entry.getKey().getUsername(), entry.getValue() ));
+        }
+        str.append("\n");
+        return str.toString();
+    }
+
+    private String playersToString(){
+        switch (mapLeaderboard.size()){
+            case 2 -> {
+                return String.format("\t\t\t\t\t  ○  ○  ○  ○  ○  %s  ○  %s  ○  ○  ○  ○  ○\n\t\t\t\t\t               %s %s\n",
+                        colorToString(arrayLeaderboard.get(1).getKey()),
+                        colorToString(arrayLeaderboard.get(0).getKey()),
+                        posToString(getPos(arrayLeaderboard.get(1).getKey())),
+                        posToString(getPos(arrayLeaderboard.get(0).getKey()))
+                );
+            }
+            case 3 -> {
+                return String.format("\t\t\t\t\t  ○  ○  ○  ○  %s  ○  %s  ○  %s  ○  ○  ○  ○\n\t\t\t\t\t            %s %s %s\n",
+                        colorToString(arrayLeaderboard.get(2).getKey()),
+                        colorToString(arrayLeaderboard.get(1).getKey()),
+                        colorToString(arrayLeaderboard.get(0).getKey()),
+                        posToString(getPos(arrayLeaderboard.get(2).getKey())),
+                        posToString(getPos(arrayLeaderboard.get(1).getKey())),
+                        posToString(getPos(arrayLeaderboard.get(0).getKey()))
+                );
+            }
+            case 4 -> {
+                return String.format("\t\t\t\t\t  ○  ○  ○  %s  ○  %s  ○  %s  ○  %s  ○  ○  ○",
+                        colorToString(arrayLeaderboard.get(3).getKey()),
+                        colorToString(arrayLeaderboard.get(2).getKey()),
+                        colorToString(arrayLeaderboard.get(1).getKey()),
+                        colorToString(arrayLeaderboard.get(0).getKey()));
+            }
+            default -> {
+                return "\t\t\t\t\t  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○";
+            }
+        }
+    }
+    private String colorToString(Player player) {
+        return switch (player.getColor()) {
+            case RED -> "\u001B[31m●\u001B[0m";
+            case BLUE -> "\u001B[34m●\u001B[0m";
+            case GREEN -> "\u001B[32m●\u001B[0m";
+            case YELLOW -> "\u001B[33m●\u001B[0m";
+            default -> "●";
+        };
+    }
+    private String posToString(int pos) {
+        return switch (pos) {
+            case 1 -> "[1st]";
+            case 2 -> "[2nd]";
+            case 3 -> "[3rd]";
+            case 4 -> "[4th]";
+            default -> pos + "     ";
+        };
+    }
+
 }
 

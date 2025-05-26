@@ -601,6 +601,7 @@ public class GameBoard {
                 .forEach(player ->
                         leaderBoard.modifyFlightDays(player, player.getDaysThisTurn())
                 );
+        ui.updateLeaderBoard(leaderBoard);
         //alla fine setto tutti i days this turn a 0
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
