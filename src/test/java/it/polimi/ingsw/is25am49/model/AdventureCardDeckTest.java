@@ -6,16 +6,14 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.FinishDeckExceptions;
-import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

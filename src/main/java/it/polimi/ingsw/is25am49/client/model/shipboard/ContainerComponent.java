@@ -1,7 +1,7 @@
 package it.polimi.ingsw.is25am49.client.model.shipboard;
 
-import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalTokenInComponentEcxeption;
 
@@ -85,7 +85,9 @@ public final class ContainerComponent extends Component {
         if (!checkIfTokenIsValid(token))
             throw new IllegalTokenInComponentEcxeption("Cannot add " + token + " to a " + type);
         for (int i = 0; i < level; i++) {
-            tokens.add(token);
+            try {
+                addToken(token);
+            } catch (Exception _) {      }
         }
     }
     @Override

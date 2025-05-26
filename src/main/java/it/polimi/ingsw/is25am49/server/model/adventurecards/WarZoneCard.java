@@ -5,15 +5,14 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectModifyCrew;
-import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import javafx.util.Pair;
 
-import javax.xml.transform.Source;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;

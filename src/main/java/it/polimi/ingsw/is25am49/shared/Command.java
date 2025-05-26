@@ -1,42 +1,41 @@
 package it.polimi.ingsw.is25am49.shared;
 
 import it.polimi.ingsw.is25am49.client.ClientController;
-import it.polimi.ingsw.is25am49.client.ClientController;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.server.ServerController;
-import javafx.util.Pair;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
+//import javafx.util.Pair;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Command {
-    private ClientController clientController;
-    private ServerController serverController;
+public class Command implements Serializable {
+    private transient ClientController clientController;
+    private transient ServerController serverController;
     private String methodName;
     private int playerId;
     private String typeOfMessage;
     private final ArrayList<Object> parameters;
 
-    public Command(String methodName, ClientController clientController) {
+    public Command(String methodName) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
-        this.clientController = clientController;
         this.playerId = -5;
-        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket") || methodName.equals("registerClientRMI")) {
             typeOfMessage = "HSK";
         } else {
             typeOfMessage = "MSG";
         }
     }
-    public Command(String methodName, ServerController serverController, int playerId) {
+    public Command(String methodName, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
-        this.serverController = serverController;
         this.playerId = playerId;
-        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")|| methodName.equals("registerClientRMI")) {
             typeOfMessage = "HSK";
         } else {
             typeOfMessage = "MSG";
@@ -92,10 +91,9 @@ public class Command {
 
     public boolean callMethod() {
         switch (methodName) {
-            case "registerClientRMI" -> serverController.registerClientRMI((RemoteClient) parameters.get(0));
             case "adminSetup" -> {
                 try {
-                    serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.server.model.enums.GameMode) parameters.get(2));
+                    serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.GameMode) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in adminSetup: " + e.getMessage());
                     e.printStackTrace();
@@ -119,7 +117,7 @@ public class Command {
             }
             case "userPlaceTile" -> {
                 try {
-                    serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.server.model.enums.Orientation) parameters.get(2));
+                    serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.Orientation) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userPlaceTile: " + e.getMessage());
                     e.printStackTrace();
@@ -175,7 +173,7 @@ public class Command {
             }
             case "userSelectTypeOfToken" -> {
                 try {
-                    serverController.userSelectTypeOfToken((int) parameters.get(0), (it.polimi.ingsw.is25am49.server.model.enums.Token) parameters.get(1), (Point) parameters.get(2));
+                    serverController.userSelectTypeOfToken((int) parameters.get(0), (it.polimi.ingsw.is25am49.shared.enums.Token) parameters.get(1), (Point) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userSelectTypeOfToken: " + e.getMessage());
                     e.printStackTrace();
@@ -207,7 +205,7 @@ public class Command {
             }
             case "userFinishDecisionToken" -> {
                 try {
-                    serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.server.model.enums.Token>>) parameters.get(1));
+                    //serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionToken: " + e.getMessage());
                     e.printStackTrace();
@@ -287,7 +285,7 @@ public class Command {
             }
             case "adminSetupCallback" -> {
                 try {
-                    clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.client.model.enums.GameMode) parameters.get(2));
+                    clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in adminSetupCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -311,7 +309,7 @@ public class Command {
             }
             case "userPlaceTileCallback" -> {
                 try {
-                    clientController.userPlaceTileCallback((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.client.model.enums.Orientation) parameters.get(2));
+                    clientController.userPlaceTileCallback((int) parameters.get(0), (Point) parameters.get(1), (Orientation) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userPlaceTileCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -367,7 +365,7 @@ public class Command {
             }
             case "userSelectTypeOfTokenCallback" -> {
                 try {
-                    clientController.userSelectTypeOfTokenCallback((int) parameters.get(0), (it.polimi.ingsw.is25am49.client.model.enums.Token) parameters.get(1), (Point) parameters.get(2));
+                    clientController.userSelectTypeOfTokenCallback((int) parameters.get(0), (Token) parameters.get(1), (Point) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in userSelectTypeOfTokenCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -399,7 +397,7 @@ public class Command {
             }
             case "userFinishDecisionTokenCallback" -> {
                 try {
-                    clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.client.model.enums.Token>>) parameters.get(1));
+                    //clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
                     e.printStackTrace();

@@ -2,9 +2,10 @@ package it.polimi.ingsw.is25am49.client.model.states;
 
 import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
@@ -153,6 +154,12 @@ public class InitState extends State {
     public void userRotateTileClockWise(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
+    @Override
+    public void userRotateHandTile(int playerId, Orientation orientation) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+
     public void userPlaceTile(int playerId, Point coordinates) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }

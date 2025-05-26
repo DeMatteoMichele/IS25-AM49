@@ -6,12 +6,12 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.WarZoneCard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
-import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectModifyCrew;
-import it.polimi.ingsw.is25am49.server.model.enums.*;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import static org.junit.jupiter.api.Assertions.*;
+
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

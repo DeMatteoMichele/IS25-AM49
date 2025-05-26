@@ -1,9 +1,9 @@
 package it.polimi.ingsw.is25am49.client.model;
 
-import it.polimi.ingsw.is25am49.client.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -26,7 +26,7 @@ public class Game {
     public Game(Player admin, GameSession session, GameMode mode, int maxPlayers, int seedForGeneration) {
         this.session = session;
         this.seedForGeneration = seedForGeneration;
-        board = new GameBoard(seedForGeneration);
+        board = new GameBoard(seedForGeneration,session.getUserInterface());
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
         this.mode = mode;
@@ -53,6 +53,9 @@ public class Game {
     public GameBoard getGameboard() {
         return board;
     }
+
+    public Timer getTimer() {return timer;}
+    public void setTimer(Timer timer) {this.timer = timer;}
 
     public int getMaxPlayers() {
         return maxPlayers;

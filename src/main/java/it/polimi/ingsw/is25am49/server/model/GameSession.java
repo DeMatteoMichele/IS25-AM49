@@ -1,13 +1,14 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.server.ServerController;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.states.BuildState;
 import it.polimi.ingsw.is25am49.server.model.states.InitState;
 import it.polimi.ingsw.is25am49.server.model.states.State;
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -69,6 +70,7 @@ public class GameSession {
     public void createNewGame(GameMode gameMode, int maxPlayers) throws GameSettingsException {
         if (game.isEmpty()) {
             game = Optional.of(new Game(admin.get(), this, gameMode, maxPlayers, seedForGeneration));
+            game.get().setTimer(new Timer(gameMode, this));
         } else throw new GameSettingsException("Game already exists!");
     }
 
@@ -98,6 +100,7 @@ public class GameSession {
     }
 
     public void userJoinLobby(String username, int playerID) throws GameSettingsException {
+        checkJoinLobby(playerID,username);
         Player tempPlayer = new Player(username, getColor(), playerID);
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
@@ -106,6 +109,27 @@ public class GameSession {
                 game.get().addPlayer(tempPlayer);
             } else throw new GameSettingsException("too many players");
         } else throw new GameSettingsException("Game is not ready yet");
+    }
+
+    public void checkJoinLobby(int playerId,String username) throws GameSettingsException {
+        if (admin.isPresent()) {
+            if (game.isPresent()) {
+                if (checkPlayers()) {
+                    if(checkIsInLobby(playerId))throw new GameSettingsException("you already joined the lobby");
+                    if(checkUsernameAlreadyTaken(username))throw new IllegalUsernameException("username already taken");
+                } else throw new GameSettingsException("too many players");
+            }else throw new GameSettingsException("game is not ready yet");
+        }
+    }
+
+    private boolean checkUsernameAlreadyTaken(String username) {
+        return game.map(g -> g.getListPlayers().stream().anyMatch(p -> p.getUsername().equals(username)))
+                .orElse(false);
+    }
+
+    public boolean checkIsInLobby(int playerId) throws GameSettingsException {
+        return game.map(g -> g.getListPlayers().stream().anyMatch(p -> p.getIdPlayer() == playerId))
+                .orElse(false);
     }
 
     public void userDiscardTile(Player player) {

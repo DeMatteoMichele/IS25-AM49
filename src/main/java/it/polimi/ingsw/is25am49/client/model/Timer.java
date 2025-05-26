@@ -1,6 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model;
 
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalTimerMoveException;
 
 import java.util.concurrent.Executors;
@@ -61,5 +61,10 @@ public class Timer {
             isActive = false;
             gameSession.getState().timerIsDone();
         }, seconds, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public String toString() {
+        return "Timer[" +usageCounter+"] - " + "lifetime=" + lifetime + " seconds";
     }
 }

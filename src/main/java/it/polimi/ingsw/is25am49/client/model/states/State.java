@@ -3,10 +3,11 @@ package it.polimi.ingsw.is25am49.client.model.states;
 import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.InvalidCoordinatesException;
 import javafx.util.Pair;
 
@@ -68,6 +69,7 @@ public abstract class State {
     public abstract void userPlaceTile(int playerId, Point coordinates);
     public abstract void userPickTile(int playerId, Point coordinates);
     public abstract void userRotateTileClockWise(int playerId);
+    public abstract void userRotateHandTile(int playerId, Orientation orientation);
     public abstract void userDiscardTile(int playerId);
     public abstract void userDrawTile(int playerId, int idTIle);
     public abstract void userFinishShipboard(int playerId);

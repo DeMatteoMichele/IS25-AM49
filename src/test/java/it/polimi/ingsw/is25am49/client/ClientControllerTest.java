@@ -15,7 +15,7 @@ class ClientControllerTest {
         gameSession = new GameSession(userInterface);
         clientController = new ClientController(gameSession, userInterface);
         clientSerializer = new ClientSerializer(clientController);
-        serverHandler = new ServerHandler("localhost", 8081);
+        serverHandler = new ServerHandler("localhost", 8080);
         serverHandler.setClientSerializer(clientSerializer);
         clientSerializer.setServerHandler(serverHandler);
         clientController.setServerMethods(clientSerializer);

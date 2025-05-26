@@ -2,19 +2,19 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
-import it.polimi.ingsw.is25am49.client.model.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 
 public class StarDustCard extends AdventureCard {
 
-    public StarDustCard(GameBoard gameBoard, String description, int level, String name) {
-        super(gameBoard, description, level,name);
+    public StarDustCard(String cardId,GameBoard gameBoard, String description, int level, String name) {
+        super(cardId, gameBoard, description, level, name);
     }
 
 
     @Override
     public void drawCard() {
         super.drawCard();
-        System.out.println("You have found a Star Dust! You will lose traveldays as much as you have exposed connectors on you ship!");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found a Star Dust! You will lose traveldays as much as you have exposed connectors on you ship!");
         currentState = AdventureStatesTypes.EFFECT;
         applyEffect();
     }

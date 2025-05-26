@@ -1,7 +1,7 @@
 package it.polimi.ingsw.is25am49.client.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.client.model.Player;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalSizeToRemove;
 import javafx.util.Pair;
@@ -25,8 +25,8 @@ public class EffectModifyCrew extends CardEffect {
         //per tutte le coordinate nella lista rimuovo il rispettivo Token
         for(Pair<Point, Token> coordinate : coordinates) {
             player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
-            System.out.println("rimozione di "+ coordinate.getValue() + " dalla posizione "+ coordinate.getKey());
-
+            userInterface.updateGenericCardMessage(player.getIdPlayer(),"rimozione di "+ coordinate.getValue() + " dalla posizione "+ coordinate.getKey());
+            userInterface.updateEffectModifyCrew(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
         }
     }
 

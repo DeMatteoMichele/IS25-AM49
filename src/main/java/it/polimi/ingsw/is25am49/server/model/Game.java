@@ -1,8 +1,8 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
@@ -62,6 +62,9 @@ public class Game {
     public void setGameMode(GameMode mode) {
         this.mode = mode;
         timer = new Timer(mode, session);
+    }
+    public void setTimer(Timer timer) {
+        this.timer = timer;
     }
 
     public boolean checkPlayers() {
@@ -190,8 +193,9 @@ public class Game {
             } else if (token.equals(Token.BROWN_ALIENS) || token.equals(Token.PURPLE_ALIENS)) {
                 if (player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))
                     player.getShipBoard().addTokenToTile(coordinates, token);
-            }
-        }
+                else throw new GameSettingsException("Token not allowed here");
+            } else throw new GameSettingsException("Token not allowed");
+        } else throw new GameSettingsException("This is not a cabin");
         return checkIfShipboardsAreFullOfToken();
     }
 

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.is25am49.client.model;
 
-import it.polimi.ingsw.is25am49.client.model.enums.Color;
-import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
