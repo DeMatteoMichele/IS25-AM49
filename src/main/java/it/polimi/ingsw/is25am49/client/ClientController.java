@@ -68,6 +68,7 @@ public class ClientController {
         ui.printUpdateMessage("DEBUG: In registerClientCallback - playerId: " + playerId);
         this.myId = playerId;
         ui.setClientId(playerId);
+        serverHandler.setMyId(playerId);
         if (username == null || username.trim().isEmpty()) {
             ui.printUpdateMessage(error + "Username is not set. Cannot save ID file.");
             return;
@@ -291,10 +292,10 @@ public class ClientController {
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
      */
     public void registerClientSocket() throws RemoteException, IOException {
-        Command command = new Command("registerClientSocket", myId);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
+        Command command = new Command("registerClientSocket", myId);
         ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
         command.addParameter(myId);
         serverHandler.connectCommand();

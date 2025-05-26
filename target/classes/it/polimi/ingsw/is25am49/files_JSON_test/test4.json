@@ -1,0 +1,30 @@
+{
+  "typeOfMessage": "MSG",
+  "methodName": "userPlaceTileCallback",
+  "params": [
+    {
+      "typeOfCollection": "",
+      "content": {
+        "className": "java.lang.Integer",
+        "content": 0
+      }
+    },
+    {
+      "typeOfCollection": "",
+      "content": {
+        "className": "java.awt.Point",
+        "content": {
+          "x": 6.0,
+          "y": 6.0
+        }
+      }
+    },
+    {
+      "typeOfCollection": "",
+      "content": {
+        "className": "it.polimi.ingsw.is25am49.client.model.enums.Orientation",
+        "content": "NORTH"
+      }
+    }
+  ]
+}

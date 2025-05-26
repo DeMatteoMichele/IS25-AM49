@@ -31,7 +31,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.193.12";
+    private final String serverIP = "localhost";
     private final int serverPortSocket = 8080;
     private final int serverPortRMI = 1099;
 

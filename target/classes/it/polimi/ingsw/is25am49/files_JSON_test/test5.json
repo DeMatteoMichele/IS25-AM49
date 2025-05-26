@@ -1,0 +1,118 @@
+{
+  "typeOfMessage": "MSG",
+  "methodName": "userFinishDecisionTokenCallback",
+  "params": [
+    {
+      "typeOfCollection": "",
+      "content": {
+        "className": "java.lang.Integer",
+        "content": 0
+      }
+    },
+    {
+      "typeOfCollection": "List",
+      "content": [
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "value": "RED_GOODS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "value": "YELLOW_GOODS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 2.0,
+              "y": 2.0
+            },
+            "value": "GREEN_GOODS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 3.0,
+              "y": 3.0
+            },
+            "value": "BLUE_GOODS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 4.0,
+              "y": 4.0
+            },
+            "value": "BROWN_ALIENS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 5.0,
+              "y": 5.0
+            },
+            "value": "PURPLE_ALIENS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 6.0,
+              "y": 6.0
+            },
+            "value": "BATTERY_CELLS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 7.0,
+              "y": 7.0
+            },
+            "value": "ASTRONAUT"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 8.0,
+              "y": 8.0
+            },
+            "value": "RED_GOODS"
+          }
+        },
+        {
+          "className": "javafx.util.Pair",
+          "content": {
+            "key": {
+              "x": 9.0,
+              "y": 9.0
+            },
+            "value": "YELLOW_GOODS"
+          }
+        }
+      ]
+    }
+  ]
+}
