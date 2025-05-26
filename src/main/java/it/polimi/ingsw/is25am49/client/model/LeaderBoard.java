@@ -224,7 +224,7 @@ public class LeaderBoard {
 
         str.append("\n");
         for(Map.Entry<Player, Integer> entry : arrayLeaderboard){
-            str.append(String.format("%d) [%-6s] %-20s --> %3d travel days\n", getPos(entry.getKey()),entry.getKey().getColor(),entry.getKey().getUsername(), entry.getValue() ));
+            str.append(String.format("%d°) [%-6s] %-20s --> %3d travel days\n", getPos(entry.getKey()),entry.getKey().getColor(),entry.getKey().getUsername(), entry.getValue() ));
         }
         str.append("\n");
         return str.toString();

@@ -12,7 +12,9 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -32,7 +34,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.193.12";
+    private final String serverIP = "localhost";
     private final int serverPortSocket = 8080;
     private final int serverPortRMI = 1099;
 
@@ -300,7 +302,6 @@ public class TextualUserInterface implements UserInterface {
         }else throw new GameSettingsException("shipboard not completed yet");
     }
 
-
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
 //
@@ -525,9 +526,9 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
-        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+        String str = "\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getPlayer(playerId).get().shipToString()+
-                "BuildState - commands:\n 12. ←-- go back \n\n"+
+                "State - commands:\n 12. ←-- go back \n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -536,8 +537,8 @@ public class TextualUserInterface implements UserInterface {
     public String adventureStateMenu(){
         return """
                 AdventureState - commands:\s
-                1.  ThrowDices
-                2.  DrawAdventureCard
+                1.  DrawAdventureCard
+                2.  ThrowDices
                 3.  ActivateComponent
                 4.  InsertToken
                 5.  Deactivating
@@ -546,22 +547,85 @@ public class TextualUserInterface implements UserInterface {
                 8.  AcceptPrizes
                 9.  StopFlight
                 10. DestroyedTiles
-                11. ←-- go back
+                11. LookAtShipboard
+                12. ←-- go back
                 """;
     }
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
-        printUpdateMessage("CARD: " + message);
+        StringBuilder str = new StringBuilder("\u001B[32mCARD INFO:\n");
+        for (int i = 0; i < message.length(); i++) {
+            if (i > 0 && i % 100 == 0) {
+                str.append("-\n-");
+            }
+            str.append(message.charAt(i));
+            str.append("\u001B[0m");
+        }
+        graphicsQueue.add(str.toString());
     }
 
+    private static final String[][] DICE = {
+            {
+                    "+ - - - - +",
+                    "|         |",
+                    "|    ●    |",
+                    "|         |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●      |",
+                    "|         |",
+                    "|      ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●      |",
+                    "|    ●    |",
+                    "|      ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●   ●  |",
+                    "|         |",
+                    "|  ●   ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●   ●  |",
+                    "|    ●    |",
+                    "|  ●   ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ● ● ●  |",
+                    "|         |",
+                    "|  ● ● ●  |",
+                    "+ - - - - +"
+            }
+    };
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-
+        if(playerId == myId){
+            StringBuilder str = new StringBuilder();
+            str.append("Throwing...\n");
+            String[] dice1 = DICE[firstDice - 1];
+            String[] dice2 = DICE[secondDice - 1];
+            for (int i = 0; i < dice1.length; i++) {
+                str.append(dice1[i]).append("   ").append(dice2[i]);
+            }
+            lineReader.printAbove(str.toString());
+        }
     }
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
-
+        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getLeaderBoard()+
+                adventureCard+
+                adventureStateMenu()+
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+        graphicsQueue.add(str);
     }
 
     @Override
@@ -649,45 +713,7 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
-    @Override
-    public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
 
-    }
-
-    @Override
-    public void updateEffectCannonade(int playerId, Point coordinate) {
-
-    }
-
-    @Override
-    public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
-
-    }
-
-    @Override
-    public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
-
-    }
-
-    @Override
-    public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-
-    }
-
-    @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
-
-    }
-
-    @Override
-    public void updateEarnedCredits(int playerId, int credits) {
-
-    }
-
-    @Override
-    public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
-
-    }
 
 
 //    ----------------------------------------------------------------------------------------------------------
@@ -812,7 +838,7 @@ public class TextualUserInterface implements UserInterface {
                         //updateLookUncoveredTile(myId,new Point(0,0));
                     }
                 }
-                case "9:1"->{//lookAtShipboard
+                case "9:1", "11:2" ->{//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
                     try{
                         for (Player p:gameSession.getGame().get().getListPlayers()){
@@ -841,10 +867,10 @@ public class TextualUserInterface implements UserInterface {
                 }
 
                 case "1:2" ->{//ThrowDices
-                    printUpdateMessage("throwDices not implemented yet");
+                    controller.userDrawAdventureCard(myId);
                 }
                 case "2:2" -> {//DrawAdventureCard
-                    printUpdateMessage("drawAdventureCard not implemented yet");
+                    controller.userThrowDices(myId);
                 }
                 case "3:2" -> {//ActivateComponent
                     printUpdateMessage("activateComponent not implemented yet");
@@ -866,6 +892,12 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "9:2" -> {//stopFlight
                     printUpdateMessage("stopFlight not implemented yet");
+                }
+                case "10:2" -> {//destroyedTiles
+                    printUpdateMessage("destroyedTiles not implemented yet");
+                }
+                case "12:2" -> {//go back
+                    printUpdateMessage("goBack not implemented yet");
                 }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }

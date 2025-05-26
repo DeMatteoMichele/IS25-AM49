@@ -234,11 +234,11 @@ public class ShipBoard {
                 try{
                     fillTileComponent(p, Token.BATTERY_CELLS);
                 } catch(Exception _) {}
-                if (checkIfAlienArePossible(p).size() == 1) {
-                    try{
+                try{
+                    if (checkIfAlienArePossible(p).size() == 1) {
                         fillTileComponent(p, Token.ASTRONAUT);
-                    } catch(Exception _) {}
-                }
+                    }
+                } catch(Exception _) {}
             }
         }
     }
@@ -524,6 +524,7 @@ public class ShipBoard {
 
     public Optional<Point> getAlienPoint(){
         ArrayList<Point> aliens = new ArrayList<>(getComponentsPositions(ComponentType.CABINE));
+        aliens.remove(new Point(7,7));
         return aliens.stream()
                 .filter(p -> checkIfAlienArePossible(p).size() > 1 && getTile(p).getComponent().getNumberOfTokens() == 0)
                 .findFirst();
