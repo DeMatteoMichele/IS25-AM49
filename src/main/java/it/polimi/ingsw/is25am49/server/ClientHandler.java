@@ -33,8 +33,8 @@ public class ClientHandler {
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         this.serverSerializer = serverSerializer;
-        scheduler = Executors.newScheduledThreadPool(20);
-        executors = Executors.newFixedThreadPool(20);
+        scheduler = Executors.newScheduledThreadPool(100);
+        executors = Executors.newFixedThreadPool(100);
         clientSockets = new ConcurrentHashMap<>();
         outputStreams = new ConcurrentHashMap<>();
         inputStreams = new ConcurrentHashMap<>();
@@ -71,7 +71,7 @@ public class ClientHandler {
     private void startServer(int port) throws IOException {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
-        //startCentralHeartBeatMonitor();
+        startCentralHeartBeatMonitor();
         startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();

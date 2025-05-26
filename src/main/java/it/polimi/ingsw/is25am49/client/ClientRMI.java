@@ -10,14 +10,32 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private final ClientController clientController;
+    private RemoteServer serverRMI;
+    private final int thresholdTries;
+    private int reconnectionTries;
+    private final int secondsForReconnection;
+    private final ExecutorService executorService;
+    private final int triesForReconnection;
     private boolean isConnected;
 
-    public ClientRMI(ClientController clientController) throws RemoteException {
+    public ClientRMI(ClientController clientController, RemoteServer serverRMI) throws RemoteException {
         super();
         this.clientController = clientController;
+        this.serverRMI = serverRMI;
+        reconnectionTries = 0;
+        thresholdTries = 20;
+        secondsForReconnection = 5;
+        executorService = Executors.newScheduledThreadPool(10);
+        triesForReconnection = 10;
+        isConnected = false;
+        executorService.submit(this::startHeartBeat);
     }
 
     /**THIS METHOD IS CALLED BY THE SERVER
@@ -30,8 +48,31 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
+        if(command.getMethodName().equals("registerClientCallback")) {
+            isConnected = true;
+        }
         command.setClientController(clientController);
         command.callMethod();
+    }
+
+    public void sendHeartBeat() {
+        if (isConnected) {
+            try {
+                serverRMI.command_FromClientToServer(new Command("heartbeat", clientController.getplayerId()));
+                reconnectionTries = 0;
+            } catch (RemoteException e) {
+                isConnected = false;
+            }
+        }
+    }
+
+    private void startHeartBeat() {
+        sendHeartBeat();
+        try {
+            Thread.sleep(secondsForReconnection);
+        } catch (InterruptedException e) {
+            System.out.println("Error while putting the message in the queue, thread has been interrupted");
+        }
     }
 }
 

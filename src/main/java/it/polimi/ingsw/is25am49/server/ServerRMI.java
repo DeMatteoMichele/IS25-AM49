@@ -7,16 +7,14 @@ import it.polimi.ingsw.is25am49.shared.Command;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class ServerRMI extends UnicastRemoteObject implements RemoteClient, RemoteServer {
     private boolean gameStarted;
     private ServerController serverController;
-    private HashMap<Integer, RemoteClient> clients;
-    private HashMap<Integer, RemoteClient> matchPlayers;
+    private final ConcurrentHashMap<Integer, RemoteClient> clients;
+    private final ConcurrentHashMap<Integer, RemoteClient> matchPlayers;
+    private final ConcurrentHashMap<Integer, Long> lastHeartBeats;
     private final BlockingQueue<Command> historyQueue;
     private final BlockingQueue<Command> commandsFromClientQueue;
     private final ExecutorService executorService;
@@ -24,8 +22,9 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
     public ServerRMI(ServerController serverController) throws RemoteException {
         super();
         this.serverController = serverController;
-        this.clients = new HashMap<>();
-        this.matchPlayers = new HashMap<>();
+        this.clients = new ConcurrentHashMap<>();
+        this.matchPlayers = new ConcurrentHashMap<>();
+        this.lastHeartBeats = new ConcurrentHashMap<>();
         historyQueue = new ArrayBlockingQueue<Command>(50000, true);
         commandsFromClientQueue = new ArrayBlockingQueue<Command>(50000, true);
         gameStarted = false;
@@ -83,7 +82,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
 
     @Override
     public void command_FromClientToServer(Command command) throws RemoteException {
-        putFileFromClientSocketInQueue(command);
+        putFileFromClientInQueue(command);
     }
     public void sayToServerRMIWhoHasJoined(int playerId){
         matchPlayers.put(playerId, clients.get(playerId));
@@ -138,11 +137,11 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             }
         }
     }
-    public void putFileFromClientSocketInQueue(Command command) {
+    public void putFileFromClientInQueue(Command command) {
         try {
             commandsFromClientQueue.put(command);
         } catch (InterruptedException e) {
-            System.err.println("Error putting file from socket in queue in serializer cause thread was interrupted: " + e.getMessage());
+            System.err.println("Error putting file from Client in queue in ServerRMI cause thread was interrupted: " + e.getMessage());
         }
     }
 }
