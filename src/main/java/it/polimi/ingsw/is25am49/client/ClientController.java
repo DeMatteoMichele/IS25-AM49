@@ -68,7 +68,9 @@ public class ClientController {
         ui.printUpdateMessage("DEBUG: In registerClientCallback - playerId: " + playerId);
         this.myId = playerId;
         ui.setClientId(playerId);
-        serverHandler.setMyId(playerId);
+        if(serverHandler!=null) {
+            serverHandler.setMyId(playerId);
+        }
         if (username == null || username.trim().isEmpty()) {
             ui.printUpdateMessage(error + "Username is not set. Cannot save ID file.");
             return;
@@ -279,10 +281,11 @@ public class ClientController {
     }
 
     public void registerClientRMI(RemoteClient client) throws RemoteException, IOException {
-        Command command = new Command("registerClientRMI", myId);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
+        Command command = new Command("registerClientRMI", myId);
+        ui.printUpdateMessage("DEBUG: In registerClientRMI - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
         command.addParameter(client);
         serverMethods.command_FromClientToServer(command);
     }
@@ -297,7 +300,6 @@ public class ClientController {
         myId = mapper.readTree(idFile).get("playerId").asInt();
         Command command = new Command("registerClientSocket", myId);
         ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
-        command.addParameter(myId);
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
     }

@@ -35,7 +35,7 @@ public class Command implements Serializable {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
         this.playerId = playerId;
-        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
+        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")|| methodName.equals("registerClientRMI")) {
             typeOfMessage = "HSK";
         } else {
             typeOfMessage = "MSG";
