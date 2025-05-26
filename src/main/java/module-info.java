@@ -16,5 +16,7 @@ module it.polimi.ingsw.is25am49 {
     exports it.polimi.ingsw.is25am49.server.model.enums to com.fasterxml.jackson.databind;
     exports it.polimi.ingsw.is25am49.shared;
     opens it.polimi.ingsw.is25am49.shared to javafx.fxml;
+    exports it.polimi.ingsw.is25am49.client.GUI;
+    opens it.polimi.ingsw.is25am49.client.GUI to javafx.fxml;
 
 }
