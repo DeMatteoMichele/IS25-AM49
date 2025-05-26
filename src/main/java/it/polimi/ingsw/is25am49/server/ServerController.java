@@ -198,6 +198,7 @@ public class ServerController {
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
+                e.printStackTrace();
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish shipboard hasn't worked in Server ->  " + e.getMessage());

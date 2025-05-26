@@ -47,6 +47,12 @@ public class GameSession {
         return ui;
     }
 
+    public LeaderBoard getLeaderBoard() {
+        if (game.isPresent()) {
+            return game.get().getGameboard().getLeaderBoard();
+        }else throw new GameSettingsException("cannot get Leaderboard, Game has not been initialized");
+    }
+
     public Optional<Player> getPlayer(int id) {
         if (game.isEmpty()) {
             if (admin.isPresent() && admin.get().getIdPlayer() == id) return admin;
