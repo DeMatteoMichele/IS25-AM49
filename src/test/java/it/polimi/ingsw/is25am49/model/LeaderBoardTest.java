@@ -2,8 +2,8 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.server.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

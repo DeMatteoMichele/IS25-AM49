@@ -6,10 +6,11 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.*;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.shared.Command;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.util.Pair;
 
@@ -276,13 +277,12 @@ public class ClientController {
         }
     }
 
-    public void registerClientRMI(RemoteServer client) throws RemoteException, IOException {
-        Command command = new Command("registerClientRMI", this);
+    public void registerClientRMI(RemoteClient client) throws RemoteException, IOException {
+        Command command = new Command("registerClientRMI", myId);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
         command.addParameter(client);
-        serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
     }
 
@@ -291,7 +291,7 @@ public class ClientController {
      * It creates a temporary file with the playerId and puts it in the outgoing queue.
      */
     public void registerClientSocket() throws RemoteException, IOException {
-        Command command = new Command("registerClientSocket", this);
+        Command command = new Command("registerClientSocket", myId);
         ObjectMapper mapper = new ObjectMapper();
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
@@ -305,7 +305,7 @@ public class ClientController {
     public void adminSetup(int numberOfPlayers, int mode) {
         try {
             gameSession.getState().checkAdminCreateGame(myId, mode, numberOfPlayers);
-            Command command = new Command("adminSetup", this);
+            Command command = new Command("adminSetup", myId);
             command.addParameter(myId);
             command.addParameter(numberOfPlayers);
             command.addParameter(GameMode.values()[mode]);
@@ -318,7 +318,7 @@ public class ClientController {
     public void playerJoin(String username) {
         try {
             gameSession.getState().checkUserJoinLobby(myId, username);
-            Command command = new Command("playerJoin", this);
+            Command command = new Command("playerJoin", myId);
             command.addParameter(myId);
             command.addParameter(username);
             serverMethods.command_FromClientToServer(command);
@@ -332,7 +332,7 @@ public class ClientController {
     public void userDrawTile(int playerId, int tileId) throws RemoteException {
         try {
             gameSession.getState().checkUserDrawTile(playerId, tileId);
-            Command command = new Command("userDrawTile", this);
+            Command command = new Command("userDrawTile", myId);
             command.addParameter(playerId);
             command.addParameter(tileId);
             serverMethods.command_FromClientToServer(command);
@@ -345,7 +345,7 @@ public class ClientController {
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) throws RemoteException {
         try {
             gameSession.getState().checkUserPlaceTile(playerId, coordinates);
-            Command command = new Command("userPlaceTile", this);
+            Command command = new Command("userPlaceTile", myId);
             command.addParameter(playerId);
             command.addParameter(coordinates);
             command.addParameter(orientation);
@@ -359,7 +359,7 @@ public class ClientController {
     public void userPickTile(int playerId, Point coordinates) throws RemoteException {
         try {
             gameSession.getState().checkUserPickTile(playerId, coordinates);
-            Command command = new Command("userPickTile", this);
+            Command command = new Command("userPickTile", myId);
             command.addParameter(playerId);
             command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
@@ -371,7 +371,7 @@ public class ClientController {
     public void userDiscardTile(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkUserDiscardTile(playerId);
-            Command command = new Command("userDiscardTile", this);
+            Command command = new Command("userDiscardTile", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -383,7 +383,7 @@ public class ClientController {
     public void userFinishShipboard(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkUserFinishShipboard(playerId);
-            Command command = new Command("userFinishShipboard", this);
+            Command command = new Command("userFinishShipboard", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -395,7 +395,7 @@ public class ClientController {
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
         try {
             gameSession.getState().checkUserLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-            Command command = new Command("userLookSmallAdventureCardDeck", this);
+            Command command = new Command("userLookSmallAdventureCardDeck", myId);
             command.addParameter(playerId);
             command.addParameter(smallDeckIndex);
             serverMethods.command_FromClientToServer(command);
@@ -408,7 +408,7 @@ public class ClientController {
     public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) throws RemoteException {
         try {
             gameSession.getState().checkUserStopLookSmallAdventureCardDeck(playerId, smallDeckIndex);
-            Command command = new Command("userStopLookSmallAdventureCardDeck", this);
+            Command command = new Command("userStopLookSmallAdventureCardDeck", myId);
             command.addParameter(playerId);
             command.addParameter(smallDeckIndex);
             serverMethods.command_FromClientToServer(command);
@@ -421,7 +421,7 @@ public class ClientController {
     public void userPlaceTimer(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkUserPlaceTimer(playerId);
-            Command command = new Command("userPlaceTimer", this);
+            Command command = new Command("userPlaceTimer", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -433,7 +433,7 @@ public class ClientController {
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) throws RemoteException {
         try {
             gameSession.getState().checkUserSelectTypeOfToken(playerId, token, coordinates);
-            Command command = new Command("userSelectTypeOfToken", this);
+            Command command = new Command("userSelectTypeOfToken", myId);
             command.addParameter(playerId);
             command.addParameter(token);
             command.addParameter(coordinates);
@@ -447,7 +447,7 @@ public class ClientController {
     public void userThrowDices(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkUserThrowDices(playerId);
-            Command command = new Command("userThrowDices", this);
+            Command command = new Command("userThrowDices", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -459,7 +459,7 @@ public class ClientController {
     public void userDrawAdventureCard(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkUserDrawAdventureCard(playerId);
-            Command command = new Command("userDrawAdventureCard", this);
+            Command command = new Command("userDrawAdventureCard", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -471,7 +471,7 @@ public class ClientController {
     public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) throws RemoteException {
         try {
             gameSession.getState().checkUserFinishDecisionActivating(playerId, coordinates);
-            Command command = new Command("userFinishDecisionActivating", this);
+            Command command = new Command("userFinishDecisionActivating", myId);
             command.addParameter(playerId);
             command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
@@ -484,7 +484,7 @@ public class ClientController {
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) throws RemoteException {
         try {
             gameSession.getState().checkUserFinishDecisionToken(playerId, listOfTokens);
-            Command command = new Command("userFinishDecisionToken", this);
+            Command command = new Command("userFinishDecisionToken", myId);
             command.addParameter(playerId);
             command.addParameter(listOfTokens);
             serverMethods.command_FromClientToServer(command);
@@ -497,7 +497,7 @@ public class ClientController {
     public void userAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException {
         try {
             gameSession.getState().checkUserAcceptPrizes(playerId, wantsRewards);
-            Command command = new Command("userAcceptPrizes", this);
+            Command command = new Command("userAcceptPrizes", myId);
             command.addParameter(playerId);
             command.addParameter(wantsRewards);
             serverMethods.command_FromClientToServer(command);
@@ -509,7 +509,7 @@ public class ClientController {
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) throws RemoteException {
         try {
             gameSession.getState().checkUserLandOnPlanet(playerId, isLanded, planetId);
-            Command command = new Command("userLandOnPlanet", this);
+            Command command = new Command("userLandOnPlanet", myId);
             command.addParameter(playerId);
             command.addParameter(isLanded);
             command.addParameter(planetId);
@@ -522,7 +522,7 @@ public class ClientController {
     public void userLandOnStationOrShip(int playerId, boolean isLanded) throws RemoteException {
         try {
             gameSession.getState().checkUserLandOnStationOrShip(playerId, isLanded);
-            Command command = new Command("userLandOnStationOrShip", this);
+            Command command = new Command("userLandOnStationOrShip", myId);
             command.addParameter(playerId);
             command.addParameter(isLanded);
             serverMethods.command_FromClientToServer(command);
@@ -533,7 +533,7 @@ public class ClientController {
 
     public void userQuitGame(int playerId) throws RemoteException {
         try {
-            Command command = new Command("userQuitGame", this);
+            Command command = new Command("userQuitGame", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -545,7 +545,7 @@ public class ClientController {
     public void adminCalculateScore(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkAdminCalculateScore(playerId);
-            Command command = new Command("adminCalculateScore", this);
+            Command command = new Command("adminCalculateScore", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
@@ -556,7 +556,7 @@ public class ClientController {
     public void adminEndGame(int playerId) throws RemoteException {
         try {
             gameSession.getState().checkAdminEndGame(playerId);
-            Command command = new Command("adminEndGame", this);
+            Command command = new Command("adminEndGame", myId);
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {

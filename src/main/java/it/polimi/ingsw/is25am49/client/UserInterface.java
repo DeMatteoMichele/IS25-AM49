@@ -1,10 +1,8 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
 
 import java.util.Set;

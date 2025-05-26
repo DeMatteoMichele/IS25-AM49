@@ -1,9 +1,9 @@
 package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
-import it.polimi.ingsw.is25am49.server.model.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 

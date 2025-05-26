@@ -1,16 +1,14 @@
 package it.polimi.ingsw.is25am49.server.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.server.model.Player;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
 import javafx.util.Pair;
 import java.util.List;
 
 import java.awt.*;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class EffectCannonata extends CardEffect {
     private final int level;

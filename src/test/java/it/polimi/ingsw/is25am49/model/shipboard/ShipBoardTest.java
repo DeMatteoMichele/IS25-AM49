@@ -1,10 +1,10 @@
 package it.polimi.ingsw.is25am49.model.shipboard;
 
-import it.polimi.ingsw.is25am49.server.model.enums.ComponentType;
-import it.polimi.ingsw.is25am49.server.model.enums.ConnectorType;
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.ConnectorType;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;

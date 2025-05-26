@@ -1,16 +1,8 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.SabotageCard;
-import it.polimi.ingsw.is25am49.server.model.adventurecards.SpazioAperto;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.FinishDeckExceptions;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 

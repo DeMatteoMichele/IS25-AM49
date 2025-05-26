@@ -1,9 +1,8 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
-import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 

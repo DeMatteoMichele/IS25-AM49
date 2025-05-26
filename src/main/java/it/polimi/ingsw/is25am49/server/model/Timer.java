@@ -1,6 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model;
 
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTimerMoveException;
 
 import java.util.concurrent.Executors;

@@ -1,11 +1,10 @@
 package it.polimi.ingsw.is25am49.server.model.states;
 
-import it.polimi.ingsw.is25am49.server.model.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
-import it.polimi.ingsw.is25am49.server.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.server.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
 

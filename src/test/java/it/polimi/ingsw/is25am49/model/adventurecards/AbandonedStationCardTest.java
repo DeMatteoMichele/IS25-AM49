@@ -6,14 +6,13 @@ import it.polimi.ingsw.is25am49.server.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AbandonedShipCard;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AbandonedStationCard;
-import it.polimi.ingsw.is25am49.server.model.enums.*;
-import it.polimi.ingsw.is25am49.server.model.enums.Color;
+import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import javafx.util.Pair;
-import net.bytebuddy.description.type.RecordComponentDescription;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

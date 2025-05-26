@@ -2,20 +2,23 @@ package it.polimi.ingsw.is25am49.client;
 
 import java.awt.*;
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
-import it.polimi.ingsw.is25am49.client.model.enums.GameMode;
-import it.polimi.ingsw.is25am49.client.model.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.util.Pair;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -166,17 +169,22 @@ public class TextualUserInterface implements UserInterface {
             switch (connectionType) {
                 //CONNESSIONE RMI
                 case 1 -> {
-                    ClientRMI clientRMI = new ClientRMI(gameSession);
                     try {
-                        controller.setServerMethods(clientRMI.connect(serverIP, serverPortRMI));
+                        RemoteClient remoteClient;
+                        ClientRMI clientRMI = new ClientRMI(controller);
+                        RemoteServer serverStub;
+                        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);//eventualmente serverPort
+                        serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
+                        System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+                        controller.setServerMethods(serverStub);
                         try {
                             //todo registerClientRmi con settaggio dell'id
                             System.out.println("trying to log in to the server ...");
-                            UnicastRemoteObject.exportObject(clientRMI, 0);
                             controller.registerClientRMI(clientRMI);
                             System.out.println("client logged");
                         } catch (RemoteException e) {
                             System.out.println("client failed logging on server RMI --> " + e.getMessage());
+                            e.printStackTrace();
                             //se voglio riprovare a connettermi
                             System.out.println("\nwanna retry? Y");
                             if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
@@ -185,7 +193,7 @@ public class TextualUserInterface implements UserInterface {
                                 System.exit(0);
                             }
                         }
-                    } catch (RemoteException e) {
+                    } catch (RemoteException | NotBoundException e) {
                         printUpdateMessage("⚠ Error : something went wrong during the connection tio the server RMI --> " + e.getMessage());
                         //se voglio riprovare a connettermi
                         printUpdateMessage("\nwanna retry? Y");
@@ -639,6 +647,46 @@ public class TextualUserInterface implements UserInterface {
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
+    }
+
+    @Override
+    public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
+
+    }
+
+    @Override
+    public void updateEffectCannonade(int playerId, Point coordinate) {
+
+    }
+
+    @Override
+    public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
+
+    }
+
+    @Override
+    public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
+
+    }
+
+    @Override
+    public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
+
+    }
+
+    @Override
+    public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
+
+    }
+
+    @Override
+    public void updateEarnedCredits(int playerId, int credits) {
+
+    }
+
+    @Override
+    public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
+
     }
 
 
