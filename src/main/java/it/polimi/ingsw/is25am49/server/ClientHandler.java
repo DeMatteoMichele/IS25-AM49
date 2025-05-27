@@ -78,7 +78,7 @@ public class ClientHandler {
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             int clientId = handleFirstMessage(inputStream);
-            if (!gameStarted || connections.containsKey(clientId)) {
+            if (!gameStarted || serverSerializer.isInPlayers(clientId)) {
                 executors.submit(() -> askForPreviousCommands(clientId));
             }
             connectClient(socket, inputStream, outputStream, clientId);

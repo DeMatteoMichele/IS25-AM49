@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 
 public class ServerRMI extends UnicastRemoteObject implements RemoteClient, RemoteServer {
     private boolean gameStarted;
-    private ServerController serverController;
+    private final ServerController serverController;
     private final ConcurrentHashMap<Integer, RemoteClient> clients;
     private final ConcurrentHashMap<Integer, RemoteClient> matchPlayers;
     private final ConcurrentHashMap<Integer, Long> lastHeartBeats;
@@ -100,7 +100,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         while (true) {
             try {
                 Command command = commandsFromClientQueue.take();
-                if(command.getTypeOfMessage().equals("HSK")) {
+                if(command.getTypeOfMessage().equals("HSK") && (!gameStarted || serverController.isInPlayers(command.getPlayerId()))) {
                     synchronized (serverController) {
                         command.setServerController(serverController);
                         if(command.getPlayerId() == -1){
