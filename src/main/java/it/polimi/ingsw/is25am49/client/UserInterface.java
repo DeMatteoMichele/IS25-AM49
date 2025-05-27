@@ -3,6 +3,8 @@ package it.polimi.ingsw.is25am49.client;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
+import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
@@ -44,10 +46,12 @@ public interface UserInterface {
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates);
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens,boolean removing);
     public void updateDeactivating(int playerId, List<Point> coordinates);
+
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId);
     public void updateLandOnStationOrShip(int playerId, boolean isLanded,String cardId);
     public void updateAcceptPrizes(int playerId, boolean isAccepted);
     public void updateStopFlight(int playerId);
+
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token);
     public void updateEffectCannonade(int playerId, Point coordinate);
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token);
