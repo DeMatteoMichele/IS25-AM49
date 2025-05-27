@@ -16,9 +16,6 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.Planet;
-import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
-import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -93,7 +90,7 @@ public class TextualUserInterface implements UserInterface {
 //----------------------------------------------------------------------------------------------------
 
     /**
-     * IL MAIN DI GALAGY TRUCKER TUI
+     * IL MAIN DI GALAXY TRUCKER TUI
      */
     public static void main(String args[]) throws IOException {
         TextualUserInterface ui = new TextualUserInterface();
@@ -176,30 +173,9 @@ public class TextualUserInterface implements UserInterface {
                 //CONNESSIONE RMI
                 case 1 -> {
                     try {
-                        RemoteClient remoteClient;
-                        ClientRMI clientRMI = new ClientRMI(controller);
-                        RemoteServer serverStub;
-                        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);//eventualmente serverPort
-                        serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
-                        System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
-                        controller.setServerMethods(serverStub);
-                        try {
-                            //todo registerClientRmi con settaggio dell'id
-                            System.out.println("trying to log in to the server ...");
-                            controller.registerClientRMI(clientRMI);
-                            System.out.println("client logged");
-                        } catch (RemoteException e) {
-                            System.out.println("client failed logging on server RMI --> " + e.getMessage());
-                            e.printStackTrace();
-                            //se voglio riprovare a connettermi
-                            System.out.println("\nwanna retry? Y");
-                            if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
-                            else {
-                                printUpdateMessage("Server: closing...");
-                                System.exit(0);
-                            }
-                        }
-                    } catch (RemoteException | NotBoundException e) {
+                        ClientRMI clientRMI = null;
+                        connectionRMI(false, clientRMI);
+                    } catch (IOException | NotBoundException e) {
                         printUpdateMessage("⚠ Error : something went wrong during the connection tio the server RMI --> " + e.getMessage());
                         //se voglio riprovare a connettermi
                         printUpdateMessage("\nwanna retry? Y");
@@ -232,6 +208,44 @@ public class TextualUserInterface implements UserInterface {
                 System.exit(0);
             }
         }
+    }
+
+    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
+        RemoteServer serverStub;
+        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
+        serverStub = (RemoteServer) reg.lookup("Server");
+        if (!isReconnecting) {
+            clientRMI = new ClientRMI(controller, serverStub, this);
+            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+            } catch (RemoteException e) {
+                System.out.println("client failed logging on server RMI --> " + e.getMessage());
+                e.printStackTrace();
+                //se voglio riprovare a connettermi
+                System.out.println("\nwanna retry? Y");
+                if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
+                else {
+                    printUpdateMessage("Server: closing...");
+                    System.exit(0);
+                }
+            }
+        } else {
+            clientRMI.replaceServerStub(serverStub);
+            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+            } catch (RemoteException e) {
+                System.out.println("client failed logging on server RMI --> " + e.getMessage());
+            }
+        }
+
     }
 
     public void startGame() {
@@ -283,7 +297,6 @@ public class TextualUserInterface implements UserInterface {
         if(p.getShipBoard().isCompleted()){
             lineReader.printAbove("insert aliens on the Shipboard\n");
             if (p.getShipBoard().getAlienPoint().isPresent()){
-                try {
                     Point alienPoint=p.getShipBoard().getAlienPoint().get();
                     String selection = lineReader.readLine("insert alien on coordinates: "+alienPoint+"\n" +
                             "a --> astronaut\n" +
@@ -297,9 +310,6 @@ public class TextualUserInterface implements UserInterface {
                         case "a" : controller.userSelectTypeOfToken(playerId,Token.ASTRONAUT,alienPoint);break;
                         default: printUpdateMessage(error + "invalid choice");
                     }
-                }catch (RemoteException e){
-                    printUpdateMessage(error+e.getMessage());
-                }
             }else {
                 printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
             }
@@ -792,6 +802,9 @@ public class TextualUserInterface implements UserInterface {
                     }catch (IllegalUsernameException e){
                         printUpdateMessage(error+e.getMessage());
                         userSettings();
+                        updateGameSessionNewPlayer(myId);
+                    } catch (Exception e) {
+                        printUpdateMessage(error+e.getMessage());
                         updateGameSessionNewPlayer(myId);
                     }
                 }

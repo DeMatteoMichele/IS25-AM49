@@ -56,7 +56,7 @@ public abstract class State {
     public abstract void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens);
     public abstract void checkUserLandOnPlanet(int playerId, boolean isLanded, int planetId);
     public abstract void checkUserLandOnStationOrShip(int playerId, boolean isLanded);
-    public abstract void checkUserAcceptPrizes(int playerId, boolean wantsRewards) throws RemoteException;
+    public abstract void checkUserAcceptPrizes(int playerId, boolean wantsRewards);
 
     public abstract void checkAdminCalculateScore(int playerId);
     public abstract void checkAdminEndGame(int playerId);

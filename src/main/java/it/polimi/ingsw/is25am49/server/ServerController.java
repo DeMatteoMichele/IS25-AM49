@@ -47,6 +47,9 @@ public class ServerController {
         playersSocket.add(playerId);
     }
 
+    public boolean isInPlayers(int playerId) {
+        return playersRMI.contains(playerId) || playersSocket.contains(playerId);
+    }
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {

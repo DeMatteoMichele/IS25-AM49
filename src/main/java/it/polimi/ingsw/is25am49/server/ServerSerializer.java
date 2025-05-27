@@ -436,6 +436,10 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
+    public boolean isInPlayers(int playerId) {
+        return serverController.isInPlayers(playerId);
+    }
+
     public boolean checkIfIsInitState(File fileJson) {
         try {
             ObjectMapper mapper = new ObjectMapper();
