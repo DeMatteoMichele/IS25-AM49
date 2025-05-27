@@ -40,6 +40,7 @@ public class BuildState extends State {
     @Override
     public void checkUserPlaceTile(int playerId, Point coordinates) throws InvalidCoordinatesException {
         Player player = getPlayerById(playerId);
+        if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.thereIsHandTile();
         player.shipBoardIsNotCompletedYet();
         player.getShipBoard().checkInsertTile(coordinates);
@@ -47,11 +48,13 @@ public class BuildState extends State {
     @Override
     public void checkUserPickTile(int playerId, Point coordinates) throws GameSettingsException {
         Player player = getPlayerById(playerId);
+        if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.checkPickTile(coordinates);
     }
     @Override
     public void checkUserDiscardTile(int playerId) throws IllegalStateException {
         Player player = getPlayerById(playerId);
+        if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.shipBoardIsNotCompletedYet();
         player.thereIsHandTile();
     }
@@ -59,11 +62,13 @@ public class BuildState extends State {
     public void checkUserDrawTile(int playerId, int idTIle) {
         if(idTIle<1 || idTIle>157)throw new RuntimeException("invalid idTIle");
         Player player = getPlayerById(playerId);
+        if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.shipBoardIsNotCompletedYet();
     }
     @Override
     public void checkUserFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
+        if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.shipBoardIsNotCompletedYet();
     }
     @Override
@@ -89,7 +94,9 @@ public class BuildState extends State {
     @Override
     public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
+        if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.getShipBoard().checkCoordinates(coordinates);
+        if(!player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))throw new RuntimeException("you cannot add a "+token+" token in this position, correct alien module is missing");
         player.getShipBoard().checkAddTokenToTile(coordinates, token);
     }
     @Override

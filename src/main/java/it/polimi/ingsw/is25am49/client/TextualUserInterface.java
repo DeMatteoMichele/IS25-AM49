@@ -6,12 +6,14 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -31,7 +33,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.193.12";
+    private final String serverIP = "localhost";
     private final int serverPortSocket = 8080;
     private final int serverPortRMI = 1099;
 
@@ -86,7 +88,7 @@ public class TextualUserInterface implements UserInterface {
 //----------------------------------------------------------------------------------------------------
 
     /**
-     * IL MAIN DI GALAGY TRUCKER TUI
+     * IL MAIN DI GALAXY TRUCKER TUI
      */
     public static void main(String args[]) throws IOException {
         TextualUserInterface ui = new TextualUserInterface();
@@ -169,30 +171,9 @@ public class TextualUserInterface implements UserInterface {
                 //CONNESSIONE RMI
                 case 1 -> {
                     try {
-                        RemoteClient remoteClient;
-                        ClientRMI clientRMI = new ClientRMI(controller);
-                        RemoteServer serverStub;
-                        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);//eventualmente serverPort
-                        serverStub = (RemoteServer) reg.lookup("Server");//nome serverController da cambiare
-                        System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
-                        controller.setServerMethods(serverStub);
-                        try {
-                            //todo registerClientRmi con settaggio dell'id
-                            System.out.println("trying to log in to the server ...");
-                            controller.registerClientRMI(clientRMI);
-                            System.out.println("client logged");
-                        } catch (RemoteException e) {
-                            System.out.println("client failed logging on server RMI --> " + e.getMessage());
-                            e.printStackTrace();
-                            //se voglio riprovare a connettermi
-                            System.out.println("\nwanna retry? Y");
-                            if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
-                            else {
-                                printUpdateMessage("Server: closing...");
-                                System.exit(0);
-                            }
-                        }
-                    } catch (RemoteException | NotBoundException e) {
+                        ClientRMI clientRMI = null;
+                        connectionRMI(false, clientRMI);
+                    } catch (IOException | NotBoundException e) {
                         printUpdateMessage("⚠ Error : something went wrong during the connection tio the server RMI --> " + e.getMessage());
                         //se voglio riprovare a connettermi
                         printUpdateMessage("\nwanna retry? Y");
@@ -227,6 +208,44 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
+        RemoteServer serverStub;
+        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
+        serverStub = (RemoteServer) reg.lookup("Server");
+        if (!isReconnecting) {
+            clientRMI = new ClientRMI(controller, serverStub, this);
+            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+            } catch (RemoteException e) {
+                System.out.println("client failed logging on server RMI --> " + e.getMessage());
+                e.printStackTrace();
+                //se voglio riprovare a connettermi
+                System.out.println("\nwanna retry? Y");
+                if (lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) setupConnection();
+                else {
+                    printUpdateMessage("Server: closing...");
+                    System.exit(0);
+                }
+            }
+        } else {
+            clientRMI.replaceServerStub(serverStub);
+            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+            } catch (RemoteException e) {
+                System.out.println("client failed logging on server RMI --> " + e.getMessage());
+            }
+        }
+
+    }
+
     public void startGame() {
         executor.submit(() -> {
             String inputString;
@@ -246,7 +265,7 @@ public class TextualUserInterface implements UserInterface {
                 Thread.sleep(1000);//aspetto un attimo per far arrivare i pacchetti
                 while (true) {
                     String graphic = graphicsQueue.take();
-                    if(!graphicsQueue.isEmpty()){
+                    if(graphicsQueue.size()>1){
                         printUpdateMessage("RECONNETTING ...");
                         String next;
                         while ((next = graphicsQueue.poll()) != null) {
@@ -276,7 +295,6 @@ public class TextualUserInterface implements UserInterface {
         if(p.getShipBoard().isCompleted()){
             lineReader.printAbove("insert aliens on the Shipboard\n");
             if (p.getShipBoard().getAlienPoint().isPresent()){
-                try {
                     Point alienPoint=p.getShipBoard().getAlienPoint().get();
                     String selection = lineReader.readLine("insert alien on coordinates: "+alienPoint+"\n" +
                             "a --> astronaut\n" +
@@ -290,15 +308,11 @@ public class TextualUserInterface implements UserInterface {
                         case "a" : controller.userSelectTypeOfToken(playerId,Token.ASTRONAUT,alienPoint);break;
                         default: printUpdateMessage(error + "invalid choice");
                     }
-                }catch (RemoteException e){
-                    printUpdateMessage(error+e.getMessage());
-                }
             }else {
                 printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
             }
         }else throw new GameSettingsException("shipboard not completed yet");
     }
-
 
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
@@ -312,7 +326,7 @@ public class TextualUserInterface implements UserInterface {
         if (msg.contains(error))
             block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAttributedString();
         else
-            block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.BOLD.foreground(AttributedStyle.CYAN)).toAttributedString();
+            block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.DEFAULT.foreground(AttributedStyle.CYAN)).toAttributedString();
         lineReader.printAbove(block.toAnsi());
     }
     @Override
@@ -329,6 +343,13 @@ public class TextualUserInterface implements UserInterface {
             case 2 -> {//AdventureState
                 stringBuilder.append("+-------------------------------+\n")
                         .append("|       ADVENTURE STATE :)      |\n")
+                        .append("+-------------------------------+\n");
+                graphicsQueue.add(stringBuilder.toString());
+                updateLeaderBoard(gameSession.getLeaderBoard());
+            }
+            case 3 -> {//FinishState
+                stringBuilder.append("+-------------------------------+\n")
+                        .append("|         FINISH STATE :)          |\n")
                         .append("+-------------------------------+\n");
                 graphicsQueue.add(stringBuilder.toString());
             }
@@ -517,27 +538,106 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
-        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+        String str = "\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getPlayer(playerId).get().shipToString()+
-                "BuildState - commands:\n 12. ←-- go back \n\n"+
+                "State - commands:\n 12. ←-- go back \n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
     }
 
+    public String adventureStateMenu(){
+        return """
+                AdventureState - commands:\s
+                1.  DrawAdventureCard
+                2.  ThrowDices
+                3.  ActivateComponent
+                4.  InsertToken
+                5.  Deactivating
+                6.  LandOnPlanet
+                7.  LandOnStationOrShip
+                8.  AcceptPrizes
+                9.  StopFlight
+                10. DestroyedTiles
+                11. LookAtShipboard
+                12. ←-- go back
+                """;
+    }
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
-
+        StringBuilder str = new StringBuilder("\u001B[32mCARD INFO:\n");
+        for (int i = 0; i < message.length(); i++) {
+            if (i > 0 && i % 100 == 0) {
+                str.append("-\n-");
+            }
+            str.append(message.charAt(i));
+            str.append("\u001B[0m");
+        }
+        graphicsQueue.add(str.toString());
     }
 
+    private static final String[][] DICE = {
+            {
+                    "+ - - - - +",
+                    "|         |",
+                    "|    ●    |",
+                    "|         |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●      |",
+                    "|         |",
+                    "|      ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●      |",
+                    "|    ●    |",
+                    "|      ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●   ●  |",
+                    "|         |",
+                    "|  ●   ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ●   ●  |",
+                    "|    ●    |",
+                    "|  ●   ●  |",
+                    "+ - - - - +"
+            }, {
+                    "+ - - - - +",
+                    "|  ● ● ●  |",
+                    "|         |",
+                    "|  ● ● ●  |",
+                    "+ - - - - +"
+            }
+    };
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-
+        if(playerId == myId){
+            StringBuilder str = new StringBuilder();
+            str.append("Throwing...\n");
+            String[] dice1 = DICE[firstDice - 1];
+            String[] dice2 = DICE[secondDice - 1];
+            for (int i = 0; i < dice1.length; i++) {
+                str.append(dice1[i]).append("   ").append(dice2[i]);
+            }
+            lineReader.printAbove(str.toString());
+        }
     }
 
     @Override
-    public void updateDrawAdventureCard(int playerId, String cardId) {
-
+    public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
+        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getLeaderBoard()+
+                adventureCard+
+                adventureStateMenu()+
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+        graphicsQueue.add(str);
     }
 
     @Override
@@ -546,12 +646,12 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateFinishDecisionToken(int playerId, java.util.List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
+    public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
 
     }
 
     @Override
-    public void updateDeactivating(int playerId, java.util.List<Point> coordinates) {
+    public void updateDeactivating(int playerId, List<Point> coordinates) {
 
     }
 
@@ -615,6 +715,18 @@ public class TextualUserInterface implements UserInterface {
 
     }
 
+    @Override
+    public void updateLeaderBoard(LeaderBoard leaderBoard) {
+        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getLeaderBoard()+
+                adventureStateMenu()+
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+        graphicsQueue.add(str);
+    }
+
+
+
 
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
@@ -640,6 +752,9 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error+e.getMessage());
                         userSettings();
                         updateGameSessionNewPlayer(myId);
+                    } catch (Exception e) {
+                        printUpdateMessage(error+e.getMessage());
+                        // ????
                     }
                 }
                 case "2:0" -> { //SETUP GAME
@@ -738,7 +853,7 @@ public class TextualUserInterface implements UserInterface {
                         //updateLookUncoveredTile(myId,new Point(0,0));
                     }
                 }
-                case "9:1"->{//lookAtShipboard
+                case "9:1", "11:2" ->{//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
                     try{
                         for (Player p:gameSession.getGame().get().getListPlayers()){
@@ -764,6 +879,40 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "12:1"->{//go back
                     updatePlaceTile(myId,new Point(7,7));
+                }
+
+                case "1:2" ->{//ThrowDices
+                    controller.userDrawAdventureCard(myId);
+                }
+                case "2:2" -> {//DrawAdventureCard
+                    controller.userThrowDices(myId);
+                }
+                case "3:2" -> {//ActivateComponent
+                    printUpdateMessage("activateComponent not implemented yet");
+                }
+                case "4:2" -> {//InsertToken
+                    printUpdateMessage("insertToken not implemented yet");
+                }
+                case "5:2" -> {//Deactivating
+                    printUpdateMessage("deactivating not implemented yet");
+                }
+                case "6:2" -> {//LandOnPlanet
+                    printUpdateMessage("landOnPlanet not implemented yet");
+                }
+                case "7:2" -> {//LandOnStationOrShip
+                    printUpdateMessage("landOnStationOrShip not implemented yet");
+                }
+                case "8:2" -> {//AcceptPrizes
+                    printUpdateMessage("acceptPrizes not implemented yet");
+                }
+                case "9:2" -> {//stopFlight
+                    printUpdateMessage("stopFlight not implemented yet");
+                }
+                case "10:2" -> {//destroyedTiles
+                    printUpdateMessage("destroyedTiles not implemented yet");
+                }
+                case "12:2" -> {//go back
+                    printUpdateMessage("goBack not implemented yet");
                 }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }

@@ -47,6 +47,9 @@ public class ServerController {
         playersSocket.add(playerId);
     }
 
+    public boolean isInPlayers(int playerId) {
+        return playersRMI.contains(playerId) || playersSocket.contains(playerId);
+    }
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
@@ -198,6 +201,7 @@ public class ServerController {
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
+                e.printStackTrace();
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish shipboard hasn't worked in Server ->  " + e.getMessage());

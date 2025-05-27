@@ -49,7 +49,7 @@ public abstract class AdventureCard {
     public abstract String toString();
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
-        userInterface.updateDrawAdventureCard(gameBoard.getCurrentPlayer().getIdPlayer(),cardId);
+        userInterface.updateDrawAdventureCard(gameBoard.getCurrentPlayer().getIdPlayer(),this);
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 

@@ -1,10 +1,14 @@
 package it.polimi.ingsw.is25am49.client;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.util.Set;
 import java.util.List;
 import java.awt.*;
@@ -36,7 +40,7 @@ public interface UserInterface {
     //ADVENTURE STATE:
     public void updateGenericCardMessage(int playerId, String message);
     public void updateThrowDices(int playerId, int firstDice, int secondDice);
-    public void updateDrawAdventureCard(int playerId, String cardId);
+    public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard);
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates);
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens,boolean removing);
     public void updateDeactivating(int playerId, List<Point> coordinates);
@@ -52,8 +56,9 @@ public interface UserInterface {
     public void updateEffectMeteorite(int playerId, Point coordinate, Token token);
     public void updateEarnedCredits(int playerId, int credits);
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles);
+    public void updateLeaderBoard(LeaderBoard leaderBoard);
 
-
+    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException;
     public void setGameSession(GameSession gameSession);//TODO sus non penso serva
 
 
