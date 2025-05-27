@@ -337,7 +337,7 @@ public class ClientController {
             command.addParameter(tileId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -351,7 +351,7 @@ public class ClientController {
             command.addParameter(orientation);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -364,7 +364,7 @@ public class ClientController {
             command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
     }
 
@@ -375,7 +375,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -387,7 +387,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -400,7 +400,7 @@ public class ClientController {
             command.addParameter(smallDeckIndex);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -413,7 +413,7 @@ public class ClientController {
             command.addParameter(smallDeckIndex);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -425,7 +425,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -439,7 +439,7 @@ public class ClientController {
             command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -451,7 +451,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -463,7 +463,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -476,7 +476,7 @@ public class ClientController {
             command.addParameter(coordinates);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -489,7 +489,7 @@ public class ClientController {
             command.addParameter(listOfTokens);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -502,7 +502,7 @@ public class ClientController {
             command.addParameter(wantsRewards);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
     }
 
@@ -515,7 +515,7 @@ public class ClientController {
             command.addParameter(planetId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
     }
 
@@ -527,7 +527,7 @@ public class ClientController {
             command.addParameter(isLanded);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
     }
 
@@ -537,7 +537,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
@@ -549,7 +549,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
     }
 
@@ -560,7 +560,7 @@ public class ClientController {
             command.addParameter(playerId);
             serverMethods.command_FromClientToServer(command);
         } catch (Exception e) {
-            ui.printUpdateMessage(e.getMessage());
+            ui.printUpdateMessage(error+e.getMessage());
         }
 
     }
