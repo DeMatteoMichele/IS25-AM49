@@ -186,6 +186,9 @@ public class AdventureState extends State {
     public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates){
         gameSession.checkFinishDecisionActivatingStates();
         Player player = getPlayerById(playerId);
+        for (Point p: coordinates) {
+            player.getShipBoard().checkCoordinates(p);
+        }
         Player currentPlayer = getCurrentPlayer();
         if(!player.equals(currentPlayer)){
             throw new IllegalMethodOnThisStateException("You are not the current player");
@@ -197,6 +200,9 @@ public class AdventureState extends State {
         gameSession.checkFinishDecisionTokenStates();
         Player player = getPlayerById(playerId);
         Player currentPlayer = getCurrentPlayer();
+        for (Pair<Point, Token> p: listOfTokens) {
+            player.getShipBoard().checkCoordinates(p.getKey());
+        }
         if(!player.equals(currentPlayer)){
             throw new IllegalMethodOnThisStateException("You are not the current player");
         }

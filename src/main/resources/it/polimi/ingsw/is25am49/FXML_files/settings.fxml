@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="Stack" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="it.polimi.ingsw.is25am49.client.GUI.settingsController">
+         <ImageView fx:id="backgroundImage" pickOnBounds="true">
+         </ImageView>
+
+
+   <Pane prefHeight="647.0" prefWidth="1000.0">
+      <Button fx:id="yesReconnection" layoutX="534.0" layoutY="67.0" mnemonicParsing="false"
+              onAction="#handleReconnection"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="YES"/>
+      <Label contentDisplay="BOTTOM" layoutX="10.0" layoutY="87.0" prefHeight="39.0" prefWidth="386.0"
+             style="-fx-text-fill: white; -fx-font-size: 16; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2; -fx-padding: 5;"
+             text="Do you want to reconnect to a previous game?" textAlignment="CENTER"/>
+      <Button fx:id="noReconnection" layoutX="534.0" layoutY="126.0" mnemonicParsing="false"
+              onAction="#disableReconnectionButtons"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="NO"/>
+      <Label fx:id="usernameLabel" layoutX="12.0" layoutY="223.0" prefHeight="39.0" prefWidth="372.0"
+             style="-fx-text-fill: white; -fx-font-size: 16; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2; -fx-padding: 5;"
+             text="Please insert your username: "/>
+      <TextField fx:id="usernameTextField" layoutX="429.0" layoutY="225.0" prefHeight="30.0" prefWidth="260.0"
+                 style="-fx-font-size: 16;"/>
+      <Label layoutX="24.0" layoutY="333.0" prefHeight="39.0" prefWidth="293.0"
+             style="-fx-text-fill: white; -fx-font-size: 16; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2; -fx-padding: 5;"
+             text="Choose the connection method"/>
+      <Button fx:id="rmiButton" layoutX="532.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleRMI"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="RMI"/>
+      <Button fx:id="socketButton" layoutX="509.0" layoutY="372.0" mnemonicParsing="false" onAction="#handleSocket"
+              prefHeight="30.0" prefWidth="100.0"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="SOCKET"/>
+      <Label fx:id="retryLabel" layoutX="33.0" layoutY="464.0" prefHeight="39.0" prefWidth="433.0"
+             style="-fx-text-fill: white; -fx-font-size: 16; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2; -fx-padding: 5;"
+             text="CONNECTION FAILED! Do you want to retry?"/>
+      <Button fx:id="yesRetry" layoutX="584.0" layoutY="444.0" mnemonicParsing="false" onAction="#yesRetry"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="YES"/>
+      <Button fx:id="noRetry" layoutX="584.0" layoutY="503.0" mnemonicParsing="false" onAction="#noRetry"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="NO"/>
+      <Button fx:id="usernameButton" layoutX="757.0" layoutY="225.0" mnemonicParsing="false"
+              onAction="#handleUsername" prefHeight="30.0" prefWidth="100.0"
+              style="-fx-background-radius: 10; -fx-font-size: 16; -fx-text-fill: black; -fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 2;"
+              text="CONFIRM" textFill="#613e3e"/>
+   </Pane>
+
+
+</StackPane>

@@ -6,6 +6,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -14,6 +16,7 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -326,7 +329,7 @@ public class TextualUserInterface implements UserInterface {
         if (msg.contains(error))
             block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).toAttributedString();
         else
-            block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.DEFAULT.foreground(AttributedStyle.CYAN)).toAttributedString();
+            block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.INVERSE_OFF.foreground(AttributedStyle.CYAN)).toAttributedString();
         lineReader.printAbove(block.toAnsi());
     }
     @Override
@@ -538,9 +541,9 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
-        String str = "\n"+"_".repeat( 200) + "\n\n" +
+        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getPlayer(playerId).get().shipToString()+
-                "State - commands:\n 12. ←-- go back \n\n"+
+                "BuildState - commands:\n 12. ←-- go back \n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -553,7 +556,6 @@ public class TextualUserInterface implements UserInterface {
                 2.  ThrowDices
                 3.  ActivateComponent
                 4.  InsertToken
-                5.  Deactivating
                 6.  LandOnPlanet
                 7.  LandOnStationOrShip
                 8.  AcceptPrizes
@@ -565,15 +567,17 @@ public class TextualUserInterface implements UserInterface {
     }
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
-        StringBuilder str = new StringBuilder("\u001B[32mCARD INFO:\n");
-        for (int i = 0; i < message.length(); i++) {
-            if (i > 0 && i % 100 == 0) {
-                str.append("-\n-");
+        if (playerId == myId){
+            StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
+            for (int i = 0; i < message.length(); i++) {
+                if (i > 0 && i % 100 == 0) {
+                    str.append("-\n         -");
+                }
+                str.append(message.charAt(i));
             }
-            str.append(message.charAt(i));
-            str.append("\u001B[0m");
+            str.append("\n\u001B[0m");
+            graphicsQueue.add(str.toString());
         }
-        graphicsQueue.add(str.toString());
     }
 
     private static final String[][] DICE = {
@@ -642,27 +646,50 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
-
+        StringBuilder str = new StringBuilder();
+        Player p = gameSession.getPlayer(playerId).get();
+        str.append("Player ").append(p.getUsername()).append(" has activated:");
+        for (Point pt : coordinates) {
+            try{
+                Tile t=p.getShipBoard().getTile(pt);
+                str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+            }catch(Exception _){}
+        }
+        updateGenericCardMessage(myId,str.toString());
     }
 
     @Override
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
-
+        StringBuilder str = new StringBuilder();
+        Player p = gameSession.getPlayer(playerId).get();
+        str.append("Player ").append(p.getUsername()).append(" has ").append(removing ? "removed" : "inserted").append(" the following tokens:\n");
+        for (Pair<Point, Token> pt : listOfTokens) {
+            try{
+                Tile t=p.getShipBoard().getTile(pt.getKey());
+                str.append("[").append(pt.getKey().x).append(",").append(pt.getKey().y).append("] - ").append(pt.getValue()).append("\n");
+            }catch(Exception _){}
+        }
+        updateGenericCardMessage(myId,str.toString());
     }
 
     @Override
     public void updateDeactivating(int playerId, List<Point> coordinates) {
-
+        //non chiaro
     }
+
 
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-
+        Player p = gameSession.getPlayer(playerId).get();
+        if(isLanded) updateGenericCardMessage(myId,"Player " + p.getUsername() + " has landed on planet with ID: " + planetId+ " successfully!");
+        else printUpdateMessage("Player " + p.getUsername() + " decided not to land");
     }
 
     @Override
     public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
-
+        Player p = gameSession.getPlayer(playerId).get();
+        if(isLanded) updateGenericCardMessage(myId,"Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
+        else printUpdateMessage("Player " + p.getUsername() + " decided not to land");
     }
 
     @Override
@@ -675,51 +702,76 @@ public class TextualUserInterface implements UserInterface {
 
     }
 
+    public void updateShipBoard(int playerId) {
+        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getPlayer(playerId).get().shipToString()+
+                "AdventureState - commands:\n 12. ←-- go back \n\n"+
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+        graphicsQueue.add(str);
+    }
+
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEffectModifyCrew");
+        }
     }
 
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEffectCannonade");
+        }
     }
 
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEffectLoseGoods");
+        }
     }
 
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEffectWinGoods");
+        }
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEffectModifyEnergy");
+        }
     }
 
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEffectMeteorite");
+        }
     }
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
-
+        if (playerId==myId){
+            printUpdateMessage("dentro updateEarnedCredits");
+        }
     }
 
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
-
+        if (idPlayer==myId){
+            printUpdateMessage("dentro updateDestroyedTiles");
+        }
     }
 
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
         String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getLeaderBoard()+
-                adventureStateMenu()+
+                "AdventureState - commands:\n 1. DrawAdventureCard \n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -754,7 +806,7 @@ public class TextualUserInterface implements UserInterface {
                         updateGameSessionNewPlayer(myId);
                     } catch (Exception e) {
                         printUpdateMessage(error+e.getMessage());
-                        // ????
+                        updateGameSessionNewPlayer(myId);
                     }
                 }
                 case "2:0" -> { //SETUP GAME
@@ -888,19 +940,53 @@ public class TextualUserInterface implements UserInterface {
                     controller.userThrowDices(myId);
                 }
                 case "3:2" -> {//ActivateComponent
-                    printUpdateMessage("activateComponent not implemented yet");
+                    HashSet<Point> points=new HashSet<>();
+                    String s= "";
+                    lineReader.printAbove("insert all the points you want to activate (s to stop):  ");
+                    while (!s.equalsIgnoreCase("s")){
+                        try{
+                            s = lineReader.readLine("Insert the coordinates (x,y) >> ");
+                            String[] coordinates = s.trim().split("\\s+");
+                            int x = Integer.parseInt(coordinates[0]);
+                            int y = Integer.parseInt(coordinates[1]);
+                            points.add(new Point(x,y));
+                        }catch (Exception e){
+                            printUpdateMessage(error+e.getMessage());
+                        }
+                    }
+                    if (!points.isEmpty())controller.userFinishDecisionActivating(myId, points);
+                    else printUpdateMessage(error+"no point inserted");
                 }
                 case "4:2" -> {//InsertToken
+                    //controller.userFinishDecisionToken();
                     printUpdateMessage("insertToken not implemented yet");
                 }
                 case "5:2" -> {//Deactivating
                     printUpdateMessage("deactivating not implemented yet");
                 }
                 case "6:2" -> {//LandOnPlanet
-                    printUpdateMessage("landOnPlanet not implemented yet");
+                    try {
+                        String s = lineReader.readLine("do you want to land? (y/n) >> ");
+                        boolean isLanded = false;
+                        int planetId = -1;
+                        if (s.equalsIgnoreCase("y")){
+                            isLanded = true;
+                            s = lineReader.readLine("Insert the planet id >> ");
+                            planetId = Integer.parseInt(s.trim());
+                        }
+                        controller.userLandOnPlanet(myId, isLanded, planetId);
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
+                    }
                 }
                 case "7:2" -> {//LandOnStationOrShip
-                    printUpdateMessage("landOnStationOrShip not implemented yet");
+                    try {
+                        String s = lineReader.readLine("do you want to land? (y/n) >> ");
+                        if (s.equalsIgnoreCase("y"))controller.userLandOnStationOrShip(myId, true);
+                        else controller.userLandOnStationOrShip(myId, false);
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
+                    }
                 }
                 case "8:2" -> {//AcceptPrizes
                     printUpdateMessage("acceptPrizes not implemented yet");
