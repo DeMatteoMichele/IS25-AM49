@@ -27,7 +27,11 @@ public class Command implements Serializable {
         this.playerId = -5;
         if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket") || methodName.equals("registerClientRMI")) {
             typeOfMessage = "HSK";
-        } else {
+        }
+        else if (methodName.equals("heartbeat")) {
+            typeOfMessage = "HTB";
+        }
+        else {
             typeOfMessage = "MSG";
         }
     }
@@ -37,7 +41,11 @@ public class Command implements Serializable {
         this.playerId = playerId;
         if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")|| methodName.equals("registerClientRMI")) {
             typeOfMessage = "HSK";
-        } else {
+        }
+        else if (methodName.equals("heartbeat")) {
+            typeOfMessage = "HTB";
+        }
+        else {
             typeOfMessage = "MSG";
         }
     }

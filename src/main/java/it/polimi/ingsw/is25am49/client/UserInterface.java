@@ -7,6 +7,8 @@ import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.util.Set;
 import java.util.List;
 import java.awt.*;
@@ -56,7 +58,7 @@ public interface UserInterface {
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles);
     public void updateLeaderBoard(LeaderBoard leaderBoard);
 
-
+    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException;
     public void setGameSession(GameSession gameSession);//TODO sus non penso serva
 
 
