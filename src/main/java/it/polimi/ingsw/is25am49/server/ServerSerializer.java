@@ -95,7 +95,6 @@ public class ServerSerializer implements RemoteClient {
         synchronized (serverController) {
             Command commandTemp = deSerializeStringFromClient(command);
             Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
-            serverController.addPlayerToLobbySocket(commandToSend.getPlayerId());
             serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
             return commandTemp.getPlayerId();
         }

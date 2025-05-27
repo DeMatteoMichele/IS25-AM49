@@ -48,10 +48,6 @@ public class ClientHandler {
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
         directory = new File("$FilesFromClients");
-        if (!directory.exists()) {
-            System.out.println("Directory doesn't exist, creating it");
-            directory.mkdirs();
-        }
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -364,6 +360,5 @@ public class ClientHandler {
 
     public void gameStarted() {
         gameStarted = true;
-        System.out.println("Game started");
     }
 }
