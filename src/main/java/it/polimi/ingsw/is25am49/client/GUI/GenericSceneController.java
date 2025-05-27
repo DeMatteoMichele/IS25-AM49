@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.GUI;
 
+import it.polimi.ingsw.is25am49.client.model.GameSession;
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -10,10 +11,9 @@ import java.util.PrimitiveIterator;
 public class GenericSceneController {
 
 
-
+    private GameSession gameSession;
     private GraphicUserInterface guiApplication;
 
-    @FXML
 
 
     /**
@@ -21,8 +21,12 @@ public class GenericSceneController {
      *
      * @param guiApplication The GUI application instance.
      */
-    public void setGui(GraphicUserInterface guiApplication) {
+    public void setGui(GraphicUserInterface guiApplication, GameSession gameSession) {
         this.guiApplication = guiApplication;
+        this.gameSession = gameSession;
+    }
+    public GameSession  getGameSession() {
+        return gameSession;
     }
 
     /**

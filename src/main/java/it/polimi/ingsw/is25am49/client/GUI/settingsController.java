@@ -5,6 +5,8 @@ import it.polimi.ingsw.is25am49.client.ClientRMI;
 import it.polimi.ingsw.is25am49.client.ClientSerializer;
 import it.polimi.ingsw.is25am49.client.ServerHandler;
 import it.polimi.ingsw.is25am49.client.ClientRMI;
+import it.polimi.ingsw.is25am49.shared.RemoteClient;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 import java.rmi.RemoteException;
@@ -115,10 +119,17 @@ public class settingsController extends GenericSceneController {
     @FXML
     private void handleUsername(ActionEvent event) {
         username = usernameTextField.getText().trim();
+
         if (username.isEmpty()) {
             getGui().showError(getStage(), "Please enter a username!");
+        } else if (username.length()>20) {
+            getGui().showError(getStage(), "Username too long! Maximum length is 20 characters.");
+            usernameTextField.setText("");
+        } else if (username.contains(" ")) {
+            getGui().showError(getStage(), "Username contains spaces!");
         } else {
             System.out.println("Username set to: " + username);
+           getGui().setUsername(username);
             getGui().getController().setUsername(username);
             if (!isAlreadyConnected) {
                 System.out.println("entrato");
@@ -134,24 +145,39 @@ public class settingsController extends GenericSceneController {
     @FXML
     private void handleRMI(ActionEvent event) {
         try {
-            ClientRMI clientRMI = new ClientRMI(getGui().getGameSession());
-            ClientController controller = getGui().getController();
+
             try {
-                controller.setServerMethods(clientRMI.connect(serverIP, serverPortRMI));
+                RemoteClient remoteClient;
+                ClientController controller = getGui().getController();
+                ClientRMI clientRMI = new ClientRMI(controller);
+                RemoteServer serverStub;
+                Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
+                serverStub = (RemoteServer) reg.lookup("Server");
+                System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+                controller.setServerMethods(serverStub);
                 try {
                     System.out.println("trying to log in to the server ...");
-                    UnicastRemoteObject.exportObject(clientRMI, 0);
                     controller.registerClientRMI(clientRMI);
                     System.out.println("client logged");
-                    disableConnectionButtons();
+                    getGui().showScene(ScenesName.INIT);
                 } catch (RemoteException e) {
+
+                    System.out.println("errore RMI");
                     getGui().showError(getStage(), e.getMessage());
+                    disableConnectionButtons();
+                    enableRetryVisibility();
                 }
             } catch (RemoteException e) {
-                getGui().showError(getStage(), e.getMessage());
+                System.out.println("errore RMI");
+                getGui().showError(getStage(), "Error connecting to the server");
+                disableConnectionButtons();
+                enableRetryVisibility();
             }
         } catch (Exception e) {
-            getGui().showError(getStage(), e.getMessage());
+            System.out.println("errore RMI");
+            getGui().showError(getStage(), "Error connecting to the server");
+            disableConnectionButtons();
+            enableRetryVisibility();
         }
     }
 
@@ -176,7 +202,7 @@ public class settingsController extends GenericSceneController {
 
         } catch (Exception e) {
             System.out.println("errore");
-            getGui().showError(getStage(), e.getMessage());
+            getGui().showError(getStage(), "Error connecting to the server");
             disableConnectionButtons();
             enableRetryVisibility();
         }
