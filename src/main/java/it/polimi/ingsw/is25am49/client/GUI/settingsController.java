@@ -14,6 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -147,38 +150,56 @@ public class settingsController extends GenericSceneController {
         try {
 
             try {
-                RemoteClient remoteClient;
-                ClientController controller = getGui().getController();
-                ClientRMI clientRMI = new ClientRMI(controller);
-                RemoteServer serverStub;
-                Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
-                serverStub = (RemoteServer) reg.lookup("Server");
-                System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
-                controller.setServerMethods(serverStub);
-                try {
-                    System.out.println("trying to log in to the server ...");
-                    controller.registerClientRMI(clientRMI);
-                    System.out.println("client logged");
-                    getGui().showScene(ScenesName.INIT);
-                } catch (RemoteException e) {
+                ClientRMI clientRMI = null;
+                connectionRMI(false, clientRMI);
+
+            }catch (RemoteException e) {
 
                     System.out.println("errore RMI");
                     getGui().showError(getStage(), e.getMessage());
                     disableConnectionButtons();
                     enableRetryVisibility();
                 }
-            } catch (RemoteException e) {
-                System.out.println("errore RMI");
-                getGui().showError(getStage(), "Error connecting to the server");
-                disableConnectionButtons();
-                enableRetryVisibility();
-            }
+
         } catch (Exception e) {
             System.out.println("errore RMI");
             getGui().showError(getStage(), "Error connecting to the server");
             disableConnectionButtons();
             enableRetryVisibility();
         }
+    }
+    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
+        RemoteServer serverStub;
+        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
+        serverStub = (RemoteServer) reg.lookup("Server");
+        ClientController controller = getGui().getController();
+        if (!isReconnecting) {
+            clientRMI = new ClientRMI(controller, serverStub, getGui());
+            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+                getGui().showScene(ScenesName.INIT);
+            } catch (RemoteException e) {
+                getGui().showError(getStage(), e.getMessage());
+
+            }
+        } else {
+            clientRMI.replaceServerStub(serverStub);
+            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+            } catch (RemoteException e) {
+                System.out.println("client failed logging on server RMI --> " + e.getMessage());
+                getGui().showError(getStage(), "client failed logging on server RMI --> " + e.getMessage());
+            }
+        }
+
     }
 
     @FXML

@@ -2,6 +2,8 @@ package it.polimi.ingsw.is25am49.client.GUI;
 
 import it.polimi.ingsw.is25am49.client.*;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
+import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.animation.PauseTransition;
@@ -27,7 +29,9 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URL;
+import java.rmi.NotBoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -309,9 +313,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     @Override
-    public void updateDrawAdventureCard(int playerId, String cardId) {
+    public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
 
     }
+
 
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
@@ -385,6 +390,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
+
+    }
+
+    @Override
+    public void updateLeaderBoard(LeaderBoard leaderBoard) {
+
+    }
+
+    @Override
+    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
 
     }
 
