@@ -19,38 +19,18 @@ public class ClientSerializer implements RemoteServer {
     private BlockingQueue<Command> filesFromSocketQueue;
     private final ExecutorService executors;
     private GameSession gameSession;
-    private final File directory;
-
-    public ClientSerializer(GameSession session, ClientController clientController) {
-        this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
-        executors = Executors.newFixedThreadPool(20);
-        executors.submit(this::processFilesFromSocketQueue);
-        gameSession = session;
-        this.clientController = clientController;
-        directory = new File("$FilesFromClientSerializer");
-        if (!directory.exists()) {
-            System.out.println("Directory doesn't exist, creating it");
-            directory.mkdirs();
-        }
-    }
 
     public ClientSerializer(ClientController clientController) {
         this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
         executors = Executors.newFixedThreadPool(20);
         executors.submit(this::processFilesFromSocketQueue);
         this.clientController = clientController;
-        directory = new File("$FilesFromClientSerializer");
-        if (!directory.exists()) {
-            System.out.println("Directory doesn't exist, creating it");
-            directory.mkdirs();
-        }
     }
 
     private void processFilesFromSocketQueue() {
         while (true) {
             try {
                 Command command = filesFromSocketQueue.take();
-                System.out.println("Processing file: ");
                 deSerializeStringFromServer(command);
             } catch (InterruptedException e) {
                 System.out.println("Error while taking the message from the queue, thread has been interrupted");

@@ -137,7 +137,7 @@ public class ServerSerializer implements RemoteClient {
 //        }
 //    }
 
-    public boolean isInPlayers(int playerId) {
-        return serverController.isInPlayers(playerId);
-    }
+//    public boolean isInPlayers(int playerId) {
+//        return serverController.isInPlayers(playerId);
+//    }
 }
