@@ -124,20 +124,7 @@ public class ServerSerializer implements RemoteClient {
     }
 
 
-//    public boolean checkIfIsInitState(File fileJson) {
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            JsonNode rootNode = mapper.readTree(fileJson);
-//            String methodName = rootNode.get("methodName").asText();
-//            return methodName.equals("playerJoinCallback") || methodName.equals("adminSetupCallback");
-//        } catch (IOException e) {
-//            System.err.println("Errore di I/O nella lettura del file: " + fileJson.getAbsolutePath());
-//            System.err.println("Messaggio di errore: " + e.getMessage());
-//            return false;
-//        }
-//    }
-
-//    public boolean isInPlayers(int playerId) {
-//        return serverController.isInPlayers(playerId);
-//    }
+    public boolean isInPlayers(int playerId) {
+        return serverController.isInPlayers(playerId);
+    }
 }
