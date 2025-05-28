@@ -76,6 +76,7 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(username, playerId);
+                addPlayerToLobbySocket(playerId);
                 if(playersRMI.contains(playerId)) {
                     serverRMI.sayToServerRMIWhoHasJoined(playerId);
                 }

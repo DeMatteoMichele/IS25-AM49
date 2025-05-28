@@ -48,10 +48,6 @@ public class ClientHandler {
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
         directory = new File("$FilesFromClients");
-        if (!directory.exists()) {
-            System.out.println("Directory doesn't exist, creating it");
-            directory.mkdirs();
-        }
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -165,7 +161,6 @@ public class ClientHandler {
                 shutDownClientRelated(clientId);
             } catch (IOException e) {
                 System.out.println("Error while listening to client " + clientId + " shutting down his connection");
-                e.printStackTrace();
                 shutDownClientRelated(clientId);
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the String in the queue for client " + clientId + " cause thread was interrupted");
@@ -195,7 +190,7 @@ public class ClientHandler {
         try {
             historyQueue.put(command);
         } catch (InterruptedException e) {
-            System.out.println("Error while putting the file in the historyqueue, thread has been interrupted");
+            System.out.println("Error while putting the file in the historyQueue, thread has been interrupted");
         }
     }
 
@@ -233,8 +228,7 @@ public class ClientHandler {
                 outGoingFileQueue.get(clientId).push(command);
         } catch (IOException e) {
             shutDownClientRelated(clientId);
-            System.out.println("Error while sending message in sendmessagetospecificlient " + clientId + " shutting down his connection");
-            e.printStackTrace();
+            System.out.println("Error while sending message in sendMessageToSpecifiClient " + clientId + " shutting down his connection");
             outGoingFileQueue.get(clientId).push(command);
         }
     }
@@ -282,7 +276,7 @@ public class ClientHandler {
             try {
                 outGoingFileQueue.get(clientId).put(command);
             } catch (InterruptedException e) {
-                System.out.println("Error while putting the file in the outGoingFileQueue from historyqueue, thread has been interrupted");
+                System.out.println("Error while putting the file in the outGoingFileQueue from historyQueue, thread has been interrupted");
             }
         }
     }
@@ -364,6 +358,5 @@ public class ClientHandler {
 
     public void gameStarted() {
         gameStarted = true;
-        System.out.println("Game started");
     }
 }

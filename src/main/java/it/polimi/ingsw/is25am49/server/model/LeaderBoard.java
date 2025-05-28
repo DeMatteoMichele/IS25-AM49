@@ -220,6 +220,7 @@ public class LeaderBoard {
         mapLeaderboard.put(player, days-i);
         arrayLeaderboard.add(Map.entry(player, days-i));
         showableLeaderBoard.set(moduleNumberOfCells(days-i), Optional.of(player));
+        sort();
     }
 
 }
