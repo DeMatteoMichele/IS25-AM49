@@ -250,6 +250,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 contr.getInfo().getItems().add("Players: 1/4");
                 contr.getInfo().getItems().add("Game mode--> DEFAULT");
                 contr.getInfo().getItems().add("Max players--> 4 (DEFAULT)");
+                if(myId==playerId){
+                    contr.showAdmin();
+                }
             } else if (gameSession.getGame().isPresent()) {
 
                 contr.setupLobbyListView();

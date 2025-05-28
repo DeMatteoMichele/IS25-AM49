@@ -35,6 +35,8 @@ public class initController extends GenericSceneController{
     private Label welcome;
     @FXML
     private ListView<String> info;
+    @FXML
+    private Label labelAdmin;
     private GameMode mode;
 
 
@@ -50,6 +52,7 @@ public class initController extends GenericSceneController{
             }
         });
     }
+
     public void setWelcome(String username) {
         welcome.setText("WELCOME TO THE GAME:  " + username.toUpperCase() + "!");
         welcome.setStyle("-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0); -fx-padding: 10;");
@@ -143,6 +146,9 @@ public void setupLobbyListView() {
     public ListView<String> getInfo() {
         return info;
     }
+    public void showAdmin(){
+        labelAdmin.setVisible(true);
+    }
     private void disableAll() {
         labelMaxPlayers.setVisible(false);
         textMaxPlayers.setVisible(false);
@@ -152,6 +158,7 @@ public void setupLobbyListView() {
         buttonLv2.setVisible(false);
         buttonFlightMode.setVisible(false);
         buttonMaxPlayers.setVisible(false);
+        labelAdmin.setVisible(false);
     }
     private void enableAll() {
         labelMaxPlayers.setVisible(true);
