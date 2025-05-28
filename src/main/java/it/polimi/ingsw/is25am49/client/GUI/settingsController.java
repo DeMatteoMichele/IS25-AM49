@@ -124,12 +124,12 @@ public class settingsController extends GenericSceneController {
         username = usernameTextField.getText().trim();
 
         if (username.isEmpty()) {
-            getGui().showError(getStage(), "Please enter a username!");
+            getGui().printUpdateMessage(getError()+ " Please enter a username!");
         } else if (username.length()>20) {
-            getGui().showError(getStage(), "Username too long! Maximum length is 20 characters.");
+            getGui().printUpdateMessage(getError() + " Username too long! Maximum length is 20 characters.");
             usernameTextField.setText("");
         } else if (username.contains(" ")) {
-            getGui().showError(getStage(), "Username contains spaces!");
+            getGui().printUpdateMessage( getError()+ " Username contains spaces!");
         } else {
             System.out.println("Username set to: " + username);
            getGui().setUsername(username);
@@ -156,14 +156,14 @@ public class settingsController extends GenericSceneController {
             }catch (RemoteException e) {
 
                     System.out.println("errore RMI");
-                    getGui().showError(getStage(), e.getMessage());
+                    getGui().printUpdateMessage(getError() + "Error connecting to the server");
                     disableConnectionButtons();
                     enableRetryVisibility();
                 }
 
         } catch (Exception e) {
             System.out.println("errore RMI");
-            getGui().showError(getStage(), "Error connecting to the server");
+            getGui().printUpdateMessage( getError() + " Error connecting to the server");
             disableConnectionButtons();
             enableRetryVisibility();
         }
@@ -183,8 +183,9 @@ public class settingsController extends GenericSceneController {
                 System.out.println("client logged");
                 getGui().showScene(ScenesName.INIT);
             } catch (RemoteException e) {
-                getGui().showError(getStage(), e.getMessage());
-
+                getGui().printUpdateMessage(getError() + e.getMessage());
+                disableConnectionButtons();
+                enableRetryVisibility();
             }
         } else {
             clientRMI.replaceServerStub(serverStub);
@@ -196,7 +197,7 @@ public class settingsController extends GenericSceneController {
                 System.out.println("client logged");
             } catch (RemoteException e) {
                 System.out.println("client failed logging on server RMI --> " + e.getMessage());
-                getGui().showError(getStage(), "client failed logging on server RMI --> " + e.getMessage());
+                getGui().printUpdateMessage(getError()+ " client failed logging on server RMI --> " + e.getMessage());
             }
         }
 
@@ -207,7 +208,6 @@ public class settingsController extends GenericSceneController {
 
 
         try {
-
             ClientController controller = getGui().getController();
             ClientSerializer clientSerializer = new ClientSerializer(controller);
             ServerHandler serverHandler = new ServerHandler(serverIP, serverPortSocket);
@@ -223,7 +223,7 @@ public class settingsController extends GenericSceneController {
 
         } catch (Exception e) {
             System.out.println("errore");
-            getGui().showError(getStage(), "Error connecting to the server");
+            getGui().printUpdateMessage(getError() + " Error connecting to the server");
             disableConnectionButtons();
             enableRetryVisibility();
         }

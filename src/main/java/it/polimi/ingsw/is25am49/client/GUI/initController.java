@@ -33,6 +33,8 @@ public class initController extends GenericSceneController{
     private ListView<String> lobby;
     @FXML
     private Label welcome;
+    @FXML
+    private ListView<String> info;
     private GameMode mode;
 
 
@@ -48,8 +50,80 @@ public class initController extends GenericSceneController{
             }
         });
     }
-    public void setupLobbyListView() {
-        lobby.setCellFactory(listView -> new ListCell<>() {
+    public void setWelcome(String username) {
+        welcome.setText("WELCOME TO THE GAME:  " + username.toUpperCase() + "!");
+        welcome.setStyle("-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0); -fx-padding: 10;");
+    }
+//    public void setupLobbyListView() {
+//        lobby.setCellFactory(listView -> new ListCell<>() {
+//            @Override
+//            protected void updateItem(String item, boolean empty) {
+//                super.updateItem(item, empty);
+//                if (empty || item == null) {
+//                    setText(null);
+//                    setStyle("");
+//                } else {
+//                    setText(item);
+//                    setStyle("-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0); -fx-padding: 10;");
+//                }
+//            }
+//        });
+//    }
+public void setupLobbyListView() {
+    lobby.setCellFactory(listView -> new ListCell<>() {
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+                setStyle("");
+                setGraphic(null);
+            } else {
+                String username = item;
+                String colorHex = "#FFFFFF"; // default bianco
+                boolean isDuplicate = false;
+                boolean hasDuplicateColor = false;
+
+                //tengo traccia dei coloir già visti
+                java.util.Set<String> seenColors = new java.util.HashSet<>();
+                java.util.Set<String> seenUsernames = new java.util.HashSet<>();
+
+                var players = getGui().getGameSession().getGame().get().getListPlayers();
+
+                // Verifica duplicati di username
+                for (var player : players) {
+                    String playerUsername = player.getUsername();
+                    String playerColor = String.valueOf(player.getColor());
+                    //guardo se ci sono doppioni
+                    if (!seenColors.add(playerColor)) {
+                        System.out.println("ATTENZIONE: Colore duplicato rilevato: " + playerColor);
+                        hasDuplicateColor = true;
+                    }
+
+                    //colore per lo username
+                    if (username.contains(playerUsername)) {
+                        colorHex = playerColor;
+                    }
+                }
+
+                // creo quadratino del colore
+                javafx.scene.shape.Rectangle colorSquare = new javafx.scene.shape.Rectangle(20, 20);
+                colorSquare.setFill(javafx.scene.paint.Color.web(colorHex));
+                colorSquare.setStroke(javafx.scene.paint.Color.BLACK);
+
+                // creo un box con testo e colore
+                javafx.scene.layout.HBox container = new javafx.scene.layout.HBox(10);
+                Label usernameLabel = new Label(username);
+                container.getChildren().addAll(colorSquare, usernameLabel);
+
+                setGraphic(container);
+                setStyle("-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0); -fx-padding: 10;");
+            }
+        }
+    });
+}
+    public void setupTestListView() {
+        info.setCellFactory(listView -> new ListCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -58,13 +132,16 @@ public class initController extends GenericSceneController{
                     setStyle("");
                 } else {
                     setText(item);
-                    setStyle("-fx-background-color: #2b2b2b; -fx-text-fill: #ffcc00; -fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 10; -fx-border-color: #ffcc00; -fx-border-radius: 10; -fx-background-radius: 10;");
+                    setStyle("-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0); -fx-padding: 10;");
                 }
             }
         });
     }
     public ListView<String> getLobby() {
         return lobby;
+    }
+    public ListView<String> getInfo() {
+        return info;
     }
     private void disableAll() {
         labelMaxPlayers.setVisible(false);
@@ -107,7 +184,7 @@ public class initController extends GenericSceneController{
             System.out.println("Player joined the lobby: " + getGui().getUsername());
             joinLobby.setDisable(true);
         }catch (Exception e) {
-            getGui().showError(getStage(), e.getMessage());
+            getGui().printUpdateMessage( getError()+ e.getMessage());
         }
     }
 
@@ -139,9 +216,10 @@ public class initController extends GenericSceneController{
     @FXML
     private void handleMaxPlayers(ActionEvent event) {
         try {
+
             int maxPlayers = Integer.parseInt(textMaxPlayers.getText());
             if (maxPlayers < 2 || maxPlayers > 4) {
-                getGui().showError(getStage(), "Max players must be between 2 and 4");
+                getGui().printUpdateMessage(getError()+ " Max players must be between 2 and 4");
                 textMaxPlayers.setText("");
             }
             else{
@@ -153,7 +231,7 @@ public class initController extends GenericSceneController{
                     joinLobby.setDisable(false);
                     disableAll();
                 }catch (Exception e) {
-                    getGui().showError(getStage(), e.getMessage());
+                    getGui().printUpdateMessage(getError()+  e.getMessage());
                     disableAll();
                     textMaxPlayers.setText("");
                     setupGame.setDisable(false);
@@ -162,7 +240,7 @@ public class initController extends GenericSceneController{
             }
 
         } catch (NumberFormatException e) {
-            getGui().showError(getStage(), "Invalid number format for max players");
+            getGui().printUpdateMessage(getError()+" Invalid number format for max players");
             textMaxPlayers.setText("");
         }
     }

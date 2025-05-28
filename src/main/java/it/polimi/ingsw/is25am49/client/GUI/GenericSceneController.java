@@ -13,7 +13,7 @@ public class GenericSceneController {
 
     private GameSession gameSession;
     private GraphicUserInterface guiApplication;
-
+    private String error = "⚠";
 
 
     /**
@@ -27,6 +27,9 @@ public class GenericSceneController {
     }
     public GameSession  getGameSession() {
         return gameSession;
+    }
+    public String getError() {
+        return error;
     }
 
     /**
