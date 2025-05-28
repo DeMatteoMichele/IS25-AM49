@@ -83,7 +83,7 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
                     userInterface.connectionRMI(true, this);
                 } catch (IOException | NotBoundException ex) {
                     if (!hasResetted) {
-                        System.out.println("⚠ Error : something went wrong during the connection tio the server RMI --> " + e.getMessage());
+                        System.out.println("⚠ Error : something went wrong during the connection to the server RMI --> " + e.getMessage());
                         //se voglio riprovare a connettermi da capire bene come gesitre l'interfaccia comune
 //                        System.out.println("\nwanna retry? Y");
 //                        if (ui.lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) userInterface.setup;

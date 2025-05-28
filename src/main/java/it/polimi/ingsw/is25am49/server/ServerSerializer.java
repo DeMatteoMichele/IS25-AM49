@@ -52,6 +52,8 @@ public class ServerSerializer implements RemoteClient {
     public Command deSerializeStringFromClient(Command command) {
         command.setServerController(serverController);
         if (command.getTypeOfMessage().equals("MSG")) {
+            if(command.getMethodName().equals("playerJoin"))
+                serverController.addPlayerToLobbySocket(command.getPlayerId());
             command.callMethod();
         } else if (command.getTypeOfMessage().equals("HSK")) {
             if (command.getPlayerId() == -1) {
@@ -95,7 +97,6 @@ public class ServerSerializer implements RemoteClient {
         synchronized (serverController) {
             Command commandTemp = deSerializeStringFromClient(command);
             Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
-            serverController.addPlayerToLobbySocket(commandToSend.getPlayerId());
             serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
             return commandTemp.getPlayerId();
         }

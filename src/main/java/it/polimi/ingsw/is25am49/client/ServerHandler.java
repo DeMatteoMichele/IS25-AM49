@@ -89,7 +89,6 @@ public class ServerHandler {
                 InGoingStringQueue.put(command);
             } catch (IOException e) {
                 System.out.println("Error while listening to server, putting the connection to false");
-                e.printStackTrace();
                 disconnect();
             } catch (InterruptedException e) {
                 System.out.println("Error while putting the message in the queue, thread has been interrupted");

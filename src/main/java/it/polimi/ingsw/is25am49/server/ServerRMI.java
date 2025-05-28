@@ -33,7 +33,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         gameStarted = false;
         executorService = Executors.newFixedThreadPool(100);
         scheduler = Executors.newScheduledThreadPool(100);
-        executorService.submit(this::startHeartBeatMonitoring);
+        scheduler.scheduleAtFixedRate(this::startHeartBeatMonitoring, 10, 5, TimeUnit.SECONDS);
         executorService.submit(this::processFilesFromClientQueue);
     }
 
@@ -44,7 +44,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                 try {
                     client.command_FromServerToClient(command);
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    System.out.println("Error sending command to client " + id + ": " + e.getMessage());
                 }
             });
         }
@@ -53,7 +53,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                 try {
                     client.command_FromServerToClient(command);
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    System.out.println("Error sending command to client " + id + ": " + e.getMessage());
                 }
             });
         }
@@ -106,7 +106,6 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                         if(command.getPlayerId() == -1){
                             serverController.updateIdCounter();
                             int myId = serverController.getIdCounter();
-                            serverController.addPlayerToLobbyRMI(myId);
                             clients.put(myId, (RemoteClient) command.getParameters().getFirst());
                             Command response = new Command("registerClientCallback", myId);
                             response.addParameter(myId);
@@ -115,7 +114,6 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                         }
                         else {
                             int myId = command.getPlayerId();
-                            serverController.addPlayerToLobbyRMI(myId);
                             clients.put(myId, (RemoteClient) command.getParameters().getFirst());
                             Command response = new Command("registerClientCallback", myId);
                             response.addParameter(myId);
@@ -127,13 +125,15 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                     }
                 }
                 else if(command.getTypeOfMessage().equals("MSG")) {
+                    if(command.getMethodName().equals("playerJoin"))
+                        serverController.addPlayerToLobbyRMI(command.getPlayerId());
                     command.setServerController(serverController);
                     command.callMethod();
                 }
             } catch (InterruptedException e) {
                 System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
             } catch (RemoteException e) {
-                e.printStackTrace();
+                System.out.println("Error processing command from client: " + e.getMessage());
             }
         }
     }
@@ -142,7 +142,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             try {
                 command_FromServerToSpecificClient(commandBefore, clientId);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                System.err.println("Error sending command history to client " + clientId + ": " + e.getMessage());
             }
         }
     }
