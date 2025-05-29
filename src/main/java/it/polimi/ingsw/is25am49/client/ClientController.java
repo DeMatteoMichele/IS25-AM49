@@ -105,7 +105,6 @@ public class ClientController {
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error during player join --> " + e.getMessage());
         }
-
     }
 
 

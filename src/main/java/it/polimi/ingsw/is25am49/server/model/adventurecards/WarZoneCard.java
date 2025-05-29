@@ -233,7 +233,6 @@ public class WarZoneCard extends AdventureCard {
     public void finishDecision(Set<Point> coordinates) {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
-
             case DECISION_MOTOR -> {
                 System.out.println("You have decided the coordinates of the motors you wanna activate");
 //                if(batteries.size()!=coordinates.size()){
@@ -272,7 +271,6 @@ public class WarZoneCard extends AdventureCard {
                     number++;
                     currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
                 }
-
             }
             case DECISION_CANNON -> {
                 System.out.println("You have decided the coordinates of the cannons you wanna activate");

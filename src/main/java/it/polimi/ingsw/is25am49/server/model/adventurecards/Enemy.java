@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokensException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -122,9 +123,9 @@ public abstract class Enemy extends AdventureCard {
             case DECISION_BATTERIES -> {
                 int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
                 if (coordinates.size() > maxActivatableComponents) {
-                    System.out.println("Hai selezionato troppe batterie! Puoi attivare al massimo " + maxActivatableComponents + " componenti.");
-                    return; // Mantiene lo stato corrente
+                    throw new IllegalTokensException("Hai selezionato troppe batterie! Puoi attivare al massimo " + maxActivatableComponents + " componenti.");
                 }
+                checkCorrectnessOfTokensAndPoints(currentState,coordinates, shipBoard);
                 coordinatesOfBatteries = coordinates;
                 if (coordinatesOfBatteries.isEmpty()) {
                     System.out.println("You have decided not to use batteries");
@@ -135,12 +136,14 @@ public abstract class Enemy extends AdventureCard {
                 currentState = determineStateAfterBatteries();
             }
             case DECISION_GOODS -> {
+                checkCorrectnessOfTokensAndPoints(currentState,coordinates, shipBoard);
                 System.out.println("You have decided the coord for the goods");
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
+                checkCorrectnessOfTokensAndPoints(currentState,coordinates, shipBoard);
                 System.out.println("You have decided the coord for the crew");
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;

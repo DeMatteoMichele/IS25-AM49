@@ -83,4 +83,9 @@ public class EffectLoseGoods extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
     }
 
+    @Override
+    public List<Integer> getGoods() {
+        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+    }
+
 }
