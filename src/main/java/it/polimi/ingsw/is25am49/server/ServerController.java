@@ -76,7 +76,6 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(username, playerId);
-//                addPlayerToLobbySocket(playerId);
                 if(playersRMI.contains(playerId)) {
                     serverRMI.sayToServerRMIWhoHasJoined(playerId);
                 }
@@ -92,8 +91,13 @@ public class ServerController {
                 command.addParameter(gameSession.getSeedForGeneration());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
-
-            } catch (GameSettingsException e) {
+            } catch (Exception e) {
+                if(playersRMI.contains(playerId)) {
+                    playersRMI.remove(playerId);
+                }
+                else if(playersSocket.contains(playerId)) {
+                    playersSocket.remove(playerId);
+                }
                 Command command = new Command("errorCallback" , playerId);
                 command.addParameter(playerId);
                 command.addParameter("PlayerJoin hasn't worked in Server ->   " + e.getMessage());

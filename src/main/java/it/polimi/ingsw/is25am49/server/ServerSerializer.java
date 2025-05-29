@@ -17,11 +17,13 @@ public class ServerSerializer implements RemoteClient {
     private final BlockingQueue<Command> historyQueue;
     private final ExecutorService executorService;
     private int idCounter;
+    private boolean gameStarted;
 
 
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
         this.idCounter = -1;
+        this.gameStarted = false;
         filesFromSocketQueue = new ArrayBlockingQueue<Command>(4000, true);
         historyQueue = new ArrayBlockingQueue<Command>(50000, true);
         executorService = Executors.newFixedThreadPool(10);
@@ -52,6 +54,10 @@ public class ServerSerializer implements RemoteClient {
     public Command deSerializeStringFromClient(Command command) {
         command.setServerController(serverController);
         if (command.getTypeOfMessage().equals("MSG")) {
+            if(!gameStarted){
+                if (command.getMethodName().equals("playerJoin"))
+                    serverController.addPlayerToLobbySocket(command.getPlayerId());
+            }
             command.callMethod();
         } else if (command.getTypeOfMessage().equals("HSK")) {
             if (command.getPlayerId() == -1) {
@@ -119,6 +125,7 @@ public class ServerSerializer implements RemoteClient {
      * This method is used to signal to the clienthandler that the game has started.
      */
     public void signalThatGameStarted() {
+        gameStarted=true;
         clientHandler.gameStarted();
     }
 
