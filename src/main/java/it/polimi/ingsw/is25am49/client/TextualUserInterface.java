@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -23,8 +25,10 @@ import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException
 import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.util.Pair;
+import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
@@ -315,6 +319,44 @@ public class TextualUserInterface implements UserInterface {
             }
         }else throw new GameSettingsException("shipboard not completed yet");
     }
+    public ArrayList<Pair<Point,Token>> decisionToken(){
+        ArrayList<Pair<Point,Token>> tokens = new ArrayList<>();
+        lineReader.printAbove("handle Tokens in the shipboard (s to stop):\n");
+        String s= "";
+        while (!s.equalsIgnoreCase("s")){
+            try{
+                s = lineReader.readLine("Insert the coordinates (x,y) >> ");
+                String[] coordinates = s.trim().split("\\s+");
+                int x = Integer.parseInt(coordinates[0]);
+                int y = Integer.parseInt(coordinates[1]);
+                Point point=new Point(x,y);
+                Token token;
+                String selection = lineReader.readLine("select a token: "+point+"\n" +
+                        "a --> astronaut\n" +
+                        "g --> green goods\n" +
+                        "b --> blue goods\n" +
+                        "y --> yellow goods\n" +
+                        "r --> red goods\n" +
+                        "c --> battery cells\n" +
+                        ">> "
+                ).trim();
+                switch (selection.toLowerCase()){
+                    case "a" : token= Token.ASTRONAUT;break;
+                    case "g" : token= Token.GREEN_GOODS;break;
+                    case "b" : token= Token.BLUE_GOODS;break;
+                    case "y" : token= Token.YELLOW_GOODS;break;
+                    case "r" : token= Token.RED_GOODS;break;
+                    case "c" : token= Token.BATTERY_CELLS;break;
+                    case "s" : return tokens; //se l'utente vuole fermarsi
+                    default: printUpdateMessage(error + "invalid choice"); continue;
+                }
+                tokens.add(new Pair<>(point,token));
+            }catch (Exception e){
+                printUpdateMessage(error+e.getMessage());
+            }
+        }
+        return tokens;
+    }
 
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
@@ -554,29 +596,31 @@ public class TextualUserInterface implements UserInterface {
                 1.  DrawAdventureCard
                 2.  ThrowDices
                 3.  ActivateComponent
-                4.  InsertToken
-                6.  LandOnPlanet
-                7.  LandOnStationOrShip
-                8.  AcceptPrizes
-                9.  StopFlight
-                10. DestroyedTiles
-                11. LookAtShipboard
+                4.  DecisionToken
+                5.  LandOnPlanet
+                6.  LandOnStationOrShip
+                7.  AcceptPrizes
+                8.  StopFlight
+                9. LookAtShipboard
                 12. ←-- go back
                 """;
     }
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
+        StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
         if (playerId == myId){
-            StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
+
             for (int i = 0; i < message.length(); i++) {
                 if (i > 0 && i % 100 == 0) {
                     str.append("-\n         -");
                 }
                 str.append(message.charAt(i));
             }
-            str.append("\n\u001B[0m");
-            graphicsQueue.add(str.toString());
-        }
+
+
+        }else str.append("Player ").append(gameSession.getPlayer(playerId).get().getUsername()).append(" is playing, wait for him to finish!\n");
+        str.append("\n\u001B[0m");
+        graphicsQueue.add(str.toString());
     }
 
     private static final String[][] DICE = {
@@ -693,12 +737,12 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
-
+        updateGenericCardMessage(myId,"Player " + gameSession.getPlayer(playerId).get().getUsername() + " has " + (isAccepted ? "accepted" : "rejected") + " the prizes.");
     }
 
     @Override
     public void updateStopFlight(int playerId) {
-
+        updateGenericCardMessage(myId,"Player " + gameSession.getPlayer(playerId).get().getUsername() + " decided to land.");
     }
 
     public void updateShipBoard(int playerId) {
@@ -762,7 +806,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
         if (idPlayer==myId){
-            printUpdateMessage("dentro updateDestroyedTiles");
+            updateShipBoard(idPlayer);
         }
     }
 
@@ -904,7 +948,7 @@ public class TextualUserInterface implements UserInterface {
                         //updateLookUncoveredTile(myId,new Point(0,0));
                     }
                 }
-                case "9:1", "11:2" ->{//lookAtShipboard
+                case "9:1" ->{//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
                     try{
                         for (Player p:gameSession.getGame().get().getListPlayers()){
@@ -932,10 +976,10 @@ public class TextualUserInterface implements UserInterface {
                     updatePlaceTile(myId,new Point(7,7));
                 }
 
-                case "1:2" ->{//ThrowDices
+                case "1:2" ->{//DrawAdventureCard
                     controller.userDrawAdventureCard(myId);
                 }
-                case "2:2" -> {//DrawAdventureCard
+                case "2:2" -> {//ThrowDices
                     controller.userThrowDices(myId);
                 }
                 case "3:2" -> {//ActivateComponent
@@ -956,14 +1000,12 @@ public class TextualUserInterface implements UserInterface {
                     if (!points.isEmpty())controller.userFinishDecisionActivating(myId, points);
                     else printUpdateMessage(error+"no point inserted");
                 }
-                case "4:2" -> {//InsertToken
-                    //controller.userFinishDecisionToken();
-                    printUpdateMessage("insertToken not implemented yet");
+                case "4:2" -> {//handleDecisionToken
+                    ArrayList <Pair<Point, Token>> tokens = decisionToken();
+                    if(!tokens.isEmpty())controller.userFinishDecisionToken(myId,tokens);
+                    else printUpdateMessage(error+"no token operations");
                 }
-                case "5:2" -> {//Deactivating
-                    printUpdateMessage("deactivating not implemented yet");
-                }
-                case "6:2" -> {//LandOnPlanet
+                case "5:2" -> {//LandOnPlanet
                     try {
                         String s = lineReader.readLine("do you want to land? (y/n) >> ");
                         boolean isLanded = false;
@@ -978,23 +1020,45 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error + e.getMessage());
                     }
                 }
-                case "7:2" -> {//LandOnStationOrShip
+                case "6:2" -> {//LandOnStationOrShip
                     try {
                         String s = lineReader.readLine("do you want to land? (y/n) >> ");
-                        if (s.equalsIgnoreCase("y"))controller.userLandOnStationOrShip(myId, true);
-                        else controller.userLandOnStationOrShip(myId, false);
+                        controller.userLandOnStationOrShip(myId, s.equalsIgnoreCase("y"));
                     } catch (Exception e) {
                         printUpdateMessage(error + e.getMessage());
                     }
                 }
-                case "8:2" -> {//AcceptPrizes
-                    printUpdateMessage("acceptPrizes not implemented yet");
+                case "7:2" -> {//AcceptPrizes
+                    try {
+                        lineReader.printAbove("do you want to accept the prizes? (y/n) >> ");
+                        String s = lineReader.readLine().trim();
+                        controller.userAcceptPrizes(myId, s.equalsIgnoreCase("y"));
+                    } catch (Exception e) {
+                        updateShipBoard(myId);
+                    }
                 }
-                case "9:2" -> {//stopFlight
-                    printUpdateMessage("stopFlight not implemented yet");
+                case "8:2" -> {//stopFlight
+                    try {
+                        lineReader.printAbove("do you really want to stop flight? (y/n) >> ");
+                        String s = lineReader.readLine().trim();
+                        if (s.equalsIgnoreCase("y")) controller.userQuitGame(myId);
+                        else printUpdateMessage("flight not stopped");
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
+                    }
                 }
-                case "10:2" -> {//destroyedTiles
-                    printUpdateMessage("destroyedTiles not implemented yet");
+                case "9:2" -> {//lookAtShipboard
+                    lineReader.printAbove("which ship do you want to see?\n");
+                    try{
+                        for (Player p:gameSession.getGame().get().getListPlayers()){
+                            terminal.writer().println(p.getIdPlayer()+" --> [" + p.getUsername()+"]");
+                        }
+                        int id = Integer.parseInt(lineReader.readLine("insert the playerId >> ").trim());
+                        if(gameSession.getPlayer(id).isPresent())updateShipBoard(id);
+                        else printUpdateMessage(error+"player not found");
+                    }catch (Exception e){
+                        printUpdateMessage(error+e.getMessage());
+                    }
                 }
                 case "12:2" -> {//go back
                     printUpdateMessage("goBack not implemented yet");

@@ -619,7 +619,7 @@ public class ShipBoard {
             try{t.removeToken(token);}
             catch (IllegalTokenInComponentEcxeption | ArrayIndexOutOfBoundsException |
                    IllegalMethodOnThisComponentException e) {
-                System.out.println("cannot remove "+token+" from " + t.getComponentType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
+                throw new RuntimeException("cannot remove "+token+" from " + t.getComponentType()+ " point<"+coordinates.x+","+coordinates.y+"> --> "+e.getMessage());
             }
         } catch (InvalidCoordinatesException e){
             throw new InvalidCoordinatesException("cannot ADD "+token+ "  in point<" + coordinates.x + "," + coordinates.y + "> --> "+e.getMessage());
@@ -1138,12 +1138,43 @@ public class ShipBoard {
                 return t.getComponent().getIsActive()? "on  ■" : "off □";
             }
             case ContainerComponent ignored -> {
-                return " "+t.getComponent().getNumberOfTokens()+"/"+t.getComponent().getLevel()+" ";
+                switch (t.getComponent().getNumberOfTokens()){
+                  case 1-> {
+                      Token to= t.getComponent().getTokenList().getFirst();
+                      return "  "+tokenToStr(to)+"/"+t.getComponent().getLevel()+" ";
+                  }
+                    case 2-> {
+                        Token to1 = t.getComponent().getTokenList().get(0);
+                        Token to2 = t.getComponent().getTokenList().get(1);
+                        return tokenToStr(to1) + tokenToStr(to2) + "/" + t.getComponent().getLevel() + " ";
+                    }
+                    case 3-> {
+                        Token to1 = t.getComponent().getTokenList().get(0);
+                        Token to2 = t.getComponent().getTokenList().get(1);
+                        Token to3 = t.getComponent().getTokenList().get(2);
+                        return tokenToStr(to1) + tokenToStr(to2) + tokenToStr(to3) + "/" + t.getComponent().getLevel() ;
+                    }
+                    default -> {
+                        return " "+t.getComponent().getNumberOfTokens()+"/"+t.getComponent().getLevel()+" ";
+                    }
+                }
             }
         }
     }
-    String lockedToStr(Tile t){
+    private String lockedToStr(Tile t){
         return t.isLocked() ? "L" : "U";
+    }
+    private String tokenToStr(Token t){
+        return switch (t){
+            case ASTRONAUT -> "A";
+            case BROWN_ALIENS -> "β";
+            case PURPLE_ALIENS -> "ρ";
+            case BATTERY_CELLS -> "C";
+            case RED_GOODS -> "R";
+            case BLUE_GOODS -> "B";
+            case YELLOW_GOODS -> "Y";
+            case GREEN_GOODS -> "G";
+        };
     }
 
     @Override
