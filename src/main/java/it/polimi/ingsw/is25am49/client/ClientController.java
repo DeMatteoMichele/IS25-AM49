@@ -313,8 +313,6 @@ public class ClientController {
             command.addParameter(numberOfPlayers);
             command.addParameter(GameMode.values()[mode]);
             serverMethods.command_FromClientToServer(command);
-        } catch (GameSettingsException e){
-            ui.printUpdateMessage(e.getMessage());
         }catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }

@@ -30,12 +30,15 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 import java.rmi.NotBoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javafx.application.Application;
+import org.jline.terminal.TerminalBuilder;
 
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
@@ -164,10 +167,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
         switch (stateIndex) {
             case 1 -> {//BuildState
                 System.out.println("BUILD STATE");
+
                 buildcontr.loadTilesMap();
                 buildcontr.loadCards();
                 Platform.runLater(()-> {
-                    showScene(ScenesName.BUILD);
+                   // showScene(ScenesName.BUILD);
                 });
 
 
@@ -192,7 +196,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void printUpdateMessage(String msg) {
-
+        if(msg.contains("⚠")){
+            showError(stage, msg);
+        }
+        else{
+        }
     }
 
     @Override
@@ -200,36 +208,80 @@ public class GraphicUserInterface extends Application implements UserInterface {
         this.myId = myId;
     }
 
-
+//chiamato quando utente fa join, stampa welcome con il suo nome
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
-        System.out.println("SONO ENTRATO NELLA UPDATE");
         initController contr = (initController) getControllerBySceneName(ScenesName.INIT);
         Platform.runLater(() -> {
-            String playerName = gameSession.getPlayer(playerId).get().getUsername();
-            if(playerName.equals(gameSession.getAdmin().get().getUsername())){
-                playerName = playerName + " (Admin)";
+//            System.out.println("PlayerID: " +playerId);
+//            System.out.println("myId: " + myId);
+            if (playerId==myId) {
+                contr.setWelcome(username);
+
             }
-            contr.setupLobbyListView();
-            contr.getLobby().getItems().add(playerName + " (ID: " + playerId + ")");
-            System.out.println("Player added to lobby: " + playerName);
 
-            // Stampa alla console per debug
-            System.out.println("Lista giocatori aggiornata con successo");
-            System.out.println("Dimensione attuale della lista: " + players.size());
         });
-
     }
-
+    //chiamato quando viene creato il game, setta le informazioni sul game e inserisce l'admin
     @Override
     public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
+        initController contr = (initController) getControllerBySceneName(ScenesName.INIT);
+        contr.setupLobbyListView();
+        contr.setupTestListView();
+        Platform.runLater(() -> {
 
+//            contr.getLobby().getItems().add(gameSession.getPlayer(playerId).get().getUsername() + " (ADMIN)    " + gameSession.getPlayer(playerId).get().getColor());
+            contr.getInfo().getItems().clear();
+            contr.getInfo().getItems().add("Players: 1/" + maxPlayers);
+            contr.getInfo().getItems().add("Game mode--> " + gameMode);
+            contr.getInfo().getItems().add("Max players--> " + maxPlayers);
+
+        });
+        updateGameNewPlayer(playerId);
     }
-
+//chiamata quando utente fa join, se è l'admin setta a default le impostazioni, se è un altro player le aggiorna
     @Override
     public void updateGameNewPlayer(int playerId) {
+        initController contr = (initController) getControllerBySceneName(ScenesName.INIT);
+        contr.setupTestListView();
+        Platform.runLater(() -> {
+            if (gameSession.getAdmin().map(player -> player.getIdPlayer() == playerId).orElse(false) && gameSession.getGame().isEmpty()) {
 
-    }
+                contr.getInfo().getItems().add("Players: 1/4");
+                contr.getInfo().getItems().add("Game mode--> DEFAULT");
+                contr.getInfo().getItems().add("Max players--> 4 (DEFAULT)");
+                if(myId==playerId){
+                    contr.showAdmin();
+                }
+            } else if (gameSession.getGame().isPresent()) {
+
+                contr.setupLobbyListView();
+                // cotrollo se è già presnete nella lista non lo inserisco
+                boolean playerAlreadyInList = contr.getLobby().getItems().stream()
+                        .anyMatch(item -> item.contains(gameSession.getPlayer(playerId).get().getUsername()));
+
+                if (!playerAlreadyInList) {
+                    if(gameSession.getAdmin().map(player -> player.getIdPlayer() == playerId).orElse(false)) {
+                        contr.getLobby().getItems().add(gameSession.getPlayer(playerId).get().getUsername() + " (ADMIN)    " + gameSession.getPlayer(playerId).get().getColor());
+                    }
+                    else {
+                        contr.getLobby().getItems().add(gameSession.getPlayer(playerId).get().getUsername() + "   " + gameSession.getPlayer(playerId).get().getColor());
+
+                    }}
+                if (contr.getInfo().getItems().isEmpty()) {
+                   contr.getInfo().getItems().add("Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
+               } else {
+                   contr.getInfo().getItems().set(0, "Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
+               }
+//                contr.getInfo().getItems().add("Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
+
+
+
+            }
+        });
+        }
+
+
     @Override
     public void updatePlaceTile(int playerId, Point coordinates) {
 
