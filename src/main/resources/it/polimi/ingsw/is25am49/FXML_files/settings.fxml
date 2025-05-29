@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="Stack" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.settingsController">
+     <ImageView fx:id="backgroundImage" pickOnBounds="true" />
+
+     <Pane prefHeight="614.0" prefWidth="1945.0">
+         <Button fx:id="yesReconnection" layoutX="609.0" layoutY="67.0" mnemonicParsing="false"
+                 onAction="#handleReconnection"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="YES" />
+         <Label contentDisplay="BOTTOM" layoutX="10.0" layoutY="87.0" prefHeight="41.0" prefWidth="489.0"
+                style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                       -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-border-width: 2;
+                       -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);"
+                text="Do you want to reconnect to a previous game?" textAlignment="CENTER" />
+         <Button fx:id="noReconnection" layoutX="610.0" layoutY="128.0" mnemonicParsing="false"
+                 onAction="#disableReconnectionButtons"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="NO" />
+         <Label fx:id="usernameLabel" layoutX="12.0" layoutY="223.0" prefHeight="41.0" prefWidth="433.0"
+                style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                       -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-border-width: 2;
+                       -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);"
+                text="Please insert your username:" />
+         <TextField fx:id="usernameTextField" layoutX="466.0" layoutY="225.0" prefHeight="37.0" prefWidth="395.0"
+                    style="-fx-background-color: rgba(0,30,60,0.6); -fx-text-fill: #00ccff;
+                           -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-background-radius: 10;
+                           -fx-font-size: 16; -fx-font-weight: bold;" />
+         <Label layoutX="24.0" layoutY="333.0" prefHeight="39.0" prefWidth="293.0"
+                style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                       -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-border-width: 2;
+                       -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);"
+                text="Choose the connection method" />
+         <Button fx:id="rmiButton" layoutX="532.0" layoutY="313.0" mnemonicParsing="false"
+                 onAction="#handleRMI"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="RMI" />
+         <Button fx:id="socketButton" layoutX="509.0" layoutY="372.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0"
+                 onAction="#handleSocket"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="SOCKET" />
+         <Label fx:id="retryLabel" layoutX="33.0" layoutY="464.0" prefHeight="39.0" prefWidth="433.0"
+                style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                       -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-border-width: 2;
+                       -fx-padding: 5; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);"
+                text="CONNECTION FAILED! Do you want to retry?" />
+         <Button fx:id="yesRetry" layoutX="584.0" layoutY="444.0" mnemonicParsing="false"
+                 onAction="#yesRetry"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="YES" />
+         <Button fx:id="noRetry" layoutX="584.0" layoutY="503.0" mnemonicParsing="false"
+                 onAction="#noRetry"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="NO" />
+         <Button fx:id="usernameButton" layoutX="915.0" layoutY="223.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="143.0"
+                 onAction="#handleUsername"
+                 style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
+                        -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff;
+                        -fx-background-color: rgba(0,30,60,0.8);
+                        -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
+                 text="CONFIRM" />
+     </Pane>
+</StackPane>

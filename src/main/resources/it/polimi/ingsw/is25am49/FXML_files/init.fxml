@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.initController">
+   <children>
+      <ImageView fx:id="backgroundImage" pickOnBounds="true" />
+
+      <Pane prefHeight="7377.0" prefWidth="1795.0">
+         <children>
+
+            <Label fx:id="welcome" layoutX="24.0" layoutY="30.0" prefHeight="40.0" prefWidth="708.0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(three-pass-box, rgba(0,204,255,0.6), 10, 0.7, 0, 0);" text="WELCOME TO THE GAME!" />
+
+
+            <Label layoutX="787.0" layoutY="50.0" prefHeight="30.0" prefWidth="300.0" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 8, 0.5, 0, 0);" text="SPACE MISSION LOBBY" />
+            <ListView fx:id="lobby" layoutX="787.0" layoutY="87.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: rgba(15,25,50,0.85); -fx-border-color: #00ccff; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10; -fx-control-inner-background: rgba(15,25,50,0.85); -fx-text-fill: #ffffff;" />
+
+
+            <Label layoutX="904.0" layoutY="450.0" prefHeight="32.0" prefWidth="188.0" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 8, 0.5, 0, 0);" text="MISSION DETAILS" />
+            <ListView fx:id="info" layoutX="787.0" layoutY="483.0" prefHeight="300.0" prefWidth="307.0" style="-fx-background-color: rgba(15,25,50,0.85); -fx-border-color: #00ccff; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10; -fx-control-inner-background: rgba(15,25,50,0.85); -fx-text-fill: #ffffff;" />
+
+
+            <VBox layoutX="50.0" layoutY="150.0" spacing="40.0">
+               <Button fx:id="joinLobby" mnemonicParsing="false" onAction="#handleJoin" prefHeight="50.0" prefWidth="200.0" style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);" text="JOIN LOBBY" />
+               <Button fx:id="setupGame" mnemonicParsing="false" onAction="#handleSetupGame" prefHeight="50.0" prefWidth="200.0" style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);" text="SETUP GAME" />
+            </VBox>
+
+
+            <VBox layoutX="50.0" layoutY="450.0" spacing="20.0">
+               <Label fx:id="textGamemode" prefHeight="30.0" prefWidth="400.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="SELECT THE GAME MODE:" />
+               <HBox spacing="20.0">
+                  <Button fx:id="buttonFlightMode" mnemonicParsing="false" onAction="#handleFlightMode" prefHeight="45.0" prefWidth="150.0" style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="FLIGHT MODE" />
+                  <Button fx:id="buttonLv1" mnemonicParsing="false" onAction="#handleLv1" prefHeight="45.0" prefWidth="150.0" style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="LEVEL 1" />
+                  <Button fx:id="buttonLv2" mnemonicParsing="false" onAction="#handleLv2" prefHeight="45.0" prefWidth="150.0" style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="LEVEL 2" />
+               </HBox>
+               <HBox alignment="CENTER_LEFT" spacing="20.0">
+                  <Label fx:id="labelMaxPlayers" prefHeight="28.0" prefWidth="363.0" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="SELECT THE MAXIMUM PLAYERS:" />
+               </HBox>
+            </VBox>
+            <Button fx:id="buttonMaxPlayers" layoutX="355.0" layoutY="613.0" mnemonicParsing="false" onAction="#handleMaxPlayers" prefHeight="40.0" prefWidth="120.0" style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="CONFIRM" />
+           <Label fx:id="labelAdmin" layoutX="50.0" layoutY="353.0" prefHeight="30.0" prefWidth="400.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="You are the admin: setup the game" />
+            <TextField fx:id="textMaxPlayers" layoutX="61.0" layoutY="608.0" prefHeight="40.0" prefWidth="239.0" style="-fx-background-color: rgba(0,30,60,0.6); -fx-text-fill: #00ccff; -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 16; -fx-font-weight: bold;" />
+         </children>
+      </Pane>
+   </children>
+</StackPane>

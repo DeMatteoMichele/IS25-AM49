@@ -5,7 +5,7 @@ import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
-//import javafx.util.Pair;
+import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -14,12 +14,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Command implements Serializable {
-    private transient ClientController clientController;
     private transient ServerController serverController;
+    private transient ClientController clientController;
     private String methodName;
-    private int playerId;
-    private String typeOfMessage;
+    private  String typeOfMessage;
     private final ArrayList<Object> parameters;
+    private int playerId;
 
     public Command(String methodName) {
         this.methodName = methodName;
@@ -49,6 +49,7 @@ public class Command implements Serializable {
             typeOfMessage = "MSG";
         }
     }
+
     public static String compactJsonString(String json) {
         StringBuilder compactedJsonString = new StringBuilder();
         int i;
@@ -101,7 +102,7 @@ public class Command implements Serializable {
         switch (methodName) {
             case "adminSetup" -> {
                 try {
-                    serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.GameMode) parameters.get(2));
+                    serverController.adminSetup((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in adminSetup: " + e.getMessage());
                     e.printStackTrace();
@@ -122,45 +123,48 @@ public class Command implements Serializable {
                     System.err.println("Errore in userDrawTile: " + e.getMessage());
                     e.printStackTrace();
                 }
+
             }
             case "userPlaceTile" -> {
                 try {
-                    serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.Orientation) parameters.get(2));
+                    serverController.userPlaceTile((int) parameters.get(0), (Point) parameters.get(1), (Orientation) parameters.get(2));
                 } catch (Exception e) {
-                    System.err.println("Errore in userPlaceTile: " + e.getMessage());
                     e.printStackTrace();
+                    System.err.println("Errore in userPlaceTile: " + e.getMessage());
                 }
+
             }
             case "userPickTile" -> {
                 try {
                     serverController.userPickTile((int) parameters.get(0), (Point) parameters.get(1));
                 } catch (Exception e) {
-                    System.err.println("Errore in userPickTile: " + e.getMessage());
                     e.printStackTrace();
+                    System.err.println("Errore in userPickTile: " + e.getMessage());
                 }
+
             }
             case "userDiscardTile" -> {
                 try {
                     serverController.userDiscardTile((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in userDiscardTile: " + e.getMessage());
                     e.printStackTrace();
+                    System.err.println("Errore in userDiscardTile: " + e.getMessage());
                 }
             }
             case "userFinishShipboard" -> {
                 try {
                     serverController.userFinishShipboard((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in userFinishShipboard: " + e.getMessage());
                     e.printStackTrace();
+                    System.err.println("Errore in userFinishShipboard: " + e.getMessage());
                 }
             }
             case "userLookSmallAdventureCardDeck" -> {
                 try {
                     serverController.userLookSmallAdventureCardDeck((int) parameters.get(0), (int) parameters.get(1));
                 } catch (Exception e) {
-                    System.err.println("Errore in userLookSmallAdventureCardDeck: " + e.getMessage());
                     e.printStackTrace();
+                    System.err.println("Errore in userLookSmallAdventureCardDeck: " + e.getMessage());
                 }
             }
             case "userStopLookSmallAdventureCardDeck" -> {
@@ -175,15 +179,15 @@ public class Command implements Serializable {
                 try {
                     serverController.userPlaceTimer((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in userPlaceTimer: " + e.getMessage());
                     e.printStackTrace();
+                    System.err.println("Errore in userPlaceTimer: " + e.getMessage());
                 }
             }
             case "userSelectTypeOfToken" -> {
                 try {
-                    serverController.userSelectTypeOfToken((int) parameters.get(0), (it.polimi.ingsw.is25am49.shared.enums.Token) parameters.get(1), (Point) parameters.get(2));
+                    serverController.userSelectTypeOfToken((int) parameters.get(0), (Token) parameters.get(1), (Point) parameters.get(2));
                 } catch (Exception e) {
-                    System.err.println("Errore in userSelectTypeOfToken: " + e.getMessage());
+                    System.err.println("Error in selectTypeOfToken: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -191,7 +195,7 @@ public class Command implements Serializable {
                 try {
                     serverController.userThrowDices((int) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in userThrowDices: " + e.getMessage());
+                    System.err.println("Error in throwDices: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -213,7 +217,7 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionToken" -> {
                 try {
-                    //serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
+                    serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionToken: " + e.getMessage());
                     e.printStackTrace();
@@ -285,7 +289,7 @@ public class Command implements Serializable {
             }
             case "registerClientCallback" -> {
                 try {
-                    clientController.registerClientCallback((int) parameters.get(0));
+                    clientController.registerClientCallback(playerId);
                 } catch (Exception e) {
                     System.err.println("Errore durante registerClientCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -293,7 +297,7 @@ public class Command implements Serializable {
             }
             case "adminSetupCallback" -> {
                 try {
-                    clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (GameMode) parameters.get(2));
+                    clientController.adminSetupCallback((int) parameters.get(0), (int) parameters.get(1), (it.polimi.ingsw.is25am49.shared.enums.GameMode) parameters.get(2));
                 } catch (Exception e) {
                     System.err.println("Errore in adminSetupCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -405,7 +409,7 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionTokenCallback" -> {
                 try {
-                    //clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
+                    clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -413,7 +417,7 @@ public class Command implements Serializable {
             }
             case "userAcceptPrizesCallback" -> {
                 try {
-                    clientController.userAcceptPrizesCallback((int) parameters.get(0),(boolean) parameters.get(1) );
+                    clientController.userAcceptPrizesCallback((int) parameters.get(0), (boolean) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userAcceptPrizesCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -467,6 +471,7 @@ public class Command implements Serializable {
                     e.printStackTrace();
                 }
             }
+            case "HTB" ->{}
             default -> throw new IllegalArgumentException("Metodo non riconosciuto: " + methodName);
         }
         return true;
@@ -479,6 +484,7 @@ public class Command implements Serializable {
     public void setServerController(ServerController serverController) {
         this.serverController = serverController;
     }
+
 
     public String toString() {
         return typeOfMessage + " " + methodName + " (" + parameters.toString() + ")";
