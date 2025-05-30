@@ -78,7 +78,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         try{
             stage = primaryStage;
 
-            FXMLLoader loader = new FXMLLoader();
+            FXMLLoader loader;
             Parent root;
             scenesList = new HashMap<>();
             controllerList = new HashMap<>();
@@ -200,6 +200,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             showError(stage, msg);
         }
         else{
+
         }
     }
 
