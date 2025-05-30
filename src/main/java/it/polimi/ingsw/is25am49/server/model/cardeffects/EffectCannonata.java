@@ -80,6 +80,12 @@ public class EffectCannonata extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LostCrew");
     }
 
+    @Override
+    public List<Integer> getGoods() {
+        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+
+    }
+
     public Orientation getOrientation() {
         return direction;
     }

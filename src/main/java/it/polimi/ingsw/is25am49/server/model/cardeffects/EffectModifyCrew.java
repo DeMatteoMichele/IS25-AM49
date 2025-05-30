@@ -50,4 +50,9 @@ public class EffectModifyCrew extends CardEffect {
     public int getLostCrew() {
         return lostCrew;
     }
+
+    @Override
+    public List<Integer> getGoods() {
+        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+    }
 }

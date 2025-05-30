@@ -125,8 +125,10 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                     }
                 }
                 else if(command.getTypeOfMessage().equals("MSG")) {
-                    if(command.getMethodName().equals("playerJoin"))
-                        serverController.addPlayerToLobbyRMI(command.getPlayerId());
+                    if(!gameStarted) {
+                        if (command.getMethodName().equals("playerJoin"))
+                            serverController.addPlayerToLobbyRMI(command.getPlayerId());
+                    }
                     command.setServerController(serverController);
                     command.callMethod();
                 }

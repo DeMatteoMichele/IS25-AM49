@@ -72,4 +72,5 @@ public abstract class CardEffect {
      */
     public abstract int getLostCrew();
 
+    public abstract List<Integer> getGoods();
 }

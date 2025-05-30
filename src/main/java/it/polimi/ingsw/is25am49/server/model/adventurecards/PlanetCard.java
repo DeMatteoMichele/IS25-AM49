@@ -51,7 +51,7 @@ public class PlanetCard extends AdventureCard {
         planet = getPlanetById(planetId);
         super.landingOnPlanet(isLanded, planetId);
         if(!planets.contains(planet)){
-            throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
+            throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exists or it is already occupied");
         }
         if(isLanded && !planet.isOccupied()){
             System.out.println(gameBoard.getCurrentPlayer().getUsername() + " You have landed on the planet!");
@@ -66,10 +66,7 @@ public class PlanetCard extends AdventureCard {
             System.out.println("you have decided not to land on the planet");
             System.out.println("Now check on next player");
             checkNextPlayer();
-
         }
-
-
     }
     public Planet getPlanetById(int planetId){
         for(Planet planet : planets){
@@ -102,10 +99,8 @@ public class PlanetCard extends AdventureCard {
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
-
             }
         //se non sono in decizion goods allora non posso chiamare finishdecision
-
         else{throw new IllegalMethodOnThisStateException("Wrong state");}
     }
 
