@@ -312,6 +312,7 @@ public class ServerController {
                 command.addParameter("Throw dices hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in throwDices ->   " + e.getMessage());

@@ -200,7 +200,6 @@ public class BuildState extends State {
 
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
-        player.shipBoardIsNotCompletedYet();
         if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
             if(gameSession.getGame().isPresent()) {
@@ -252,7 +251,7 @@ public class BuildState extends State {
         Player player = getPlayerById(playerId);
         if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
             userInterface.updateSelectTypeOfToken(playerId,token,coordinates);
-            transition(new AdventureState(gameSession, userInterface));
+            userFinishShipboard(playerId);
             return;
         }
         userInterface.updateSelectTypeOfToken(playerId,token,coordinates);

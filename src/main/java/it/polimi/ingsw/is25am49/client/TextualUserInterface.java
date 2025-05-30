@@ -49,7 +49,7 @@ public class TextualUserInterface implements UserInterface {
     private ClientController controller;
     private GameSession gameSession;
     private String username;
-    private int myId=-1;
+    private int myId = -1;
 
     private final String error = "⚠ Error : ";
     private final String prompt = ">> ";
@@ -57,9 +57,9 @@ public class TextualUserInterface implements UserInterface {
 
     public Terminal terminal;
     public LineReader lineReader;
-    ExecutorService executor ;
+    ExecutorService executor;
 
-    int smallDeckIndex=-1; //todo hardcoddato, non ho un modo per capire che deck sta guardando il player
+    int smallDeckIndex = -1; //todo hardcoddato, non ho un modo per capire che deck sta guardando il player
 
     public TextualUserInterface() {
         gameSession = new GameSession(this);
@@ -167,6 +167,7 @@ public class TextualUserInterface implements UserInterface {
         if (!risposta.equalsIgnoreCase("y"))
             controller.createMyIdJson();
     }
+
     /**
      * Method used from the setupConnection method to register the client to the server.
      * To register you must insert your Username that has to be unique!
@@ -220,7 +221,7 @@ public class TextualUserInterface implements UserInterface {
         serverStub = (RemoteServer) reg.lookup("Server");
         if (!isReconnecting) {
             clientRMI = new ClientRMI(controller, serverStub, this);
-            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+            System.out.println("Client successfully connected to [" + serverIP + " , 1099]");
             controller.setServerMethods(serverStub);
             try {
                 System.out.println("trying to log in to the server ...");
@@ -239,7 +240,7 @@ public class TextualUserInterface implements UserInterface {
             }
         } else {
             clientRMI.replaceServerStub(serverStub);
-            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
+            System.out.println("Reconnected successfully to [" + serverIP + " , 1099]");
             controller.setServerMethods(serverStub);
             try {
                 System.out.println("trying to log in to the server ...");
@@ -271,7 +272,7 @@ public class TextualUserInterface implements UserInterface {
                 Thread.sleep(1000);//aspetto un attimo per far arrivare i pacchetti
                 while (true) {
                     String graphic = graphicsQueue.take();
-                    if(graphicsQueue.size()>1){
+                    if (graphicsQueue.size() > 1) {
                         printUpdateMessage("RECONNETTING ...");
                         String next;
                         while ((next = graphicsQueue.poll()) != null) {
@@ -280,7 +281,7 @@ public class TextualUserInterface implements UserInterface {
                         }
                         printUpdateMessage("successfully reconnected");
                         lineReader.printAbove(graphic);
-                    }else{
+                    } else {
                         clearConsole();
                         lineReader.printAbove(graphic);
                     }
@@ -290,6 +291,7 @@ public class TextualUserInterface implements UserInterface {
             }
         });
     }
+
     public void clearConsole() {
         for (int i = 0; i < 3; i++) {
             terminal.writer().println();
@@ -297,41 +299,49 @@ public class TextualUserInterface implements UserInterface {
     }
 
     public void insertAliens(int playerId) {
-        Player p=gameSession.getPlayer(playerId).get();
-        if(p.getShipBoard().isCompleted()){
+        Player p = gameSession.getPlayer(playerId).get();
+        if (p.getShipBoard().isCompleted()) {
             lineReader.printAbove("insert aliens on the Shipboard\n");
-            if (p.getShipBoard().getAlienPoint().isPresent()){
-                    Point alienPoint=p.getShipBoard().getAlienPoint().get();
-                    String selection = lineReader.readLine("insert alien on coordinates: "+alienPoint+"\n" +
-                            "a --> astronaut\n" +
-                            "p --> purple aliens\n" +
-                            "b --> brown aliens\n" +
-                            ">> "
-                    ).trim();
-                    switch (selection.toLowerCase()){
-                        case "p" : controller.userSelectTypeOfToken(playerId,Token.PURPLE_ALIENS,alienPoint);break;
-                        case "b" : controller.userSelectTypeOfToken(playerId,Token.BROWN_ALIENS,alienPoint);break;
-                        case "a" : controller.userSelectTypeOfToken(playerId,Token.ASTRONAUT,alienPoint);break;
-                        default: printUpdateMessage(error + "invalid choice");
-                    }
-            }else {
+            if (p.getShipBoard().getAlienPoint().isPresent()) {
+                Point alienPoint = p.getShipBoard().getAlienPoint().get();
+                String selection = lineReader.readLine("insert alien on coordinates: " + alienPoint + "\n" +
+                        "a --> astronaut\n" +
+                        "p --> purple aliens\n" +
+                        "b --> brown aliens\n" +
+                        ">> "
+                ).trim();
+                switch (selection.toLowerCase()) {
+                    case "p":
+                        controller.userSelectTypeOfToken(playerId, Token.PURPLE_ALIENS, alienPoint);
+                        break;
+                    case "b":
+                        controller.userSelectTypeOfToken(playerId, Token.BROWN_ALIENS, alienPoint);
+                        break;
+                    case "a":
+                        controller.userSelectTypeOfToken(playerId, Token.ASTRONAUT, alienPoint);
+                        break;
+                    default:
+                        printUpdateMessage(error + "invalid choice");
+                }
+            } else {
                 printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
             }
-        }else throw new GameSettingsException("shipboard not completed yet");
+        } else throw new GameSettingsException("shipboard not completed yet");
     }
-    public ArrayList<Pair<Point,Token>> decisionToken(){
-        ArrayList<Pair<Point,Token>> tokens = new ArrayList<>();
+
+    public ArrayList<Pair<Point, Token>> decisionToken() {
+        ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
         lineReader.printAbove("handle Tokens in the shipboard (s to stop):\n");
-        String s= "";
-        while (!s.equalsIgnoreCase("s")){
-            try{
+        String s = "";
+        try {
+            while (!s.equalsIgnoreCase("s")) {
                 s = lineReader.readLine("Insert the coordinates (x,y) >> ");
                 String[] coordinates = s.trim().split("\\s+");
                 int x = Integer.parseInt(coordinates[0]);
                 int y = Integer.parseInt(coordinates[1]);
-                Point point=new Point(x,y);
+                Point point = new Point(x, y);
                 Token token;
-                String selection = lineReader.readLine("select a token: "+point+"\n" +
+                String selection = lineReader.readLine("select a token: " + point + "\n" +
                         "a --> astronaut\n" +
                         "g --> green goods\n" +
                         "b --> blue goods\n" +
@@ -340,20 +350,35 @@ public class TextualUserInterface implements UserInterface {
                         "c --> battery cells\n" +
                         ">> "
                 ).trim();
-                switch (selection.toLowerCase()){
-                    case "a" : token= Token.ASTRONAUT;break;
-                    case "g" : token= Token.GREEN_GOODS;break;
-                    case "b" : token= Token.BLUE_GOODS;break;
-                    case "y" : token= Token.YELLOW_GOODS;break;
-                    case "r" : token= Token.RED_GOODS;break;
-                    case "c" : token= Token.BATTERY_CELLS;break;
-                    case "s" : return tokens; //se l'utente vuole fermarsi
-                    default: printUpdateMessage(error + "invalid choice"); continue;
+                switch (selection.toLowerCase()) {
+                    case "a":
+                        token = Token.ASTRONAUT;
+                        break;
+                    case "g":
+                        token = Token.GREEN_GOODS;
+                        break;
+                    case "b":
+                        token = Token.BLUE_GOODS;
+                        break;
+                    case "y":
+                        token = Token.YELLOW_GOODS;
+                        break;
+                    case "r":
+                        token = Token.RED_GOODS;
+                        break;
+                    case "c":
+                        token = Token.BATTERY_CELLS;
+                        break;
+                    case "s":
+                        return tokens; //se l'utente vuole fermarsi
+                    default:
+                        printUpdateMessage(error + "invalid choice");
+                        continue;
                 }
-                tokens.add(new Pair<>(point,token));
-            }catch (Exception e){
-                printUpdateMessage(error+e.getMessage());
+                tokens.add(new Pair<>(point, token));
             }
+        } catch (Exception e) {
+            printUpdateMessage(error + e.getMessage());
         }
         return tokens;
     }
@@ -373,6 +398,7 @@ public class TextualUserInterface implements UserInterface {
             block = new AttributedStringBuilder().append(msg + "\n", AttributedStyle.INVERSE_OFF.foreground(AttributedStyle.CYAN)).toAttributedString();
         lineReader.printAbove(block.toAnsi());
     }
+
     @Override
     public void updateStateTransition(int stateIndex) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -444,7 +470,7 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
-    public String buildStateMenu(){
+    public String buildStateMenu() {
         return """
                 BuildState - commands:\s
                 0.  PlaceTile                           6.  StopLookSmallAdventureCardDeck
@@ -456,14 +482,15 @@ public class TextualUserInterface implements UserInterface {
                 12. ←-- go back
                 """;
     }
+
     @Override
     public void updatePlaceTile(int playerId, Point coordinates) {
-        if(playerId == myId){
-            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+        if (playerId == myId) {
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                     gameSession.getGame().get().decksToString() +
-                    gameSession.getPlayer(myId).get()+
+                    gameSession.getPlayer(myId).get() +
                     buildStateMenu() +
-                    "_".repeat( 200)+"\n" +
+                    "_".repeat(200) + "\n" +
                     "choose an option:";
             graphicsQueue.add(str);
         }
@@ -471,12 +498,12 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updatePickTile(int playerId, Point coordinates) {
-        if(playerId == myId){
-            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
-                    gameSession.getGame().get().decksToString()+
-                    gameSession.getPlayer(myId).get()+
+        if (playerId == myId) {
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
+                    gameSession.getGame().get().decksToString() +
+                    gameSession.getPlayer(myId).get() +
                     buildStateMenu() +
-                    "_".repeat( 200)+"\n" +
+                    "_".repeat(200) + "\n" +
                     "choose an option:";
             graphicsQueue.add(str);
         }
@@ -484,23 +511,23 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateRotateTileClockWise(int playerId) {
-        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+        String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                 gameSession.getGame().get().decksToString() +
-                gameSession.getPlayer(myId).get()+
+                gameSession.getPlayer(myId).get() +
                 buildStateMenu() +
-                "_".repeat( 200)+"\n" +
+                "_".repeat(200) + "\n" +
                 "choose an option:";
-                graphicsQueue.add(str);
+        graphicsQueue.add(str);
     }
 
     @Override
     public void updateDiscardTile(int playerId) {
-        if(playerId == myId){
-            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+        if (playerId == myId) {
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                     gameSession.getGame().get().decksToString() +
-                    gameSession.getPlayer(myId).get()+
+                    gameSession.getPlayer(myId).get() +
                     buildStateMenu() +
-                    "_".repeat( 200)+"\n" +
+                    "_".repeat(200) + "\n" +
                     "choose an option:";
             graphicsQueue.add(str);
         }
@@ -508,12 +535,12 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateDrawTile(int playerId, int idTIle) {
-        if(playerId == myId){
-            String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
+        if (playerId == myId) {
+            String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                     gameSession.getGame().get().decksToString() +
-                    gameSession.getPlayer(myId).get()+
+                    gameSession.getPlayer(myId).get() +
                     buildStateMenu() +
-                    "_".repeat( 200)+"\n" +
+                    "_".repeat(200) + "\n" +
                     "choose an option:";
             graphicsQueue.add(str);
         }
@@ -521,10 +548,10 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateFinishShipboard(int playerId) {
-        if(playerId == myId){
+        if (playerId == myId) {
             String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                     gameSession.getPlayer(playerId).get().shipToString() +
-                   "\nSHIPBOARD COMPLETE !!!!\n └──> .11  SelectTypeOfToken\n"+
+                    "\nSHIPBOARD COMPLETE !!!!\n └──> .11  SelectTypeOfToken\n" +
                     "_".repeat(200) + "\n" +
                     "choose an option:";
             graphicsQueue.add(str);
@@ -533,7 +560,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-        if(playerId == myId) {
+        if (playerId == myId) {
             String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                     gameSession.getGame().get().getGameboard().smallDeckToString(smallDeckIndex) +
                     "BuildState - commands:\n 6. ←-- stop looking \n\n" +
@@ -545,15 +572,15 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-        if(playerId == myId){
-            updatePlaceTile(myId,new Point(7,7));
+        if (playerId == myId) {
+            updatePlaceTile(myId, new Point(7, 7));
         }
     }
 
     @Override
     public void updatePlaceTimer(int playerId) {
-        var p= gameSession.getPlayer(playerId).get();
-        printUpdateMessage("user: "+p.getUsername() +" placed the timer on the board\n"+gameSession.getGame().get().getTimer());
+        var p = gameSession.getPlayer(playerId).get();
+        printUpdateMessage("user: " + p.getUsername() + " placed the timer on the board\n" + gameSession.getGame().get().getTimer());
     }
 
     @Override
@@ -567,11 +594,11 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-        if(playerId == myId){
+        if (playerId == myId) {
             String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
                     gameSession.getPlayer(playerId).get().shipToString() +
-                    "\nSHIPBOARD COMPLETE !!!!\n └──> .11  SelectTypeOfToken\n"+
-                    "token: "+token+" added on coordinates: "+coordinates+"\n" +
+                    "\nSHIPBOARD COMPLETE !!!!\n └──> .11  SelectTypeOfToken\n" +
+                    "token: " + token + " added on coordinates: " + coordinates + "\n" +
                     "_".repeat(200) + "\n" +
                     "choose an option:";
             graphicsQueue.add(str);
@@ -582,15 +609,15 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
-        String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
-                gameSession.getPlayer(playerId).get().shipToString()+
-                "BuildState - commands:\n 12. ←-- go back \n\n"+
-                "_".repeat( 200)+"\n" +
+        String str = "BUILD STATE\n" + "_".repeat(200) + "\n\n" +
+                gameSession.getPlayer(playerId).get().shipToString() +
+                "BuildState - commands:\n 12. ←-- go back \n\n" +
+                "_".repeat(200) + "\n" +
                 "choose an option:";
         graphicsQueue.add(str);
     }
 
-    public String adventureStateMenu(){
+    public String adventureStateMenu() {
         return """
                 AdventureState - commands:\s
                 1.  DrawAdventureCard
@@ -605,10 +632,11 @@ public class TextualUserInterface implements UserInterface {
                 12. ←-- go back
                 """;
     }
+
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
         StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
-        if (playerId == myId){
+        if (playerId == myId) {
 
             for (int i = 0; i < message.length(); i++) {
                 if (i > 0 && i % 100 == 0) {
@@ -618,7 +646,8 @@ public class TextualUserInterface implements UserInterface {
             }
 
 
-        }else str.append("Player ").append(gameSession.getPlayer(playerId).get().getUsername()).append(" is playing, wait for him to finish!\n");
+        } else
+            str.append("Player ").append(gameSession.getPlayer(playerId).get().getUsername()).append(" is playing, wait for him to finish!\n");
         str.append("\n\u001B[0m");
         graphicsQueue.add(str.toString());
     }
@@ -631,40 +660,41 @@ public class TextualUserInterface implements UserInterface {
                     "|         |",
                     "+ - - - - +"
             }, {
-                    "+ - - - - +",
-                    "|  ●      |",
-                    "|         |",
-                    "|      ●  |",
-                    "+ - - - - +"
-            }, {
-                    "+ - - - - +",
-                    "|  ●      |",
-                    "|    ●    |",
-                    "|      ●  |",
-                    "+ - - - - +"
-            }, {
-                    "+ - - - - +",
-                    "|  ●   ●  |",
-                    "|         |",
-                    "|  ●   ●  |",
-                    "+ - - - - +"
-            }, {
-                    "+ - - - - +",
-                    "|  ●   ●  |",
-                    "|    ●    |",
-                    "|  ●   ●  |",
-                    "+ - - - - +"
-            }, {
-                    "+ - - - - +",
-                    "|  ● ● ●  |",
-                    "|         |",
-                    "|  ● ● ●  |",
-                    "+ - - - - +"
-            }
+            "+ - - - - +",
+            "|  ●      |",
+            "|         |",
+            "|      ●  |",
+            "+ - - - - +"
+    }, {
+            "+ - - - - +",
+            "|  ●      |",
+            "|    ●    |",
+            "|      ●  |",
+            "+ - - - - +"
+    }, {
+            "+ - - - - +",
+            "|  ●   ●  |",
+            "|         |",
+            "|  ●   ●  |",
+            "+ - - - - +"
+    }, {
+            "+ - - - - +",
+            "|  ●   ●  |",
+            "|    ●    |",
+            "|  ●   ●  |",
+            "+ - - - - +"
+    }, {
+            "+ - - - - +",
+            "|  ● ● ●  |",
+            "|         |",
+            "|  ● ● ●  |",
+            "+ - - - - +"
+    }
     };
+
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-        if(playerId == myId){
+        if (playerId == myId) {
             StringBuilder str = new StringBuilder();
             str.append("Throwing...\n");
             String[] dice1 = DICE[firstDice - 1];
@@ -678,11 +708,11 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
-        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
-                gameSession.getLeaderBoard()+
-                adventureCard+
-                adventureStateMenu()+
-                "_".repeat( 200)+"\n" +
+        String str = "ADVENTURE STATE\n" + "_".repeat(200) + "\n\n" +
+                gameSession.getLeaderBoard() +
+                adventureCard +
+                adventureStateMenu() +
+                "_".repeat(200) + "\n" +
                 "choose an option:";
         graphicsQueue.add(str);
     }
@@ -693,12 +723,13 @@ public class TextualUserInterface implements UserInterface {
         Player p = gameSession.getPlayer(playerId).get();
         str.append("Player ").append(p.getUsername()).append(" has activated:");
         for (Point pt : coordinates) {
-            try{
-                Tile t=p.getShipBoard().getTile(pt);
+            try {
+                Tile t = p.getShipBoard().getTile(pt);
                 str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
-            }catch(Exception _){}
+            } catch (Exception _) {
+            }
         }
-        updateGenericCardMessage(myId,str.toString());
+        updateGenericCardMessage(myId, str.toString());
     }
 
     @Override
@@ -707,12 +738,13 @@ public class TextualUserInterface implements UserInterface {
         Player p = gameSession.getPlayer(playerId).get();
         str.append("Player ").append(p.getUsername()).append(" has ").append(removing ? "removed" : "inserted").append(" the following tokens:\n");
         for (Pair<Point, Token> pt : listOfTokens) {
-            try{
-                Tile t=p.getShipBoard().getTile(pt.getKey());
+            try {
+                Tile t = p.getShipBoard().getTile(pt.getKey());
                 str.append("[").append(pt.getKey().x).append(",").append(pt.getKey().y).append("] - ").append(pt.getValue()).append("\n");
-            }catch(Exception _){}
+            } catch (Exception _) {
+            }
         }
-        updateGenericCardMessage(myId,str.toString());
+        updateGenericCardMessage(myId, str.toString());
     }
 
     @Override
@@ -724,103 +756,103 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         Player p = gameSession.getPlayer(playerId).get();
-        if(isLanded) updateGenericCardMessage(myId,"Player " + p.getUsername() + " has landed on planet with ID: " + planetId+ " successfully!");
+        if (isLanded)
+            updateGenericCardMessage(myId, "Player " + p.getUsername() + " has landed on planet with ID: " + planetId + " successfully!");
         else printUpdateMessage("Player " + p.getUsername() + " decided not to land");
     }
 
     @Override
     public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
         Player p = gameSession.getPlayer(playerId).get();
-        if(isLanded) updateGenericCardMessage(myId,"Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
+        if (isLanded)
+            updateGenericCardMessage(myId, "Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
         else printUpdateMessage("Player " + p.getUsername() + " decided not to land");
     }
 
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
-        updateGenericCardMessage(myId,"Player " + gameSession.getPlayer(playerId).get().getUsername() + " has " + (isAccepted ? "accepted" : "rejected") + " the prizes.");
+        updateGenericCardMessage(myId, "Player " + gameSession.getPlayer(playerId).get().getUsername() + " has " + (isAccepted ? "accepted" : "rejected") + " the prizes.");
     }
 
     @Override
     public void updateStopFlight(int playerId) {
-        updateGenericCardMessage(myId,"Player " + gameSession.getPlayer(playerId).get().getUsername() + " decided to land.");
+        updateGenericCardMessage(myId, "Player " + gameSession.getPlayer(playerId).get().getUsername() + " decided to land.");
     }
 
     public void updateShipBoard(int playerId) {
-        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
-                gameSession.getPlayer(playerId).get().shipToString()+
-                "AdventureState - commands:\n 12. ←-- go back \n\n"+
-                "_".repeat( 200)+"\n" +
+        String str = "ADVENTURE STATE\n" + "_".repeat(200) + "\n\n" +
+                gameSession.getPlayer(playerId).get().shipToString() +
+                "AdventureState - commands:\n 12. ←-- go back \n\n" +
+                "_".repeat(200) + "\n" +
                 "choose an option:";
         graphicsQueue.add(str);
     }
 
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEffectModifyCrew");
         }
     }
 
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEffectCannonade");
         }
     }
 
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEffectLoseGoods");
         }
     }
 
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEffectWinGoods");
         }
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEffectModifyEnergy");
         }
     }
 
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEffectMeteorite");
         }
     }
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
-        if (playerId==myId){
+        if (playerId == myId) {
             printUpdateMessage("dentro updateEarnedCredits");
         }
     }
 
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
-        if (idPlayer==myId){
+        if (idPlayer == myId) {
             updateShipBoard(idPlayer);
         }
     }
 
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
-        String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
-                gameSession.getLeaderBoard()+
-                "AdventureState - commands:\n 1. DrawAdventureCard \n\n"+
-                "_".repeat( 200)+"\n" +
+        String str = "ADVENTURE STATE\n" + "_".repeat(200) + "\n\n" +
+                gameSession.getLeaderBoard() +
+                "AdventureState - commands:\n 1. DrawAdventureCard \n\n" +
+                "_".repeat(200) + "\n" +
                 "choose an option:";
         graphicsQueue.add(str);
     }
-
-
 
 
 //    ----------------------------------------------------------------------------------------------------------
@@ -843,174 +875,173 @@ public class TextualUserInterface implements UserInterface {
                 case "1:0" -> { //JOIN LOBBY
                     try {
                         controller.playerJoin(username);
-                    }catch (IllegalUsernameException e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (IllegalUsernameException e) {
+                        printUpdateMessage(error + e.getMessage());
                         userSettings();
                         updateGameSessionNewPlayer(myId);
                     } catch (Exception e) {
-                        printUpdateMessage(error+e.getMessage());
+                        printUpdateMessage(error + e.getMessage());
                         updateGameSessionNewPlayer(myId);
                     }
                 }
                 case "2:0" -> { //SETUP GAME
-                    int mode , max;
+                    int mode, max;
                     lineReader.printAbove("\nSETTINGS\nSelect gamemode:\n\t0. flight mode\n\t1. level 1\n\t2. level 2\n");
                     try {
                         mode = Integer.parseInt(lineReader.readLine(">> ").trim());
                         max = Integer.parseInt(lineReader.readLine("insert max players:\n>> ").trim());
                         controller.adminSetup(max, mode);
                     } catch (Exception e) {
-                        printUpdateMessage(error+e.getMessage());
+                        printUpdateMessage(error + e.getMessage());
                         updateGameSessionCreateGame(myId, GameMode.DEFAULT, 4);
                     }
                 }
 
                 //BUILD STATE
-                case "0:1"->{//placeTile
-                    try{
+                case "0:1" -> {//placeTile
+                    try {
                         String s = lineReader.readLine("Insert the coordinates (x,y) >> ");
                         String[] coordinates = s.trim().split("\\s+");
                         int x = Integer.parseInt(coordinates[0]);
                         int y = Integer.parseInt(coordinates[1]);
-                        controller.userPlaceTile(myId,new Point(x,y), gameSession.getPlayer(myId).get().getHandTileOrientation());//todo sistema sta sleppa
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                        controller.userPlaceTile(myId, new Point(x, y), gameSession.getPlayer(myId).get().getHandTileOrientation());//todo sistema sta sleppa
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updatePlaceTile(myId,new Point(0,0));
                     }
                 }
-                case "1:1"->{//PickTile
+                case "1:1" -> {//PickTile
                     try {
                         String s = lineReader.readLine("Insert the coordinates (x,y) >> ");
                         String[] coordinates = s.trim().split("\\s+");
                         int x = Integer.parseInt(coordinates[0]);
                         int y = Integer.parseInt(coordinates[1]);
                         controller.userPickTile(myId, new Point(x, y));
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updatePickTile(myId,new Point(0,0));
                     }
                 }
-                case "2:1"->{//rotateTile
+                case "2:1" -> {//rotateTile
                     try {
                         gameSession.getState().userRotateTileClockWise(myId);
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updateRotateTileClockWise(myId);
                     }
                 }
-                case "3:1"->{//discardTile
+                case "3:1" -> {//discardTile
                     try {
                         controller.userDiscardTile(myId);
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updateDiscardTile(myId);
                     }
 
                 }
-                case "4:1"->{//DrawTile
-                    try{
+                case "4:1" -> {//DrawTile
+                    try {
                         int id = Integer.parseInt(lineReader.readLine("select a IdTile from above>> ").trim());
                         controller.userDrawTile(myId, id);
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updateDrawTile(myId,0);
                     }
                 }
-                case "5:1"->{//lookSmallAdventureCardDeck
+                case "5:1" -> {//lookSmallAdventureCardDeck
                     try {//todo volendo si può fare che finché non smetto di guardare non posso fare nulla
                         smallDeckIndex = Integer.parseInt(lineReader.readLine("insert deck index (0-3) >> ").trim());
                         controller.userLookSmallAdventureCardDeck(myId, smallDeckIndex);
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updateLookSmallAdventureCardDeck(myId,0);
                     }
                 }
-                case "6:1"->{//stopLookSmallAdventureCardDeck
+                case "6:1" -> {//stopLookSmallAdventureCardDeck
                     try {
-                        controller.userStopLookSmallAdventureCardDeck(myId,smallDeckIndex);
-                        updateStopLookSmallAdventureCardDeck(myId,0);
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                        controller.userStopLookSmallAdventureCardDeck(myId, smallDeckIndex);
+                        updateStopLookSmallAdventureCardDeck(myId, 0);
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updateStopLookSmallAdventureCardDeck(myId,0);
                     }
                 }
-                case "7:1"->{
+                case "7:1" -> {
                     controller.userPlaceTimer(myId);
                 }
-                case "8:1"->{//lookUncoveredTile
-                    try{
+                case "8:1" -> {//lookUncoveredTile
+                    try {
                         int id = Integer.parseInt(lineReader.readLine("select a IdTile from above>> ").trim());
-                        String s= gameSession.getGame().get().getGameboard().getTilesDeck().getTileById(id)+"\n"+
+                        String s = gameSession.getGame().get().getGameboard().getTilesDeck().getTileById(id) + "\n" +
                                 "BuildState - commands:\n8. LookUncoveredTile\n12. ←-- go back \n\n";
                         graphicsQueue.add(s);
-                    }catch (Exception e ){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updateLookUncoveredTile(myId,new Point(0,0));
                     }
                 }
-                case "9:1" ->{//lookAtShipboard
+                case "9:1" -> {//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
-                    try{
-                        for (Player p:gameSession.getGame().get().getListPlayers()){
-                            terminal.writer().println(p.getIdPlayer()+" --> [" + p.getUsername()+"]");
+                    try {
+                        for (Player p : gameSession.getGame().get().getListPlayers()) {
+                            terminal.writer().println(p.getIdPlayer() + " --> [" + p.getUsername() + "]");
                         }
                         int id = Integer.parseInt(lineReader.readLine("insert the playerId >> ").trim());
-                        if(gameSession.getPlayer(id).isPresent())lookAtShipboard(id);
-                        else printUpdateMessage(error+"player not found");
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                        if (gameSession.getPlayer(id).isPresent()) lookAtShipboard(id);
+                        else printUpdateMessage(error + "player not found");
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                         //updatePlaceTile(myId,new Point(7,7));
                     }
                 }
-                case "10:1"->{
+                case "10:1" -> {
                     controller.userFinishShipboard(myId);
                 }
-                case "11:1"->{//selectTypeOfToken
+                case "11:1" -> {//selectTypeOfToken
                     try {
                         insertAliens(myId);
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                     }
                 }
-                case "12:1"->{//go back
-                    updatePlaceTile(myId,new Point(7,7));
+                case "12:1" -> {//go back
+                    updatePlaceTile(myId, new Point(7, 7));
                 }
 
-                case "1:2" ->{//DrawAdventureCard
+                case "1:2" -> {//DrawAdventureCard
                     controller.userDrawAdventureCard(myId);
                 }
                 case "2:2" -> {//ThrowDices
                     controller.userThrowDices(myId);
                 }
                 case "3:2" -> {//ActivateComponent
-                    HashSet<Point> points=new HashSet<>();
-                    String s= "";
+                    HashSet<Point> points = new HashSet<>();
+                    String s = "";
                     lineReader.printAbove("insert all the points you want to activate (s to stop):  ");
-                    while (!s.equalsIgnoreCase("s")){
-                        try{
+                    while (!s.equalsIgnoreCase("s")) {
+                        try {
                             s = lineReader.readLine("Insert the coordinates (x,y) >> ");
                             String[] coordinates = s.trim().split("\\s+");
                             int x = Integer.parseInt(coordinates[0]);
                             int y = Integer.parseInt(coordinates[1]);
-                            points.add(new Point(x,y));
-                        }catch (Exception e){
-                            printUpdateMessage(error+e.getMessage());
+                            points.add(new Point(x, y));
+                        } catch (Exception e) {
+                            printUpdateMessage(error + e.getMessage());
                         }
                     }
-                    if (!points.isEmpty())controller.userFinishDecisionActivating(myId, points);
-                    else printUpdateMessage(error+"no point inserted");
+                    if (!points.isEmpty()) controller.userFinishDecisionActivating(myId, points);
+                    else printUpdateMessage(error + "no point inserted");
                 }
                 case "4:2" -> {//handleDecisionToken
-                    ArrayList <Pair<Point, Token>> tokens = decisionToken();
-                    if(!tokens.isEmpty())controller.userFinishDecisionToken(myId,tokens);
-                    else printUpdateMessage(error+"no token operations");
+                    ArrayList<Pair<Point, Token>> tokens = decisionToken();
+                    controller.userFinishDecisionToken(myId, tokens);
                 }
                 case "5:2" -> {//LandOnPlanet
                     try {
                         String s = lineReader.readLine("do you want to land? (y/n) >> ");
                         boolean isLanded = false;
                         int planetId = -1;
-                        if (s.equalsIgnoreCase("y")){
+                        if (s.equalsIgnoreCase("y")) {
                             isLanded = true;
                             s = lineReader.readLine("Insert the planet id >> ");
                             planetId = Integer.parseInt(s.trim());
@@ -1049,15 +1080,15 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "9:2" -> {//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
-                    try{
-                        for (Player p:gameSession.getGame().get().getListPlayers()){
-                            terminal.writer().println(p.getIdPlayer()+" --> [" + p.getUsername()+"]");
+                    try {
+                        for (Player p : gameSession.getGame().get().getListPlayers()) {
+                            terminal.writer().println(p.getIdPlayer() + " --> [" + p.getUsername() + "]");
                         }
                         int id = Integer.parseInt(lineReader.readLine("insert the playerId >> ").trim());
-                        if(gameSession.getPlayer(id).isPresent())updateShipBoard(id);
-                        else printUpdateMessage(error+"player not found");
-                    }catch (Exception e){
-                        printUpdateMessage(error+e.getMessage());
+                        if (gameSession.getPlayer(id).isPresent()) updateShipBoard(id);
+                        else printUpdateMessage(error + "player not found");
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
                     }
                 }
                 case "12:2" -> {//go back
@@ -1066,7 +1097,7 @@ public class TextualUserInterface implements UserInterface {
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
         } catch (Exception e) {
-            printUpdateMessage("(errore switch) "+error + e.getMessage());
+            printUpdateMessage("(errore switch) " + error + e.getMessage());
             //e.printStackTrace();
         }
     }
