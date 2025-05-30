@@ -37,6 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javafx.application.Application;
 import org.jline.terminal.TerminalBuilder;
 
@@ -47,8 +50,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     private  String username;
     private Map<Scene, ScenesName> scenesList;
     private Map<GenericSceneController, ScenesName> controllerList;
-    private int myId;
-    ObservableList<String> players = FXCollections.observableArrayList();
+    private int myId=-1;
+    private final ExecutorService executor =  Executors.newFixedThreadPool(10);
+
+
     private Stage stage;
 
 
@@ -78,7 +83,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         try{
             stage = primaryStage;
 
-            FXMLLoader loader;
+            FXMLLoader loader = new FXMLLoader();
             Parent root;
             scenesList = new HashMap<>();
             controllerList = new HashMap<>();
@@ -171,7 +176,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 buildcontr.loadTilesMap();
                 buildcontr.loadCards();
                 Platform.runLater(()-> {
-                   // showScene(ScenesName.BUILD);
+                    showScene(ScenesName.BUILD);
                 });
 
 
@@ -196,17 +201,25 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void printUpdateMessage(String msg) {
-        if(msg.contains("⚠")){
-            showError(stage, msg);
-        }
-        else{
+        Platform.runLater(()->{
+            if(msg.contains("⚠")){
+                showError(stage, msg);
+            }
+            else{
+//            System.out.println(msg);
+            }
+        });
 
-        }
     }
 
     @Override
     public void setClientId(int myId) {
         this.myId = myId;
+        executor.submit(()-> Platform.runLater(()->{
+            showScene(ScenesName.INIT);
+        }));
+
+
     }
 
 //chiamato quando utente fa join, stampa welcome con il suo nome
@@ -299,25 +312,27 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     @Override
-    public void updateDiscardTile(int playerId) {
-
+    public void updateDiscardTile(int playerId, int idTile) {
+        buildController buildController = (buildController) getControllerBySceneName(ScenesName.BUILD);
+        Platform.runLater(()->{
+//            System.out.println("discard tile in handtile with id: " + idTile);
+            buildController.enableTile(idTile);
+        });
     }
 
     @Override
     public void updateDrawTile(int playerId, int idTIle) {
         buildController buildController = (buildController) getControllerBySceneName(ScenesName.BUILD);
-        FlowPane cardContainer = buildController.getCardContainer();
-        for (javafx.scene.Node node : cardContainer.getChildren()) {
-            if (node instanceof ImageView) {
-                ImageView imageView = (ImageView) node;
-                if (imageView.getUserData() != null && (int) imageView.getUserData() == idTIle) {
-                    // Rendi la tessera opaca e disabilitata
-                    imageView.setDisable(true);
-                    imageView.setOpacity(0.5);
-                    break;
-                }
-            }
+
+        Platform.runLater(()->{
+
+            buildController.disableTile(idTIle);
+
+        if(playerId==myId){
+            buildController.clearHandTiles();
+            buildController.setHandTile(idTIle);
         }
+    });
     }
 
     @Override
