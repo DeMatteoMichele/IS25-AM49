@@ -137,6 +137,7 @@ public class WarZoneCard extends AdventureCard {
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfTokensAndPoints(currentState,coordinates,ship);
         switch (currentState) {
             case DECISION_BATTERIES -> {
                 if (number == 0) {
@@ -232,6 +233,7 @@ public class WarZoneCard extends AdventureCard {
     @Override
     public void finishDecision(Set<Point> coordinates) {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfActivable(currentState,coordinates,ship);
         switch (currentState) {
             case DECISION_MOTOR -> {
                 System.out.println("You have decided the coordinates of the motors you wanna activate");
