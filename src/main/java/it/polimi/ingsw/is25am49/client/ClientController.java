@@ -105,7 +105,6 @@ public class ClientController {
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error during player join --> " + e.getMessage());
         }
-
     }
 
 
@@ -320,6 +319,7 @@ public class ClientController {
 
     public void playerJoin(String username) {
         try {
+            System.out.println("DEBUG: In playerJoin - myId: " + myId + ", username: " + username);
             gameSession.getState().checkUserJoinLobby(myId, username);
             Command command = new Command("playerJoin", myId);
             command.addParameter(myId);

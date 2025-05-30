@@ -188,7 +188,7 @@ public class BuildState extends State {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
         gameSession.userDiscardTile(player);
-        userInterface.updateDiscardTile(playerId);
+//        userInterface.updateDiscardTile(playerId);
     }
 
     public void userDrawTile(int playerId, int idTIle) {

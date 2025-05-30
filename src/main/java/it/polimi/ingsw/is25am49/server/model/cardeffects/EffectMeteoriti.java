@@ -139,6 +139,11 @@ public class EffectMeteoriti extends CardEffect {
         throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
     }
 
+    @Override
+    public List<Integer> getGoods() {
+        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+    }
+
     public Orientation getOrientation() {
         return direction;
     }
