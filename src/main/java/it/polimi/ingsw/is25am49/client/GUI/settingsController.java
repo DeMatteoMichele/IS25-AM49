@@ -113,14 +113,14 @@ public class settingsController extends GenericSceneController {
     }
 
     @FXML
-    private void handleReconnection(ActionEvent event) {
+    public void handleReconnection(ActionEvent event) {
         usernameLabel.setText("Please select your EXACT! previous username: ");
         isAlreadyConnected = true;
         disableReconnectionButtons();
     }
 
     @FXML
-    private void handleUsername(ActionEvent event) {
+    public void handleUsername(ActionEvent event) {
         username = usernameTextField.getText().trim();
 
         if (username.isEmpty()) {
@@ -132,7 +132,7 @@ public class settingsController extends GenericSceneController {
             getGui().printUpdateMessage( getError()+ " Username contains spaces!");
         } else {
             System.out.println("Username set to: " + username);
-           getGui().setUsername(username);
+            getGui().setUsername(username);
             getGui().getController().setUsername(username);
             if (!isAlreadyConnected) {
                 System.out.println("entrato");
@@ -146,7 +146,7 @@ public class settingsController extends GenericSceneController {
     }
 
     @FXML
-    private void handleRMI(ActionEvent event) {
+    public void handleRMI(ActionEvent event) {
         try {
 
             try {
@@ -181,7 +181,7 @@ public class settingsController extends GenericSceneController {
                 System.out.println("trying to log in to the server ...");
                 controller.registerClientRMI(clientRMI);
                 System.out.println("client logged");
-                getGui().showScene(ScenesName.INIT);
+//                getGui().showScene(ScenesName.INIT);
             } catch (RemoteException e) {
                 getGui().printUpdateMessage(getError() + e.getMessage());
                 disableConnectionButtons();
@@ -204,7 +204,7 @@ public class settingsController extends GenericSceneController {
     }
 
     @FXML
-    private void handleSocket(ActionEvent event) {
+    public void handleSocket(ActionEvent event) {
 
 
         try {
@@ -218,7 +218,7 @@ public class settingsController extends GenericSceneController {
             controller.registerClientSocket();
             disableConnectionButtons();
             System.out.println("Socket connection selected");
-            getGui().showScene(ScenesName.INIT);
+//            getGui().showScene(ScenesName.INIT);
 
 
         } catch (Exception e) {

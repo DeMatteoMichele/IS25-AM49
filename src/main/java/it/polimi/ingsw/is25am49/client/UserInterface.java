@@ -29,7 +29,7 @@ public interface UserInterface {
     public void updatePlaceTile(int playerId, Point coordinates);
     public void updatePickTile(int playerId, Point coordinates);
     public void updateRotateTileClockWise(int playerId);
-    public void updateDiscardTile(int playerId);
+    public void updateDiscardTile(int playerId, int idTile);
     public void updateDrawTile(int playerId, int idTIle);
     public void updateFinishShipboard(int playerId);
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
