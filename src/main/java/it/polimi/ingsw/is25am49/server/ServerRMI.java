@@ -4,7 +4,6 @@ import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import it.polimi.ingsw.is25am49.shared.Command;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
@@ -13,14 +12,15 @@ import java.util.concurrent.*;
 public class ServerRMI extends UnicastRemoteObject implements RemoteClient, RemoteServer {
     private boolean gameStarted;
     private final ServerController serverController;
+    private NetworkController networkController;
     private final ConcurrentHashMap<Integer, RemoteClient> clients;
     private final ConcurrentHashMap<Integer, RemoteClient> matchPlayers;
     private final ConcurrentHashMap<Integer, Long> lastHeartBeats;
     private final BlockingQueue<Command> historyQueue;
     private final BlockingQueue<Command> commandsFromClientQueue;
     private final ExecutorService executorService;
-    private volatile boolean timeIsDone;
     private final ScheduledExecutorService scheduler;
+    private int tempId;
 
     public ServerRMI(ServerController serverController) throws RemoteException {
         super();
@@ -37,9 +37,22 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         executorService.submit(this::processFilesFromClientQueue);
     }
 
+    public void setNetworkController(NetworkController networkController) {
+        this.networkController = networkController;
+    }
+
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-        if (!gameStarted || command.getMethodName().equals("playerJoinCallback")) {
+        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
+            historyQueue.add(command);
+        }
+        if (!gameStarted) { //i send callbacks to all clients connected
+
+            if (command.getMethodName().equals("playerJoinCallback") && clients.containsKey(command.getPlayerId())) {// i must add the player to the playersRMI
+                networkController.addPlayerToLobbyRMI(command.getPlayerId());
+                sayToServerRMIWhoHasJoined(command.getPlayerId());
+            }
+
             clients.forEach((id, client) -> {
                 try {
                     client.command_FromServerToClient(command);
@@ -47,8 +60,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                     System.out.println("Error sending command to client " + id + ": " + e.getMessage());
                 }
             });
-        }
-        else {
+        } else {  //i send callbacks only to players in the match
             matchPlayers.forEach((id, client) -> {
                 try {
                     client.command_FromServerToClient(command);
@@ -56,9 +68,6 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                     System.out.println("Error sending command to client " + id + ": " + e.getMessage());
                 }
             });
-        }
-        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
-            historyQueue.add(command);
         }
     }
 
@@ -76,8 +85,9 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         gameStarted = true;
     }
 
-    /**THIS METHOD IS CALLED BY THE CLIENT
-     *REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
+    /**
+     * THIS METHOD IS CALLED BY THE CLIENT
+     * REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
      * SO: CLIENT CAN CALL HIS INTERFACE METHOD(command_FromClientToServer) ONLY IF
      * SERVERRMI(the remote object) HAS THE METHOD IMPLEMENTED.
      * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
@@ -86,51 +96,50 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
 
     @Override
     public void command_FromClientToServer(Command command) throws RemoteException {
-        if(command.getTypeOfMessage().equals("HTB")) {
+        if (command.getTypeOfMessage().equals("HTB")) {
             lastHeartBeats.put(command.getPlayerId(), System.currentTimeMillis());
-        }
-        else {
+        } else {
             putFileFromClientInQueue(command);
         }
     }
-    public void sayToServerRMIWhoHasJoined(int playerId){
+
+    public void sayToServerRMIWhoHasJoined(int playerId) {
         matchPlayers.put(playerId, clients.get(playerId));
     }
-    private void processFilesFromClientQueue(){
+
+    private void processFilesFromClientQueue() {
         while (true) {
             try {
                 Command command = commandsFromClientQueue.take();
-                if(command.getTypeOfMessage().equals("HSK") && (!gameStarted || serverController.isInPlayers(command.getPlayerId()))) {
-                    synchronized (serverController) {
-                        command.setServerController(serverController);
-                        if(command.getPlayerId() == -1){
-                            serverController.updateIdCounter();
-                            int myId = serverController.getIdCounter();
-                            clients.put(myId, (RemoteClient) command.getParameters().getFirst());
-                            Command response = new Command("registerClientCallback", myId);
-                            response.addParameter(myId);
-                            command_FromServerToSpecificClient(response, myId);
-                            giveMeCommandsHistory(myId);
-                        }
-                        else {
+                command.setServerController(serverController);
+                if (command.getTypeOfMessage().equals("MSG")) {
+                    command.callMethod();
+                } else if (command.getTypeOfMessage().equals("HSK")) {
+                        if (command.getPlayerId() == -1) {
+                            synchronized (networkController) {
+                                networkController.updateIdCounter();
+                                tempId = networkController.getIdCounter();
+                            }
+                            clients.put(tempId, (RemoteClient) command.getParameters().getFirst());
+                            Command response = new Command("registerClientCallback", tempId);
+                            response.addParameter(tempId);
+                            command_FromServerToSpecificClient(response, tempId);
+                            if (!gameStarted || networkController.isInPlayersRMI(command.getPlayerId()))
+                                giveMeCommandsHistory(tempId);
+                        } else {
                             int myId = command.getPlayerId();
                             clients.put(myId, (RemoteClient) command.getParameters().getFirst());
+                            if (networkController.getPlayersSocket().contains(myId)) {
+                                networkController.getPlayersSocket().remove(myId);
+                                networkController.addPlayerToLobbyRMI(myId);
+                            }
+                            sayToServerRMIWhoHasJoined(myId);
                             Command response = new Command("registerClientCallback", myId);
                             response.addParameter(myId);
                             command_FromServerToSpecificClient(response, myId);
-                            giveMeCommandsHistory(myId);
+                            if (!gameStarted || networkController.isInPlayersRMI(command.getPlayerId()))
+                                giveMeCommandsHistory(myId);
                         }
-
-
-                    }
-                }
-                else if(command.getTypeOfMessage().equals("MSG")) {
-                    if(!gameStarted) {
-                        if (command.getMethodName().equals("playerJoin"))
-                            serverController.addPlayerToLobbyRMI(command.getPlayerId());
-                    }
-                    command.setServerController(serverController);
-                    command.callMethod();
                 }
             } catch (InterruptedException e) {
                 System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
@@ -139,8 +148,9 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             }
         }
     }
+
     private void giveMeCommandsHistory(int clientId) {
-        for(Command commandBefore: historyQueue) {
+        for (Command commandBefore : historyQueue) {
             try {
                 command_FromServerToSpecificClient(commandBefore, clientId);
             } catch (RemoteException e) {
@@ -148,6 +158,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             }
         }
     }
+
     private void putFileFromClientInQueue(Command command) {
         try {
             commandsFromClientQueue.put(command);
@@ -155,26 +166,16 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
             System.err.println("Error putting file from Client in queue in ServerRMI cause thread was interrupted: " + e.getMessage());
         }
     }
+
     private void startHeartBeatMonitoring() {
         for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
             if (clients.containsKey(entry.getKey())) {
                 if (System.currentTimeMillis() - entry.getValue() > 20000) {
-                    System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+                    System.out.println("RMI: Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
                     clients.remove(entry.getKey());
                     matchPlayers.remove(entry.getKey());
                 }
             }
-        }
-        timer(5);
-    }
-
-    private void timer(int secondsTime) {
-        timeIsDone = true;
-        scheduler.schedule(() -> {
-            timeIsDone = false;
-        }, secondsTime, TimeUnit.SECONDS);
-        while (timeIsDone) {
-            Thread.onSpinWait(); //to improve performance while waiting
         }
     }
 }
