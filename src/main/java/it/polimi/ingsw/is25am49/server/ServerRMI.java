@@ -106,7 +106,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                         if(command.getPlayerId() == -1){
                             serverController.updateIdCounter();
                             int myId = serverController.getIdCounter();
-                            clients.put(myId, (RemoteClient) command.getParameters().getFirst());
+                            RemoteClient put = clients.put(myId, (RemoteClient) command.getParameters().getFirst());
                             Command response = new Command("registerClientCallback", myId);
                             response.addParameter(myId);
                             command_FromServerToSpecificClient(response, myId);
@@ -114,6 +114,8 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                         }
                         else {
                             int myId = command.getPlayerId();
+                            if(matchPlayers.containsKey(myId))
+                                matchPlayers.put(myId, (RemoteClient) command.getParameters().getFirst());
                             clients.put(myId, (RemoteClient) command.getParameters().getFirst());
                             Command response = new Command("registerClientCallback", myId);
                             response.addParameter(myId);
