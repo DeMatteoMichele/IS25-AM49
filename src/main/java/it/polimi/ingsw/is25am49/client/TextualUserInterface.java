@@ -336,6 +336,7 @@ public class TextualUserInterface implements UserInterface {
         try {
             while (!s.equalsIgnoreCase("s")) {
                 s = lineReader.readLine("Insert the coordinates (x,y) >> ");
+                if( s.trim().isEmpty() || s.trim().equalsIgnoreCase("s")) return tokens; //se l'utente vuole fermarsi
                 String[] coordinates = s.trim().split("\\s+");
                 int x = Integer.parseInt(coordinates[0]);
                 int y = Integer.parseInt(coordinates[1]);
