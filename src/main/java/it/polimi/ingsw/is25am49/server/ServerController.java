@@ -125,6 +125,7 @@ public class ServerController {
                 command.addParameter("Tile with id "+tileId+" not available or already drawn");
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.err.println("Error due to RemoteException in Server  in drawTile ->   " + e.getMessage());

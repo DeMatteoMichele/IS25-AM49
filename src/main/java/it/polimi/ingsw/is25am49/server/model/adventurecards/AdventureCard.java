@@ -135,7 +135,7 @@ public abstract class AdventureCard {
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
-                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY || token != Token.BATTERY_CELLS) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY && token != Token.BATTERY_CELLS) {
                         throw new IllegalTokensException("Puoi utilizzare solo batterie con celle di batteria!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
@@ -150,7 +150,7 @@ public abstract class AdventureCard {
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
-                    if (shipBoard.getTile(position).getComponentType() != ComponentType.CABINE || (token != Token.ASTRONAUT) || token != Token.BROWN_ALIENS || token != Token.PURPLE_ALIENS) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.CABINE || (token != Token.ASTRONAUT) && token != Token.BROWN_ALIENS && token != Token.PURPLE_ALIENS) {
                         throw new IllegalTokensException("Puoi utilizzare solo astronauti in una cabina!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
