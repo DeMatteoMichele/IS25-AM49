@@ -124,6 +124,7 @@ public class SpazioAperto extends AdventureCard {
         gameBoard.setCurrentPlayer(currentPlayer);
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         this.cannons = new ArrayList<>(coordinates);
+        checkCorrectnessOfActivable(currentState,coordinates,ship);
         switch (currentState) {
             case DECISION_MOTOR -> {
                 System.out.println("you have decided the coordinates of the motors you wanna activate");

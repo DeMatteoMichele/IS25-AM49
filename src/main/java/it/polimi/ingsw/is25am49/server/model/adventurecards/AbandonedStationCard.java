@@ -23,12 +23,13 @@ public class AbandonedStationCard extends AdventureCard {
     private final List<CardEffect> listEffects;
     private final int daysLost;
     private final int lostAstronauts;
-    public AbandonedStationCard(GameBoard gameBoard, String description, int level, String name,int daysLost, int minimumAstronauts, int redGoods,int yellowGoods,int greenGoods, int blueGoods ){
-        super(gameBoard,description,level,name);
+
+    public AbandonedStationCard(GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumAstronauts, int redGoods, int yellowGoods, int greenGoods, int blueGoods) {
+        super(gameBoard, description, level, name);
         this.daysLost = daysLost;
         this.lostAstronauts = minimumAstronauts;
         listEffects = new ArrayList<>();
-        listEffects.add(new EffectWinGoods("Win Goods", redGoods,yellowGoods,greenGoods,blueGoods));
+        listEffects.add(new EffectWinGoods("Win Goods", redGoods, yellowGoods, greenGoods, blueGoods));
     }
 
     @Override
@@ -46,27 +47,26 @@ public class AbandonedStationCard extends AdventureCard {
     public void checkRequirements() {
 
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
-        int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT)+ship.getTotalNumberOfaToken(Token.BROWN_ALIENS)+ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
-        System.out.println("player "+ gameBoard.getCurrentPlayer().getUsername() + " has " + totalNumCrewMembers + " crew members");
-       //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
-        if(totalNumCrewMembers >= lostAstronauts) {
+        int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT) + ship.getTotalNumberOfaToken(Token.BROWN_ALIENS) + ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+        System.out.println("player " + gameBoard.getCurrentPlayer().getUsername() + " has " + totalNumCrewMembers + " crew members");
+        //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
+        if (totalNumCrewMembers >= lostAstronauts) {
             System.out.println("Do you wanna land on the station for some goods?");
-            currentState=AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
-        }
-        else{
+            currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
+        } else {
             //non ho abastanza membri per atterrare
             System.out.println("You don't have enough members to land on the station!");
-            try{
+            try {
                 //controllo se il current player era l'ultimo o no
                 //se non è l'ultimo richiamo check requirements sul player dopo
                 gameBoard.nextPlayer();
                 System.out.println("Now check on next player");
                 checkRequirements();
-            }
-            catch(IllegalSetOfNextPlayerException e){
+            } catch (IllegalSetOfNextPlayerException e) {
                 //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                 System.out.println("It goes to update state");
-                update();            }
+                update();
+            }
         }
     }
 
@@ -77,21 +77,19 @@ public class AbandonedStationCard extends AdventureCard {
         //prendo il primo effetto (l'unico in questa carta)
         //vado nello stato dove decido le merci da caricare e le rispettive posizioni
         super.landingOnStationOrShip(IsLanded);
-        if(IsLanded){
+        if (IsLanded) {
             System.out.println("You have landed on A station");
             System.out.println("Now you have to decide where you want to add your win goods and which ones");
-            currentState= AdventureStatesTypes.DECISION_GOODS;
+            currentState = AdventureStatesTypes.DECISION_GOODS;
             currentEffect = listEffects.getFirst();
 
-        }
-        else{
+        } else {
             System.out.println("You have decided not to land on the station ");
-            try{
+            try {
                 gameBoard.nextPlayer();
                 System.out.println("Now check on next player");
                 checkRequirements();
-            }
-            catch(IllegalSetOfNextPlayerException e){
+            } catch (IllegalSetOfNextPlayerException e) {
                 System.out.println("No more players, now to update");
                 update();
             }
@@ -100,13 +98,15 @@ public class AbandonedStationCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(Set<Point> coordinates){
+    public void finishDecision(Set<Point> coordinates) {
         throw new IllegalMethodOnThisCardException("This method is not allowed in this card");
     }
 
 
     @Override
-    public void finishDecision(List<Pair<Point,Token>> coordinates) {
+    public void finishDecision(List<Pair<Point, Token>> coordinates) {
+        ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfTokensAndPoints(currentState, coordinates, shipBoard);
         switch (currentState) {
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
             case DECISION_GOODS -> {
@@ -131,6 +131,7 @@ public class AbandonedStationCard extends AdventureCard {
         player.setDaysThisTurn(-daysLost);
         update();
     }
+
     @Override
     public String toString() {
 
