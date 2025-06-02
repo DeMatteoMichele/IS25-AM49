@@ -164,19 +164,7 @@ public abstract class AdventureCard {
     }
 
     public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> coordinates){
-        List<Point> batteries = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.BATTERY);
-        List<Point> storages = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.STORAGE);
-        List<Point> specialStorages = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.SPECIAL_STORAGE);
-        List<Point> shields = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.SHIELD);
-        List<Point> cabines = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.CABINE);
-        List<Point> brownAliens = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.BROWN_ALIEN_MODULE);
-        List<Point> purpleAliens = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.PURPLE_ALIEN_MODULE);
-        for (Pair<Point, Token> coordinate : coordinates) {
-            Point point = coordinate.getKey();
-            if(!batteries.contains(point) || !storages.contains(point) || !specialStorages.contains(point) || !shields.contains(point) || !cabines.contains(point) || !brownAliens.contains(point) || !purpleAliens.contains(point)){
-                throw new IllegalMethodOnThisStateException("Invalid coordinates: they have to be batteries, storages, shields or cabins");
-            }
-        }
+        //IMPLEMENTATO DA MAICALS NEL SERVER
 
 
     }

@@ -91,6 +91,7 @@ public class ServerController {
                 command.addParameter("Tile with id "+tileId+" not available or already drawn");
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.err.println("Error due to RemoteException in Server  in drawTile ->   " + e.getMessage());
@@ -282,6 +283,7 @@ public class ServerController {
                 command.addParameter("Throw dices hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in throwDices ->   " + e.getMessage());
