@@ -4,10 +4,10 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="Stack" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.settingsController">
+<StackPane fx:id="Stack" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.settingsController">
      <ImageView fx:id="backgroundImage" pickOnBounds="true" />
 
-     <Pane prefHeight="614.0" prefWidth="1945.0">
+     <AnchorPane prefHeight="614.0" prefWidth="1945.0">
          <Button fx:id="yesReconnection" layoutX="609.0" layoutY="67.0" mnemonicParsing="false"
                  onAction="#handleReconnection"
                  style="-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15;
@@ -81,5 +81,5 @@
                         -fx-background-color: rgba(0,30,60,0.8);
                         -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);"
                  text="CONFIRM" />
-     </Pane>
+     </AnchorPane>
 </StackPane>

@@ -1,0 +1,18 @@
+.game-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
+    -fx-pref-width: 100px;
+}
+
+.yellow-button {
+    -fx-background-color: linear-gradient(to bottom, #ffd740, #fbc02d);
+}
+
+.green-button {
+    -fx-background-color: linear-gradient(to bottom, #66bb6a, #388e3c);
+}

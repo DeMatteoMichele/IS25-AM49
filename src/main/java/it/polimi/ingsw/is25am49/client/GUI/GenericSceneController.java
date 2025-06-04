@@ -25,26 +25,13 @@ public class GenericSceneController {
         this.guiApplication = guiApplication;
         this.gameSession = gameSession;
     }
-    public GameSession  getGameSession() {
-        return gameSession;
-    }
-    public String getError() {
-        return error;
-    }
-
-    /**
-     * Retrieves the GUI application instance associated with this controller.
-     *
-     * @return The GUI application instance.
-     */
-    public GraphicUserInterface getGui() {
-        return guiApplication;
-    }
-
-    public Stage getStage() {
-        return guiApplication.getPrimaryStage();
 
 
 
 
-}}
+
+
+
+
+
+}

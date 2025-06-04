@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model;
 
+import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalTimerMoveException;
 
@@ -14,6 +15,7 @@ public class Timer {
     private boolean isActive;
     private final int level;
     private GameSession gameSession;
+    private UserInterface ui;
     public int getLifetime() {
         return lifetime;
     }
@@ -26,7 +28,7 @@ public class Timer {
         return isActive;
     }
 
-    public Timer(GameMode level, GameSession gameSession) {
+    public Timer(GameMode level, GameSession gameSession, UserInterface ui) {
         this.lifetime = 30;
         this.usageCounter = 0;
         isActive = false;
@@ -35,6 +37,7 @@ public class Timer {
         else
             this.level = 3;
         this.gameSession = gameSession;
+        this.ui = ui;
     }
     public synchronized void place(Player player) {
         if(!isActive && usageCounter < level - 1) {
@@ -54,6 +57,7 @@ public class Timer {
     private void startTimer(int seconds) {
         scheduler.schedule(() -> {
             isActive = false;
+            ui.printUpdateMessage("Timer[" +usageCounter+"] has expired! ");
         }, seconds, TimeUnit.SECONDS);
     }
     private void startFinalTimer(int seconds) {

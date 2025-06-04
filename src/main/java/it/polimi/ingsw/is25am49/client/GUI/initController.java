@@ -91,7 +91,7 @@ public void setupLobbyListView() {
                 java.util.Set<String> seenColors = new java.util.HashSet<>();
                 java.util.Set<String> seenUsernames = new java.util.HashSet<>();
 
-                var players = getGui().getGameSession().getGame().get().getListPlayers();
+                var players = gameSession.getGame().get().getListPlayers();
 
                 // Verifica duplicati di username
                 for (var player : players) {
@@ -187,11 +187,11 @@ public void setupLobbyListView() {
     @FXML
     private void handleJoin(ActionEvent event) {
         try{
-            getGui().getController().playerJoin(getGui().getUsername());
-            System.out.println("Player joined the lobby: " + getGui().getUsername());
+            guiApplication.getController().playerJoin(guiApplication.getUsername());
+            System.out.println("Player joined the lobby: " + guiApplication.getUsername());
             joinLobby.setDisable(true);
         }catch (Exception e) {
-            getGui().printUpdateMessage( getError()+ e.getMessage());
+            guiApplication.printUpdateMessage( error+ e.getMessage());
         }
     }
 
@@ -226,19 +226,19 @@ public void setupLobbyListView() {
 
             int maxPlayers = Integer.parseInt(textMaxPlayers.getText());
             if (maxPlayers < 2 || maxPlayers > 4) {
-                getGui().printUpdateMessage(getError()+ " Max players must be between 2 and 4");
+                guiApplication.printUpdateMessage(error+ " Max players must be between 2 and 4");
                 textMaxPlayers.setText("");
             }
             else{
                 try{
-                    getGui().getController().adminSetup(maxPlayers, mode.ordinal());
+                    guiApplication.getController().adminSetup(maxPlayers, mode.ordinal());
                     System.out.println("Max players set to: " + maxPlayers + " with mode: " + mode);
                     textMaxPlayers.setDisable(true);
                     buttonMaxPlayers.setDisable(true);
                     joinLobby.setDisable(false);
                     disableAll();
                 }catch (Exception e) {
-                    getGui().printUpdateMessage(getError()+  e.getMessage());
+                    guiApplication.printUpdateMessage(error+  e.getMessage());
                     disableAll();
                     textMaxPlayers.setText("");
                     setupGame.setDisable(false);
@@ -247,7 +247,7 @@ public void setupLobbyListView() {
             }
 
         } catch (NumberFormatException e) {
-            getGui().printUpdateMessage(getError()+" Invalid number format for max players");
+            guiApplication.printUpdateMessage(error+" Invalid number format for max players");
             textMaxPlayers.setText("");
         }
     }

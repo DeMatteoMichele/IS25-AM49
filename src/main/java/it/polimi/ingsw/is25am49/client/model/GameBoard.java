@@ -458,9 +458,9 @@ public class GameBoard {
 
     public void addDiscardedTile(Player player) {
         Optional<Tile> newTile = player.discardTile();
-
-        ui.updateDiscardTile(player.getIdPlayer(),newTile.get().getIdTile());
+        newTile.ifPresent(tile -> {tile.setTileOrientation(Orientation.NORTH);});
         newTile.ifPresent(tile -> tilesDeck.addDiscardTile(tile, player));
+        ui.updateDiscardTile(player.getIdPlayer(),newTile.get().getIdTile());
 
     }
 

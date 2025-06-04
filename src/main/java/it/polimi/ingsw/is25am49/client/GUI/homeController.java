@@ -6,14 +6,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class homeController extends GenericSceneController{
     @FXML private ImageView backgroundImage;
+    @FXML
+    private Button startGameButton;
+
+    @FXML
+    private StackPane AnchorPane;
+
+
     public void initialize() {
         Image image = new Image(getClass().getResource("/sfondo2.png").toExternalForm());
         backgroundImage.setImage(image);
@@ -24,10 +34,18 @@ public class homeController extends GenericSceneController{
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
             }
         });
+//        startGameButton.prefWidthProperty().bind(AnchorPane.widthProperty().multiply(0.3)); // 30% della larghezza
+//
+//        // Lega l'altezza del pulsante all'altezza dell'AnchorPane
+//        startGameButton.prefHeightProperty().bind(AnchorPane.heightProperty().multiply(0.1)); // 10% dell'altezza
+//
+//        // Centra il pulsante orizzontalmente e verticalmente
+//        startGameButton.layoutXProperty().bind(AnchorPane.widthProperty().subtract(startGameButton.prefWidthProperty()).divide(2));
+//        startGameButton.layoutYProperty().bind(AnchorPane.heightProperty().subtract(startGameButton.prefHeightProperty()).divide(2));
     }
     @FXML
     private void handleStartGame(ActionEvent event) {
-       getGui().showScene(ScenesName.SETTINGS);
+       guiApplication.showScene(ScenesName.SETTINGS);
 
     }
 }

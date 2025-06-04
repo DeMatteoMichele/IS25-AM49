@@ -65,10 +65,7 @@ public class Game {
         return numPlayers;
     }
 
-    public void setGameMode(GameMode mode) {
-        this.mode = mode;
-        timer = new Timer(mode, session);
-    }
+
 
     public boolean checkPlayers() {
         return players.size() < maxPlayers;
