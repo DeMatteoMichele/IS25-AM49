@@ -23,8 +23,8 @@ public abstract class Enemy extends AdventureCard {
     protected final int daysLost;
     protected final List<CardEffect> listEffects;
 
-    public Enemy(GameBoard gameBoard, String description, int level,String name, int daysLost, int minimumFirePower) {
-        super(gameBoard, description, level,name);
+    public Enemy(GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumFirePower) {
+        super(gameBoard, description, level, name);
         this.minimumFirePower = minimumFirePower;
         this.daysLost = daysLost;
         listEffects = new ArrayList<>();
@@ -99,7 +99,7 @@ public abstract class Enemy extends AdventureCard {
 
     protected abstract void evaluateBattleOutcome(ShipBoard shipBoard);
 
-    protected void tryNextPlayer()  {
+    protected void tryNextPlayer() {
         try {
             gameBoard.nextPlayer();
             System.out.println("Now check on next player");
@@ -119,6 +119,7 @@ public abstract class Enemy extends AdventureCard {
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfTokensAndPoints(currentState, coordinates, shipBoard);
         switch (currentState) {
             case DECISION_BATTERIES -> {
                 int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
@@ -153,6 +154,7 @@ public abstract class Enemy extends AdventureCard {
     @Override
     public void finishDecision(Set<Point> coordinates) throws IllegalNumOfActivableException {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfActivable(currentState, coordinates, shipBoard);
         switch (currentState) {
             case DECISION_CANNON -> {
                 try {

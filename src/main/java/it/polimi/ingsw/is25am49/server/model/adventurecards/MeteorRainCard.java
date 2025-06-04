@@ -89,6 +89,7 @@ public class MeteorRainCard extends AdventureCard {
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfTokensAndPoints(currentState,coordinates,shipBoard);
         switch (currentState) {
             case DECISION_BATTERIES -> {
                 int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
@@ -113,6 +114,7 @@ public class MeteorRainCard extends AdventureCard {
     @Override
     public void finishDecision(Set<Point> coordinates) throws IllegalNumOfActivableException {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfActivable(currentState,coordinates,shipBoard);
         switch (currentState) {
             case DECISION_CANNON -> {
                 try {

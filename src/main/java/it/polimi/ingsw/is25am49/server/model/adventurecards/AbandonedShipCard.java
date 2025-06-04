@@ -77,6 +77,8 @@ public class AbandonedShipCard extends AdventureCard {
 
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
+        ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfTokensAndPoints(currentState,coordinates,shipBoard);
         switch (currentState) {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
                 System.out.println("You have decided to remove astronauts");

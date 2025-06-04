@@ -27,10 +27,10 @@ public class ClientHandler {
     private final ConcurrentMap<Integer, LinkedBlockingDeque<Command>> playersOutgoingFileQueue;
     private final ArrayBlockingQueue<Command> BroadcastQueue;
     private final ArrayBlockingQueue<Command> historyQueue;
+    private static NetworkController networkController;
 
     private final Thread serverThread;
     private boolean gameStarted;
-    private final File directory;
 
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         this.serverSerializer = serverSerializer;
@@ -47,7 +47,6 @@ public class ClientHandler {
         historyQueue = new ArrayBlockingQueue<>(50000, true);
         gameStarted = false;
         BroadcastQueue = new ArrayBlockingQueue<>(4000, true);
-        directory = new File("$FilesFromClients");
         serverThread = new Thread(() -> {
             try {
                 startServer(port);
@@ -76,7 +75,7 @@ public class ClientHandler {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             int clientId = handleFirstMessage(inputStream);
-            if (!gameStarted || serverSerializer.isInPlayers(clientId)) {
+            if (!gameStarted || networkController.isInPlayersSocket(clientId)) {
                 executors.submit(() -> askForPreviousCommands(clientId));
             }
             if (!connections.containsKey(clientId)) {
@@ -134,7 +133,7 @@ public class ClientHandler {
         for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
             if (connections.get(entry.getKey())) {
                 if (System.currentTimeMillis() - entry.getValue() > 20000) {
-                    System.out.println("Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
+                    System.out.println("SOCKET: Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
                     shutDownClientRelated(entry.getKey());
                 }
             }
@@ -334,15 +333,18 @@ public class ClientHandler {
 
     public static void main(String[] args) {
         GameSession gameSession = new GameSession();
+        networkController = new NetworkController();
         ServerController serverController = new ServerController(gameSession);
         gameSession.setServerController(serverController);
         ServerSerializer serverSerializer = new ServerSerializer(serverController);
+        serverSerializer.setNetworkController(networkController);
         ClientHandler clientHandler = new ClientHandler(serverSerializer, 8081);
-        System.out.println("Server socket accesso!");
+        System.out.println("Server socket acceso!");
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
         try {
             ServerRMI serverRMI = new ServerRMI(serverController);
+            serverRMI.setNetworkController(networkController);
             Registry reg = LocateRegistry.createRegistry(1099);
             reg.rebind("Server", serverRMI);
             System.out.println("server RMI acceso!");
@@ -358,5 +360,9 @@ public class ClientHandler {
 
     public void gameStarted() {
         gameStarted = true;
+    }
+
+    public boolean containsClient(int playerId) {
+        return connections.containsKey(playerId);
     }
 }

@@ -113,7 +113,6 @@ public class ClientController {
             gameSession.getState().userDrawTile(playerId, tileId);
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while drawing a card: --> " + e.getMessage());
-            e.printStackTrace();
         }
 
     }
@@ -148,7 +147,6 @@ public class ClientController {
             gameSession.getState().userFinishShipboard(playerId);
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while finishing shipboard: --> " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -184,7 +182,7 @@ public class ClientController {
         }
     }
 
-    public void userThrowDicesCallback(int playerId, int result) {
+    public void userThrowDicesCallback(int playerId) {
         try {
             gameSession.getState().userThrowDices(playerId);
         } catch (Exception e) {

@@ -254,5 +254,14 @@ class ShipBoardTest {
         assertEquals(new Point(8,6),shipTest.getExposedPoint(8,Orientation.SOUTH).get());
     }
 
+    @Test
+    void getAvailableSpaceForAToken() {
+        shipTest= ShipBoard.generateShipboard(2,30);
+        System.out.println(shipTest);
+        System.out.println("battery: "+shipTest.getAvailableSpaceForAToken(Token.BATTERY_CELLS));
+        System.out.println("astronatus: "+shipTest.getAvailableSpaceForAToken(Token.ASTRONAUT));
+        System.out.println("redgoods: "+shipTest.getAvailableSpaceForAToken(Token.RED_GOODS));
+        System.out.println("bluegoods: "+shipTest.getAvailableSpaceForAToken(Token.BLUE_GOODS));
+    }
 
 }

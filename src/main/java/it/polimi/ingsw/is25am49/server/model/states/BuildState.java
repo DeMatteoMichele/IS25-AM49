@@ -63,7 +63,6 @@ public class BuildState extends State {
     }
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
-        player.shipBoardIsNotCompletedYet();
         if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
             if(gameSession.getGame().isPresent()) {
@@ -103,7 +102,7 @@ public class BuildState extends State {
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates){
         Player player = getPlayerById(playerId);
         if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
-            transition(new AdventureState(gameSession));
+            userFinishShipboard(playerId);
         }
     }
     //illegal

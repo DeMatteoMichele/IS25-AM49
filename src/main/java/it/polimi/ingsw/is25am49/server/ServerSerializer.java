@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.server;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import it.polimi.ingsw.is25am49.shared.Command;
 import it.polimi.ingsw.is25am49.shared.RemoteClient;
 
@@ -12,20 +11,19 @@ import java.util.concurrent.Executors;
 
 public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
+    private NetworkController networkController;
     private ClientHandler clientHandler;
     private final BlockingQueue<Command> filesFromSocketQueue;
-    private final BlockingQueue<Command> historyQueue;
     private final ExecutorService executorService;
-    private int idCounter;
+    private int tempId;
     private boolean gameStarted;
 
 
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
-        this.idCounter = -1;
+        this.tempId = -1;
         this.gameStarted = false;
         filesFromSocketQueue = new ArrayBlockingQueue<Command>(4000, true);
-        historyQueue = new ArrayBlockingQueue<Command>(50000, true);
         executorService = Executors.newFixedThreadPool(10);
         executorService.submit(this::processFilesFromSocketQueue);
     }
@@ -46,6 +44,10 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
+    public void setNetworkController(NetworkController networkController) {
+        this.networkController = networkController;
+    }
+
     public void setClientHandler(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
     }
@@ -54,20 +56,21 @@ public class ServerSerializer implements RemoteClient {
     public Command deSerializeStringFromClient(Command command) {
         command.setServerController(serverController);
         if (command.getTypeOfMessage().equals("MSG")) {
-            if(!gameStarted){
-                if (command.getMethodName().equals("playerJoin"))
-                    serverController.addPlayerToLobbySocket(command.getPlayerId());
-            }
             command.callMethod();
         } else if (command.getTypeOfMessage().equals("HSK")) {
             if (command.getPlayerId() == -1) {
-                synchronized (serverController) {
-                    serverController.updateIdCounter();
-                    idCounter = serverController.getIdCounter();
+                synchronized (networkController) {
+                    networkController.updateIdCounter();
+                    tempId = networkController.getIdCounter();
                 }
-                command.addParameter(idCounter);
-                command.setPlayerId(idCounter);
+                command.addParameter(tempId);
+                command.setPlayerId(tempId);
             } else {
+                if (networkController.getPlayersRMI().contains(command.getPlayerId())) {
+                    networkController.getPlayersRMI().remove(command.getPlayerId());
+                    networkController.addPlayerToLobbySocket(command.getPlayerId());
+                    sayToClientHandlerWhoHasJoined(command.getPlayerId());
+                }
                 command.addParameter(command.getPlayerId());
                 command.setPlayerId(command.getPlayerId());
             }
@@ -79,10 +82,15 @@ public class ServerSerializer implements RemoteClient {
         if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
             clientHandler.putFileInTheHistoryQueue(command);
         }
-        if (!toSpecificClient) {
+        if (!toSpecificClient) {    //broadcast
+            if (!gameStarted) {
+                if (command.getMethodName().equals("playerJoinCallback") && clientHandler.containsClient(command.getPlayerId())) {
+                    networkController.addPlayerToLobbySocket(command.getPlayerId());
+                    sayToClientHandlerWhoHasJoined(command.getPlayerId());
+                }
+            }
             clientHandler.putFileInTheBroadcastQueue(command);
-            System.out.println("putting file in the broadcast queue");
-        } else {
+        } else {    //to a single client
             clientHandler.putFileInTheOutGoingFileQueue(command, clientId);
         }
         return command;
@@ -98,12 +106,10 @@ public class ServerSerializer implements RemoteClient {
 
     public int deserializeHandshake(Command command) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
-        synchronized (serverController) {
             Command commandTemp = deSerializeStringFromClient(command);
             Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
             serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
             return commandTemp.getPlayerId();
-        }
     }
 
 
@@ -125,12 +131,8 @@ public class ServerSerializer implements RemoteClient {
      * This method is used to signal to the clienthandler that the game has started.
      */
     public void signalThatGameStarted() {
-        gameStarted=true;
+        gameStarted = true;
         clientHandler.gameStarted();
     }
 
-
-    public boolean isInPlayers(int playerId) {
-        return serverController.isInPlayers(playerId);
-    }
 }

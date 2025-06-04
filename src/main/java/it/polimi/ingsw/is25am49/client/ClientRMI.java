@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.client;
 
-import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.shared.Command;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
@@ -8,8 +7,6 @@ import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +21,6 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private int reconnectionTries;
     private final int secondsDelayForReconnection;
     private final ExecutorService executorService;
-    private final int triesForReconnection;
     private boolean isConnected;
     private boolean hasResetted;
     private volatile boolean timeIsDone;
@@ -43,7 +39,6 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         secondsDelayForReconnection = 5;
         executorService = Executors.newFixedThreadPool(10);
         scheduler = Executors.newScheduledThreadPool(10);
-        triesForReconnection = 10;
         hasResetted = false;
         isConnected = false;
         executorService.submit(this::startHeartBeat);
@@ -84,12 +79,6 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
                 } catch (IOException | NotBoundException ex) {
                     if (!hasResetted) {
                         System.out.println("⚠ Error : something went wrong during the connection to the server RMI --> " + e.getMessage());
-                        //se voglio riprovare a connettermi da capire bene come gesitre l'interfaccia comune
-//                        System.out.println("\nwanna retry? Y");
-//                        if (ui.lineReader.readLine(prompt).trim().equalsIgnoreCase("y")) userInterface.setup;
-//                        else {
-//                            System.exit(0);
-//                            printUpdateMessage("closing...");
                     }
                 }
 

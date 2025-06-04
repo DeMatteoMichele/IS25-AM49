@@ -21,20 +21,6 @@ public class Command implements Serializable {
     private final ArrayList<Object> parameters;
     private int playerId;
 
-    public Command(String methodName) {
-        this.methodName = methodName;
-        this.parameters = new ArrayList<>();
-        this.playerId = -5;
-        if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket") || methodName.equals("registerClientRMI")) {
-            typeOfMessage = "HSK";
-        }
-        else if (methodName.equals("heartbeat")) {
-            typeOfMessage = "HTB";
-        }
-        else {
-            typeOfMessage = "MSG";
-        }
-    }
     public Command(String methodName, int playerId) {
         this.methodName = methodName;
         this.parameters = new ArrayList<>();
@@ -50,16 +36,6 @@ public class Command implements Serializable {
         }
     }
 
-    public static String compactJsonString(String json) {
-        StringBuilder compactedJsonString = new StringBuilder();
-        int i;
-        for (i = 0; i < json.length(); i++) {
-            if (json.charAt(i) != '\n' && json.charAt(i) != '\t' && json.charAt(i) != ' ' && json.charAt(i) != '\r') {
-                compactedJsonString.append(json.charAt(i));
-            }
-        }
-        return compactedJsonString.toString();
-    }
     public int getPlayerId() {
         return playerId;
     }
@@ -89,7 +65,10 @@ public class Command implements Serializable {
         this.methodName = methodName;
         if (methodName.equals("registerClientCallback") || methodName.equals("registerClientSocket")) {
             typeOfMessage = "HSK";
-        } else {
+        } else if (methodName.equals("heartbeat")) {
+            typeOfMessage = "HTB";
+        }
+        else {
             typeOfMessage = "MSG";
         }
     }
@@ -385,7 +364,7 @@ public class Command implements Serializable {
             }
             case "userThrowDicesCallback" -> {
                 try {
-                    clientController.userThrowDicesCallback((int) parameters.get(0), (int) parameters.get(1));
+                    clientController.userThrowDicesCallback((int) parameters.get(0));
                 } catch (Exception e) {
                     System.err.println("Errore in userThrowDicesCallback: " + e.getMessage());
                     e.printStackTrace();
@@ -471,7 +450,7 @@ public class Command implements Serializable {
                     e.printStackTrace();
                 }
             }
-            case "HTB" ->{}
+            case "heartbeat" ->{}
             default -> throw new IllegalArgumentException("Metodo non riconosciuto: " + methodName);
         }
         return true;

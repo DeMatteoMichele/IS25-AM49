@@ -638,6 +638,17 @@ public class ShipBoard {
                 .flatMap(entry -> Collections.nCopies(entry.getValue().get().getNumberOfaToken(token), entry.getKey()).stream())
                 .collect(Collectors.toCollection(ArrayList::new));
     }
+
+    public int getAvailableSpaceForAToken(Token token){
+        return grid.values().stream().filter(tile -> {
+            try {
+                return tile.isPresent() && tile.get().getComponent().checkIfTokenIsValid(token);
+            } catch (Exception e) {
+                return false;
+            }
+        }).mapToInt(tile -> tile.get().getComponent().getLevel()- tile.get().getComponent().getNumberOfTokens())
+                .sum();
+    }
     public void removeAllTokens(){
         for (Optional<Tile> t: grid.values()){
             try{t.ifPresent(Tile::clearComponent);}
@@ -867,6 +878,228 @@ public class ShipBoard {
     public boolean cabineAreFullOfToken(){
         ArrayList<Point> listOfCabins = getComponentsPositions(ComponentType.CABINE);
         return listOfCabins.stream().noneMatch(point -> getTile(point).getComponent().getNumberOfTokens()==0);
+    }
+
+    //------------------------------------------------------------------------------------
+//
+//    funzioni per la stampa della nave ↓
+//
+// ------------------------------------------------------------------------------------
+
+    public ArrayList<String> tileToStringList(Optional<Tile> tile) {
+        ArrayList<String> rows = new ArrayList<>(9);
+        if (tile.isEmpty()) {
+            rows.add("┌ ─ ─ ─ ─ ─ ┐");
+            rows.add("│ •   •   • │");
+            rows.add("│           │");
+            rows.add("│ • empty • │");
+            rows.add("│           │");
+            rows.add("│ •   •   • │");
+            rows.add("└ ─ ─ ─ ─ ─ ┘");
+        } else {
+            Tile t = tile.get();
+            ComponentType c = t.getComponentType();
+            Orientation o = t.getTileOrientation();
+            ConnectorType n = t.getConnector(Orientation.NORTH);
+            ConnectorType e = t.getConnector(Orientation.EAST);
+            ConnectorType s = t.getConnector(Orientation.SOUTH);
+            ConnectorType w = t.getConnector(Orientation.WEST);
+            rows.add(String.format("┌ ─ %s ─ ┐", hConnToStr(n)));
+            rows.add(String.format("│   %5s  %s│", compToStr(c), lockedToStr(t)));
+            rows.add(String.format("%s     %s     %s", vConnToStr(w, 1), orientToStr(o, 0), vConnToStr(e, 1)));
+            rows.add(String.format("%s   %s %s %s   %s", vConnToStr(w, 2), orientToStr(o, 3), centerToStr(t), orientToStr(o, 1), vConnToStr(e, 2)));
+            rows.add(String.format("%s     %s     %s", vConnToStr(w, 3), orientToStr(o, 2), vConnToStr(e, 3)));
+            rows.add(String.format("│   %5s   │", compDescToStr(t)));
+            rows.add(String.format("└ ─ %s ─ ┘", hConnToStr(s)));
+        }
+        return rows;
+    }
+
+    private String hConnToStr(ConnectorType c) {
+        return switch (c) {
+            case FLAT -> "─ ─ ─";
+            case SINGLE -> "─ ║ ─";
+            case DOUBLE -> "║ ─ ║";
+            case UNIVERSAL -> "║ ║ ║";
+        };
+    }
+
+    private String vConnToStr(ConnectorType c, int row) {
+        return switch (c.ordinal() + ":" + row) {
+            case "0:1" -> "│";
+            case "0:2" -> "│";
+            case "0:3" -> "│";
+
+            case "1:1" -> "│";
+            case "1:2" -> "═";
+            case "1:3" -> "│";
+
+            case "2:1" -> "═";
+            case "2:2" -> "│";
+            case "2:3" -> "═";
+
+            case "3:1" -> "═";
+            case "3:2" -> "═";
+            case "3:3" -> "═";
+
+            default -> "│";
+        };
+    }
+
+    private String compToStr(ComponentType c) {
+        return switch (c) {
+            case CABINE -> " cab ";
+            case BATTERY -> " bat ";
+            case STORAGE -> " sto ";
+            case SPECIAL_STORAGE -> "sp.st";
+            case SHIELD -> " shi ";
+            case CANNON -> " can ";
+            case DOUBLE_CANNON -> "db.ca";
+            case ENGINE -> " eng ";
+            case DOUBLE_ENGINE -> "db.en";
+            case BROWN_ALIEN_MODULE -> "am.br";
+            case PURPLE_ALIEN_MODULE -> "am.pu";
+            case FRAME_SECTION -> "frame";
+            default -> " ";
+        };
+    }
+
+    private String compToEmoji(ComponentType c) {
+        return switch (c) {
+            case CABINE -> "֍";
+            case BATTERY -> "↯";
+            case STORAGE -> "□";
+            case SPECIAL_STORAGE -> "■";
+            case SHIELD -> "◉";
+            case CANNON -> "Ϯ";
+            case DOUBLE_CANNON -> "Џ";
+            case ENGINE -> "Ѫ";
+            case DOUBLE_ENGINE -> "Ѭ";
+            case BROWN_ALIEN_MODULE -> "፠";
+            case PURPLE_ALIEN_MODULE -> "፨";
+            case FRAME_SECTION -> "ᚸ";
+            default -> " ";
+        };
+    }
+
+    private String centerToStr(Tile t) {
+        switch (t.getIdTile()) {
+            case 52 -> {
+                return "\u001B[31m■\u001B[0m";
+            }
+            case 33 -> {
+                return "\u001B[34m■\u001B[0m";
+            }
+            case 34 -> {
+                return "\u001B[32m■\u001B[0m";
+            }
+            case 61 -> {
+                return "\u001B[33m■\u001B[0m";
+            }
+            default -> {
+                return "■";
+            }
+        }
+    }
+
+    private String orientToStr(Orientation o, int dir) {
+        if (o.ordinal() == dir) {
+            return switch (o) {
+                case NORTH -> "↑";
+                case EAST -> "→";
+                case SOUTH -> "↓";
+                case WEST -> "←";
+            };
+        } else return " ";
+    }
+
+    private String compDescToStr(Tile t) {
+        switch (t.getComponent()) {
+            case BasicComponent ignored -> {
+                return " ";
+            }
+            case SpecialComponent ignored -> {
+                return t.getComponent().getIsActive() ? "on  ■" : "off □";
+            }
+            case ContainerComponent ignored -> {
+                switch (t.getComponent().getNumberOfTokens()) {
+                    case 1 -> {
+                        Token to = t.getComponent().getTokenList().getFirst();
+                        return " " + tokenToStr(to) + "/" + t.getComponent().getLevel() + " ";
+                    }
+                    case 2 -> {
+                        Token to1 = t.getComponent().getTokenList().get(0);
+                        Token to2 = t.getComponent().getTokenList().get(1);
+                        return tokenToStr(to1) + tokenToStr(to2) + "/" + t.getComponent().getLevel() + " ";
+                    }
+                    case 3 -> {
+                        Token to1 = t.getComponent().getTokenList().get(0);
+                        Token to2 = t.getComponent().getTokenList().get(1);
+                        Token to3 = t.getComponent().getTokenList().get(2);
+                        return tokenToStr(to1) + tokenToStr(to2) + tokenToStr(to3) + "/" + t.getComponent().getLevel();
+                    }
+                    default -> {
+                        return " " + t.getComponent().getNumberOfTokens() + "/" + t.getComponent().getLevel() + " ";
+                    }
+                }
+            }
+        }
+    }
+
+    private String lockedToStr(Tile t) {
+        return t.isLocked() ? "L" : "U";
+    }
+
+    private String tokenToStr(Token t) {
+        return switch (t) {
+            case ASTRONAUT -> "A";
+            case BROWN_ALIENS -> "β";
+            case PURPLE_ALIENS -> "ρ";
+            case BATTERY_CELLS -> "C";
+            case RED_GOODS -> "R";
+            case BLUE_GOODS -> "B";
+            case YELLOW_GOODS -> "Y";
+            case GREEN_GOODS -> "G";
+        };
+    }
+
+    @Override
+    public String toString() {
+        int dim = 7; //numero di righe per tessera
+        StringBuilder str = new StringBuilder();
+        ArrayList<ArrayList<String>> ship = new ArrayList<>();
+        for (int y = 5; y <= 9; y++) {
+            for (int x = 4; x <= 10; x++) {
+                if (grid.containsKey(new Point(x, y))) ship.add(tileToStringList(grid.get(new Point(x, y))));
+                else {
+                    ship.add(new ArrayList<>(List.of("× × × × × × ×",
+                                    "× × × × × × ×",
+                                    "× × × × × × ×",
+                                    "× × × × × × ×",
+                                    "× × × × × × ×",
+                                    "× × × × × × ×",
+                                    "× × × × × × ×"
+                            ))
+                    );
+                }
+            }
+        }
+
+        str.append("\t      4            5            6            7            8            9            10       \t \n\n");
+        for (int k = 0; k < 5; k++) {
+            for (int i = 0; i < dim; i++) {
+                for (int j = 0; j < 7; j++) {
+                    if (i == 3 && j == 0) str.append(k + 5).append(" \t");
+                    else if (j == 0) str.append(" \t");
+                    str.append(ship.get(j + k * 7).get(i));
+                    if (i == 3 && j == 6) str.append("\t ").append(k + 5);
+                    else if (j == 6) str.append(" \t");
+                }
+                str.append("\n");
+            }
+        }
+        str.append("\n\t      4            5            6            7            8            9            10       \t \n\n");
+        return str.toString();
     }
 
 

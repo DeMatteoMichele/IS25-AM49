@@ -72,7 +72,7 @@ public class ServerHandler {
      */
     private void heartBeat() {
         if (connected.get()) {
-            Command command = new Command("HTB", myId);
+            Command command = new Command("heartbeat", myId);
             putInTheOutGoingFileQueue(command);
         }
     }

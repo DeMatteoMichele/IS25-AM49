@@ -129,17 +129,25 @@ public abstract class AdventureCard {
         isFinished = true;
     }
 
+    /**
+     * This method ensures that the user selected the correct points, the correct type of token and number of tokens
+     * in accordance with the internal state of the adventurecard and the characteristics of the currenteffect.
+     * Otherwise, an IllegalTokensException is thrown that must be catched in servercontroller.
+     * @param state
+     * @param coordinates
+     * @param shipBoard
+     */
     protected void checkCorrectnessOfTokensAndPoints(AdventureStatesTypes state, List<Pair<Point, Token>> coordinates, ShipBoard shipBoard) {
         switch (state) {
             case DECISION_BATTERIES ->{
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
-                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY || token != Token.BATTERY_CELLS) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY && token != Token.BATTERY_CELLS) {
                         throw new IllegalTokensException("Puoi utilizzare solo batterie con celle di batteria!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
-                        throw new IllegalTokensException("Puoi rimuovere al massimo " + shipBoard.getTile(position).getComponent().getLevel() + " astronauti o alieni da questa cabina!");
+                        throw new IllegalTokensException("Hai selezionato un numero di token errato, incompatibile con la tua shipboard");
                     }
                 }
             }
@@ -150,7 +158,7 @@ public abstract class AdventureCard {
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
-                    if (shipBoard.getTile(position).getComponentType() != ComponentType.CABINE || (token != Token.ASTRONAUT) || token != Token.BROWN_ALIENS || token != Token.PURPLE_ALIENS) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.CABINE || (token != Token.ASTRONAUT) && token != Token.BROWN_ALIENS && token != Token.PURPLE_ALIENS) {
                         throw new IllegalTokensException("Puoi utilizzare solo astronauti in una cabina!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
@@ -186,6 +194,16 @@ public abstract class AdventureCard {
         }
     }
 
+
+    /**
+     * This method ensures that the user selected the correct type and number of activable component in accordance with the internal state
+     * of the card and with the structure of the shipboard.
+     * Otherwise, an IllegalTokensException is thrown that must be catched in servercontroller.
+     *
+     * @param state
+     * @param coordinates
+     * @param shipBoard
+     */
     public void checkCorrectnessOfActivable(AdventureStatesTypes state, Set<Point> coordinates, ShipBoard shipBoard) {
         switch (state) {
             case DECISION_CANNON -> {
@@ -200,7 +218,7 @@ public abstract class AdventureCard {
             }
             case DECISION_MOTOR -> {
                 if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size()) {
-                    throw new IllegalTokensException("Devi selezionare un numero di cannoni minore o uguale al numero di cannoni doppi attivabili!");
+                    throw new IllegalTokensException("Devi selezionare un numero di cannoni minore o uguale al numero di motori doppi attivabili!");
                 }
                 for (Point position : coordinates) {
                     if (shipBoard.getTile(position).getComponentType() != ComponentType.DOUBLE_ENGINE) {
@@ -221,6 +239,12 @@ public abstract class AdventureCard {
         }
     }
 
+    /**
+     * This method counts how many times a chosen targetPair appears in List<Pair<Point, Token>>
+     * @param targetPair
+     * @param coordinates
+     * @return
+     */
     private int countSamePair(Pair<Point,Token> targetPair, List<Pair<Point, Token>> coordinates) {
         int count = 0;
         for (Pair<Point, Token> pair : coordinates) {

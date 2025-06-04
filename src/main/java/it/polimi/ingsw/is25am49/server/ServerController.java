@@ -11,45 +11,21 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ServerController {
     private final GameSession gameSession;
     private ServerSerializer serverSerializer;
-    private final HashSet<Integer> playersRMI;
-    private final HashSet<Integer> playersSocket;
     private ServerRMI serverRMI;
-    private final ExecutorService executors = Executors.newFixedThreadPool(10);
-    private int idCounter;
+    private boolean gameStarted=false;
+
 
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
-        this.playersRMI = new HashSet<>();
-        this.playersSocket = new HashSet<>();
-        this.idCounter = -1;
-    }
-    public int getIdCounter() {
-        return idCounter;
-    }
-    public void updateIdCounter() {
-        this.idCounter++;
     }
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
 
-    public void addPlayerToLobbyRMI(int playerId) {
-        playersRMI.add(playerId);
-    }
-
-    public void addPlayerToLobbySocket(int playerId) {
-        playersSocket.add(playerId);
-    }
-
-    public boolean isInPlayers(int playerId) {
-        return playersRMI.contains(playerId) || playersSocket.contains(playerId);
-    }
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
@@ -76,28 +52,18 @@ public class ServerController {
         try {
             try {
                 gameSession.getState().userJoinLobby(username, playerId);
-                if(playersRMI.contains(playerId)) {
-                    serverRMI.sayToServerRMIWhoHasJoined(playerId);
-                }
-                else if(playersSocket.contains(playerId)) {
-                    serverSerializer.sayToClientHandlerWhoHasJoined(playerId);
-                }
-                else {
-                    throw new GameSettingsException("Player not found");
-                }
                 Command command = new Command("playerJoinCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter(username);
                 command.addParameter(gameSession.getSeedForGeneration());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                if(gameStarted){
+                    serverSerializer.signalThatGameStarted();
+                    serverRMI.signalThatGameStarted();
+                    System.out.println("Game started");
+                }
             } catch (Exception e) {
-                if(playersRMI.contains(playerId)) {
-                    playersRMI.remove(playerId);
-                }
-                else if(playersSocket.contains(playerId)) {
-                    playersSocket.remove(playerId);
-                }
                 Command command = new Command("errorCallback" , playerId);
                 command.addParameter(playerId);
                 command.addParameter("PlayerJoin hasn't worked in Server ->   " + e.getMessage());
@@ -125,6 +91,7 @@ public class ServerController {
                 command.addParameter("Tile with id "+tileId+" not available or already drawn");
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.err.println("Error due to RemoteException in Server  in drawTile ->   " + e.getMessage());
@@ -317,6 +284,7 @@ public class ServerController {
                 command.addParameter("Throw dices hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
+                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in throwDices ->   " + e.getMessage());
@@ -534,8 +502,6 @@ public class ServerController {
     }
 
     public void signalThatGameStarted() {
-        serverSerializer.signalThatGameStarted();
-        serverRMI.signalThatGameStarted();
-        System.out.println("Game started");
+        gameStarted = true;
     }
 }
