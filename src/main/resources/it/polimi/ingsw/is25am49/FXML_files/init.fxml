@@ -4,11 +4,11 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.initController">
+<AnchorPane xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.initController">
    <children>
       <ImageView fx:id="backgroundImage" pickOnBounds="true" />
 
-      <Pane prefHeight="7377.0" prefWidth="1795.0">
+      <AnchorPane prefHeight="7377.0" prefWidth="1795.0">
          <children>
 
             <Label fx:id="welcome" layoutX="24.0" layoutY="30.0" prefHeight="40.0" prefWidth="708.0" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(three-pass-box, rgba(0,204,255,0.6), 10, 0.7, 0, 0);" text="WELCOME TO THE GAME!" />
@@ -43,6 +43,6 @@
            <Label fx:id="labelAdmin" layoutX="50.0" layoutY="353.0" prefHeight="30.0" prefWidth="400.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.4), 5, 0.3, 0, 0);" text="You are the admin: setup the game" />
             <TextField fx:id="textMaxPlayers" layoutX="61.0" layoutY="608.0" prefHeight="40.0" prefWidth="239.0" style="-fx-background-color: rgba(0,30,60,0.6); -fx-text-fill: #00ccff; -fx-border-color: #00ccff; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 16; -fx-font-weight: bold;" />
          </children>
-      </Pane>
+      </AnchorPane>
    </children>
-</StackPane>
+</AnchorPane>

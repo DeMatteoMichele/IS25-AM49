@@ -27,6 +27,9 @@ public class ShipBoard {
     private boolean isCompleted;
     private int destroyedTiles;
 
+    public HashMap<Point,Optional<Tile>> getGrid() {
+        return grid;
+    }
     public ShipBoard() {
         grid = new HashMap<>();
         lastPlacedPoint = new Point(7,7);

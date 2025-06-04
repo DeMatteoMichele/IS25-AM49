@@ -15,9 +15,13 @@ public class TileCardDeck {
 
     public TileCardDeck(int seedForGeneration) {
         lastRemovedTile = new ConcurrentHashMap<>();
-        numOfTiles = 157;
+        numOfTiles = 152;
         tileDeck = new ConcurrentHashMap<>();
         HashMap<Integer, Tile> temporaryTileDeck = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
+        temporaryTileDeck.remove(33);
+        temporaryTileDeck.remove(34);
+        temporaryTileDeck.remove(52);
+        temporaryTileDeck.remove(61);
         List<Integer> trackingRandoms = new ArrayList<>(numOfTiles);
         for (int i = 0; i < numOfTiles; i++)
             trackingRandoms.add(i);

@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client.GUI;
 import it.polimi.ingsw.is25am49.client.*;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
+import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -48,8 +49,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
     private final GameSession gameSession;
 
     private  String username;
-    private Map<Scene, ScenesName> scenesList;
-    private Map<GenericSceneController, ScenesName> controllerList;
+    private Map<ScenesName,Scene> scenesList;
+    private Map<ScenesName,GenericSceneController> controllerList;
     private int myId=-1;
     private final ExecutorService executor =  Executors.newFixedThreadPool(10);
 
@@ -92,23 +93,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 root = loader.load();
                 GenericSceneController controller = loader.getController();
                 controller.setGui(this,gameSession);
-                controllerList.put(loader.getController(), scenesName);
-                scenesList.put(new Scene(root, 1280, 720), scenesName);
+                controllerList.put(scenesName, loader.getController());
+                scenesList.put(scenesName, new Scene(root, 1280, 720));
             } }catch (Exception e) {
                 throw new RuntimeException(e);
             }
     }
-    public Scene getSceneByEnum(ScenesName scenesName) {
-        for (Map.Entry<Scene, ScenesName> entry : scenesList.entrySet()) {
-            if (entry.getValue() == scenesName) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
+
 
     public void showScene(ScenesName scenesName) {
-        Scene scene = getSceneByEnum(scenesName);
+        Scene scene = scenesList.get(scenesName);
 
         stage.setScene(scene);
         stage.setFullScreenExitHint("");
@@ -168,13 +162,14 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateStateTransition(int stateIndex) {
-        buildController buildcontr = (buildController) getControllerBySceneName(ScenesName.BUILD);
+        buildController buildcontr = (buildController) controllerList.get(ScenesName.BUILD);
         switch (stateIndex) {
             case 1 -> {//BuildState
                 System.out.println("BUILD STATE");
 
                 buildcontr.loadTilesMap();
                 buildcontr.loadCards();
+                buildcontr.printShipboard();
                 Platform.runLater(()-> {
                     showScene(ScenesName.BUILD);
                 });
@@ -190,14 +185,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             }
         }
     }
-    public GenericSceneController getControllerBySceneName(ScenesName scenesName) {
-        for (Map.Entry<GenericSceneController, ScenesName> entry : controllerList.entrySet()) {
-            if (entry.getValue() == scenesName) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
+
 
     @Override
     public void printUpdateMessage(String msg) {
@@ -206,7 +194,26 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 showError(stage, msg);
             }
             else{
-//            System.out.println(msg);
+                Label label = new Label(msg);
+                label.setStyle("-fx-background-color: blue; -fx-text-fill: white; -fx-padding: 10px; -fx-background-radius: 5; -fx-font-size: 20px;");
+
+                Popup popup = new Popup();
+                popup.getContent().add(label);
+                popup.setAutoFix(true);
+                popup.setAutoHide(true);
+                popup.setHideOnEscape(true);
+                popup.show(stage);
+                // Posiziona il popup (centrato rispetto alla finestra)
+                double centerX = stage.getX() + (stage.getWidth() - popup.getWidth()) / 2;
+                double centerY = stage.getY() + (stage.getHeight() - popup.getHeight()) / 2;
+                popup.setX(centerX);
+                popup.setY(centerY);
+
+
+                // Dopo 3 secondi, chiudi il popup
+                PauseTransition delay = new PauseTransition(Duration.seconds(3));
+                delay.setOnFinished(event -> popup.hide());
+                delay.play();
             }
         });
 
@@ -225,7 +232,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 //chiamato quando utente fa join, stampa welcome con il suo nome
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
-        initController contr = (initController) getControllerBySceneName(ScenesName.INIT);
+        initController contr = (initController) controllerList.get(ScenesName.INIT);
         Platform.runLater(() -> {
 //            System.out.println("PlayerID: " +playerId);
 //            System.out.println("myId: " + myId);
@@ -239,7 +246,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     //chiamato quando viene creato il game, setta le informazioni sul game e inserisce l'admin
     @Override
     public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
-        initController contr = (initController) getControllerBySceneName(ScenesName.INIT);
+        initController contr = (initController) controllerList.get(ScenesName.INIT);
         contr.setupLobbyListView();
         contr.setupTestListView();
         Platform.runLater(() -> {
@@ -256,7 +263,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 //chiamata quando utente fa join, se è l'admin setta a default le impostazioni, se è un altro player le aggiorna
     @Override
     public void updateGameNewPlayer(int playerId) {
-        initController contr = (initController) getControllerBySceneName(ScenesName.INIT);
+        initController contr = (initController) controllerList.get(ScenesName.INIT);
         contr.setupTestListView();
         Platform.runLater(() -> {
             if (gameSession.getAdmin().map(player -> player.getIdPlayer() == playerId).orElse(false) && gameSession.getGame().isEmpty()) {
@@ -298,7 +305,13 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updatePlaceTile(int playerId, Point coordinates) {
-
+        if(playerId==myId){
+            buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+            Platform.runLater(()->{
+                buildController.addToShipBoard(coordinates);
+//                buildController.printShipboard();
+            });
+        }
     }
 
     @Override
@@ -308,36 +321,53 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateRotateTileClockWise(int playerId) {
-
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            if(playerId==myId){
+                buildController.rotateHandTile();
+            }
+        });
     }
 
     @Override
     public void updateDiscardTile(int playerId, int idTile) {
-        buildController buildController = (buildController) getControllerBySceneName(ScenesName.BUILD);
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
 //            System.out.println("discard tile in handtile with id: " + idTile);
+            if(playerId==myId){
+                buildController.clearHandTiles();
+            }
+
             buildController.enableTile(idTile);
         });
     }
 
     @Override
     public void updateDrawTile(int playerId, int idTIle) {
-        buildController buildController = (buildController) getControllerBySceneName(ScenesName.BUILD);
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
 
         Platform.runLater(()->{
 
             buildController.disableTile(idTIle);
 
         if(playerId==myId){
-            buildController.clearHandTiles();
+//            buildController.clearHandTiles();
             buildController.setHandTile(idTIle);
+            buildController.dragHandTile();
         }
     });
     }
 
     @Override
     public void updateFinishShipboard(int playerId) {
-
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            if(playerId==myId){
+                buildController.clearHandTiles();
+                buildController.clearShipBoard();
+                buildController.printShipboard();
+            }
+        });
     }
 
     @Override
@@ -352,12 +382,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updatePlaceTimer(int playerId) {
-
+        Platform.runLater(()->{
+            printUpdateMessage("Timer placed by player " + playerId);
+        });
     }
 
     @Override
     public void updateTimerIsDone() {
-
+        Platform.runLater(()->{
+            printUpdateMessage("Timer is finished");
+        });
     }
 
     @Override
@@ -367,6 +401,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
+        Platform.runLater(()->{
+            buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+            buildController.clearShipBoard(); // Pulisce la griglia prima di mostrare la shipboard di un altro giocatore
+            buildController.printPlayerIdShipboard(playerId);
+        });
 
     }
 
