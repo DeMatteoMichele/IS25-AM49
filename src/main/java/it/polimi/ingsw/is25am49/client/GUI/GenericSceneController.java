@@ -11,9 +11,9 @@ import java.util.PrimitiveIterator;
 public class GenericSceneController {
 
 
-    private GameSession gameSession;
-    private GraphicUserInterface guiApplication;
-    private String error = "⚠";
+    protected GameSession gameSession;
+    protected GraphicUserInterface guiApplication;
+    protected String error = "⚠";
 
 
     /**

@@ -45,7 +45,7 @@ import org.jline.terminal.TerminalBuilder;
 
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
-    private final GameSession gameSession;
+    private GameSession gameSession;
 
     private  String username;
     private Map<Scene, ScenesName> scenesList;
@@ -473,6 +473,6 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void setGameSession(GameSession gameSession) {
-
+        this.gameSession = gameSession;
     }
 }
