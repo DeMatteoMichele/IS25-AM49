@@ -48,21 +48,23 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public void landingOnPlanet(boolean isLanded, int planetId){
-        planet = getPlanetById(planetId);
         super.landingOnPlanet(isLanded, planetId);
-        if(!planets.contains(planet)){
-            throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exists or it is already occupied");
+        if(isLanded) {
+            planet = getPlanetById(planetId);
+            if(!planets.contains(planet)){
+                throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exists or it is already occupied");
+            }
+            if(!planet.isOccupied()){
+                System.out.println(gameBoard.getCurrentPlayer().getUsername() + " You have landed on the planet!");
+                planet.setOccupied(true);
+                planets.remove(planet);
+                planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
+                System.out.println("You have to choose the position of the goods you won:");
+                currentState = AdventureStatesTypes.DECISION_GOODS;
+                currentEffect = planet.getEffect();
+            }
         }
-        if(isLanded && !planet.isOccupied()){
-            System.out.println(gameBoard.getCurrentPlayer().getUsername() + " You have landed on the planet!");
-            planet.setOccupied(true);
-            planets.remove(planet);
-            planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
-            System.out.println("You have to choose the position of the goods you won:");
-            currentState = AdventureStatesTypes.DECISION_GOODS;
-            currentEffect = planet.getEffect();
-            //System.out.println("Effect is: " + currentEffect.getClass().getName());
-        } else {
+        else {
             System.out.println("you have decided not to land on the planet");
             System.out.println("Now check on next player");
             checkNextPlayer();
@@ -74,7 +76,7 @@ public class PlanetCard extends AdventureCard {
                 return planet;
             }
         }
-        throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
+        throw new IllegalPlanetToLand("You cannot land on this planet the id is not valid");
     }
 
     private void checkNextPlayer() {

@@ -364,7 +364,7 @@ public class Command implements Serializable {
             }
             case "userThrowDicesCallback" -> {
                 try {
-                    clientController.userThrowDicesCallback((int) parameters.get(0), (int) parameters.get(1));
+                    clientController.userThrowDicesCallback((int) parameters.get(0));
                 } catch (Exception e) {
                     System.err.println("Errore in userThrowDicesCallback: " + e.getMessage());
                     e.printStackTrace();

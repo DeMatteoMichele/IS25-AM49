@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
@@ -80,9 +81,8 @@ public class SpazioAperto extends AdventureCard {
             //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
             currentPlayerIndex++;
             if (currentPlayerIndex >= playersProcess.size()) {
-                System.out.println("it was the last player, end of the turn");
-                System.out.println("it goes to draw state");
-                currentState = AdventureStatesTypes.DRAW;
+                System.out.println("it was the last player, end of the card");
+                update();
             } else {
 
                 System.out.println("It wasn't the last player, go on with the next player");
@@ -171,24 +171,32 @@ public class SpazioAperto extends AdventureCard {
         System.out.println("now i check if it was the last player");
         currentPlayerIndex++;
         if (currentPlayerIndex >= playersProcess.size()) {
-            System.out.println("it was the last player, end of the turn");
-            System.out.println("it goes to draw state");
-            isFinished = true;
-            currentState = AdventureStatesTypes.DRAW;
-        } else {
+            System.out.println("it was the last player, end of the card");
+            update();
 
+        } else {
             System.out.println("It wasn't the last player, go on with the next player");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
-
         }
     }
 
     @Override
     protected void update() {
+        currentState = AdventureStatesTypes.UPDATE;
         playersNoEnginePower.forEach(gameBoard::playerNoMoreInFlight);
         gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.checkIfIsLapped();
+        if (!gameBoard.getStopFlightPlayers().isEmpty()) {
+            for (Player player : gameBoard.getStopFlightPlayers()) {
+                try {
+                    gameBoard.playerNoMoreInFlight(player);
+                } catch (GameSettingsException e) {
+                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
+                }
+            }
+        }
+        isFinished = true;
     }
 
     @Override

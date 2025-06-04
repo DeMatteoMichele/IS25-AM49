@@ -182,7 +182,7 @@ public class ClientController {
         }
     }
 
-    public void userThrowDicesCallback(int playerId, int result) {
+    public void userThrowDicesCallback(int playerId) {
         try {
             gameSession.getState().userThrowDices(playerId);
         } catch (Exception e) {
