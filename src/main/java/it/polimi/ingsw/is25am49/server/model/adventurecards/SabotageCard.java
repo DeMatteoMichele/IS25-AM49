@@ -117,7 +117,6 @@ public class SabotageCard extends AdventureCard {
             else {
                 System.out.println("You have to roll the dices again");
                 currentState=AdventureStatesTypes.ROLL_DICES;
-                rollDices();
             }
         }
 

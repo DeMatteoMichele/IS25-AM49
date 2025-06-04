@@ -127,7 +127,6 @@ public class SabotageCard extends AdventureCard {
             else {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have to roll the dices again");
                 currentState= AdventureStatesTypes.ROLL_DICES;
-                rollDices();
             }
         }
 

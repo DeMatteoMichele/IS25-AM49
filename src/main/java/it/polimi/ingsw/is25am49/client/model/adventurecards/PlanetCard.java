@@ -15,23 +15,23 @@ import java.util.List;
 
 public class PlanetCard extends AdventureCard {
 
-    protected final List<Planet> planets=new ArrayList<Planet>();
+    protected final List<Planet> planets = new ArrayList<Planet>();
     protected Planet planet;
 
     private final int daysLost;
-    public PlanetCard(String cardId,GameBoard gameBoard, String description, int level, String name, int daysLost, List<Planet> planets) {
+
+    public PlanetCard(String cardId, GameBoard gameBoard, String description, int level, String name, int daysLost, List<Planet> planets) {
         super(cardId, gameBoard, description, level, name);
         this.daysLost = daysLost;
         this.planets.addAll(planets);
     }
 
 
-
     @Override
-    public void drawCard(){
+    public void drawCard() {
         //chiamo il super draw
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found a planet! You can land on it for some goods.");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have found a planet! You can land on it for some goods.");
         currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
         checkRequirements();
     }
@@ -39,89 +39,90 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
-        if(currentState != AdventureStatesTypes.CHECK_REQUIREMENTS){
+        if (currentState != AdventureStatesTypes.CHECK_REQUIREMENTS) {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Do you wanna land on the planet for some goods?");
-        currentState= AdventureStatesTypes.DECISION_LAND_PLANET;
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the planet for some goods?");
+        currentState = AdventureStatesTypes.DECISION_LAND_PLANET;
     }
 
     @Override
-    public void landingOnPlanet(boolean isLanded, int planetId){
-        planet = getPlanetById(planetId);
+    public void landingOnPlanet(boolean isLanded, int planetId) {
         super.landingOnPlanet(isLanded, planetId);
-        if(!planets.contains(planet)){
-            throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
-        }
-        if(isLanded && !planet.isOccupied()){
-            userInterface.updateLandOnPlanet(gameBoard.getCurrentPlayer().getIdPlayer(),true, planetId);
-            planet.setOccupied(true);
-            planets.remove(planet);
-            planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have to choose the position of the goods you won:");
-            currentState = AdventureStatesTypes.DECISION_GOODS;
-            currentEffect = planet.getEffect();
-            //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Effect is: " + currentEffect.getClass().getName());
+        if (isLanded) {
+            planet = getPlanetById(planetId);
+            if (!planets.contains(planet)) {
+                throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exist or it is already occupied");
+            }
+            if (!planet.isOccupied()) {
+                userInterface.updateLandOnPlanet(gameBoard.getCurrentPlayer().getIdPlayer(), true, planetId);
+                planet.setOccupied(true);
+                planets.remove(planet);
+                planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have to choose the position of the goods you won:");
+                currentState = AdventureStatesTypes.DECISION_GOODS;
+                currentEffect = planet.getEffect();
+                //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Effect is: " + currentEffect.getClass().getName());
+            }
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Something went wrong while landing on the planet");
         } else {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have decided not to land on the planet");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now check on next player");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have decided not to land on the planet");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now check on next player");
             checkNextPlayer();
-
         }
-
-
     }
-    public Planet getPlanetById(int planetId){
-        for(Planet planet : planets){
-            if(planet.getPlanetId() == planetId){
+
+    public Planet getPlanetById(int planetId) {
+        for (Planet planet : planets) {
+            if (planet.getPlanetId() == planetId) {
                 return planet;
             }
         }
-        throw new IllegalPlanetToLand("You cannot land on this planet, it is already occupied");
+        throw new IllegalPlanetToLand("You cannot land on this planet the id is not valid");
     }
 
     private void checkNextPlayer() {
-        try{
+        try {
             gameBoard.nextPlayer();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it wasn't the last player, go on");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it wasn't the last player, go on");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
-        }
-        catch (IllegalSetOfNextPlayerException e) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"It was the last player, end of the turn");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"it goes to update state");
+        } catch (IllegalSetOfNextPlayerException e) {
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It was the last player, end of the turn");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it goes to update state");
             update();
         }
     }
 
     @Override
-    public void finishDecision(List<Pair<Point, Token>> coordinates){
-        if(currentState== AdventureStatesTypes.DECISION_GOODS){
+    public void finishDecision(List<Pair<Point, Token>> coordinates) {
+        if (currentState == AdventureStatesTypes.DECISION_GOODS) {
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
-            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), false);
+            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
 
-            }
+        }
         //se non sono in decizion goods allora non posso chiamare finishdecision
 
-        else{throw new IllegalMethodOnThisStateException("Wrong state");}
+        else {
+            throw new IllegalMethodOnThisStateException("Wrong state");
+        }
     }
-
 
 
     @Override
     public void applyEffect() {
         super.applyEffect();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You are in apply effect of planet card");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You are in apply effect of planet card");
         //applico l'effetto, aggiorno il player con i giorni persi
         currentEffect.action(gameBoard.getCurrentPlayer());
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
         //gameBoard.updateLeaderboard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have lost " + daysLost + " travel days");
-        if(planets.isEmpty()){
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have no more planets to land on, you have to go on with the game");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have lost " + daysLost + " travel days");
+        if (planets.isEmpty()) {
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have no more planets to land on, you have to go on with the game");
             update();
             return;
         }
@@ -147,7 +148,7 @@ public class PlanetCard extends AdventureCard {
         String daysLostText = "| DAYS LOST: " + daysLost;
         str.append(daysLostText).append(" ".repeat(width - daysLostText.length() - 1)).append("|\n");
         str.append(separator);
-        for(Planet planet : planets){
+        for (Planet planet : planets) {
             String planetText = "| PLANET: " + planet.getPlanetId();
             str.append(planetText).append(" ".repeat(width - planetText.length() - 1)).append("|\n");
             EffectWinGoods effect = (EffectWinGoods) planet.getEffect();
@@ -165,11 +166,4 @@ public class PlanetCard extends AdventureCard {
     }
 
 
-
-
-
-
-
-
-    
 }

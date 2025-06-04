@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
@@ -35,10 +36,6 @@ public class SpazioAperto extends AdventureCard {
         //passo alla richiesta di requisiti
         currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
 
-        /*playersProcess = new ArrayList<>();
-        for(Pair<Integer,Player> e : gameBoard.getLeaderBoard()){
-            playersProcess.add(e.getValue());
-        }*/
         playersProcess = gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).toList();
         currentPlayerIndex = 0;
         checkRequirements();
@@ -78,9 +75,8 @@ public class SpazioAperto extends AdventureCard {
             //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
             currentPlayerIndex++;
             if (currentPlayerIndex >= playersProcess.size()) {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the turn");
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it goes to draw state");
-                currentState = AdventureStatesTypes.DRAW;
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the card");
+                update();
             } else {
 
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
@@ -169,10 +165,8 @@ public class SpazioAperto extends AdventureCard {
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now i check if it was the last player");
         currentPlayerIndex++;
         if (currentPlayerIndex >= playersProcess.size()) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the turn");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it goes to draw state");
-            isFinished = true;
-            currentState = AdventureStatesTypes.DRAW;
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the card");
+            update();
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
@@ -183,9 +177,20 @@ public class SpazioAperto extends AdventureCard {
 
     @Override
     protected void update() {
+        currentState = AdventureStatesTypes.UPDATE;
         playersNoEnginePower.forEach(gameBoard::playerNoMoreInFlight);
         gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.checkIfIsLapped();
+        if (!gameBoard.getStopFlightPlayers().isEmpty()) {
+            for (Player player : gameBoard.getStopFlightPlayers()) {
+                try {
+                    gameBoard.playerNoMoreInFlight(player);
+                } catch (GameSettingsException e) {
+                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
+                }
+            }
+        }
+        isFinished = true;
     }
 
     @Override
