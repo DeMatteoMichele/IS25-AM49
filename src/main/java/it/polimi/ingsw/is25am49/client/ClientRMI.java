@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private final ClientController clientController;
@@ -26,6 +23,7 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private volatile boolean timeIsDone;
     private final ScheduledExecutorService scheduler;
     private final UserInterface userInterface;
+    private final BlockingQueue<Command> commandsFromServerQueue;
 
 
     public ClientRMI(ClientController clientController, RemoteServer serverRMI, UserInterface userInterface) throws RemoteException {
@@ -42,7 +40,8 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         hasResetted = false;
         isConnected = false;
         executorService.submit(this::startHeartBeat);
-
+        commandsFromServerQueue = new ArrayBlockingQueue<>(50000, true);
+        executorService.submit(this::processCommandsFromServerQueue);
     }
 
     /**THIS METHOD IS CALLED BY THE SERVER
@@ -55,11 +54,34 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-        if(command.getMethodName().equals("registerClientCallback")) {
-            isConnected = true;
+        putFileFromServerInQueue(command);
+    }
+
+    private void putFileFromServerInQueue(Command command) {
+        try {
+            commandsFromServerQueue.put(command);
+        } catch (InterruptedException e) {
+            System.err.println("Error putting file from Client in queue in ServerRMI cause thread was interrupted: " + e.getMessage());
         }
-        command.setClientController(clientController);
-        command.callMethod();
+    }
+    private void processCommandsFromServerQueue()  {
+        while (true) {
+            try {
+                Command command = commandsFromServerQueue.take();
+                if(command.getMethodName().equals("registerClientCallback")) {
+                    isConnected = true;
+                }
+                command.setClientController(clientController);
+                command.callMethod();
+            } catch (InterruptedException e) {
+                System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
+            }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void sendHeartBeat() {
