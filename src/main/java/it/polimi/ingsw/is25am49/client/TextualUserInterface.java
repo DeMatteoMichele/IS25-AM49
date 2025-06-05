@@ -1,34 +1,37 @@
 package it.polimi.ingsw.is25am49.client;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
-import it.polimi.ingsw.is25am49.client.model.GameSession;
-import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
-import it.polimi.ingsw.is25am49.client.model.Player;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.is25am49.client.model.*;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
-import it.polimi.ingsw.is25am49.shared.RemoteClient;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import javafx.util.Pair;
-import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
@@ -120,6 +123,7 @@ public class TextualUserInterface implements UserInterface {
 //    - setupConnection
 //    - registerClient
 //    - startGame
+//    ...
 //    ----------------------------------------------------------------------------------------------------------
 
     /**
@@ -272,19 +276,19 @@ public class TextualUserInterface implements UserInterface {
                 Thread.sleep(1000);//aspetto un attimo per far arrivare i pacchetti
                 while (true) {
                     String graphic = graphicsQueue.take();
-//                    if (graphicsQueue.size() > 1) {
-//                        printUpdateMessage("RECONNETTING ...");
-//                        String next;
-//                        while ((next = graphicsQueue.poll()) != null) {
-//                            graphic = next;
-//                            Thread.sleep(100);
-//                        }
-//                        printUpdateMessage("successfully reconnected");
-//                        lineReader.printAbove(graphic);
-//                    } else {
+                    if (graphicsQueue.size() > 3) {
+                        printUpdateMessage("RECONNETTING ...");
+                        String next;
+                        while ((next = graphicsQueue.poll()) != null) {
+                            graphic = next;
+                            Thread.sleep(100);
+                        }
+                        printUpdateMessage("successfully reconnected");
+                        lineReader.printAbove(graphic);
+                    } else {
                         clearConsole();
                         lineReader.printAbove(graphic);
-//                    }
+                    }
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // permette di fermare il thread in modo sicuro
@@ -384,6 +388,91 @@ public class TextualUserInterface implements UserInterface {
         return tokens;
     }
 
+    public void insertRandomTiles(int numberOfTiles) {
+        Player player = gameSession.getPlayer(myId).get();
+        ShipBoard shipboard = player.getShipBoard();
+        int occupiedTiles = shipboard.getGrid().values().stream().flatMapToInt(t-> IntStream.of(t.isPresent()?1:0)).sum();
+        if (player.getShipBoard().isCompleted()) {
+            printUpdateMessage( error+"Shipboard already completed, you cannot generate a new one");
+            return;
+        }
+        if(numberOfTiles<=0){
+            printUpdateMessage( "insertion completed");
+            return;
+        }
+
+        if(gameSession.getGame().isPresent()){
+            Random rand = new Random();
+            Game game = gameSession.getGame().get();
+            int n= switch (game.getMode()){
+                case FLIGHT_MODE,LEVEL_1 -> 19;
+                case LEVEL_2 -> 28;
+                default -> 0;
+            };
+            n=Math.min(numberOfTiles, n-occupiedTiles);
+            while (true){
+                try {
+                    Thread.sleep(100);
+                    controller.userDrawTile(myId, game.getGameboard().getTilesDeck().getRandomPresentIdTile());
+                    break;
+                }catch (Exception _){}
+            }
+            Orientation o= Orientation.values()[rand.nextInt(4)];
+            while (true){
+                try {
+                    Thread.sleep(100);
+                    gameSession.getState().userRotateHandTile(myId, o);
+                    break;
+                } catch (Exception _) {}
+            }
+            while (true){
+                try {
+                    Thread.sleep(100);
+                    Point p = new Point(rand.nextInt(7) + 4, rand.nextInt(5) + 5);
+                    controller.userPlaceTile(myId, p, o);
+                    break;
+                } catch (Exception _) {}
+            }
+            insertRandomTiles(n-1);
+        }
+    }
+
+    public void readShipboardFromFile(String filename) {
+        filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
+        try {
+            File file = new File(filename);
+            if (!file.exists()) {
+                throw new FileNotFoundException("File ("+filename+") non trovato: " + file.getAbsolutePath());
+            } else {
+                Game game = gameSession.getGame().get();
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootArray = objectMapper.readTree(file);
+                for (JsonNode node : rootArray) {
+                    try {
+                        controller.userDrawTile(myId, node.get("id").asInt());
+                        Orientation o= Orientation.valueOf(node.get("orientation").asText());
+                        while (true){
+                            try {
+                                Thread.sleep(50);
+                                gameSession.getState().userRotateHandTile(myId, o);
+                                break;
+                            } catch (Exception _) {}
+                        }
+                        Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
+                        controller.userPlaceTile(myId, p, o);
+                    }catch (Exception e){
+                        printUpdateMessage(error + e.getMessage());
+                    }
+                }
+                controller.userFinishShipboard(myId);
+            }
+        } catch (FileNotFoundException e) {
+            printUpdateMessage(error + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 //    ----------------------------------------------------------------------------------------------------------
 //    MAIN ↑
 //
@@ -480,7 +569,8 @@ public class TextualUserInterface implements UserInterface {
                 3.  DiscardTile                         9.  LookAtShipboard
                 4.  DrawTile                            10. FinishShipboard
                 5.  LookSmallAdventureCardDeck          11. SelectTypeOfToken
-                12. ←-- go back
+                12. ←-- go back                         13. insertRandomTiles
+                14. loadShipboard
                 """;
     }
 
@@ -635,17 +725,17 @@ public class TextualUserInterface implements UserInterface {
     }
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
+        StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
         if (playerId == myId){
-            StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
             for (int i = 0; i < message.length(); i++) {
                 if (i > 0 && i % 100 == 0) {
                     str.append("-\n         -");
                 }
                 str.append(message.charAt(i));
             }
-            str.append("\n\u001B[0m");
-            graphicsQueue.add(str.toString());
-        }
+        }else str.append("player ").append(gameSession.getPlayer(playerId).get().getUsername()).append(" is playing, wait for your turn\n");
+        str.append("\n\u001B[0m");
+        graphicsQueue.add(str.toString());
     }
 
     private static final String[][] DICE = {
@@ -973,7 +1063,7 @@ public class TextualUserInterface implements UserInterface {
                         //updateLookUncoveredTile(myId,new Point(0,0));
                     }
                 }
-                case "9:1", "11:2" ->{//lookAtShipboard
+                case "9:1" ->{//lookAtShipboard
                     lineReader.printAbove("which ship do you want to see?\n");
                     try {
                         for (Player p : gameSession.getGame().get().getListPlayers()) {
@@ -1000,6 +1090,29 @@ public class TextualUserInterface implements UserInterface {
                 case "12:1" -> {//go back
                     updatePlaceTile(myId, new Point(7, 7));
                 }
+                case "13:1" -> {//insertRandomTiles
+                    try {
+                        int numberOfTiles = Integer.parseInt(lineReader.readLine("insert the number of tiles >> ").trim());
+                        if(numberOfTiles>0) insertRandomTiles(numberOfTiles);
+                        else printUpdateMessage(error + "invalid input");
+                        //controller.userFinishShipboard(myId);
+                    } catch (Exception e) {
+                        printUpdateMessage(error+e.getMessage());
+                    }
+                }
+                case "14:1" -> {//loadShipboard
+                    try {
+                        lineReader.printAbove("which ship do you want to load:\n " +
+                                "1 --> ship_layout_1.json\n");
+                        String s = lineReader.readLine(prompt).trim();
+                        switch (s){
+                            case "1" ->readShipboardFromFile("ship_layout_1.json");
+                            default -> printUpdateMessage(error + "invalid input");
+                        }
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
+                    }
+                }
 
                 case "1:2" -> {//DrawAdventureCard
                     controller.userDrawAdventureCard(myId);
@@ -1014,6 +1127,7 @@ public class TextualUserInterface implements UserInterface {
                     while (!s.equalsIgnoreCase("s")) {
                         try {
                             s = lineReader.readLine("Insert the coordinates (x,y) >> ");
+                            if( s.equalsIgnoreCase("s")) break;
                             String[] coordinates = s.trim().split("\\s+");
                             int x = Integer.parseInt(coordinates[0]);
                             int y = Integer.parseInt(coordinates[1]);

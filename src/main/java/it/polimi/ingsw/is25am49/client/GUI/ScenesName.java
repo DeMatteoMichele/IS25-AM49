@@ -7,6 +7,7 @@ public enum ScenesName {
     SETTINGS("/it/polimi/ingsw/is25am49/FXML_files/settings.fxml"),
     INIT("/it/polimi/ingsw/is25am49/FXML_files/init.fxml"),
     BUILD("/it/polimi/ingsw/is25am49/FXML_files/build.fxml");
+    //ADVENTURE("/it/polimi/ingsw/is25am49/FXML_files/adventure.fxml");
 
     private final String path;
 

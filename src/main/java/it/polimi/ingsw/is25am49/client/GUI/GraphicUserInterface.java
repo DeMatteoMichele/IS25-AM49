@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
-    private final GameSession gameSession;
+    private GameSession gameSession;
 
     private  String username;
     private Map<ScenesName,Scene> scenesList;
@@ -499,6 +499,6 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void setGameSession(GameSession gameSession) {
-
+        this.gameSession = gameSession;
     }
 }

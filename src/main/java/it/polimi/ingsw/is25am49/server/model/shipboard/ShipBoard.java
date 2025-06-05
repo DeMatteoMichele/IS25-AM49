@@ -391,7 +391,6 @@ public class ShipBoard {
                 } catch (InvalidCoordinatesException _) {}
             } else throw new InvalidCoordinatesException("cannot checkIfAlienArePossible --> point<"+coordinates.x+","+coordinates.y+"> is not a cabin");
         }catch (InvalidCoordinatesException e){
-            System.out.println("cannot checkIfAlienArePossible ---> "+e.getMessage());
             throw new InvalidCoordinatesException("cannot checkIfAlienArePossible ---> "+e.getMessage());
         }
         return crew;
