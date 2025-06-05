@@ -64,7 +64,7 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
             System.err.println("Error putting file from Client in queue in ServerRMI cause thread was interrupted: " + e.getMessage());
         }
     }
-    private void processCommandsFromServerQueue() {
+    private void processCommandsFromServerQueue()  {
         while (true) {
             try {
                 Command command = commandsFromServerQueue.take();
@@ -75,6 +75,11 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
                 command.callMethod();
             } catch (InterruptedException e) {
                 System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
+            }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
