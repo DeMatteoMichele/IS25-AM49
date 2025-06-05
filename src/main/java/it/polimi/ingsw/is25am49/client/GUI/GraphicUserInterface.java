@@ -3,27 +3,16 @@ package it.polimi.ingsw.is25am49.client.GUI;
 import it.polimi.ingsw.is25am49.client.*;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
-import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -31,8 +20,6 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.URL;
 import java.rmi.NotBoundException;
 import java.util.HashMap;
 import java.util.List;
@@ -40,9 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javafx.application.Application;
-import org.jline.terminal.TerminalBuilder;
 
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
@@ -168,7 +152,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 System.out.println("BUILD STATE");
 
                 buildcontr.loadTilesMap();
-                buildcontr.loadCards();
+                buildcontr.loadGrid();
+                buildcontr.printTileCardDeck();
                 buildcontr.printShipboard();
                 Platform.runLater(()-> {
                     showScene(ScenesName.BUILD);
@@ -337,7 +322,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             if(playerId==myId){
                 buildController.clearHandTiles();
             }
-
+//            buildController.printTileCardDeck();
             buildController.enableTile(idTile);
         });
     }
@@ -349,6 +334,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(()->{
 
             buildController.disableTile(idTIle);
+//            buildController.printTileCardDeck();
 
         if(playerId==myId){
 //            buildController.clearHandTiles();
@@ -362,11 +348,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateFinishShipboard(int playerId) {
         buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
+
             if(playerId==myId){
-                buildController.clearHandTiles();
                 buildController.clearShipBoard();
                 buildController.printShipboard();
             }
+
         });
     }
 
@@ -403,7 +390,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void lookAtShipboard(int playerId) {
         Platform.runLater(()->{
             buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
-            buildController.clearShipBoard(); // Pulisce la griglia prima di mostrare la shipboard di un altro giocatore
+            buildController.clearShipBoard();
             buildController.printPlayerIdShipboard(playerId);
         });
 

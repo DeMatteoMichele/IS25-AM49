@@ -47,6 +47,13 @@ public class TileCardDeck {
                 throw new OutOfDeckExceptions("Tile not found in the deck");
         }
     }
+    public int getPositionOfATile(Tile tile) {
+        return tileDeck.entrySet().stream()
+                .filter(e -> e.getValue().equals(tile))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(-1);
+    }
     public Tile drawByTileId(int tileId, Player player) {
         // cerco l'indice della carta nel mazzo che ha l'id specificato
         Optional<Map.Entry<Integer, Tile>> entry = tileDeck.entrySet().stream()

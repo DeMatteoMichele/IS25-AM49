@@ -213,6 +213,7 @@ public class BuildState extends State {
             }
         }
         userInterface.updateFinishShipboard(playerId);
+
     }
 
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
