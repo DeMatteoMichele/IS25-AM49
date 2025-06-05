@@ -276,19 +276,19 @@ public class TextualUserInterface implements UserInterface {
                 Thread.sleep(1000);//aspetto un attimo per far arrivare i pacchetti
                 while (true) {
                     String graphic = graphicsQueue.take();
-                    if (graphicsQueue.size() > 3) {
-                        printUpdateMessage("RECONNETTING ...");
-                        String next;
-                        while ((next = graphicsQueue.poll()) != null) {
-                            graphic = next;
-                            Thread.sleep(100);
-                        }
-                        printUpdateMessage("successfully reconnected");
-                        lineReader.printAbove(graphic);
-                    } else {
+//                    if (graphicsQueue.size() > 3) {
+//                        printUpdateMessage("RECONNECTING ...");
+//                        String next;
+//                        while ((next = graphicsQueue.poll()) != null) {
+//                            graphic = next;
+//                            Thread.sleep(100);
+//                        }
+//                        printUpdateMessage("successfully reconnected");
+//                        lineReader.printAbove(graphic);
+//                    } else {
                         clearConsole();
                         lineReader.printAbove(graphic);
-                    }
+//                    }
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // permette di fermare il thread in modo sicuro
@@ -785,7 +785,7 @@ public class TextualUserInterface implements UserInterface {
             String[] dice1 = DICE[firstDice - 1];
             String[] dice2 = DICE[secondDice - 1];
             for (int i = 0; i < dice1.length; i++) {
-                str.append(dice1[i]).append("   ").append(dice2[i]);
+                str.append(dice1[i]).append("   ").append(dice2[i]).append("\n");
             }
             lineReader.printAbove(str.toString());
         }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectWinGoods;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
@@ -95,6 +96,8 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates){
+        ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
+        checkCorrectnessOfTokensAndPoints(currentState,coordinates,shipBoard);
         if(currentState==AdventureStatesTypes.DECISION_GOODS){
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
             System.out.println("You have decided the position of the goods");

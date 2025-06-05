@@ -24,6 +24,9 @@ public class PlanetCard extends AdventureCard {
         super(cardId, gameBoard, description, level, name);
         this.daysLost = daysLost;
         this.planets.addAll(planets);
+        for (Planet planet : planets) {
+            planet.getEffect().setUserInterface(userInterface);
+        }
     }
 
 
@@ -64,7 +67,6 @@ public class PlanetCard extends AdventureCard {
                 currentEffect = planet.getEffect();
                 //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Effect is: " + currentEffect.getClass().getName());
             }
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Something went wrong while landing on the planet");
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have decided not to land on the planet");
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now check on next player");
@@ -98,11 +100,10 @@ public class PlanetCard extends AdventureCard {
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         if (currentState == AdventureStatesTypes.DECISION_GOODS) {
             //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
-            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             applyEffect();
-
         }
         //se non sono in decizion goods allora non posso chiamare finishdecision
 
