@@ -16,12 +16,12 @@ public class SlaverCard extends Enemy {
     protected int lostAstronauts;
     protected int creditsEarned;
 
-    public SlaverCard(String cardId,GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
+    public SlaverCard(String cardId, GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
         super(cardId, gameBoard, description, level, name, dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         listEffects.add(new EffectModifyCrew("LoseAstronauts", lostAstronauts));
-        for(CardEffect effect : listEffects){
+        for (CardEffect effect : listEffects) {
             effect.setUserInterface(userInterface);
         }
     }
@@ -33,21 +33,21 @@ public class SlaverCard extends Enemy {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have more firepower to defeat the Slavers! You win some credits!");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now decide if you want to accept the rewards ");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have more firepower to defeat the Slavers! You win some credits!");
+            userInterface.updateEnemyDefeated(gameBoard.getCurrentPlayer().getIdPlayer(), "Slavers", cardId);
             isDefeated = true;
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now decide if you want to accept the rewards ");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
 
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have drawn with the Slavers!");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have drawn with the Slavers!");
             tryNextPlayer();
         } else {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
             currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
         }
@@ -60,7 +60,7 @@ public class SlaverCard extends Enemy {
         currentPlayer.setDaysThisTurn(-daysLost);
         if (isDefeated) {
             currentPlayer.addCredits(creditsEarned);
-            userInterface.updateEarnedCredits(gameBoard.getCurrentPlayer().getIdPlayer(),creditsEarned);
+            userInterface.updateEarnedCredits(gameBoard.getCurrentPlayer().getIdPlayer(), creditsEarned);
             update();
         } else {
             currentEffect.action(currentPlayer);
@@ -86,7 +86,7 @@ public class SlaverCard extends Enemy {
 
     @Override
     protected void handleRefuseOfRewards() {
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have refused the rewards. The card is defeated and you don't lose days");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have refused the rewards. The card is defeated and you don't lose days");
         update();
     }
 
@@ -96,7 +96,7 @@ public class SlaverCard extends Enemy {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

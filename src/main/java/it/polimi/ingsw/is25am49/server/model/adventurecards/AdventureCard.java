@@ -115,17 +115,7 @@ public abstract class AdventureCard {
 
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
-        gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
-        if (!gameBoard.getStopFlightPlayers().isEmpty()) {
-            for (Player player : gameBoard.getStopFlightPlayers()) {
-                try {
-                    gameBoard.playerNoMoreInFlight(player);
-                } catch (GameSettingsException e) {
-                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
-                }
-            }
-        }
         isFinished = true;
     }
 

@@ -17,11 +17,11 @@ public class PiratesCard extends Enemy {
 
     protected int creditsEarned;
 
-    public PiratesCard(String cardId,GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
+    public PiratesCard(String cardId, GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, List<CardEffect> listEffects) {
         super(cardId, gameBoard, description, level, name, dayslost, minimumFirePower);
         this.listEffects.addAll(listEffects);
         this.creditsEarned = creditsEarned;
-        for(CardEffect effect : listEffects){
+        for (CardEffect effect : listEffects) {
             effect.setUserInterface(userInterface);
         }
     }
@@ -37,18 +37,19 @@ public class PiratesCard extends Enemy {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have defeated the pirates!");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now decide if you want to win or stay as you are");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have defeated the pirates!");
+            userInterface.updateEnemyDefeated(gameBoard.getCurrentPlayer().getIdPlayer(), "Pirates", cardId);
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to win or stay as you are");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have drawn with the pirates!");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have drawn with the pirates!");
             tryNextPlayerOrHandleDefeatedPlayers();
         } else {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have lost against the pirates!");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have lost against the pirates!");
             defeatedPlayers.add(gameBoard.getCurrentPlayer());
             tryNextPlayerOrHandleDefeatedPlayers();
         }
@@ -85,7 +86,6 @@ public class PiratesCard extends Enemy {
     protected void tryNextPlayerOrHandleDefeatedPlayers() {
         try {
             gameBoard.nextPlayer();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             handleDefeatedPlayers();
@@ -94,10 +94,10 @@ public class PiratesCard extends Enemy {
 
     private void handleDefeatedPlayers() {
         if (defeatedPlayers.isEmpty()) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"No defeated players, now to update");
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "No defeated players, now to update");
             update();
         } else {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"No more players, now the first defeated must roll the dices!");
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices!");
             gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
             for (Player player : defeatedPlayers) {
                 player.setDaysThisTurn(-daysLost);
@@ -112,17 +112,15 @@ public class PiratesCard extends Enemy {
         int currentIndexOfDefeatedPlayer = defeatedPlayers.indexOf(gameBoard.getCurrentPlayer());
         if (currentIndexOfDefeatedPlayer >= 0 && currentIndexOfDefeatedPlayer < defeatedPlayers.size() - 1) { //i have to apply the currenteffect on all the players
             gameBoard.setCurrentPlayer(defeatedPlayers.get(currentIndexOfDefeatedPlayer + 1));
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now effect on the next player");
             checkForBatteriesToUseForShields();
         } else {    //i have applied the effect on all the players
             if (listEffects.isEmpty()) {  //effects are terminated, card is finished
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"All the effects are finished, now to update");
+                userInterface.updateGenericCardMessage(genericIdForUpdates, "All the cannonades are finished, now to update");
                 update();
             } else {      //effects are not finished, first player has to roll the dices on the next effect
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
                 currentEffect = listEffects.removeFirst();
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Next effect: " + currentEffect.getDescription());
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now the first defeated must roll the dices again!");
+                userInterface.updateGenericCardMessage(genericIdForUpdates, "Another meteora! Now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
             }
         }
@@ -146,7 +144,7 @@ public class PiratesCard extends Enemy {
 
     private void checkDimensionOfCannonade() {
         if (currentEffect.getLevel() == BIG_CANNONADE_LEVEL) {//big cannonade, player cant defend himself
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Cannonata grande! Non puoi difenderti con gli scudi!");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Big cannonade! You cannot defend yourself with shields!");
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
             return;
@@ -155,10 +153,10 @@ public class PiratesCard extends Enemy {
         long availableShields = currentShipBoard.getActivatableComponents(ComponentType.SHIELD).stream().count();
 
         if (availableShields > 0) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Puoi attivare gli scudi. Scegli le coordinate delle batterie da utilizzare.");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate the shields. Choose the coordinates of the batteries to use.");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
         } else {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Non hai scudi da attivare. Subisci l'effetto della cannonata.");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have no shields to activate. You suffer the effect of the cannonade.");
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
         }
@@ -187,7 +185,7 @@ public class PiratesCard extends Enemy {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";
@@ -209,7 +207,7 @@ public class PiratesCard extends Enemy {
         str.append(minFireText).append(" ".repeat(width - minFireText.length() - 1)).append("|\n");
         str.append(separator);
         str.append("| CANNONADES:").append(" ".repeat(width - "| CANNONADES:".length() - 1)).append("|\n");
-        if(currentEffect!=null){
+        if (currentEffect != null) {
             EffectCannonata cannonata = (EffectCannonata) currentEffect;
             String levelCannonata = "| LEVEL: " + cannonata.getLevel();
             str.append(levelCannonata).append(" ".repeat(width - levelCannonata.length() - 1)).append("|\n");
@@ -217,7 +215,7 @@ public class PiratesCard extends Enemy {
             str.append(orientationCannonata).append(" ".repeat(width - orientationCannonata.length() - 1)).append("|\n");
             str.append(border);
         }
-        for (CardEffect effect : listEffects){
+        for (CardEffect effect : listEffects) {
             EffectCannonata cannonata = (EffectCannonata) effect;
             String levelCannonata = "| LEVEL: " + cannonata.getLevel();
             str.append(levelCannonata).append(" ".repeat(width - levelCannonata.length() - 1)).append("|\n");

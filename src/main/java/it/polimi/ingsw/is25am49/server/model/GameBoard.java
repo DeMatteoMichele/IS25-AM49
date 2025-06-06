@@ -563,7 +563,17 @@ public class GameBoard {
      */
     public void finishUpdateLeaderboard() {
         updateLeaderboard();
+        checkIfSomeoneHasZeroAstronauts();
         checkIfIsLapped();
+        if(!getStopFlightPlayers().isEmpty()){
+            for(Player player : getStopFlightPlayers()){
+                try{
+                    playerNoMoreInFlight(player);
+                }catch (it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException e){
+                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
+                }
+            }
+        }
     }
 
     /**

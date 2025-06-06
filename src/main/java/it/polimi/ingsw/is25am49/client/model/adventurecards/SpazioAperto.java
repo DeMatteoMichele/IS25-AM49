@@ -2,7 +2,7 @@ package it.polimi.ingsw.is25am49.client.model.adventurecards;
 
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
-import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
@@ -32,7 +32,7 @@ public class SpazioAperto extends AdventureCard {
     public void drawCard() {
         //chiamo il super
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have found an open space! You can choose if you wanna activate your double motors for travel days");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found an open space! You can choose if you wanna activate your double motors for travel days");
         //passo alla richiesta di requisiti
         currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
 
@@ -69,17 +69,13 @@ public class SpazioAperto extends AdventureCard {
             //imposto i giorni che gudagna il player alla potenza dei motori singoli e aggiorno la leaderboard
             gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
             gameBoard.updateLeaderboard();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "player " + currentPlayer.getClass() + " has earned " + daysEarned + " travel days");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now i check if it was the last player");
-
+            userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has earned " + daysEarned + " travel days");
             //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
             currentPlayerIndex++;
             if (currentPlayerIndex >= playersProcess.size()) {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the card");
+                userInterface.updateGenericCardMessage(genericIdForUpdates, "it was the last player, end of the card");
                 update();
             } else {
-
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
                 checkRequirements();
 
             }
@@ -120,8 +116,6 @@ public class SpazioAperto extends AdventureCard {
         this.motors = new ArrayList<>(coordinates);
         switch (currentState) {
             case DECISION_MOTOR -> {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have decided the coordinates of the motors you wanna activate");
-
                 //controllo che il numero dei cannoni da attivare corrisponda al numero delle batterie
                 if (batteries.size() != coordinates.size()) {
                     throw new IllegalArgumentException("you have to activate the same number of motors as batteries");
@@ -148,13 +142,11 @@ public class SpazioAperto extends AdventureCard {
         Player currentPlayer = playersProcess.get(currentPlayerIndex);
         gameBoard.setCurrentPlayer(currentPlayer);
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you are in apply effect, now i will calculate the days you have earned");
         //calcolo i giorni guadagnati in base alla potenza dei motori attivati
         int daysEarned = ship.getTotalEnginePower();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have earned " + daysEarned + " travel days");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has earned " + daysEarned + " travel days");
         //spengo i motori
         for (int i = 0; i < batteries.size(); i++) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "turning off the motor at " + motors.get(i).x + " " + motors.get(i).y);
             ship.turnOff(motors.get(i));
         }
         userInterface.updateDeactivating(gameBoard.getCurrentPlayer().getIdPlayer(), motors);
@@ -162,13 +154,11 @@ public class SpazioAperto extends AdventureCard {
         //aggiorno la leaderboard
         gameBoard.updateLeaderboard();
         //controllo se era l'ultimo giocatore
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now i check if it was the last player");
         currentPlayerIndex++;
         if (currentPlayerIndex >= playersProcess.size()) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "it was the last player, end of the card");
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "it was the last player, end of the card");
             update();
         } else {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
 
@@ -177,20 +167,8 @@ public class SpazioAperto extends AdventureCard {
 
     @Override
     protected void update() {
-        currentState = AdventureStatesTypes.UPDATE;
         playersNoEnginePower.forEach(gameBoard::playerNoMoreInFlight);
-        gameBoard.checkIfSomeoneHasZeroAstronauts();
-        gameBoard.checkIfIsLapped();
-        if (!gameBoard.getStopFlightPlayers().isEmpty()) {
-            for (Player player : gameBoard.getStopFlightPlayers()) {
-                try {
-                    gameBoard.playerNoMoreInFlight(player);
-                } catch (GameSettingsException e) {
-                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
-                }
-            }
-        }
-        isFinished = true;
+        super.update();
     }
 
     @Override
