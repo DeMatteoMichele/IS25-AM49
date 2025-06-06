@@ -69,6 +69,7 @@ public class SpazioAperto extends AdventureCard {
             //imposto i giorni che gudagna il player alla potenza dei motori singoli e aggiorno la leaderboard
             gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
             gameBoard.updateLeaderboard();
+            userInterface.updateLeaderBoard(gameBoard.getLeaderBoard());
             userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has earned " + daysEarned + " travel days");
             //controllo se currplayer era l'ultimo, se no chiamo checkrequirements sul player successivo
             currentPlayerIndex++;
@@ -153,6 +154,8 @@ public class SpazioAperto extends AdventureCard {
         gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
         //aggiorno la leaderboard
         gameBoard.updateLeaderboard();
+        userInterface.updateLeaderBoard(gameBoard.getLeaderBoard());
+
         //controllo se era l'ultimo giocatore
         currentPlayerIndex++;
         if (currentPlayerIndex >= playersProcess.size()) {
