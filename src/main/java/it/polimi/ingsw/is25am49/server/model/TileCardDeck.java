@@ -59,6 +59,13 @@ public class TileCardDeck {
             throw new OutOfDeckExceptions("Tessera non disponibile o già pescata");
         }
     }
+    public int getPositionOfATile(Tile tile) {
+        return tileDeck.entrySet().stream()
+                .filter(e -> e.getValue().equals(tile))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(-1);
+    }
     public Stream<Map.Entry<Integer, Tile>> stream(){
         return tileDeck.entrySet().stream();
     }

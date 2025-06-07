@@ -25,7 +25,7 @@ public interface UserInterface {
 
     //BUILD STATE:
     public void updatePlaceTile(int playerId, Point coordinates);
-    public void updatePickTile(int playerId, Point coordinates);
+    public void updatePickTile(int playerId, Point coordinates, int idTile);
     public void updateRotateTileClockWise(int playerId);
     public void updateDiscardTile(int playerId, int idTile);
     public void updateDrawTile(int playerId, int idTIle);
