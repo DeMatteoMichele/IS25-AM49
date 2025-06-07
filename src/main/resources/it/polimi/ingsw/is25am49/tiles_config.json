@@ -308,7 +308,7 @@
   {
     "idTile": 35,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "FLAT",
     "c2": "FLAT",
     "c3": "UNIVERSAL",
@@ -317,7 +317,7 @@
   {
     "idTile": 36,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "SINGLE",
     "c2": "DOUBLE",
     "c3": "SINGLE",
@@ -326,7 +326,7 @@
   {
     "idTile": 37,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "SINGLE",
     "c2": "DOUBLE",
     "c3": "DOUBLE",
@@ -335,7 +335,7 @@
   {
     "idTile": 38,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "DOUBLE",
     "c2": "FLAT",
     "c3": "FLAT",
@@ -344,7 +344,7 @@
   {
     "idTile": 39,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "DOUBLE",
     "c2": "SINGLE",
     "c3": "FLAT",
@@ -353,7 +353,7 @@
   {
     "idTile": 40,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "DOUBLE",
     "c2": "SINGLE",
     "c3": "DOUBLE",
@@ -362,7 +362,7 @@
   {
     "idTile": 41,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "FLAT",
     "c2": "SINGLE",
     "c3": "UNIVERSAL",
@@ -371,7 +371,7 @@
   {
     "idTile": 42,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "SINGLE",
     "c2": "DOUBLE",
     "c3": "FLAT",
@@ -380,7 +380,7 @@
   {
     "idTile": 43,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "DOUBLE",
     "c2": "SINGLE",
     "c3": "DOUBLE",
@@ -389,7 +389,7 @@
   {
     "idTile": 44,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "UNIVERSAL",
     "c2": "FLAT",
     "c3": "FLAT",
@@ -398,7 +398,7 @@
   {
     "idTile": 45,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "FLAT",
     "c2": "SINGLE",
     "c3": "FLAT",
@@ -407,7 +407,7 @@
   {
     "idTile": 46,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "FLAT",
     "c2": "SINGLE",
     "c3": "SINGLE",
@@ -416,7 +416,7 @@
   {
     "idTile": 47,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "FLAT",
     "c2": "DOUBLE",
     "c3": "FLAT",
@@ -426,7 +426,7 @@
   {
     "idTile": 48,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "SINGLE",
     "c2": "FLAT",
     "c3": "SINGLE",
@@ -435,7 +435,7 @@
   {
     "idTile": 49,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "SINGLE",
     "c2": "FLAT",
     "c3": "DOUBLE",
@@ -444,7 +444,7 @@
   {
     "idTile": 50,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "DOUBLE",
     "c2": "FLAT",
     "c3": "DOUBLE",
@@ -453,7 +453,7 @@
   {
     "idTile": 51,
     "component": "CABINE",
-    "level": 1,
+    "level": 2,
     "c1": "DOUBLE",
     "c2": "DOUBLE",
     "c3": "FLAT",

@@ -232,6 +232,12 @@ public class LeaderBoard {
 
     private String playersToString(){
         switch (mapLeaderboard.size()){
+            case 1 -> {
+                return String.format("\t\t\t\t\t  ○  ○  ○  ○  ○  ○  %s  ○  ○  ○  ○  ○  ○\n\t\t\t\t\t                 %s\n",
+                        colorToString(arrayLeaderboard.get(0).getKey()),
+                        posToString(getPos(arrayLeaderboard.get(0).getKey()))
+                );
+            }
             case 2 -> {
                 return String.format("\t\t\t\t\t  ○  ○  ○  ○  ○  %s  ○  %s  ○  ○  ○  ○  ○\n\t\t\t\t\t               %s %s\n",
                         colorToString(arrayLeaderboard.get(1).getKey()),

@@ -563,36 +563,44 @@ public class ShipBoard {
                 try {
                     p = new Point(coordinates.x, coordinates.y - 1);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()) {
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.NORTH),sideTile.getConnector(Orientation.SOUTH))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
                 } catch (InvalidCoordinatesException _) {
                 }
                 try {
                     p = new Point(coordinates.x + 1, coordinates.y);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()) {
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.EAST),sideTile.getConnector(Orientation.WEST))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
                 } catch (InvalidCoordinatesException _) {
                 }
                 try {
                     p = new Point(coordinates.x, coordinates.y + 1);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()) {
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.SOUTH),sideTile.getConnector(Orientation.NORTH))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
                 } catch (InvalidCoordinatesException _) {
                 }
                 try {
                     p = new Point(coordinates.x - 1, coordinates.y);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()) {
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.WEST),sideTile.getConnector(Orientation.EAST))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
                 } catch (InvalidCoordinatesException _) {
                 }

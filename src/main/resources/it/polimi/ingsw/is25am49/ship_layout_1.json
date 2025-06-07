@@ -72,7 +72,7 @@
     "y": 8
   },
   {
-    "id": 74,
+    "id": 77,
     "orientation": "NORTH",
     "x": 8,
     "y": 9
@@ -87,6 +87,12 @@
     "id": 17,
     "orientation": "EAST",
     "x": 9,
+    "y": 9
+  },
+  {
+    "id": 44,
+    "orientation": "NORTH",
+    "x": 5,
     "y": 9
   }
 ]

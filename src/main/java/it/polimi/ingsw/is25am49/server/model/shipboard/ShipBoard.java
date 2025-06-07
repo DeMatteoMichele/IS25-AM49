@@ -133,6 +133,12 @@ public class ShipBoard {
         if( c1.equals(ConnectorType.UNIVERSAL) || c2.equals(ConnectorType.UNIVERSAL))return true;
         return c1.equals(c2);
     }
+    public boolean connectorsWrong(ConnectorType c1, ConnectorType c2){
+        if (c1.equals(ConnectorType.FLAT) && c2.equals(ConnectorType.FLAT))return false;
+        if( c1.equals(ConnectorType.UNIVERSAL) && !c2.equals(ConnectorType.FLAT))return false;
+        if( c2.equals(ConnectorType.UNIVERSAL) && !c1.equals(ConnectorType.FLAT))return false;
+        return !c1.equals(c2);
+    }
 
     /**
      * returns the Tile at given coordinates if present
@@ -345,6 +351,49 @@ public class ShipBoard {
     }
 
     /**
+     * this method destroys all the tiles that are not well-connected to others
+     */
+    public void destroyWrongTiles(){
+        for (Point point: grid.keySet()){
+            if(grid.get(point).isPresent() && !point.equals(new Point(7,7))) {
+                Tile centerTile= grid.get(point).get();
+                try {
+                    Point p= new Point(point.x,point.y-1);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.NORTH),sideTile.getConnector(Orientation.SOUTH))){
+                        grid.put(point, Optional.empty());
+                       continue;
+                    }
+                }catch (InvalidCoordinatesException _){}
+                try {
+                    Point p= new Point(point.x+1,point.y);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.EAST),sideTile.getConnector(Orientation.WEST))){
+                        grid.put(point, Optional.empty());
+                        continue;
+                    }
+                }catch (InvalidCoordinatesException _){}
+                try {
+                    Point p= new Point(point.x,point.y+1);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.SOUTH),sideTile.getConnector(Orientation.NORTH))){
+                        grid.put(point, Optional.empty());
+                        continue;
+                    }
+                }catch (InvalidCoordinatesException _){}
+                try {
+                    Point p= new Point(point.x-1,point.y);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.WEST),sideTile.getConnector(Orientation.EAST))){
+                        grid.put(point, Optional.empty());
+                    }
+                }catch (InvalidCoordinatesException _){}
+
+            }
+        }
+    }
+
+    /**
      * check all 4 sides of a cabin to verify if an alien can be present in the crew
      * @param coordinates of the cabin to check
      * @return a HashMap<\Point,Token> of the possible crew members of the cabin at given coordinates
@@ -352,46 +401,59 @@ public class ShipBoard {
     public Set<Token> checkIfAlienArePossible(Point coordinates) {
         Set<Token> crew = new HashSet<>();
         try {
-            Tile centerTile=getTile(coordinates);
-            if(centerTile.getComponentType().equals(ComponentType.CABINE)) {
+            Tile centerTile = getTile(coordinates);
+            if (centerTile.getComponentType().equals(ComponentType.CABINE)) {
                 crew.add(Token.ASTRONAUT);
                 Tile sideTile;
                 Point p;
                 try {
-                    p=new Point(coordinates.x, coordinates.y - 1);
+                    p = new Point(coordinates.x, coordinates.y - 1);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.NORTH),sideTile.getConnector(Orientation.SOUTH))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
-                } catch (InvalidCoordinatesException _) {}
+                } catch (InvalidCoordinatesException _) {
+                }
                 try {
-                    p=new Point(coordinates.x + 1, coordinates.y);
+                    p = new Point(coordinates.x + 1, coordinates.y);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.EAST),sideTile.getConnector(Orientation.WEST))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
-                } catch (InvalidCoordinatesException _) {}
+                } catch (InvalidCoordinatesException _) {
+                }
                 try {
-                    p=new Point(coordinates.x, coordinates.y + 1);
+                    p = new Point(coordinates.x, coordinates.y + 1);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.SOUTH),sideTile.getConnector(Orientation.NORTH))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
-                } catch (InvalidCoordinatesException _) {}
+                } catch (InvalidCoordinatesException _) {
+                }
                 try {
-                    p=new Point(coordinates.x - 1, coordinates.y);
+                    p = new Point(coordinates.x - 1, coordinates.y);
                     sideTile = getTile(p);
-                    switch (sideTile.getComponentType()){
-                        case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
-                        case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                    if(connectorsMatch(centerTile.getConnector(Orientation.WEST),sideTile.getConnector(Orientation.EAST))) {
+                        switch (sideTile.getComponentType()) {
+                            case BROWN_ALIEN_MODULE -> crew.add(Token.BROWN_ALIENS);
+                            case PURPLE_ALIEN_MODULE -> crew.add(Token.PURPLE_ALIENS);
+                        }
                     }
-                } catch (InvalidCoordinatesException _) {}
-            } else throw new InvalidCoordinatesException("cannot checkIfAlienArePossible --> point<"+coordinates.x+","+coordinates.y+"> is not a cabin");
-        }catch (InvalidCoordinatesException e){
-            throw new InvalidCoordinatesException("cannot checkIfAlienArePossible ---> "+e.getMessage());
+                } catch (InvalidCoordinatesException _) {
+                }
+            } else
+                throw new InvalidCoordinatesException("cannot checkIfAlienArePossible --> point<" + coordinates.x + "," + coordinates.y + "> is not a cabin");
+        } catch (InvalidCoordinatesException e) {
+            throw new InvalidCoordinatesException("cannot checkIfAlienArePossible ---> " + e.getMessage());
         }
         return crew;
     }
@@ -694,9 +756,13 @@ public class ShipBoard {
         destroyTile(new Point(9,5));
         destroyTile(new Point(10,5));
 
-        //System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
+       // System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
         destroyDisconnectedTiles();
-        //printShipboardSpecial();
+       // System.out.println(this);
+
+//        System.out.println("RIMUOVO TUTTE LE TESSERE SBAGLIATE");
+//        destroyWrongTiles();//todo funziona(migliorabile) va messo sul client
+//        System.out.println(this);
 
         //System.out.println("RIMUOVO CANNONI");
         Set<Point> checkCannon = new HashSet<>(getComponentsPositions(ComponentType.CANNON));

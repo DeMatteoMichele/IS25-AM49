@@ -406,23 +406,28 @@ public class TextualUserInterface implements UserInterface {
                 default -> 0;
             };
             n=Math.min(numberOfTiles, n-occupiedTiles);
-            while (true){
+            int tr=0;
+            while (tr<20){
                 try {
+                    tr++;
                     Thread.sleep(100);
                     controller.userDrawTile(myId, game.getGameboard().getTilesDeck().getRandomPresentIdTile());
                     break;
                 }catch (Exception _){}
             }
             Orientation o= Orientation.values()[rand.nextInt(4)];
-            while (true){
+            tr=0;
+            while (tr<20){
                 try {
+                    tr++;
                     Thread.sleep(100);
                     gameSession.getState().userRotateHandTile(myId, o);
                     break;
                 } catch (Exception _) {}
             }
-            while (true){
+            while (tr<20){
                 try {
+                    tr++;
                     Thread.sleep(100);
                     Point p = new Point(rand.nextInt(7) + 4, rand.nextInt(5) + 5);
                     controller.userPlaceTile(myId, p, o);
@@ -1123,26 +1128,36 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "3:2" -> {//ActivateComponent
                     HashSet<Point> points = new HashSet<>();
-                    String s = "";
-                    lineReader.printAbove("insert all the points you want to activate (s to stop):  ");
-                    while (!s.equalsIgnoreCase("s")) {
-                        try {
-                            s = lineReader.readLine("Insert the coordinates (x,y) >> ");
-                            if( s.equalsIgnoreCase("s")) break;
-                            String[] coordinates = s.trim().split("\\s+");
-                            int x = Integer.parseInt(coordinates[0]);
-                            int y = Integer.parseInt(coordinates[1]);
-                            points.add(new Point(x, y));
-                        } catch (Exception e) {
-                            printUpdateMessage(error + e.getMessage());
+                    lineReader.printAbove("do you want to activate some components? (y/n) >> ");
+                    String s = lineReader.readLine().trim();
+                    if (s.equalsIgnoreCase("y")) {
+                        lineReader.printAbove("insert all the points you want to activate (s to stop):  ");
+                        while (!s.equalsIgnoreCase("s")) {
+                            try {
+                                s = lineReader.readLine("Insert the coordinates (x,y) >> ");
+                                if( s.equalsIgnoreCase("s")) break;
+                                String[] coordinates = s.trim().split("\\s+");
+                                int x = Integer.parseInt(coordinates[0]);
+                                int y = Integer.parseInt(coordinates[1]);
+                                points.add(new Point(x, y));
+                            } catch (Exception e) {
+                                printUpdateMessage(error + e.getMessage());
+                            }
                         }
+                        if (!points.isEmpty()) controller.userFinishDecisionActivating(myId, points);
+                        else printUpdateMessage(error + "no point inserted");
+                    } else {
+                        controller.userFinishDecisionActivating(myId, points);
                     }
-                    if (!points.isEmpty()) controller.userFinishDecisionActivating(myId, points);
-                    else printUpdateMessage(error + "no point inserted");
+
                 }
                 case "4:2" -> {//handleDecisionToken
-                    ArrayList<Pair<Point, Token>> tokens = decisionToken();
-                    controller.userFinishDecisionToken(myId, tokens);
+                    lineReader.printAbove("do you want to handle the decision token? (y/n) >> ");
+                    if (lineReader.readLine().equalsIgnoreCase("y")) {
+                        ArrayList<Pair<Point, Token>> tokens = decisionToken();
+                        if (!tokens.isEmpty()) controller.userFinishDecisionToken(myId, tokens);
+                        else printUpdateMessage(error + "no point inserted");
+                    }else controller.userFinishDecisionToken(myId, new ArrayList<>());
                 }
                 case "5:2" -> {//LandOnPlanet
                     try {
