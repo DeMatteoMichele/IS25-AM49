@@ -43,10 +43,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
 
     @Override
     public void command_FromServerToClient(Command command) throws RemoteException {
-        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
-            historyQueue.add(command);
-        }
-        if (!gameStarted) { //i send callbacks to all clients connected
+        if (!gameStarted) { //I send callbacks to all clients connected
 
             if (command.getMethodName().equals("playerJoinCallback") && clients.containsKey(command.getPlayerId())) {// i must add the player to the playersRMI
                 networkController.addPlayerToLobbyRMI(command.getPlayerId());
@@ -60,7 +57,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                     System.out.println("Error sending command to client " + id + ": " + e.getMessage());
                 }
             });
-        } else {  //i send callbacks only to players in the match
+        } else {  //I send callbacks only to players in the match
             matchPlayers.forEach((id, client) -> {
                 try {
                     client.command_FromServerToClient(command);
@@ -68,6 +65,12 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                     System.out.println("Error sending command to client " + id + ": " + e.getMessage());
                 }
             });
+        }
+        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
+            Command commandHistory = new Command(command.getMethodName(), command.getPlayerId());
+            commandHistory.copyParameters(command.getParameters());
+            commandHistory.setIsHistoryTrue();
+            historyQueue.add(commandHistory);
         }
     }
 

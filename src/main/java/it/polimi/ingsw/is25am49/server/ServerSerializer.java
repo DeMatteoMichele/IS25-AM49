@@ -79,9 +79,6 @@ public class ServerSerializer implements RemoteClient {
     }
 
     public Command serializeObjectFromServer(Command command, boolean toSpecificClient, int clientId) {
-        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
-            clientHandler.putFileInTheHistoryQueue(command);
-        }
         if (!toSpecificClient) {    //broadcast
             if (!gameStarted) {
                 if (command.getMethodName().equals("playerJoinCallback") && clientHandler.containsClient(command.getPlayerId())) {
@@ -92,6 +89,12 @@ public class ServerSerializer implements RemoteClient {
             clientHandler.putFileInTheBroadcastQueue(command);
         } else {    //to a single client
             clientHandler.putFileInTheOutGoingFileQueue(command, clientId);
+        }
+        if (!command.getTypeOfMessage().equals("HSK") && !command.getMethodName().startsWith("error")) {
+            Command commandHistory = new Command(command.getMethodName(), command.getPlayerId());
+            commandHistory.copyParameters(command.getParameters());
+            commandHistory.setIsHistoryTrue();
+            clientHandler.putFileInTheHistoryQueue(commandHistory);
         }
         return command;
     }

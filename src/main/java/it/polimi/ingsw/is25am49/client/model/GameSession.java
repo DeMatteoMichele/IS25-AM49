@@ -163,6 +163,10 @@ public class GameSession {
         game.ifPresent(g -> g.userPlaceTimer(player));
     }
 
+    public void userPlaceTimerNoTime(Player player) {
+        game.ifPresent(g -> g.userPlaceTimerNoTime(player));
+    }
+
     public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
         return game.map(game-> game.userSelectTypeOfToken(player, token, coordinates)).orElse(false);
     }

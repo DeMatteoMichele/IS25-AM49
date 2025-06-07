@@ -54,6 +54,14 @@ public class Timer {
             throw new IllegalTimerMoveException("Illegal timer move");
         }
     }
+
+    public void placeNoTime(Player player) {
+        if(usageCounter < level) {
+            usageCounter++;
+        } else {
+            throw new IllegalTimerMoveException("Illegal timer move");
+        }
+    }
     private void startTimer(int seconds) {
         scheduler.schedule(() -> {
             isActive = false;
