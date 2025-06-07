@@ -237,6 +237,11 @@ public class BuildState extends State {
         userInterface.updatePlaceTimer(playerId);
     }
 
+    public void userPlaceTimerNoTime(int playerId) {
+        Player player = getPlayerById(playerId);
+        gameSession.userPlaceTimerNoTime(player);
+    }
+
     public void timerIsDone() {
         gameSession.mergeSmallDecks();
         userInterface.updateTimerIsDone();

@@ -166,11 +166,15 @@ public class ClientController {
         }
     }
 
-    public void userPlaceTimerCallback(int playerId) {
-        try {
-            gameSession.getState().userPlaceTimer(playerId);
-        } catch (Exception e) {
-            ui.printUpdateMessage(error + "Error while placing a timer: --> " + e.getMessage());
+    public void userPlaceTimerCallback(int playerId, boolean isHistory) {
+        if (isHistory) {
+            gameSession.getState().userPlaceTimerNoTime(playerId);
+        } else{
+            try {
+                gameSession.getState().userPlaceTimer(playerId);
+            } catch (Exception e) {
+                ui.printUpdateMessage(error + "Error while placing a timer: --> " + e.getMessage());
+            }
         }
     }
 

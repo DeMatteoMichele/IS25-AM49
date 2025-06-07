@@ -360,6 +360,7 @@ public class GameBoard {
         else {
             landedPlayers.add(player);
             leaderBoard.remove(player);
+            ui.updateStopFlight(player.getIdPlayer());
         }
     }
     /**
@@ -585,7 +586,18 @@ public class GameBoard {
      */
     public void finishUpdateLeaderboard() {
         updateLeaderboard();
+        checkIfSomeoneHasZeroAstronauts();
         checkIfIsLapped();
+        if(!getStopFlightPlayers().isEmpty()){
+            for(Player player : getStopFlightPlayers()){
+                try{
+                    playerNoMoreInFlight(player);
+                }catch (it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException e){
+                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
+                }
+            }
+        }
+        ui.updateLeaderBoard(leaderBoard);
     }
 
     /**
@@ -604,7 +616,6 @@ public class GameBoard {
                 .forEach(player ->
                         leaderBoard.modifyFlightDays(player, player.getDaysThisTurn())
                 );
-        ui.updateLeaderBoard(leaderBoard);
         //alla fine setto tutti i days this turn a 0
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
@@ -629,6 +640,7 @@ public class GameBoard {
                     if (leaderBoard.getDays(player) + leaderBoard.getNumberOfCells() < leaderBoard.getDays(leaderBoard.getLeader())) {
                         // System.out.println("Player " + player.getUsername() + " is lapped");
                         lappedPlayers.add(player);
+                        ui.updateGenericCardMessage(player.getIdPlayer(), player.getUsername() + " has been lapped. The rules are strict!  He has to land now!");
                     }
                 });
         //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
@@ -704,8 +716,10 @@ public class GameBoard {
         leaderBoard.stream()
                 .map(Map.Entry::getKey)
                 .forEach(player -> {
-                    if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0)
+                    if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0) {
                         playersWithZeroAstronauts.add(player);
+                        ui.updateGenericCardMessage(player.getIdPlayer(),player.getUsername() + " has no more astronauts in his ship, he has to land now!");
+                    }
                 });
         playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
     }

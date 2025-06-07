@@ -117,6 +117,13 @@ public class Game {
             throw new GameSettingsException("This is a Test Flight");
     }
 
+    public void userPlaceTimerNoTime(Player player) {
+        if (!isTestFlight())
+            timer.placeNoTime(player);
+        else
+            throw new GameSettingsException("This is a Test Flight");
+    }
+
     public void discardTile(Player player) {
         board.addDiscardedTile(player);
     }

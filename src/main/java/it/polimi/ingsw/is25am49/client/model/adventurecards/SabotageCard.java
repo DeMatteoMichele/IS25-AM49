@@ -14,35 +14,35 @@ import java.util.Set;
 
 public class SabotageCard extends AdventureCard {
 
-    public SabotageCard(String cardId,GameBoard gameBoard, String description, int level, String name) {
+    public SabotageCard(String cardId, GameBoard gameBoard, String description, int level, String name) {
         super(cardId, gameBoard, description, level, name);
     }
 
     //declare the row and column of the component to be removed and the counter of the dice roll
     private int column;
     private int row;
-    private int  diceRollCount=0;
+    private int diceRollCount = 0;
 
 
     @Override
     public void drawCard() {
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found a Sabotage Card! Someone's gonna loose a component of the ship!");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a Sabotage Card! Someone's gonna loose a component of the ship!");
         checkRequirements();
     }
 
-//    method to calculate the total crew of a player
-    private int getTotalCrew(Player p){
-        return p.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT)+
-                p.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS)+
+    //    method to calculate the total crew of a player
+    private int getTotalCrew(Player p) {
+        return p.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) +
+                p.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS) +
                 p.getShipBoard().getTotalNumberOfaToken(Token.PURPLE_ALIENS);
     }
 
     @Override
     public void checkRequirements() {
-        if(gameBoard.getLeaderBoard().size()==1){
+        if (gameBoard.getLeaderBoard().size() == 1) {
             update();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you are the only player, you skip this card");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you are the only player, you skip this card");
         }
         //con uno stream trovo il giocatore che ha meno equipaggio
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
@@ -59,17 +59,17 @@ public class SabotageCard extends AdventureCard {
 
         //setto a current player del gameboard il giocatore con meno equipaggio
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Player with the lowest crew is: " + gameBoard.getCurrentPlayer().getUsername()+" one of your components it will be destroyed");
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have to roll dices: ");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with the lowest crew is: " + gameBoard.getCurrentPlayer().getUsername() + " one of your components it will be destroyed");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has to roll the dices!");
 
         //passo a roll dices
-        currentState= AdventureStatesTypes.ROLL_DICES;
+        currentState = AdventureStatesTypes.ROLL_DICES;
 
 
     }
 
     public void rollDices() {
-        if(currentState != AdventureStatesTypes.ROLL_DICES)
+        if (currentState != AdventureStatesTypes.ROLL_DICES)
             throw new IllegalMethodOnThisStateException("Wrong state");
 
         diceRollCount++;
@@ -77,22 +77,20 @@ public class SabotageCard extends AdventureCard {
         int secondDice = random.nextInt(6) + 1;
         dicesResult = firstDice + secondDice;
         //se è pari lancio i dadi e setto la colonna da cui rimuovere il componente e poi rilancio i dadi
-        if(diceRollCount%2==0){
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
+        if (diceRollCount % 2 == 0) {
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "The dices have been rolled: " + firstDice + " and " + secondDice + ". Column: " + dicesResult);
             userInterface.updateThrowDices(gameBoard.getCurrentPlayer().getIdPlayer(), firstDice, secondDice);
             column = dicesResult;
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have set the column to: " + column + ", now roll the dices again to set the row");
-        }
-        else{
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have set the column to: " + column + ", now roll the dices again to set the row");
+        } else {
             //se è dispari lancio i dadi e setto la riga da cui rimuovere il componente e passo a apply effect
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The dices have been rolled: " + firstDice + " and " + secondDice + ". Row: " + dicesResult);
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "The dices have been rolled: " + firstDice + " and " + secondDice + ". Row: " + dicesResult);
             userInterface.updateThrowDices(gameBoard.getCurrentPlayer().getIdPlayer(), firstDice, secondDice);
             row = dicesResult;
-            currentState= AdventureStatesTypes.EFFECT;
+            currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
         }
     }
-
 
 
     @Override
@@ -101,32 +99,31 @@ public class SabotageCard extends AdventureCard {
         Point coordinate = new Point(row, column);
 
 
-        try{
+        try {
             //rimuovo il componente, se non lancia eccezioni lo ho rimosso altrimenti catturo l'eccezione
             gameBoard.getCurrentPlayer().getShipBoard().destroyTile(coordinate);
-            Set <Point> destroyedTile= new HashSet<>();
+            Set<Point> destroyedTile = new HashSet<>();
             destroyedTile.add(coordinate);
             userInterface.updateDestroyedTiles(gameBoard.getCurrentPlayer().getIdPlayer(), destroyedTile);
             gameBoard.getCurrentPlayer().addLostComponents(1);
-            Set<Point> destroyedTiles= gameBoard.getCurrentPlayer().getShipBoard().destroyDisconnectedTiles();
+            Set<Point> destroyedTiles = gameBoard.getCurrentPlayer().getShipBoard().destroyDisconnectedTiles();
             userInterface.updateDestroyedTiles(gameBoard.getCurrentPlayer().getIdPlayer(), destroyedTiles);
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The component at row: " + row + " and column: " + column + " has been destroyed");
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Your lostComponent has been added to your discard pile");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "The component at row: " + row + " and column: " + column + " has been destroyed");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Your lostComponent has been added to your discard pile");
             currentState = AdventureStatesTypes.DRAW;
-        }
-        catch (InvalidCoordinatesException e){
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"The component at row: " + row + " and column: " + column + " doesn't exist or it's out of the ship");
+        } catch (InvalidCoordinatesException e) {
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "The component at row: " + row + " and column: " + column + " doesn't exist or it's out of the ship");
             //se ho lanciato i dadi 6 volte allora ho finito
-            if(diceRollCount == 6){
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you have rolled the dices 6 times, you have to stop");
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"you've been lucky, neither one of your component has been destroyed");
-                isFinished=true;
+            if (diceRollCount == 6) {
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have rolled the dices 6 times, the card is finished");
+                userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + " has been very lucky this time! no one of his component has been destroyed");
+                isFinished = true;
                 currentState = AdventureStatesTypes.DRAW;
             }
             //rilancio i dadi
             else {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have to roll the dices again");
-                currentState= AdventureStatesTypes.ROLL_DICES;
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have to roll the dices again");
+                currentState = AdventureStatesTypes.ROLL_DICES;
             }
         }
 
@@ -134,7 +131,7 @@ public class SabotageCard extends AdventureCard {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

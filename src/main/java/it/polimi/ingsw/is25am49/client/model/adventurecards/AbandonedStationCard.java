@@ -23,13 +23,14 @@ public class AbandonedStationCard extends AdventureCard {
     private final List<CardEffect> listEffects;
     private final int daysLost;
     private final int lostAstronauts;
-    public AbandonedStationCard(String cardId,GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumAstronauts, int redGoods, int yellowGoods, int greenGoods, int blueGoods ){
+
+    public AbandonedStationCard(String cardId, GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumAstronauts, int redGoods, int yellowGoods, int greenGoods, int blueGoods) {
         super(cardId, gameBoard, description, level, name);
         this.daysLost = daysLost;
         this.lostAstronauts = minimumAstronauts;
         listEffects = new ArrayList<>();
-        listEffects.add(new EffectWinGoods("Win Goods", redGoods,yellowGoods,greenGoods,blueGoods));
-        for(CardEffect effect : listEffects){
+        listEffects.add(new EffectWinGoods("Win Goods", redGoods, yellowGoods, greenGoods, blueGoods));
+        for (CardEffect effect : listEffects) {
             effect.setUserInterface(userInterface);
         }
     }
@@ -38,7 +39,7 @@ public class AbandonedStationCard extends AdventureCard {
     public void drawCard() {
         //chiamo il draw di adventure card
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found an Abandoned Station! You can land on it for some goods.");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found an Abandoned Station! You can land on it for some goods.");
         //passo alla richiesta di requisiti
         checkRequirements();
     }
@@ -48,27 +49,24 @@ public class AbandonedStationCard extends AdventureCard {
     public void checkRequirements() {
 
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
-        int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT)+ship.getTotalNumberOfaToken(Token.BROWN_ALIENS)+ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"player "+ gameBoard.getCurrentPlayer().getUsername() + " has " + totalNumCrewMembers + " crew members");
-       //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
-        if(totalNumCrewMembers >= lostAstronauts) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Do you wanna land on the station for some goods?");
-            currentState= AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
-        }
-        else{
+        int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT) + ship.getTotalNumberOfaToken(Token.BROWN_ALIENS) + ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+        //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
+        if (totalNumCrewMembers >= lostAstronauts) {
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the station for some goods?");
+            currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
+        } else {
             //non ho abastanza membri per atterrare
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You don't have enough members to land on the station!");
-            try{
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough members to land on the station!");
+            try {
                 //controllo se il current player era l'ultimo o no
                 //se non è l'ultimo richiamo check requirements sul player dopo
                 gameBoard.nextPlayer();
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now check on next player");
                 checkRequirements();
-            }
-            catch(IllegalSetOfNextPlayerException e){
+            } catch (IllegalSetOfNextPlayerException e) {
                 //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"It goes to update state");
-                update();            }
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It goes to update state");
+                update();
+            }
         }
     }
 
@@ -79,21 +77,18 @@ public class AbandonedStationCard extends AdventureCard {
         //prendo il primo effetto (l'unico in questa carta)
         //vado nello stato dove decido le merci da caricare e le rispettive posizioni
         super.landingOnStationOrShip(IsLanded);
-        if(IsLanded){
-            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),true, cardId);
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now you have to decide where you want to add your win goods and which ones");
-            currentState= AdventureStatesTypes.DECISION_GOODS;
+        if (IsLanded) {
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), true, cardId);
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to decide where you want to add your goods and which ones");
+            currentState = AdventureStatesTypes.DECISION_GOODS;
             currentEffect = listEffects.getFirst();
-        }
-        else{
-            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(),false, cardId);
-            try{
+        } else {
+            userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), false, cardId);
+            try {
                 gameBoard.nextPlayer();
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Now check on next player");
                 checkRequirements();
-            }
-            catch(IllegalSetOfNextPlayerException e){
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"No more players, now to update");
+            } catch (IllegalSetOfNextPlayerException e) {
+                userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now to update");
                 update();
             }
         }
@@ -101,7 +96,7 @@ public class AbandonedStationCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(Set<Point> coordinates){
+    public void finishDecision(Set<Point> coordinates) {
         throw new IllegalMethodOnThisCardException("This method is not allowed in this card");
     }
 
@@ -109,9 +104,8 @@ public class AbandonedStationCard extends AdventureCard {
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         switch (currentState) {
-            //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
             case DECISION_GOODS -> {
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates,coordinates.size(), false);
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
@@ -123,14 +117,13 @@ public class AbandonedStationCard extends AdventureCard {
     @Override
     public void applyEffect() {
         super.applyEffect();
-        //applico l'effetto, aggiorno il player con i giorni persi
-        //vado nello stato update dove verrà aggiornata la leaderboard
         Player player = gameBoard.getCurrentPlayer();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You are winning goods but you lost " + daysLost + " travel days");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You are winning goods but you lost " + daysLost + " travel days");
         currentEffect.action(player);
         player.setDaysThisTurn(-daysLost);
         update();
     }
+
     @Override
     public String toString() {
 

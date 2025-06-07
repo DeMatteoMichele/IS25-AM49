@@ -1,4 +1,5 @@
 package it.polimi.ingsw.is25am49.client.model.adventurecards;
+
 import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
@@ -25,10 +26,11 @@ public abstract class AdventureCard {
     protected CardEffect currentEffect;
     protected AdventureStatesTypes currentState;
     protected GameBoard gameBoard;
-    protected String  name;
+    protected String name;
     protected Random random;
     protected UserInterface userInterface;
     protected String cardId;
+    protected int genericIdForUpdates = -99;
 
     public AdventureCard(String cardId, GameBoard gameBoard, String description, int level, String name) {
         this.cardId = cardId;
@@ -45,11 +47,14 @@ public abstract class AdventureCard {
         return description;
     }
 
-    public void checkRequirements(){}
+    public void checkRequirements() {
+    }
+
     public abstract String toString();
+
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
-        userInterface.updateDrawAdventureCard(gameBoard.getCurrentPlayer().getIdPlayer(),this);
+        userInterface.updateDrawAdventureCard(gameBoard.getCurrentPlayer().getIdPlayer(), this);
         gameBoard.setCurrentPlayer(gameBoard.getLeader());
     }
 
@@ -59,7 +64,7 @@ public abstract class AdventureCard {
     }
 
     public void landingOnPlanet(boolean isLanded, int playerId) throws IllegalMethodOnThisStateException {
-        if(currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
+        if (currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
@@ -96,7 +101,7 @@ public abstract class AdventureCard {
     public void finishDecision(Set<Point> coordinates) {
     }
 
-    public void acceptPrizes(boolean wantsRewards){
+    public void acceptPrizes(boolean wantsRewards) {
     }
 
     public List<Player> getDefeatedPlayers() {
@@ -106,90 +111,84 @@ public abstract class AdventureCard {
     public boolean getIsFinished() {
         return isFinished;
     }
+
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
 
-    protected void update(){
+    protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
-        gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
-        if(!gameBoard.getStopFlightPlayers().isEmpty()){
-            for(Player player : gameBoard.getStopFlightPlayers()){
-                try{
-                    gameBoard.playerNoMoreInFlight(player);
-                }catch (GameSettingsException e){
-                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
-                }
-            }
-        }
-        isFinished= true;
+        isFinished = true;
     }
 
     public String getName() {
         return name;
     }
 
-    public void checkThrowDicesState(){
+    public void checkThrowDicesState() {
         if (currentState != AdventureStatesTypes.ROLL_DICES) {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
-    public void checkFinishDecisionActivatingStates(){
-        if(currentState==AdventureStatesTypes.DECISION_CANNON || currentState==AdventureStatesTypes.DECISION_MOTOR){
+
+    public void checkFinishDecisionActivatingStates() {
+        if (currentState == AdventureStatesTypes.DECISION_CANNON || currentState == AdventureStatesTypes.DECISION_MOTOR) {
             //OK
-        }
-        else{
+        } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
-    public void checkFinishDecisionTokenStates(){
-        if(currentState==AdventureStatesTypes.DECISION_BATTERIES || currentState==AdventureStatesTypes.DECISION_GOODS || currentState==AdventureStatesTypes.DECISION_SHIELDS || currentState== AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS){
+
+    public void checkFinishDecisionTokenStates() {
+        if (currentState == AdventureStatesTypes.DECISION_BATTERIES || currentState == AdventureStatesTypes.DECISION_GOODS || currentState == AdventureStatesTypes.DECISION_SHIELDS || currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS) {
             //OK
-        }
-        else {
+        } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
 
     }
 
-    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates){
+    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates) {
         List<Point> cannons = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.DOUBLE_CANNON);
         List<Point> engines = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.DOUBLE_ENGINE);
         for (Point point : coordinates) {
             if (!cannons.contains(point) && !engines.contains(point)) {
                 throw new IllegalMethodOnThisStateException("Invalid coordinates: they have to be cannons or engines");
             }
-    }
+        }
     }
 
-    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> coordinates){
+    public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> coordinates) {
         //IMPLEMENTATO DA MAICALS NEL SERVER
 
 
     }
 
-    public void checkLandOnStationOrShipState(){
+    public void checkLandOnStationOrShipState() {
         if (currentState != AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP) {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
-    public void checkLandOnPlanetState(){
+
+    public void checkLandOnPlanetState() {
         if (currentState != AdventureStatesTypes.DECISION_LAND_PLANET) {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
-    public void checkAcceptPrizesState(){
+
+    public void checkAcceptPrizesState() {
         if (currentState != AdventureStatesTypes.DECISION_REWARDS) {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
 
     /**
-     if description is longer than the width, it will be split into multiple lines
-     @param sb the StringBuilder to append the text to
-     @param text the text to append
-     @param width the width of the box
+     * if description is longer than the width, it will be split into multiple lines
+     *
+     * @param sb    the StringBuilder to append the text to
+     * @param text  the text to append
+     * @param width the width of the box
      */
     public void appendTextWithWrapping(StringBuilder sb, String text, int width) {
         if (text.length() <= width - 1) {

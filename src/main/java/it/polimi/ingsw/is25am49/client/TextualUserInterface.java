@@ -13,16 +13,12 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.client.model.*;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
-import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -276,19 +272,19 @@ public class TextualUserInterface implements UserInterface {
                 Thread.sleep(1000);//aspetto un attimo per far arrivare i pacchetti
                 while (true) {
                     String graphic = graphicsQueue.take();
-                    if (graphicsQueue.size() > 3) {
-                        printUpdateMessage("RECONNETTING ...");
-                        String next;
-                        while ((next = graphicsQueue.poll()) != null) {
-                            graphic = next;
-                            Thread.sleep(100);
-                        }
-                        printUpdateMessage("successfully reconnected");
-                        lineReader.printAbove(graphic);
-                    } else {
+//                    if (graphicsQueue.size() > 3) {
+//                        printUpdateMessage("RECONNECTING ...");
+//                        String next;
+//                        while ((next = graphicsQueue.poll()) != null) {
+//                            graphic = next;
+//                            Thread.sleep(100);
+//                        }
+//                        printUpdateMessage("successfully reconnected");
+//                        lineReader.printAbove(graphic);
+//                    } else {
                         clearConsole();
                         lineReader.printAbove(graphic);
-                    }
+//                    }
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // permette di fermare il thread in modo sicuro
@@ -726,7 +722,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
         StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
-        if (playerId == myId){
+        if (playerId == myId || playerId==-99){ //playerid==-99 è per i messaggi per tutti
             for (int i = 0; i < message.length(); i++) {
                 if (i > 0 && i % 100 == 0) {
                     str.append("-\n         -");
@@ -785,7 +781,7 @@ public class TextualUserInterface implements UserInterface {
             String[] dice1 = DICE[firstDice - 1];
             String[] dice2 = DICE[secondDice - 1];
             for (int i = 0; i < dice1.length; i++) {
-                str.append(dice1[i]).append("   ").append(dice2[i]);
+                str.append(dice1[i]).append("   ").append(dice2[i]).append("\n");
             }
             lineReader.printAbove(str.toString());
         }
@@ -857,6 +853,11 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateStopFlight(int playerId) {
+
+    }
+
+    @Override
+    public void updateEnemyDefeated(int playerIdWhoWon, String enemyName, String cardId) {
 
     }
 

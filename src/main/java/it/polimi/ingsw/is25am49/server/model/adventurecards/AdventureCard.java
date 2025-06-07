@@ -115,17 +115,7 @@ public abstract class AdventureCard {
 
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
-        gameBoard.checkIfSomeoneHasZeroAstronauts();
         gameBoard.finishUpdateLeaderboard();
-        if (!gameBoard.getStopFlightPlayers().isEmpty()) {
-            for (Player player : gameBoard.getStopFlightPlayers()) {
-                try {
-                    gameBoard.playerNoMoreInFlight(player);
-                } catch (GameSettingsException e) {
-                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
-                }
-            }
-        }
         isFinished = true;
     }
 
@@ -174,13 +164,13 @@ public abstract class AdventureCard {
                 int blueGoods = goods.get(3);
                 int totalGoods = redGoods + yellowGoods + greenGoods + blueGoods;
                 if(totalGoods != coordinates.size()) {
-                    throw new IllegalTokensException("Devi selezionare un numero di merci pari a " + totalGoods+ "!");
+                    throw new IllegalTokensException("You have to choose  " + totalGoods+ " goods!");
                 }
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
                     if (!(shipBoard.getTile(position).getComponentType() == ComponentType.SPECIAL_STORAGE && token == Token.RED_GOODS || token == Token.BLUE_GOODS || token == Token.GREEN_GOODS || token == Token.YELLOW_GOODS) || !(shipBoard.getTile(position).getComponentType() == ComponentType.STORAGE && (token == Token.BLUE_GOODS || token == Token.GREEN_GOODS || token == Token.YELLOW_GOODS))) {
-                        throw new IllegalTokensException("Puoi utilizzare solo merci nello storage corretto!");
+                        throw new IllegalTokensException("You chose a wrong type of storage !");
                     }
                     if(token ==Token.RED_GOODS) redGoods--;
                     else if(token ==Token.YELLOW_GOODS) yellowGoods--;
@@ -188,7 +178,7 @@ public abstract class AdventureCard {
                     else if(token ==Token.BLUE_GOODS) blueGoods--;
                 }
                 if(redGoods != 0 || yellowGoods != 0 || greenGoods != 0 || blueGoods != 0) {
-                    throw new IllegalTokensException("Hai selezionato un numero di merci errato");
+                    throw new IllegalTokensException("You have selected a wrong type or number of goods!");
                 }
             }
         }

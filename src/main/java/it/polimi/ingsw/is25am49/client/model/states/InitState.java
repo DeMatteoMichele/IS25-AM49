@@ -185,6 +185,11 @@ public class InitState extends State {
     public void userPlaceTimer(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
+
+    public void userPlaceTimerNoTime(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
+    }
+
     public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }

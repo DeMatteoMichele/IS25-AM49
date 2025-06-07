@@ -460,6 +460,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     @Override
+    public void updateEnemyDefeated(int playerIdWhoWon, String enemyName, String cardId) {
+
+    }
+
+    @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
 
     }

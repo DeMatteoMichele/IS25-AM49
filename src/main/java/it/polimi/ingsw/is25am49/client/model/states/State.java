@@ -76,6 +76,7 @@ public abstract class State {
     public abstract void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
     public abstract void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex);
     public abstract void userPlaceTimer(int playerId);
+    public abstract void userPlaceTimerNoTime(int playerId);
     public abstract void timerIsDone();
     public abstract void userSelectTypeOfToken(int playerId, Token token, Point coordinates);
 

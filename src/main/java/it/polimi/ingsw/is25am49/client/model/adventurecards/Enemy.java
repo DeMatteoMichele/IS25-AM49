@@ -36,7 +36,7 @@ public abstract class Enemy extends AdventureCard {
     @Override
     public void drawCard() {
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have found a " + this.getClass().getSimpleName() + "! You can defeat them if you have enough firepower");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a " + this.getClass().getSimpleName() + "! You can defeat them if you have enough firepower");
         checkRequirements();
     }
 
@@ -102,10 +102,9 @@ public abstract class Enemy extends AdventureCard {
     protected void tryNextPlayer() {
         try {
             gameBoard.nextPlayer();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "No more players, now to update");
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now to update");
             update();
         }
     }
@@ -123,7 +122,7 @@ public abstract class Enemy extends AdventureCard {
             case DECISION_BATTERIES -> {
                 int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
                 if (coordinates.size() > maxActivatableComponents) {
-                    userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), true);
+                    userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                     return; // Mantiene lo stato corrente
                 }
                 coordinatesOfBatteries = coordinates;
@@ -136,13 +135,13 @@ public abstract class Enemy extends AdventureCard {
                 currentState = determineStateAfterBatteries();
             }
             case DECISION_GOODS -> {
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), false);
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(),coordinates, coordinates.size(), true);
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 applyEffect();

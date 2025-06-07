@@ -20,6 +20,7 @@ public class Command implements Serializable {
     private  String typeOfMessage;
     private final ArrayList<Object> parameters;
     private int playerId;
+    private boolean isHistory;
 
     public Command(String methodName, int playerId) {
         this.methodName = methodName;
@@ -34,6 +35,15 @@ public class Command implements Serializable {
         else {
             typeOfMessage = "MSG";
         }
+        isHistory = false;
+    }
+
+    public void setIsHistoryTrue(){
+        isHistory = true;
+    }
+
+    public boolean getIsHistory(){
+        return isHistory;
     }
 
     public int getPlayerId() {
@@ -51,6 +61,11 @@ public class Command implements Serializable {
 
     public void addParameter(Object parameter) {
         this.parameters.add(parameter);
+    }
+
+    public void copyParameters(ArrayList<Object> parameters) {
+        this.parameters.clear();
+        this.parameters.addAll(parameters);
     }
 
     public ArrayList<Object> getParameters() {
@@ -348,7 +363,7 @@ public class Command implements Serializable {
             }
             case "userPlaceTimerCallback" -> {
                 try {
-                    clientController.userPlaceTimerCallback((int) parameters.get(0));
+                    clientController.userPlaceTimerCallback((int) parameters.get(0), this.getIsHistory());
                 } catch (Exception e) {
                     System.err.println("Errore in userPlaceTimerCallback: " + e.getMessage());
                     e.printStackTrace();

@@ -79,6 +79,11 @@ public class AdventureState extends State {
     public void userPlaceTimer(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
+
+    public void userPlaceTimerNoTime(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
+    }
+
     public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

@@ -6,7 +6,7 @@ import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 
 public class StarDustCard extends AdventureCard {
 
-    public StarDustCard(String cardId,GameBoard gameBoard, String description, int level, String name) {
+    public StarDustCard(String cardId, GameBoard gameBoard, String description, int level, String name) {
         super(cardId, gameBoard, description, level, name);
     }
 
@@ -14,7 +14,7 @@ public class StarDustCard extends AdventureCard {
     @Override
     public void drawCard() {
         super.drawCard();
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"You have found a Star Dust! You will lose traveldays as much as you have exposed connectors on you ship!");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a Star Dust! You will lose traveldays as much as you have exposed connectors on you ship!");
         currentState = AdventureStatesTypes.EFFECT;
         applyEffect();
     }
@@ -28,6 +28,7 @@ public class StarDustCard extends AdventureCard {
             int numExposedConnectors = player.getShipBoard().getNumberOfExposedConnectors();
             if (numExposedConnectors > 0) {
                 player.setDaysThisTurn(-numExposedConnectors);
+                userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has " + numExposedConnectors + " exposed connectors on your ship, he loses " + numExposedConnectors + " travel days.");
             }
         }
         update();
@@ -50,25 +51,4 @@ public class StarDustCard extends AdventureCard {
         str.append(border);
         return str.toString();
     }
-
-
-//    @Override
-//    public void applyEffect() {
-//        super.applyEffect();
-//        boolean hasMorePlayers = true;
-//        while(hasMorePlayers) {
-//            Player player = gameBoard.getCurrentPlayer();
-//            int numExposedConnectors = player.getShipBoard().getNumberOfExposedConnectors();
-//            if(numExposedConnectors > 0) {
-//                player.setDaysThisTurn(numExposedConnectors);
-//            }
-//            try {
-//                gameBoard.nextPlayer();
-//            } catch (IllegalSetOfNextPlayerException e) {
-//                hasMorePlayers = false;
-//            }
-//        }
-//        currentState = AdventureStatesTypes.UPDATE;
-//    }
-
 }

@@ -71,6 +71,11 @@ public class FinishScoreState extends State {
     public void userPlaceTimer(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+    public void userPlaceTimerNoTime(int playerId) {
+        throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
+    }
+
     public void timerIsDone(){
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
