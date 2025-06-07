@@ -29,26 +29,10 @@ public class buildController extends GenericSceneController {
     private GridPane shipBoard;
     @FXML
     private TextField textFieldLookAtShipboard;
-    //associo a ogni id della tile l'immagine scoperta
-    private final Map<Integer, ImageView> tilesMap = new HashMap<>();
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
     private final Map<Integer, Node> container = new HashMap<>();
     private final Map<Integer,Integer> tileMap = new HashMap<>();
     ImageView handTile = new ImageView();
-
-
-
-    public void loadTilesMap() {
-        // Carica le immagini delle tile e le associa agli ID
-        for (int j = 1; j < 157; j++) {
-
-            String path = "/it/polimi/ingsw/is25am49/tiles/GT-new_tiles_16_for web" + j + ".jpg";
-            ImageView imageView = new ImageView(new Image(getClass().getResource(path).toExternalForm()));
-            imageView.setFitWidth(40);
-            imageView.setFitHeight(60);
-            tilesMap.put(j, imageView);
-        }
-    }
 
     public ImageView getTileImageView(int tileId) {
         Tile tile = getTileById(tileId);
