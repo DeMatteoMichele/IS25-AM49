@@ -150,11 +150,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         switch (stateIndex) {
             case 1 -> {//BuildState
                 System.out.println("BUILD STATE");
-
-                buildcontr.loadTilesMap();
-                buildcontr.loadGrid();
-                buildcontr.printTileCardDeck();
-                buildcontr.printShipboard();
+                buildcontr.init();
                 Platform.runLater(()-> {
                     showScene(ScenesName.BUILD);
                 });
@@ -207,9 +203,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void setClientId(int myId) {
         this.myId = myId;
-        executor.submit(()-> Platform.runLater(()->{
-            showScene(ScenesName.INIT);
-        }));
+//        executor.submit(()-> Platform.runLater(()->{
+//            showScene(ScenesName.INIT);
+//        }));
+        Platform.runLater(()->showScene(ScenesName.INIT));
+
 
 
     }
@@ -293,15 +291,25 @@ public class GraphicUserInterface extends Application implements UserInterface {
         if(playerId==myId){
             buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
             Platform.runLater(()->{
+
                 buildController.addToShipBoard(coordinates);
-//                buildController.printShipboard();
+
             });
+
         }
     }
 
     @Override
-    public void updatePickTile(int playerId, Point coordinates) {
-
+    public void updatePickTile(int playerId, Point coordinates, int idTile) {
+        Platform.runLater(()->{
+            buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+            if(playerId==myId){
+                System.out.println("PICKTILE");
+                buildController.removeFromShipBoard(coordinates,idTile);
+                buildController.setHandTile(idTile);
+//
+//                buildController.setHandTileFromPickTile();
+        }});
     }
 
     @Override
@@ -350,11 +358,15 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(()->{
 
             if(playerId==myId){
+
                 buildController.clearShipBoard();
                 buildController.printShipboard();
+
             }
+            ;
 
         });
+
     }
 
     @Override

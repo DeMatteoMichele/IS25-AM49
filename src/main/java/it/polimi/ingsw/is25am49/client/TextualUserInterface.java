@@ -588,7 +588,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updatePickTile(int playerId, Point coordinates) {
+    public void updatePickTile(int playerId, Point coordinates, int idTile) {
         if(playerId == myId){
             String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
                     gameSession.getGame().get().decksToString()+

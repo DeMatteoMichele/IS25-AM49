@@ -180,8 +180,9 @@ public class BuildState extends State {
     //ok
     public void userPickTile(int playerId, Point coordinates) {
         Player player = getPlayerById(playerId);
+        int idTile = player.getShipBoard().getTile(coordinates).getIdTile();
         player.pickTile(coordinates);
-        userInterface.updatePickTile(playerId,coordinates);
+        userInterface.updatePickTile(playerId,coordinates,idTile);
     }
 
     public void userDiscardTile(int playerId) {

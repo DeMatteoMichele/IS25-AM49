@@ -1,11 +1,15 @@
 package it.polimi.ingsw.is25am49.client.GUI;
 
+import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.TileCardDeck;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -15,11 +19,14 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+//todo devo fare un'altra grid con più righe e colonne e metterla nel build fxml, in base alla gamemode
+//todo ne metto una disable a true e non la uso
 public class buildController extends GenericSceneController {
     @FXML
     private GridPane cardContainer;
@@ -29,9 +36,15 @@ public class buildController extends GenericSceneController {
     private GridPane shipBoard;
     @FXML
     private TextField textFieldLookAtShipboard;
+    @FXML
+    private ListView<String> listViewPlayers;
+    @FXML
+    private Label playerInformation;
+    @FXML
+    private ImageView image;
+    @FXML
+    private ImageView backgroundImage;
     int count = 0;
-    int columns = 13;
-    int rows = 12;
     //associo a ogni id della tile l'immagine scoperta
     private final Map<Integer, ImageView> tilesMap = new HashMap<>();
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
@@ -39,8 +52,26 @@ public class buildController extends GenericSceneController {
     private final Map<Integer, Integer> tileMap = new HashMap<>();
     ImageView handTile = new ImageView();
 
+    public void initialize(){
+        Image image = new Image(getClass().getResource("/sfondo3.jpg").toExternalForm());
+        backgroundImage.setImage(image);
 
-    public void loadTilesMap() {
+        backgroundImage.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
+                backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
+            }
+        });
+    }
+    public void init(){
+        loadTilesMap();
+        updateListView();
+        loadGrid();
+        printTileCardDeck();
+        printShipboard();
+
+    }
+    private void loadTilesMap() {
         // Carica le immagini delle tile e le associa agli ID
         for (int j = 1; j < 157; j++) {
 
@@ -53,9 +84,19 @@ public class buildController extends GenericSceneController {
     }
 
 
+    private void updateListView(){
+        ArrayList<Player> listPlayers = gameSession.getGame().get().getListPlayers();
+        for(Player p : listPlayers){
+            listViewPlayers.getItems().add(p.getUsername() + "  "+ p.getColor() + " (ID: " + p.getIdPlayer() + ")");
+        }
+        playerInformation.setText("You are " + gameSession.getPlayer(guiApplication.getMyId()).get().getUsername() + " (ID: " + guiApplication.getMyId() + ")");
 
-   public void loadGrid() {
-        int rows = 5;
+    }
+   private void loadGrid() {
+        if(gameSession.getGame().get().getMode()== GameMode.LEVEL_1 || gameSession.getGame().get().getMode()== GameMode.FLIGHT_MODE){
+            Image im = new Image(getClass().getResource("/it/polimi/ingsw/is25am49/cardboard/cardboard-1.jpg").toExternalForm());
+            image.setImage(im);
+            int rows = 5;
         int columns = 7;
        for (int row = 0; row < rows; row++) {
            for (int col = 0; col < columns; col++) {
@@ -84,8 +125,42 @@ public class buildController extends GenericSceneController {
                shipBoard.add(cellContainer, col, row);
            }
        }}
+        else if(gameSession.getGame().get().getMode()== GameMode.LEVEL_2){
+            Image im = new Image(getClass().getResource("/it/polimi/ingsw/is25am49/cardboard/cardboard-1b.jpg").toExternalForm());
+            image.setImage(im);
+            int rows = 5;
+            int columns = 7;
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
+                    StackPane cellContainer = new StackPane();
 
-    public void printTileCardDeck(){
+                    cellContainer.getProperties().put("coordinates", new Point(col+4, row+5));
+                    cellContainer.setStyle("-fx-background-color: transparent;"); // Contenitore trasparente
+                    cellContainer.setOnDragOver(event -> {
+                        if (event.getGestureSource() != cellContainer && event.getDragboard().hasImage()) {
+
+                            event.acceptTransferModes(TransferMode.MOVE);
+                        }
+                        event.consume();
+                    });
+
+                    cellContainer.setOnDragDropped(event->{
+                        try{
+                            guiApplication.getController().userPlaceTile(guiApplication.getMyId(), (Point) cellContainer.getProperties().get("coordinates"),gameSession.getPlayer(guiApplication.getMyId()).get().getHandTileOrientation());
+
+                        }catch (Exception e){
+                            guiApplication.printUpdateMessage(error + e.getMessage());
+                        }
+
+                    });
+
+                    shipBoard.add(cellContainer, col, row);
+                }
+            }}
+
+    }
+
+    private void printTileCardDeck(){
        Image image = new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tiles/GT-new_tiles_16_for web157.jpg").toExternalForm());
        TileCardDeck deck = gameSession.getGame().get().getGameboard().getTilesDeck();
        System.out.println("Numero totale di tile nel deck: " + deck.stream().toList().size());
@@ -166,6 +241,7 @@ public class buildController extends GenericSceneController {
     }
 
     public void printShipboard(){
+
        gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid().forEach((coordinates, tile) -> {
            if (tile.isPresent()) {
                int idTile = tile.get().getIdTile();
@@ -175,14 +251,14 @@ public class buildController extends GenericSceneController {
                if (imageView != null) {
                 imageView.setFitWidth(60);
                 imageView.setFitHeight(60);
-//                     imageView.setUserData(idTile);
-//                     imageView.setOnMouseClicked(event -> {
-//                          try {
-//                            guiApplication.getController().userPickTile(guiApplication.getMyId(), coordinates);
-//                          } catch (Exception e) {
-//                            guiApplication.printUpdateMessage(error + e.getMessage());
-//                          }
-//                     });
+                imageView.setUserData(idTile);
+                imageView.setOnMouseClicked(event -> {
+                          try {
+                            guiApplication.getController().userPickTile(guiApplication.getMyId(), coordinates);
+                          } catch (Exception e) {
+                            guiApplication.printUpdateMessage(error + e.getMessage());
+                          }
+                     });
                      // Imposta la rotazione dell'immagine in base all'orientamento della tile
                    switch (tile.get().getTileOrientation()){
                        case NORTH -> imageView.setRotate(0);
@@ -191,11 +267,12 @@ public class buildController extends GenericSceneController {
                        case WEST -> imageView.setRotate(270);
                    }
 
-                   shipBoard.getChildren().remove(imageView); // Rimuove il nodo se già presente
+
                    shipBoard.add(imageView, coordinates.x - 4, coordinates.y - 5);
                }
            }
        });
+
 
            }
 
@@ -219,14 +296,14 @@ public class buildController extends GenericSceneController {
             if (imageView != null) {
                 imageView.setFitWidth(60);
                 imageView.setFitHeight(60);
-//            imageView.setUserData(idTile);
-//            imageView.setOnMouseClicked(event -> {
-//                try {
-//                    guiApplication.getController().userPickTile(guiApplication.getMyId(), coordinates);
-//                } catch (Exception e) {
-//                    guiApplication.printUpdateMessage(error + e.getMessage());
-//                }
-//            });
+                imageView.setUserData(idTile);
+                imageView.setOnMouseClicked(event -> {
+                    try {
+                        guiApplication.getController().userPickTile(guiApplication.getMyId(), coordinates);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }
+                });
 
                 // Imposta la rotazione dell'immagine in base all'orientamento della tile
                 switch (tile.getTileOrientation()) {
@@ -238,11 +315,36 @@ public class buildController extends GenericSceneController {
 
                 shipBoard.add(imageView, coordinates.x - 4, coordinates.y - 5);
             }
-        }catch (Exception e){
-            System.out.println("NO");
-        }
+        }catch (Exception e){}
 
     }
+
+    public void removeFromShipBoard(Point coordinates, int idTile) {
+        try{
+            ImageView imageView = tilesMap.get(idTile);
+            if (imageView != null) {
+                shipBoard.getChildren().remove(imageView);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+//    public void setHandTileFromPickTile(){
+//        if(gameSession.getPlayer(guiApplication.getMyId()).get().getHandTile().isPresent()){
+//            int idTile = gameSession.getPlayer(guiApplication.getMyId()).get().getHandTile().get().getIdTile();
+//            ImageView imageView = tilesMap.get(idTile);
+//            imageView.setFitHeight(181);
+//            imageView.setFitWidth(181);
+//            Orientation orientation = gameSession.getGame().get().getPlayer(guiApplication.getMyId()).getHandTile().get().getTileOrientation();
+//            switch (orientation){
+//                case NORTH -> imageView.setRotate(0);
+//                case EAST -> imageView.setRotate(90);
+//                case SOUTH -> imageView.setRotate(180);
+//                case WEST -> imageView.setRotate(270);
+//            }
+//            buildContainer.getChildren().add(imageView);
+//            handTile = imageView;
+//    }}
 
     public void disableTile(int idTile) {
         int index = tileMap.get(idTile);
@@ -390,23 +492,31 @@ public class buildController extends GenericSceneController {
                 cellContainer.getProperties().put("coordinates", new Point(col + 4, row + 5));
                 cellContainer.setStyle("-fx-background-color: transparent;");
                 cellContainer.setOnDragOver(event -> {
-                    if (event.getGestureSource() != cellContainer && event.getDragboard().hasImage()) {
+                    // Accetta il drag solo se la sorgente è handTile (non una tessera già posizionata)
+                    if (event.getGestureSource() == handTile && event.getDragboard().hasImage()) {
                         event.acceptTransferModes(TransferMode.MOVE);
                     }
                     event.consume();
                 });
 
                 cellContainer.setOnDragDropped(event -> {
-                    try {
-                        guiApplication.getController().userPlaceTile(guiApplication.getMyId(), (Point) cellContainer.getProperties().get("coordinates"), gameSession.getPlayer(guiApplication.getMyId()).get().getHandTileOrientation());
-                    } catch (Exception e) {
-                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    // Verifica che la sorgente sia handTile prima di procedere
+                    if (event.getGestureSource() == handTile) {
+                        try {
+                            guiApplication.getController().userPlaceTile(guiApplication.getMyId(),
+                                (Point) cellContainer.getProperties().get("coordinates"),
+                                gameSession.getPlayer(guiApplication.getMyId()).get().getHandTileOrientation());
+                        } catch (Exception e) {
+                            guiApplication.printUpdateMessage(error + e.getMessage());
+                        }
                     }
+                    event.consume();
                 });
 
                 shipBoard.add(cellContainer, col, row);
             }
         }
+
 
     }
    public void printPlayerIdShipboard(int playerId) {
