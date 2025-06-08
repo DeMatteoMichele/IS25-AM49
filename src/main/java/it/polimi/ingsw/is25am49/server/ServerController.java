@@ -236,7 +236,6 @@ public class ServerController {
             } catch (Exception e) {
                 Command command = new Command("errorCallback" , playerId);
                 command.addParameter(playerId);
-                e.printStackTrace();
                 command.addParameter("Place timer hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);

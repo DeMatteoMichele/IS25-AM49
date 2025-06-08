@@ -8,7 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.image.ImageView;
 
 
-public class initController extends GenericSceneController{
+public class InitController extends GenericSceneController{
     @FXML
     private Label labelMaxPlayers;
     @FXML
