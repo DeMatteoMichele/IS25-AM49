@@ -22,6 +22,9 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.IOException;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -381,17 +384,17 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
             if(playerId==myId){
                 buildController.showAdventureCardDeck(smallDeckIndex);
             }
 
-    }
+    });}
 
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
-        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
             if(playerId==myId){
                 buildController.clearSmallAdventureDeck();
@@ -403,7 +406,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updatePlaceTimer(int playerId) {
-        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
 
                 buildController.showCountDown();
@@ -416,7 +419,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateTimerIsDone() {
-        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
             printUpdateMessage("Timer is finished");
             buildController.playTimerEndAnimation();

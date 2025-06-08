@@ -83,6 +83,8 @@ public class BuildController extends GenericSceneController {
         loadGrid(image, shipBoard);
         printTileCardDeck();
         printShipboard(shipBoard);
+        loadAdventureCards();
+    }
 
     private void loadAdventureCards(){
         Image image1 = new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tiles/GT-new_tiles_16_for web157.jpg").toExternalForm());
@@ -160,17 +162,7 @@ public class BuildController extends GenericSceneController {
         }
         }
     }
-    public void loadTilesMap() {
-        // Carica le immagini delle tile e le associa agli ID
-        for (int j = 1; j < 157; j++) {
 
-            String path = "/it/polimi/ingsw/is25am49/tiles/GT-new_tiles_16_for web" + j + ".jpg";
-            ImageView imageView = new ImageView(new Image(getClass().getResource(path).toExternalForm()));
-            imageView.setFitWidth(40);
-            imageView.setFitHeight(60);
-            tilesMap.put(j, imageView);
-        }
-    }
 
     public void clearListView(){
         listViewPlayers.getItems().clear();
@@ -180,7 +172,7 @@ public class BuildController extends GenericSceneController {
         for(Player p : listPlayers){
             listViewPlayers.getItems().add(p.getUsername() + "  "+ p.getColor() + " (ID: " + p.getIdPlayer() + ")");
         }
-        playerInformation.setText("You are " + gameSession.getPlayer(guiApplication.getMyId()).get().getUsername() + " (ID: " + guiApplication.getMyId() + ")");
+        playerInformation.setText("You are " + gameSession.getPlayer(guiApplication.getMyId()).get().getUsername() + " (ID: " + guiApplication.getMyId() + ")\n"+ "Lost Components: "+ gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getDestroyedTiles());
 
     }
     public void printShipboard() {
