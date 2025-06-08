@@ -496,7 +496,7 @@ public class GameBoard {
             int credits = 0;
             Player p = entry.getKey();
             credits = 5 - leaderBoard.getPos(p);
-            credits -= p.getLostComponents();
+            credits -= p.getShipBoard().getDestroyedTiles();
             credits += p.scoreOfGoods();
             if (minimumExposedComponents().contains(p)) {
                 credits += 2;
@@ -510,7 +510,7 @@ public class GameBoard {
             int credits = 0;
 
             credits = 5 - leaderBoard.getPos(player);
-            credits -= player.getLostComponents();
+            credits -= player.getShipBoard().getDestroyedTiles();
             credits += player.scoreOfGoods();
             if (minimumExposedComponents().contains(player)) {
                 credits += 2;
@@ -662,6 +662,7 @@ public class GameBoard {
      * @return the size of the leaderboard
      */
     public int userFinishShipboard(Player player) {
+
         player.completeShipboard();
         addPlayerToLeaderboard(player);
         return leaderBoard.size();
@@ -680,7 +681,7 @@ public class GameBoard {
             if (mapSmallAdventureDecks.containsKey(index)) {
                 if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
                     mapSmallAdventureDecks.get(index).watch();
-                    player.lockLastTile();
+//                    player.lockLastTile();
                     player.setSmallDeck(mapSmallAdventureDecks.get(index));
                 } else
                     throw new GameSettingsException("You cannot watch this deck");

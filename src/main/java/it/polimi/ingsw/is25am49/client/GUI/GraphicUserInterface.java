@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.client.*;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.animation.PauseTransition;
@@ -21,6 +22,9 @@ import javafx.util.Pair;
 import java.awt.*;
 import java.io.IOException;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +35,8 @@ import java.util.concurrent.Executors;
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
     private GameSession gameSession;
-
+    private final String serverIP = "localhost";
+    private final int serverPortRMI = 1099;
     private  String username;
     private Map<ScenesName,Scene> scenesList;
     private Map<ScenesName,GenericSceneController> controllerList;
@@ -361,6 +366,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
                 buildController.clearShipBoard();
                 buildController.printShipboard();
+                buildController.clearListView();
+                buildController.updateListView();
 
             }
             ;
@@ -371,25 +378,46 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            if(playerId==myId){
+                buildController.showAdventureCardDeck(smallDeckIndex);
+            }
 
+        });
     }
 
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            if(playerId==myId){
+                buildController.clearSmallAdventureDeck();
+            }
+
+        });
 
     }
 
     @Override
     public void updatePlaceTimer(int playerId) {
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
-            printUpdateMessage("Timer placed by player " + playerId);
+
+                buildController.showCountDown();
+                printUpdateMessage("Timer placed by player " + playerId);
+
+
+
         });
     }
 
     @Override
     public void updateTimerIsDone() {
+        buildController buildController = (buildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
             printUpdateMessage("Timer is finished");
+            buildController.playTimerEndAnimation();
         });
     }
 
@@ -511,7 +539,37 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
-
+        RemoteServer serverStub;
+        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
+        serverStub = (RemoteServer) reg.lookup("Server");
+        settingsController settingsController = (settingsController) controllerList.get(ScenesName.SETTINGS);
+        if (!isReconnecting) {
+            clientRMI = new ClientRMI(controller, serverStub, this);
+            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+//                guiApplication.showScene(ScenesName.INIT);
+            } catch (RemoteException e) {
+                printUpdateMessage(settingsController.error + e.getMessage());
+                settingsController.disableConnectionButtons();
+                settingsController.enableRetryVisibility();
+            }
+        } else {
+            clientRMI.replaceServerStub(serverStub);
+            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
+            controller.setServerMethods(serverStub);
+            try {
+                System.out.println("trying to log in to the server ...");
+                controller.registerClientRMI(clientRMI);
+                System.out.println("client logged");
+            } catch (RemoteException e) {
+                System.out.println("client failed logging on server RMI --> " + e.getMessage());
+               printUpdateMessage(settingsController.error+ " client failed logging on server RMI --> " + e.getMessage());
+            }
+        }
     }
 
     @Override

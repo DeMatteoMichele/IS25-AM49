@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.finishController">
+   <children>
+      <Button onAction="#endGame" layoutX="61.0" layoutY="28.0" mnemonicParsing="false" text="EndGame" />
+      <Button fx:id="calculateScore" onAction="#calculateScore" layoutX="178.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="104.0" text="Calculate Score" />
+      <Label layoutX="279.0" layoutY="139.0" text="1" />
+      <Label layoutX="269.0" layoutY="164.0" text="Label" />
+      <Label layoutX="95.0" layoutY="164.0" text="2" />
+      <Label layoutX="405.0" layoutY="192.0" text="3" />
+      <Label layoutX="474.0" layoutY="271.0" text="4" />
+      <Label layoutX="81.0" layoutY="184.0" text="Label" />
+      <Label layoutX="395.0" layoutY="217.0" text="Label" />
+      <Label layoutX="467.0" layoutY="288.0" text="Label" />
+   </children>
+</AnchorPane>

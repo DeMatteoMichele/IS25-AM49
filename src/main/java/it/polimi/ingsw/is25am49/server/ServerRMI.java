@@ -99,11 +99,10 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
 
     @Override
     public void command_FromClientToServer(Command command) throws RemoteException {
-        if (command.getTypeOfMessage().equals("HTB")) {
-            lastHeartBeats.put(command.getPlayerId(), System.currentTimeMillis());
-        } else {
-            putFileFromClientInQueue(command);
-        }
+
+        lastHeartBeats.put(command.getPlayerId(), System.currentTimeMillis());
+        putFileFromClientInQueue(command);
+
     }
 
     public void sayToServerRMIWhoHasJoined(int playerId) {

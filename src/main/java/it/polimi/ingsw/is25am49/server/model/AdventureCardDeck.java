@@ -42,7 +42,7 @@ public class AdventureCardDeck {
         return deck.getFirst();
     }
 
-    //TODO usato per testare poi si può rimuovere
+
     public AdventureCard getCard(int i) {
         if (i < 0 || i >= deck.size()) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + i);

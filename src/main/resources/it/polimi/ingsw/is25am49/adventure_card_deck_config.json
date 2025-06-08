@@ -1,6 +1,6 @@
 [
   {
-    "cardId": "I15",
+    "cardId": "I18",
     "level": 1,
     "name": "SpazioAperto",
     "description": "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
@@ -111,8 +111,8 @@
     ]
   },
   {
-    "cardId": "I113",
-    "level": 1,
+    "cardId": "L113",
+    "level": 0,
     "name": "PlanetCard",
     "description": "A Planet card shows 2 to 4 planets where goods can be loaded. Landing costs the number of flight days shown. To land, place your rocket marker on a planet; only one rocket per planet. The leader chooses first, then others in route order. Landing is optional, and leading players might block others. Landed players load the listed goods and may rearrange or unload them. Landing can also be used to block others, but consider the flight day cost. After all decide, landed players move their rocket back along the route by the days spent, in reverse order.",
     "daysLost": 2,
@@ -529,7 +529,7 @@
     "lostAstronauts": 3
   },
   {
-    "cardId": "L18",
+    "cardId": "L15",
     "level": 0,
     "name": "SpazioAperto",
     "description": "In turn, starting with the leader and continuing in order of course, each player declares the own motive power. When it is your turn, you must decide whether to spend the counters battery for your possible double motors. Immediately after, advance your rocket along the course of a number of empty spaces equal to your engine power"
