@@ -7,7 +7,6 @@ import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -27,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 //todo devo fare un'altra grid con più righe e colonne e metterla nel build fxml, in base alla gamemode
 //todo ne metto una disable a true e non la uso
-public class buildController extends GenericSceneController {
+public class BuildController extends GenericSceneController {
     @FXML
     private GridPane cardContainer;
     @FXML
@@ -46,7 +45,6 @@ public class buildController extends GenericSceneController {
     private ImageView backgroundImage;
     int count = 0;
     //associo a ogni id della tile l'immagine scoperta
-    private final Map<Integer, ImageView> tilesMap = new HashMap<>();
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
     private final Map<Integer, Node> container = new HashMap<>();
     private final Map<Integer, Integer> tileMap = new HashMap<>();
@@ -66,12 +64,12 @@ public class buildController extends GenericSceneController {
     public void init(){
         loadTilesMap();
         updateListView();
-        loadGrid();
+        loadGrid(image, shipBoard);
         printTileCardDeck();
-        printShipboard();
+        printShipboard(shipBoard);
 
     }
-    private void loadTilesMap() {
+    public void loadTilesMap() {
         // Carica le immagini delle tile e le associa agli ID
         for (int j = 1; j < 157; j++) {
 
@@ -92,72 +90,8 @@ public class buildController extends GenericSceneController {
         playerInformation.setText("You are " + gameSession.getPlayer(guiApplication.getMyId()).get().getUsername() + " (ID: " + guiApplication.getMyId() + ")");
 
     }
-   private void loadGrid() {
-        if(gameSession.getGame().get().getMode()== GameMode.LEVEL_1 || gameSession.getGame().get().getMode()== GameMode.FLIGHT_MODE){
-            Image im = new Image(getClass().getResource("/it/polimi/ingsw/is25am49/cardboard/cardboard-1.jpg").toExternalForm());
-            image.setImage(im);
-            int rows = 5;
-        int columns = 7;
-       for (int row = 0; row < rows; row++) {
-           for (int col = 0; col < columns; col++) {
-               StackPane cellContainer = new StackPane();
-
-               cellContainer.getProperties().put("coordinates", new Point(col+4, row+5));
-               cellContainer.setStyle("-fx-background-color: transparent;"); // Contenitore trasparente
-               cellContainer.setOnDragOver(event -> {
-                   if (event.getGestureSource() != cellContainer && event.getDragboard().hasImage()) {
-
-                       event.acceptTransferModes(TransferMode.MOVE);
-                   }
-                   event.consume();
-               });
-
-               cellContainer.setOnDragDropped(event->{
-                   try{
-                       guiApplication.getController().userPlaceTile(guiApplication.getMyId(), (Point) cellContainer.getProperties().get("coordinates"),gameSession.getPlayer(guiApplication.getMyId()).get().getHandTileOrientation());
-
-                   }catch (Exception e){
-                       guiApplication.printUpdateMessage(error + e.getMessage());
-                   }
-
-               });
-
-               shipBoard.add(cellContainer, col, row);
-           }
-       }}
-        else if(gameSession.getGame().get().getMode()== GameMode.LEVEL_2){
-            Image im = new Image(getClass().getResource("/it/polimi/ingsw/is25am49/cardboard/cardboard-1b.jpg").toExternalForm());
-            image.setImage(im);
-            int rows = 5;
-            int columns = 7;
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < columns; col++) {
-                    StackPane cellContainer = new StackPane();
-
-                    cellContainer.getProperties().put("coordinates", new Point(col+4, row+5));
-                    cellContainer.setStyle("-fx-background-color: transparent;"); // Contenitore trasparente
-                    cellContainer.setOnDragOver(event -> {
-                        if (event.getGestureSource() != cellContainer && event.getDragboard().hasImage()) {
-
-                            event.acceptTransferModes(TransferMode.MOVE);
-                        }
-                        event.consume();
-                    });
-
-                    cellContainer.setOnDragDropped(event->{
-                        try{
-                            guiApplication.getController().userPlaceTile(guiApplication.getMyId(), (Point) cellContainer.getProperties().get("coordinates"),gameSession.getPlayer(guiApplication.getMyId()).get().getHandTileOrientation());
-
-                        }catch (Exception e){
-                            guiApplication.printUpdateMessage(error + e.getMessage());
-                        }
-
-                    });
-
-                    shipBoard.add(cellContainer, col, row);
-                }
-            }}
-
+    public void printShipboard() {
+        printShipboard(shipBoard);
     }
 
     private void printTileCardDeck(){
@@ -239,42 +173,6 @@ public class buildController extends GenericSceneController {
     public void clearShipBoard() {
         shipBoard.getChildren().clear();
     }
-
-    public void printShipboard(){
-
-       gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid().forEach((coordinates, tile) -> {
-           if (tile.isPresent()) {
-               int idTile = tile.get().getIdTile();
-
-
-               ImageView imageView = tilesMap.get(idTile);
-               if (imageView != null) {
-                imageView.setFitWidth(60);
-                imageView.setFitHeight(60);
-                imageView.setUserData(idTile);
-                imageView.setOnMouseClicked(event -> {
-                          try {
-                            guiApplication.getController().userPickTile(guiApplication.getMyId(), coordinates);
-                          } catch (Exception e) {
-                            guiApplication.printUpdateMessage(error + e.getMessage());
-                          }
-                     });
-                     // Imposta la rotazione dell'immagine in base all'orientamento della tile
-                   switch (tile.get().getTileOrientation()){
-                       case NORTH -> imageView.setRotate(0);
-                       case EAST -> imageView.setRotate(90);
-                       case SOUTH -> imageView.setRotate(180);
-                       case WEST -> imageView.setRotate(270);
-                   }
-
-
-                   shipBoard.add(imageView, coordinates.x - 4, coordinates.y - 5);
-               }
-           }
-       });
-
-
-           }
 
     public void clearHandTiles() {
         buildContainer.getChildren().clear();
@@ -478,7 +376,7 @@ public class buildController extends GenericSceneController {
     public void returnBackToShipboard(ActionEvent event) {
         clearShipBoard();
         setupDragAndDropCells(); // Riconfigura le celle per il drag and drop
-        printShipboard();
+        printShipboard(shipBoard);
     }
 
     private void setupDragAndDropCells() {

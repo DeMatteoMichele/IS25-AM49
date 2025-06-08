@@ -4,7 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="AnchorPane" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.homeController">
+<StackPane fx:id="AnchorPane" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.HomeController">
     <children>
 
                  <ImageView fx:id="backgroundImage" pickOnBounds="true">
@@ -12,7 +12,7 @@
 <!--                <Image url="@/sfondo.png" />-->
 <!--            </image>-->
         </ImageView>
-        <Button fx:id="startGameButton" onAction="#handleStartGame" prefHeight="50.0" prefWidth="275.0" style="-fx-font-size: 24px; -fx-background-color: linear-gradient(to bottom, #FFEB3B, #FBC02D); -fx-border-color: transparent; -fx-border-width: 2px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-text-fill: white; -fx-alignment: center;" text="START" StackPane.alignment="CENTER" translateY="250" />
+        <Button fx:id="startGameButton" onAction="#handleStartGame" prefHeight="50.0" prefWidth="275.0" style="-fx-font-size: 24px; -fx-background-color: linear-gradient(to bottom, #FFEB3B, #FBC02D); -fx-border-color: transparent; -fx-border-width: 2px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-text-fill: white; -fx-alignment: center;" text="START"  />
     </children>
 
 </StackPane>
