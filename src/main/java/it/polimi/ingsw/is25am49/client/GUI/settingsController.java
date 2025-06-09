@@ -28,7 +28,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class settingsController extends GenericSceneController {
     private final String serverIP = "localhost";
     private final int serverPortSocket = 8081;
-    private final int serverPortRMI = 1099;
+
     private String username;
     boolean isAlreadyConnected = false;
     @FXML
@@ -87,7 +87,7 @@ public class settingsController extends GenericSceneController {
     }
 
     @FXML
-    private void enableRetryVisibility() {
+    public void enableRetryVisibility() {
         retryLabel.setVisible(true);
         yesRetry.setVisible(true);
         noRetry.setVisible(true);
@@ -102,7 +102,7 @@ public class settingsController extends GenericSceneController {
     }
 
     @FXML
-    private void disableConnectionButtons() {
+    public void disableConnectionButtons() {
         rmiButton.setDisable(true);
         socketButton.setDisable(true);
     }
@@ -148,10 +148,9 @@ public class settingsController extends GenericSceneController {
     @FXML
     public void handleRMI(ActionEvent event) {
         try {
-
             try {
                 ClientRMI clientRMI = null;
-                connectionRMI(false, clientRMI);
+                guiApplication.connectionRMI(false, clientRMI);
 
             }catch (RemoteException e) {
 
@@ -168,40 +167,7 @@ public class settingsController extends GenericSceneController {
             enableRetryVisibility();
         }
     }
-    public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
-        RemoteServer serverStub;
-        Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
-        serverStub = (RemoteServer) reg.lookup("Server");
-        ClientController controller = guiApplication.getController();
-        if (!isReconnecting) {
-            clientRMI = new ClientRMI(controller, serverStub, guiApplication);
-            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
-            controller.setServerMethods(serverStub);
-            try {
-                System.out.println("trying to log in to the server ...");
-                controller.registerClientRMI(clientRMI);
-                System.out.println("client logged");
-//                guiApplication.showScene(ScenesName.INIT);
-            } catch (RemoteException e) {
-                guiApplication.printUpdateMessage(error + e.getMessage());
-                disableConnectionButtons();
-                enableRetryVisibility();
-            }
-        } else {
-            clientRMI.replaceServerStub(serverStub);
-            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
-            controller.setServerMethods(serverStub);
-            try {
-                System.out.println("trying to log in to the server ...");
-                controller.registerClientRMI(clientRMI);
-                System.out.println("client logged");
-            } catch (RemoteException e) {
-                System.out.println("client failed logging on server RMI --> " + e.getMessage());
-                guiApplication.printUpdateMessage(error+ " client failed logging on server RMI --> " + e.getMessage());
-            }
-        }
 
-    }
 
     @FXML
     public void handleSocket(ActionEvent event) {

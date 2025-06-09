@@ -13,7 +13,9 @@ import java.util.Objects;
 
 public class AdventureController extends GenericSceneController {
     @FXML
-    private HBox shipboard;
+    private ImageView shipBoardImage;
+    @FXML
+    private StackPane shipboard;
     @FXML
     private GridPane shipboardGrid;
     @FXML
@@ -24,26 +26,28 @@ public class AdventureController extends GenericSceneController {
     private Button drawButton;
     @FXML
     private ImageView currentCard;
+    @FXML
+    private ImageView backgroundImage;
+    @FXML
+    private HBox cardDeckContainer;
+    @FXML
+    private ImageView cardDeckImage;
+    @FXML
+    private ImageView leaderboardImage;
 
     ShipBoard playerShipboard;
 
     public AdventureController() {
 
     }
+    public void handleDrawButton() {
 
-    public void loadShipboard() {
-        switch(gameSession.getGame().orElseThrow().getMode()){
-            case LEVEL_1 -> {
-                String path = "it/polimi/ingsw/is25am49/cardboard/cardboard-1.jpg";
-                ImageView imageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(path)).toExternalForm()));
-                imageView.setFitHeight(506);
+    }
+    public void init(){
+        loadTilesMap();
+        printShipboard(shipboardGrid);
+        loadGrid(shipBoardImage, shipboardGrid);
 
-            }
-        }
-        playerShipboard = gameSession.getGame().orElseThrow().getPlayer(guiApplication.getMyId()).getShipBoard();
-        shipboardGrid.getChildren().clear();
-
-        
     }
 
 

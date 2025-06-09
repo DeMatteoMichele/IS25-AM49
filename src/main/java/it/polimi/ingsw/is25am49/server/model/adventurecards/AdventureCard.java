@@ -39,6 +39,7 @@ public abstract class AdventureCard {
         random = new Random(gameBoard.getSeedForGeneration());
     }
 
+
     public String getDescription() {
         return description;
     }

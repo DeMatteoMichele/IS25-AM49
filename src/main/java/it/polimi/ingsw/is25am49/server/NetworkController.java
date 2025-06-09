@@ -36,10 +36,6 @@ public class NetworkController {
         return playersSocket;
     }
 
-    public boolean isInPlayers(int playerId) {
-        return playersRMI.contains(playerId) || playersSocket.contains(playerId);
-    }
-
     public boolean isInPlayersRMI(int playerId) {
         return playersRMI.contains(playerId);
     }

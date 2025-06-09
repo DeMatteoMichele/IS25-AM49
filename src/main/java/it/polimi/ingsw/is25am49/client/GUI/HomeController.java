@@ -2,20 +2,12 @@ package it.polimi.ingsw.is25am49.client.GUI;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-
-public class homeController extends GenericSceneController{
+public class HomeController extends GenericSceneController{
     @FXML private ImageView backgroundImage;
     @FXML
     private Button startGameButton;
@@ -34,6 +26,24 @@ public class homeController extends GenericSceneController{
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
             }
         });
+        // Binding delle proprietà per centrare il bottone dinamicamente
+//        AnchorPane.sceneProperty().addListener((observable, oldScene, newScene) -> {
+//            if (newScene != null) {
+//                // Utilizzo degli ancoraggi di AnchorPane per centrare il bottone
+//                newScene.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+//                    AnchorPane.setLeftAnchor(startGameButton, (newWidth.doubleValue() - startGameButton.getWidth()) / 2);
+//                    startGameButton.setPrefWidth(newScene.getWidth()/10);
+//                });
+//
+//
+//                newScene.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+//                    AnchorPane.setTopAnchor(startGameButton, (newHeight.doubleValue() - startGameButton.getHeight()) / 2);
+//                    startGameButton.setPrefWidth(newScene.getWidth()/20);
+//                });
+//            }
+//        });
+
+
 //        startGameButton.prefWidthProperty().bind(AnchorPane.widthProperty().multiply(0.3)); // 30% della larghezza
 //
 //        // Lega l'altezza del pulsante all'altezza dell'AnchorPane

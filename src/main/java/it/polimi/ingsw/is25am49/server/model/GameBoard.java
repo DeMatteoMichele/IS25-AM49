@@ -656,7 +656,7 @@ public class GameBoard {
             if (mapSmallAdventureDecks.containsKey(index)) {
                 if (!mapSmallAdventureDecks.get(index).isWatched() && !player.isWatching()) {
                     mapSmallAdventureDecks.get(index).watch();
-                    player.lockLastTile();
+//                    player.lockLastTile();
                     player.setSmallDeck(mapSmallAdventureDecks.get(index));
                 } else
                     throw new GameSettingsException("You cannot watch this deck");

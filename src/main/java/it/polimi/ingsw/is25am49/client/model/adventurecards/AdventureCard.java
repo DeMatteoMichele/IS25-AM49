@@ -42,7 +42,9 @@ public abstract class AdventureCard {
         random = new Random(gameBoard.getSeedForGeneration());
         this.userInterface = gameBoard.getUserInterface();
     }
-
+    public String getCardId() {
+        return cardId;
+    }
     public String getDescription() {
         return description;
     }

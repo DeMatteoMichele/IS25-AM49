@@ -121,7 +121,7 @@ public class WarZoneCard extends AdventureCard {
             } catch (IllegalSetOfNextPlayerException e) {
                 //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                 userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with minimum engine power is " + playerWithMinimumEnginePower.getUsername());
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), playerWithMinimumEnginePower.getUsername() + " you lost 2 crew members, you have to choose which ones");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), playerWithMinimumEnginePower.getUsername() + " you lose  crew members, you have to choose which ones");
                 currentEffect = listEffects.removeFirst();
                 number++;
                 currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
@@ -251,7 +251,7 @@ public class WarZoneCard extends AdventureCard {
                 } catch (IllegalSetOfNextPlayerException e) {
                     //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Player with minimum fire power is " + playerWithMinimumEnginePower.getUsername());
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), playerWithMinimumEnginePower.getUsername() + " you lose crew members, you have to choose which ones");
+                    userInterface.updateGenericCardMessage(playerWithMinimumEnginePower.getIdPlayer(), playerWithMinimumEnginePower.getUsername() + " you lose crew members, you have to choose which ones");
                     currentEffect = listEffects.removeFirst();
                     //i go to decision astronaut state
                     number++;

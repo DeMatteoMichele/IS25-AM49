@@ -10,11 +10,12 @@
 <?import javafx.scene.layout.StackPane?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="958.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id = "adventureContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="958.0" xmlns="http://javafx.com/javafx/23.0.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.AdventureController">
    <children>
-      <HBox id="shipboard" layoutX="479.0" layoutY="111.0" prefHeight="506.0" prefWidth="431.0">
+       <ImageView fx:id="backgroundImage" pickOnBounds="true"/>
+      <StackPane fx:id="shipboard" layoutX="479.0" layoutY="111.0" prefHeight="506.0" prefWidth="431.0">
          <children>
-            <GridPane id="shipboardGrid" prefHeight="505.0" prefWidth="432.0">
+            <GridPane fx:id="shipboardGrid" prefHeight="505.0" prefWidth="432.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -25,18 +26,19 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
+             <ImageView fx:id="shipBoardImage" fitHeight="334.0" fitWidth="457.0" layoutX="640" layoutY="270" pickOnBounds="true" preserveRatio="true"/>
+         </children>
+      </StackPane>
+      <HBox fx:id = "cardDeckContainer" layoutX="14.0" layoutY="14.0" prefHeight="230.0" prefWidth="350.0">
+         <children>
+            <Button fx:id="drawButton" onAction= "#handleDrawButton" mnemonicParsing="false" prefHeight="230.0" prefWidth="175.0" text="Button" />
+            <ImageView fx:id="currentCard" fitHeight="230.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </HBox>
-      <HBox layoutX="14.0" layoutY="14.0" prefHeight="230.0" prefWidth="350.0">
+      <StackPane fx:id="cardEffect" layoutX="14.0" layoutY="270.0" prefHeight="150.0" prefWidth="431.0" />
+      <StackPane fx:id="leaderboard" layoutX="14.0" layoutY="450.0" prefHeight="264.0" prefWidth="383.0">
          <children>
-            <Button id="drawButton" mnemonicParsing="false" prefHeight="230.0" prefWidth="175.0" text="Button" />
-            <ImageView id="currentCard" fitHeight="230.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </HBox>
-      <StackPane id="cardEffect" layoutX="14.0" layoutY="270.0" prefHeight="150.0" prefWidth="431.0" />
-      <StackPane id="leaderboard" layoutX="14.0" layoutY="450.0" prefHeight="264.0" prefWidth="383.0">
-         <children>
-            <ImageView fitHeight="264.0" fitWidth="405.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id = "leaderboardImage" fitHeight="264.0" fitWidth="405.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </StackPane>
    </children>

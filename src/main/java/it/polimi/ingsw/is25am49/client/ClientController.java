@@ -387,12 +387,15 @@ public class ClientController {
     public void userFinishShipboard(int playerId) {
         gameSession.getState().checkUserFinishShipboard(playerId);
         Command command = new Command("userFinishShipboard", myId);
-        Command command1 = new Command("userDiscardTile", myId);
+        Command command2 = new Command("userDiscardTile", myId);
         command.addParameter(playerId);
-        command1.addParameter(playerId);
+        command2.addParameter(playerId);
         try {
-            serverMethods.command_FromClientToServer(command1);
+            if(gameSession.getPlayer(playerId).get().getHandTile().isPresent()){
+                serverMethods.command_FromClientToServer(command2);
+        }
             serverMethods.command_FromClientToServer(command);
+
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
