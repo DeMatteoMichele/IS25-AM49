@@ -75,7 +75,7 @@ public class BuildState extends State {
     public void checkUserLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         Player player = getPlayerById(playerId);
         player.shipBoardIsNotCompletedYet();
-        if(smallDeckIndex <0 || smallDeckIndex >3) throw new RuntimeException("selected smallDeck doesn't exist!");
+        if(smallDeckIndex <0 || smallDeckIndex >2) throw new RuntimeException("selected smallDeck doesn't exist!");
     }
     @Override
     public void checkUserStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {

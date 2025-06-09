@@ -1039,7 +1039,7 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "5:1"->{//lookSmallAdventureCardDeck
                     try {//todo volendo si può fare che finché non smetto di guardare non posso fare nulla
-                        smallDeckIndex = Integer.parseInt(lineReader.readLine("insert deck index (0-3) >> ").trim());
+                        smallDeckIndex = Integer.parseInt(lineReader.readLine("insert deck index (0-2) >> ").trim());
                         controller.userLookSmallAdventureCardDeck(myId, smallDeckIndex);
                     }catch (Exception e){
                         printUpdateMessage(error+e.getMessage());
