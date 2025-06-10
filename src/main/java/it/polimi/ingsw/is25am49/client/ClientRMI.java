@@ -26,8 +26,9 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private final BlockingQueue<Command> commandsFromServerQueue;
 
 
-    public ClientRMI(ClientController clientController, RemoteServer serverRMI, UserInterface userInterface) throws RemoteException {
+    public ClientRMI(ClientController clientController, RemoteServer serverRMI, UserInterface userInterface, String serverIP) throws RemoteException {
         super();
+        System.setProperty("java.rmi.server.hostname", serverIP);
         this.clientController = clientController;
         this.serverRMI = serverRMI;
         initialDelay = 10;

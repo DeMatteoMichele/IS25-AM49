@@ -220,7 +220,7 @@ public class TextualUserInterface implements UserInterface {
         Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
         serverStub = (RemoteServer) reg.lookup("Server");
         if (!isReconnecting) {
-            clientRMI = new ClientRMI(controller, serverStub, this);
+            clientRMI = new ClientRMI(controller, serverStub, this, serverIP);
             System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
             controller.setServerMethods(serverStub);
             try {

@@ -127,7 +127,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
 
         // Dopo 3 secondi, chiudi il popup
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        PauseTransition delay = new PauseTransition(Duration.seconds(40));
         delay.setOnFinished(event -> popup.hide());
         delay.play();
     }
@@ -453,7 +453,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
-
+        Platform.runLater(()->{
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.updateCurrentCard(adventureCard.getCardId());
+        });
     }
 
 
@@ -549,7 +552,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         serverStub = (RemoteServer) reg.lookup("Server");
         settingsController settingsController = (settingsController) controllerList.get(ScenesName.SETTINGS);
         if (!isReconnecting) {
-            clientRMI = new ClientRMI(controller, serverStub, this);
+            clientRMI = new ClientRMI(controller, serverStub, this, serverIP);
             System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
             controller.setServerMethods(serverStub);
             try {
