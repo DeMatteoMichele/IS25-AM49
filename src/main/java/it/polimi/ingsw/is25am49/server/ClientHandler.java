@@ -28,6 +28,7 @@ public class ClientHandler {
     private final ArrayBlockingQueue<Command> BroadcastQueue;
     private final ArrayBlockingQueue<Command> historyQueue;
     private static NetworkController networkController;
+    private static GameSession gameSession;
 
     private final Thread serverThread;
     private boolean gameStarted;
@@ -68,7 +69,7 @@ public class ClientHandler {
     private void startServer(int port) throws IOException {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
-        scheduler.scheduleAtFixedRate(() -> centralHeartBeatMonitor(), 0, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::centralHeartBeatMonitor, 0, 5, TimeUnit.SECONDS);
         startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
@@ -76,7 +77,10 @@ public class ClientHandler {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             int clientId = handleFirstMessage(inputStream);
             if (!gameStarted || networkController.isInPlayersSocket(clientId)) {
-                executors.submit(() -> askForPreviousCommands(clientId));
+                executors.submit(() -> {
+                    askForPreviousCommands(clientId);
+                    gameSession.getServerController().playerConnected(clientId);
+                });
             }
             if (!connections.containsKey(clientId)) {
                 connect(socket, inputStream, outputStream, clientId);
@@ -179,10 +183,10 @@ public class ClientHandler {
      * @param clientId The int corresponding to the specific client
      */
     public void putFileInTheOutGoingFileQueue(Command command, int clientId) {
-            if (outGoingFileQueue.get(clientId) == null || !connections.get(clientId)) {
-                outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(10000));
-            }
-            outGoingFileQueue.get(clientId).add(command);
+        if (outGoingFileQueue.get(clientId) == null || !connections.get(clientId)) {
+            outGoingFileQueue.put(clientId, new LinkedBlockingDeque<>(10000));
+        }
+        outGoingFileQueue.get(clientId).add(command);
     }
 
     public void putFileInTheHistoryQueue(Command command) {
@@ -265,6 +269,7 @@ public class ClientHandler {
                 outputStreams.get(clientId).close();
                 clientSockets.get(clientId).close();
             }
+            gameSession.getServerController().playerDisconnected(clientId);
         } catch (IOException e) {
             System.err.println("Errore nella chiusura delle connessioni precedenti: " + e.getMessage());
         }
@@ -317,7 +322,7 @@ public class ClientHandler {
     /**
      * This method is used to dispatch broadcast messages to all the
      *
-     * @param command
+     * @param command The command that has to be dispatched to all the clients.
      */
     private void dispatchBroadcast(Command command) {
         if (!gameStarted) {
@@ -332,7 +337,7 @@ public class ClientHandler {
     }
 
     public static void main(String[] args) {
-        GameSession gameSession = new GameSession();
+        gameSession = new GameSession();
         networkController = new NetworkController();
         ServerController serverController = new ServerController(gameSession);
         gameSession.setServerController(serverController);

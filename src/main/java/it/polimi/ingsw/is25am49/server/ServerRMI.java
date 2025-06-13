@@ -128,6 +128,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                             command_FromServerToSpecificClient(response, tempId);
                             if (!gameStarted || networkController.isInPlayersRMI(command.getPlayerId()))
                                 giveMeCommandsHistory(tempId);
+                            serverController.playerConnected(tempId);
                         } else {
                             int myId = command.getPlayerId();
                             clients.put(myId, (RemoteClient) command.getParameters().getFirst());
@@ -141,6 +142,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
                             command_FromServerToSpecificClient(response, myId);
                             if (!gameStarted || networkController.isInPlayersRMI(command.getPlayerId()))
                                 giveMeCommandsHistory(myId);
+                            serverController.playerConnected(myId);
                         }
                 }
             } catch (InterruptedException e) {
@@ -172,10 +174,11 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
     private void startHeartBeatMonitoring() {
         for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
             if (clients.containsKey(entry.getKey())) {
-                if (System.currentTimeMillis() - entry.getValue() > 20000) {
+                if (System.currentTimeMillis() - entry.getValue() > 4500) {
                     System.out.println("RMI: Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
                     clients.remove(entry.getKey());
                     matchPlayers.remove(entry.getKey());
+                    serverController.playerDisconnected(entry.getKey());
                 }
             }
         }

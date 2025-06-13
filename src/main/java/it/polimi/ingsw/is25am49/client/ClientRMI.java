@@ -20,7 +20,7 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private final ExecutorService executorService;
     private boolean isConnected;
     private boolean hasResetted;
-    private volatile boolean timeIsDone;
+//    private volatile boolean timeIsDone;
     private final ScheduledExecutorService scheduler;
     private final UserInterface userInterface;
     private final BlockingQueue<Command> commandsFromServerQueue;
@@ -31,16 +31,16 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         System.setProperty("java.rmi.server.hostname", serverIP);
         this.clientController = clientController;
         this.serverRMI = serverRMI;
-        initialDelay = 10;
+        initialDelay = 5;
         this.userInterface = userInterface;
         reconnectionTries = 0;
         thresholdTries = 20;
-        secondsDelayForReconnection = 5;
+        secondsDelayForReconnection = 2;
         executorService = Executors.newFixedThreadPool(10);
         scheduler = Executors.newScheduledThreadPool(10);
         hasResetted = false;
         isConnected = false;
-        executorService.submit(this::startHeartBeat);
+        scheduler.scheduleAtFixedRate(this::startHeartBeat, initialDelay, secondsDelayForReconnection, TimeUnit.SECONDS);
         commandsFromServerQueue = new ArrayBlockingQueue<>(50000, true);
         executorService.submit(this::processCommandsFromServerQueue);
     }
@@ -122,22 +122,21 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     }
 
     private void startHeartBeat() {
-        timer(initialDelay);
         while(isConnected) {
             sendHeartBeat();
-            timer(secondsDelayForReconnection);
         }
     }
 
-    private void timer(int secondsTime) {
-        timeIsDone = true;
-        scheduler.schedule(() -> {
-            timeIsDone = false;
-        }, secondsTime, TimeUnit.SECONDS);
-        while (timeIsDone) {
-            Thread.onSpinWait(); //to improve performance while waiting
-        }
-    }
+    //remains here for the glory, but not used
+//    private void timer(int secondsTime) {
+//        timeIsDone = true;
+//        scheduler.schedule(() -> {
+//            timeIsDone = false;
+//        }, secondsTime, TimeUnit.SECONDS);
+//        while (timeIsDone) {
+//            Thread.onSpinWait(); //to improve performance while waiting
+//        }
+//    }
 
     public void replaceServerStub(RemoteServer newServerRMI) {
         this.serverRMI = newServerRMI;

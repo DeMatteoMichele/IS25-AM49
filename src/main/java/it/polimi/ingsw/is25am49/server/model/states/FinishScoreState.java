@@ -22,6 +22,17 @@ public class FinishScoreState extends State {
     public void userJoinLobby(String username, int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
+
+    @Override
+    public void connectPlayer(int playerId) {
+        gameSession.connectPlayer(playerId);
+    }
+
+    @Override
+    public void disconnectPlayer(int playerId) {
+        gameSession.disconnectPlayer(playerId);
+    }
+
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }

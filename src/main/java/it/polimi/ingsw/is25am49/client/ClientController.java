@@ -90,6 +90,24 @@ public class ClientController {
         }
     }
 
+    public void playerConnectedCallback(int clientId) {
+        try {
+            gameSession.getState().connectPlayer(clientId);
+            ui.printUpdateMessage("DEBUG: In playerConnectedCallback player with id " + clientId + " has been connected.");
+        } catch (IllegalArgumentException e) {
+            ui.printUpdateMessage("DEBUG: ITS OK! In playerConnectedCallback player not found for id " + clientId);
+        }
+    }
+
+    public void playerDisconnectedCallback(int clientId) {
+        try {
+            gameSession.getState().disconnectPlayer(clientId);
+            ui.printUpdateMessage("DEBUG: In playerDisconnectedCallback player with id " + clientId + " has been disconnected.");
+        } catch (Exception e) {
+            ui.printUpdateMessage("DEBUG: ITS OK! In playerDisconnectedCallback player not found for id " + clientId);
+        }
+    }
+
     public void adminSetupCallback(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             gameSession.getState().adminCreateGame(playerId, mode, numberOfPlayers);

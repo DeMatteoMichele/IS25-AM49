@@ -38,6 +38,10 @@ public class GameSession {
         return currentState;
     }
 
+    public ServerController getServerController() {
+        return serverController;
+    }
+
     public void setServerController(ServerController serverController) {
         this.serverController = serverController;
     }
@@ -233,6 +237,14 @@ public class GameSession {
     }
     public void userStopFlight(Player player) {
         game.ifPresent(g -> g.userStopFlight(player));
+    }
+
+    public void connectPlayer(int playerId) {
+        game.ifPresent(g -> g.connectPlayer(playerId));
+    }
+
+    public void disconnectPlayer(int playerId) {
+        game.ifPresent(g -> g.disconnectPlayer(playerId));
     }
 
 }

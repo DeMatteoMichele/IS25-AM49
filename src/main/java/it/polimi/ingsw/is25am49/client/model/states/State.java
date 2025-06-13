@@ -65,6 +65,8 @@ public abstract class State {
 
     public abstract void userJoinLobby(Color playerColor, String username, int playerID);
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers);
+    public abstract void connectPlayer(int playerId);
+    public abstract void disconnectPlayer(int playerId);
 
     public abstract void userPlaceTile(int playerId, Point coordinates);
     public abstract void userPickTile(int playerId, Point coordinates);

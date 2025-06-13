@@ -26,7 +26,7 @@ public class Game {
     public Game(Player admin, GameSession session, GameMode mode, int maxPlayers, int seedForGeneration) {
         this.session = session;
         this.seedForGeneration = seedForGeneration;
-        board = new GameBoard(seedForGeneration,session.getUserInterface());
+        board = new GameBoard(seedForGeneration, session.getUserInterface());
         board.setSeedForGeneration(seedForGeneration);
         players = new ArrayList<>();
         this.mode = mode;
@@ -50,12 +50,27 @@ public class Game {
         throw new IllegalArgumentException("Player not found");
     }
 
+    public void disconnectPlayer(int playerId) {
+        Player player = getPlayer(playerId);
+        player.setConnectionFlag(false);
+    }
+
+    public void connectPlayer(int playerId) {
+        Player player = getPlayer(playerId);
+        player.setConnectionFlag(true);
+    }
+
     public GameBoard getGameboard() {
         return board;
     }
 
-    public Timer getTimer() {return timer;}
-    public void setTimer(Timer timer) {this.timer = timer;}
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
 
     public int getMaxPlayers() {
         return maxPlayers;
@@ -64,7 +79,6 @@ public class Game {
     public int numOfPlayers() {
         return numPlayers;
     }
-
 
 
     public boolean checkPlayers() {
@@ -154,6 +168,7 @@ public class Game {
         players.forEach(Player::completeShipboard);
         players.forEach(board::addPlayerToLeaderboard);
     }
+
     public void userStopFlight(Player player) {
         board.userStopFlight(player);
     }
@@ -271,7 +286,7 @@ public class Game {
 
     public String decksToString() {
         StringBuilder str = new StringBuilder();
-        if(!mode.equals(GameMode.FLIGHT_MODE)){
+        if (!mode.equals(GameMode.FLIGHT_MODE)) {
             str.append("SMALL DECKS:\n")
                     .append("+-----+-----+-----+-----+\n")
                     .append("|  0  |  1  |  2  |  3  |\n")

@@ -47,6 +47,26 @@ public class Game {
         throw new IllegalArgumentException("Player not found");
     }
 
+    public void disconnectPlayer(int playerId) {
+        Player player;
+        try {
+            player = getPlayer(playerId);
+            player.setConnectionFlag(false);
+        } catch (IllegalArgumentException e) {
+            //nothing to do if player not found
+        }
+    }
+
+    public void connectPlayer(int playerId) {
+        Player player;
+        try {
+            player = getPlayer(playerId);
+            player.setConnectionFlag(true);
+        } catch (IllegalArgumentException e) {
+            //nothing to do if player not found
+        }
+    }
+
     public GameBoard getGameboard() {
         return board;
     }
@@ -63,6 +83,7 @@ public class Game {
         this.mode = mode;
         timer = new Timer(mode, session);
     }
+
     public void setTimer(Timer timer) {
         this.timer = timer;
     }
@@ -170,6 +191,7 @@ public class Game {
     public void userQuitGame(Player player) throws GameSettingsException {
         board.userQuitGame(player);
     }
+
     public void userStopFlight(Player player) {
         board.userStopFlight(player);
     }

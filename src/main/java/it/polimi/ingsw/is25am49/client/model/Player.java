@@ -24,6 +24,7 @@ public class Player {
     private AdventureCardDeck smallAdventureDeckLooked;
     private boolean isWatching;
     private boolean theCrewHasBeenPlaced;
+    private boolean connectionFlag;
 
 
     public int getIdPlayer() {return idPlayer;}
@@ -40,6 +41,11 @@ public class Player {
         lostComponents = 0;
         this.idPlayer = idPlayer;
         isWatching = false;
+        connectionFlag = true;
+    }
+
+    public void setConnectionFlag(boolean connectionFlag) {
+        this.connectionFlag = connectionFlag;
     }
 
     public void thereIsHandTile(){

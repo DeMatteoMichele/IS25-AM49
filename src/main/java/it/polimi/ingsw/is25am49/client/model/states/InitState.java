@@ -232,6 +232,16 @@ public class InitState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in InitState");
     }
 
+    @Override
+    public void connectPlayer(int playerId) {
+        gameSession.connectPlayer(playerId);
+    }
+
+    @Override
+    public void disconnectPlayer(int playerId) {
+        gameSession.disconnectPlayer(playerId);
+    }
+
     public void adminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

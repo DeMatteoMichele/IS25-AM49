@@ -23,6 +23,7 @@ public class Player {
     private AdventureCardDeck smallAdventureDeckLooked;
     private boolean isWatching;
     private boolean theCrewHasBeenPlaced;
+    private boolean connectionFlag;
 
 
     public Player(String username, Color color, int idPlayer) {
@@ -37,6 +38,15 @@ public class Player {
         lostComponents = 0;
         this.idPlayer = idPlayer;
         isWatching = false;
+        connectionFlag = true;
+    }
+
+    public void setConnectionFlag(boolean connectionFlag) {
+        this.connectionFlag = connectionFlag;
+    }
+
+    public boolean isConnected() {
+        return connectionFlag;
     }
 
     public int getIdPlayer() {

@@ -197,7 +197,15 @@ public class FinishScoreState extends State {
         throw new IllegalMethodOnThisStateException("Illegal method while in FinishScoreState");
     }
 
+    @Override
+    public void connectPlayer(int playerId) {
+        gameSession.connectPlayer(playerId);
+    }
 
+    @Override
+    public void disconnectPlayer(int playerId) {
+        gameSession.disconnectPlayer(playerId);
+    }
 
     public void checkAdminCalculateScore(int playerId)  {
         gameSession.calculateScore(playerId);

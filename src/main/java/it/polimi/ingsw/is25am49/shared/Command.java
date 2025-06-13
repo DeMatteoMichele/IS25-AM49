@@ -297,6 +297,22 @@ public class Command implements Serializable {
                     e.printStackTrace();
                 }
             }
+            case "playerConnectedCallback" -> {
+                try {
+                    clientController.playerConnectedCallback((int) parameters.get(0));
+                } catch (Exception e) {
+                    System.err.println("Errore in playerConnectCallback: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            case "playerDisconnectedCallback" -> {
+                try {
+                    clientController.playerDisconnectedCallback((int) parameters.get(0));
+                } catch (Exception e) {
+                    System.err.println("Errore in playerDisconnectCallback: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
             case "playerJoinCallback" -> {
                 try {
                     clientController.playerJoinCallback((int) parameters.get(0), (String) parameters.get(1), (int) parameters.get(2));

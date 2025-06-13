@@ -24,6 +24,8 @@ public abstract class State {
 
     public abstract void adminSelectGameMode(int playerId, GameMode gamemode) throws GameSettingsException;
     public abstract void userJoinLobby(String username, int playerId) throws GameSettingsException;
+    public abstract void connectPlayer(int playerId);
+    public abstract void disconnectPlayer(int playerId);
     public abstract void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) throws GameSettingsException;
 
     public abstract void userRotateTile(int playerId, Orientation orientation ) throws GameSettingsException;

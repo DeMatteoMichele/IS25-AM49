@@ -305,4 +305,12 @@ public class GameSession {
     public void checkAcceptPrizesState(){
         game.ifPresent(Game::checkAcceptPrizesState);
     }
+
+    public void connectPlayer(int playerId) {
+        game.ifPresent(g -> g.connectPlayer(playerId));
+    }
+
+    public void disconnectPlayer(int playerId) {
+        game.ifPresent(g -> g.disconnectPlayer(playerId));
+    }
 }

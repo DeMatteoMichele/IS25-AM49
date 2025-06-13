@@ -303,4 +303,14 @@ public class BuildState extends State {
     public void adminEndGame(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
+
+    @Override
+    public void connectPlayer(int playerId) {
+        gameSession.connectPlayer(playerId);
+    }
+
+    @Override
+    public void disconnectPlayer(int playerId) {
+        gameSession.disconnectPlayer(playerId);
+    }
 }
