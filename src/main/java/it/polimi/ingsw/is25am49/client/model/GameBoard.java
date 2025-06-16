@@ -550,12 +550,12 @@ public class GameBoard {
      * @return the next player
      * @throws IllegalSetOfNextPlayerException if the current player is the last player
      */
-    private Player getNextPlayer() {
+    private Player getNextPlayerConnected() {
         int currentPos = leaderBoard.getPos(currentPlayer);
         if (currentPos == leaderBoard.size())
             throw new IllegalSetOfNextPlayerException("This is the last player");
         else
-            return leaderBoard.getPlayerInPosition(currentPos + 1);
+            return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
     }
 
     /**
@@ -568,7 +568,7 @@ public class GameBoard {
 
     public void nextPlayer() {
         //setto il currentplayer al next player dato il current player
-        setCurrentPlayer(getNextPlayer());
+        setCurrentPlayer(getNextPlayerConnected());
     }
 
     /**

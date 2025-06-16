@@ -51,13 +51,24 @@ public class Game {
     }
 
     public void disconnectPlayer(int playerId) {
-        Player player = getPlayer(playerId);
-        player.setConnectionFlag(false);
+        Player player;
+        try {
+            player = getPlayer(playerId);
+            player.setConnectionFlag(false);
+            board.getLeaderBoard().disconnectPlayer(player);
+        } catch (IllegalArgumentException e) {
+            //nothing to do if player not found
+        }
     }
 
     public void connectPlayer(int playerId) {
-        Player player = getPlayer(playerId);
-        player.setConnectionFlag(true);
+        Player player;
+        try {
+            player = getPlayer(playerId);
+            player.setConnectionFlag(true);
+        } catch (IllegalArgumentException e) {
+            //nothing to do if player not found
+        }
     }
 
     public GameBoard getGameboard() {
