@@ -443,19 +443,29 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateCardMessageBox(message);
+            }
+        });
     }
 
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.configureEffectPaneDices(firstDice, secondDice);
+            }
+        });
     }
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
         Platform.runLater(()->{
             AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-            adventureController.updateCurrentCard(adventureCard.getCardId());
+            adventureController.updateCurrentCard(adventureCard);
         });
     }
 

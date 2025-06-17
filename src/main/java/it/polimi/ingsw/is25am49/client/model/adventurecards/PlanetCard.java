@@ -29,6 +29,9 @@ public class PlanetCard extends AdventureCard {
         }
     }
 
+    public int getNumOfPlanets() {
+        return planets.size();
+    }
 
     @Override
     public void drawCard() {
