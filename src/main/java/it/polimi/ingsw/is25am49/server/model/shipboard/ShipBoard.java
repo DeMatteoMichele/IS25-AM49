@@ -22,18 +22,21 @@ public class ShipBoard {
     private Point lastPlacedPoint;
     private boolean isCompleted;
     private int destroyedTiles;
+    private boolean isDestroyed;
 
     public ShipBoard() {
         grid = new HashMap<>();
         lastPlacedPoint = new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
+        isDestroyed = false;
     }
     public ShipBoard(int level, int playerID, Color color){
         grid = new HashMap<>();
         lastPlacedPoint =  new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
+        isDestroyed = false;
 
         HashMap<Integer,Tile> tiles = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
         var centerCabinTile = switch (color){
@@ -341,12 +344,19 @@ public class ShipBoard {
 
     /**
      * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
+     *     if the center is destroyed it destroys all the tiles
      */
     public void destroyDisconnectedTiles(){
         Set<Point> elimina = new HashSet<>(grid.keySet());
-        elimina.removeAll(getTilesConnectedTo(new Point(7,7)));
-        for(Point p: elimina){
-            destroyTile(p);
+        try {
+            elimina.removeAll(getTilesConnectedTo(new Point(7, 7)));
+            for (Point p : elimina) {
+                destroyTile(p);
+            }
+        }catch (InvalidCoordinatesException _){
+            for (Point p : elimina) {
+                destroyTile(p);
+            }
         }
     }
 
@@ -761,7 +771,7 @@ public class ShipBoard {
        // System.out.println(this);
 
 //        System.out.println("RIMUOVO TUTTE LE TESSERE SBAGLIATE");
-//        destroyWrongTiles();//todo funziona(migliorabile) va messo sul client
+        destroyWrongTiles();//todo funziona(migliorabile) va messo sul client
 //        System.out.println(this);
 
         //System.out.println("RIMUOVO CANNONI");
@@ -1025,24 +1035,6 @@ public class ShipBoard {
             case BROWN_ALIEN_MODULE -> "am.br";
             case PURPLE_ALIEN_MODULE -> "am.pu";
             case FRAME_SECTION -> "frame";
-            default -> " ";
-        };
-    }
-
-    private String compToEmoji(ComponentType c) {
-        return switch (c) {
-            case CABINE -> "֍";
-            case BATTERY -> "↯";
-            case STORAGE -> "□";
-            case SPECIAL_STORAGE -> "■";
-            case SHIELD -> "◉";
-            case CANNON -> "Ϯ";
-            case DOUBLE_CANNON -> "Џ";
-            case ENGINE -> "Ѫ";
-            case DOUBLE_ENGINE -> "Ѭ";
-            case BROWN_ALIEN_MODULE -> "፠";
-            case PURPLE_ALIEN_MODULE -> "፨";
-            case FRAME_SECTION -> "ᚸ";
             default -> " ";
         };
     }

@@ -56,7 +56,7 @@ public interface UserInterface {
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token);
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token);
     public void updateEffectModifyEnergy(int playerId,Point coordinate, Token token);
-    public void updateEffectMeteorite(int playerId, Point coordinate, Token token);
+    public void updateEffectMeteorite(int playerId, Point coordinate);
     public void updateEarnedCredits(int playerId, int credits);
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles);
     public void updateLeaderBoard(LeaderBoard leaderBoard);

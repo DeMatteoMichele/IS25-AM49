@@ -304,7 +304,7 @@ public class TextualUserInterface implements UserInterface {
             lineReader.printAbove("insert aliens on the Shipboard\n");
             if (p.getShipBoard().getAlienPoint().isPresent()) {
                 Point alienPoint = p.getShipBoard().getAlienPoint().get();
-                String selection = lineReader.readLine("insert alien on coordinates: " + alienPoint + "\n" +
+                String selection = lineReader.readLine("insert alien on coordinates: <" + alienPoint.x+","+alienPoint.y+">\n" +
                         "a --> astronaut\n" +
                         "p --> purple aliens\n" +
                         "b --> brown aliens\n" +
@@ -877,57 +877,43 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEffectModifyCrew");
-        }
+        updateGenericCardMessage(playerId,"you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
     }
 
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEffectCannonade");
-        }
+        updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
     }
 
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEffectLoseGoods");
-        }
+        updateGenericCardMessage(playerId,"you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
     }
 
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEffectWinGoods");
-        }
+        updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEffectModifyEnergy");
-        }
+        updateGenericCardMessage(playerId,"you have used an energy from coordinates: <" +coordinate.x +","+coordinate.y +">");
     }
 
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEffectMeteorite");
-        }
+    public void updateEffectMeteorite(int playerId, Point coordinate) {
+        updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
     }
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
-        if (playerId==myId){
-            printUpdateMessage("dentro updateEarnedCredits");
-        }
+        updateGenericCardMessage(playerId, "you have earned " + credits + " credits");
     }
 
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
         if (idPlayer==myId){
-            printUpdateMessage("dentro updateDestroyedTiles");
+            printUpdateMessage("dentro updateDestroyedTiles, non so cosa dovrei stampare");
         }
     }
 
@@ -1216,6 +1202,9 @@ public class TextualUserInterface implements UserInterface {
                 }
                 case "12:2" -> {//go back
                     printUpdateMessage("goBack not implemented yet");
+                }
+                case "0:3" -> {//EndGame
+                    printUpdateMessage("EndGame not implemented yet");
                 }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }

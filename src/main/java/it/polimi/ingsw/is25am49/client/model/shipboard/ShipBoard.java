@@ -308,6 +308,12 @@ public class ShipBoard {
         if (c1.equals(ConnectorType.UNIVERSAL) || c2.equals(ConnectorType.UNIVERSAL)) return true;
         return c1.equals(c2);
     }
+    public boolean connectorsWrong(ConnectorType c1, ConnectorType c2){
+        if (c1.equals(ConnectorType.FLAT) && c2.equals(ConnectorType.FLAT))return false;
+        if( c1.equals(ConnectorType.UNIVERSAL) && !c2.equals(ConnectorType.FLAT))return false;
+        if( c2.equals(ConnectorType.UNIVERSAL) && !c1.equals(ConnectorType.FLAT))return false;
+        return !c1.equals(c2);
+    }
 
     /**
      * returns the Tile at given coordinates if present
@@ -536,14 +542,63 @@ public class ShipBoard {
 
     /**
      * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
+     *     if the center is destroyed it destroys all the tiles
      */
-    public Set<Point> destroyDisconnectedTiles() {
+    public Set<Point> destroyDisconnectedTiles(){
         Set<Point> elimina = new HashSet<>(grid.keySet());
-        elimina.removeAll(getTilesConnectedTo(new Point(7, 7)));
-        for (Point p : elimina) {
-            destroyTile(p);
+        try {
+            elimina.removeAll(getTilesConnectedTo(new Point(7, 7)));
+            for (Point p : elimina) {
+                destroyTile(p);
+            }
+        }catch (it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException _){
+            for (Point p : elimina) {
+                destroyTile(p);
+            }
         }
         return elimina;
+    }
+    /**
+     * this method destroys all the tiles that are not well-connected to others
+     */
+    public void destroyWrongTiles(){
+        for (Point point: grid.keySet()){
+            if(grid.get(point).isPresent() && !point.equals(new Point(7,7))) {
+                Tile centerTile= grid.get(point).get();
+                try {
+                    Point p= new Point(point.x,point.y-1);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.NORTH),sideTile.getConnector(Orientation.SOUTH))){
+                        grid.put(point, Optional.empty());
+                        continue;
+                    }
+                }catch (InvalidCoordinatesException _){}
+                try {
+                    Point p= new Point(point.x+1,point.y);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.EAST),sideTile.getConnector(Orientation.WEST))){
+                        grid.put(point, Optional.empty());
+                        continue;
+                    }
+                }catch (InvalidCoordinatesException _){}
+                try {
+                    Point p= new Point(point.x,point.y+1);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.SOUTH),sideTile.getConnector(Orientation.NORTH))){
+                        grid.put(point, Optional.empty());
+                        continue;
+                    }
+                }catch (InvalidCoordinatesException _){}
+                try {
+                    Point p= new Point(point.x-1,point.y);
+                    Tile sideTile=getTile(p);
+                    if(connectorsWrong(centerTile.getConnector(Orientation.WEST),sideTile.getConnector(Orientation.EAST))){
+                        grid.put(point, Optional.empty());
+                    }
+                }catch (InvalidCoordinatesException _){}
+
+            }
+        }
     }
 
     /**
@@ -935,12 +990,16 @@ public class ShipBoard {
      */
     private void afterBuildCheckShipboard() {
         //distruggo le tessere prenotate
-        destroyTile(new Point(9, 5));
-        destroyTile(new Point(10, 5));
+        destroyTile(new Point(9,5));
+        destroyTile(new Point(10,5));
 
-        //System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
+        // System.out.println("RIMUOVO TUTTE LE TESSERE VUOTE O DISCONNESSE");
         destroyDisconnectedTiles();
-        //printShipboardSpecial();
+        // System.out.println(this);
+
+//        System.out.println("RIMUOVO TUTTE LE TESSERE SBAGLIATE");
+        destroyWrongTiles();
+//        System.out.println(this);
 
         //System.out.println("RIMUOVO CANNONI");
         Set<Point> checkCannon = new HashSet<>(getComponentsPositions(ComponentType.CANNON));
