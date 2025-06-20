@@ -1344,7 +1344,18 @@ public class ShipBoard {
         str.append("\n\t      4            5            6            7            8            9            10       \t \n\n");
         return str.toString();
     }
-
+    public int getTotalCrewNumber() {
+        return grid.values()
+                .stream()
+                .flatMap(Optional::stream)
+                .map(Tile::getComponent)
+                .mapToInt(c -> {
+                    if(c.type.equals(ComponentType.CABINE)){
+                        return c.getNumberOfTokens();
+                    }
+                    return 0;
+                }).sum();
+    }
 }
 
 

@@ -502,7 +502,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateStopFlight(int playerId) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.stopFlight();
+            }
+        });
     }
 
     @Override
@@ -542,14 +547,25 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updatePlayerStats(0, 0, 0, credits, 0);
+            }
+        });
     }
 
     @Override
-    public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
-
+    public void updateDestroyedTiles(int playerId, Set<Point> destroyedTiles) {
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateShipboardDestroyedTiles(destroyedTiles);
+                adventureController.updatePlayerStats(0, 0, 0, 0, destroyedTiles.size());
+            }
+        });
     }
-
+    //Complesso, si potrebbe rivedere la modalità di gestione della leaderboard
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
 

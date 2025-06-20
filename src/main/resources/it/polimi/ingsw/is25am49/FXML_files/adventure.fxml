@@ -46,10 +46,7 @@
          </children>
       </HBox>
       <StackPane fx:id="cardEffect" layoutX="14.0" layoutY="270.0" prefHeight="300.0" prefWidth="500.0" AnchorPane.rightAnchor="50.0" AnchorPane.bottomAnchor="50.0"/>
-      <StackPane fx:id="leaderboard" layoutX="14.0" layoutY="450.0" prefHeight="264.0" prefWidth="383.0" AnchorPane.leftAnchor="50.0" AnchorPane.bottomAnchor="50.0">
-         <children>
-            <ImageView fx:id = "leaderboardImage" fitHeight="264.0" fitWidth="405.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
+      <StackPane fx:id="leaderboard" layoutX="14.0" layoutY="450.0" prefHeight="320.0" prefWidth="528.0" AnchorPane.leftAnchor="50.0" AnchorPane.bottomAnchor="50.0">
       </StackPane>
    </children>
 </AnchorPane>
