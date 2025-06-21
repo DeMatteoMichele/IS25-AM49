@@ -98,6 +98,9 @@ public class BuildState extends State {
         player.getShipBoard().checkCoordinates(coordinates);
         if(!player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))throw new RuntimeException("you cannot add a "+token+" token in this position, correct alien module is missing");
         player.getShipBoard().checkAddTokenToTile(coordinates, token);
+        if(token.equals(Token.BROWN_ALIENS)||token.equals(Token.PURPLE_ALIENS)){
+            if(player.getShipBoard().getTotalNumberOfaToken(token)>0)throw new RuntimeException("you can have only one "+token+" token in your shipboard");
+        }
     }
     @Override
     public void checkUserThrowDices(int playerId) {

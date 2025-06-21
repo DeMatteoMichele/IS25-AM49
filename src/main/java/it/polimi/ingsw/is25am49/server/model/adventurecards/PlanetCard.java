@@ -118,7 +118,6 @@ public class PlanetCard extends AdventureCard {
         //applico l'effetto, aggiorno il player con i giorni persi
         currentEffect.action(gameBoard.getCurrentPlayer());
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
-        gameBoard.updateLeaderboard();
         System.out.println("You have lost " + daysLost + " travel days");
         if(planets.isEmpty()){
             System.out.println("You have no more planets to land on, you have to go on with the game");
