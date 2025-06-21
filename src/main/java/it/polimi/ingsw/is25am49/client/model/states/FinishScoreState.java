@@ -114,9 +114,10 @@ public class FinishScoreState extends State {
 
     public void adminCalculateScore(int playerId) {
         gameSession.calculateScore(playerId);
-        userInterface.updateAdminCalculateScore(playerId);
+        userInterface.updateCalculateScore(playerId);
     }
     public void adminEndGame(int playerId) {
+        userInterface.updateEndGame(playerId);
         gameSession.adminEndGame(playerId);
     }
     public void checkUserJoinLobby(int playerId,String username) {
@@ -209,7 +210,7 @@ public class FinishScoreState extends State {
     }
 
     public void checkAdminCalculateScore(int playerId)  {
-        gameSession.calculateScore(playerId);
+        gameSession.checkIsAdmin(playerId);
     }
     public void checkUserEndGame(int playerId){
         gameSession.adminEndGame(playerId);
