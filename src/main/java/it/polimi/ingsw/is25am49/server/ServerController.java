@@ -326,6 +326,7 @@ public class ServerController {
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
+               // e.printStackTrace();
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Draw adventure card hasn't worked in Server ->   " + e.getMessage());

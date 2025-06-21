@@ -120,6 +120,7 @@ public class Game {
     public boolean gameIsFinished() {
         return isFinished;
     }
+    public void finishGame() {isFinished = true;}
 
     public Optional<Player> userShowWinner() {
         isFinished = true;

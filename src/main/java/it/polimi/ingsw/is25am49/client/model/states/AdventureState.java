@@ -1,8 +1,10 @@
 package it.polimi.ingsw.is25am49.client.model.states;
 
 import it.polimi.ingsw.is25am49.client.UserInterface;
+import it.polimi.ingsw.is25am49.client.model.Game;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.client.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -98,7 +100,12 @@ public class AdventureState extends State {
     }
     public void userDrawAdventureCard(int playerId){
         Player player = getPlayerById(playerId);
-        gameSession.userDrawAdventureCard(player);
+        try {
+            gameSession.userDrawAdventureCard(player);
+        }catch (OutOfDeckExceptions _){
+            gameSession.getGame().ifPresent(Game::finishGame);
+            transition(new FinishScoreState(gameSession, userInterface));
+        }
     }
 
     public void userFinishDecisionActivating(int playerId, Set<Point> coordinates){

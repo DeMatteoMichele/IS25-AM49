@@ -425,6 +425,7 @@ public class TextualUserInterface implements UserInterface {
                     break;
                 } catch (Exception _) {}
             }
+            tr=0;
             while (tr<20){
                 try {
                     tr++;
@@ -441,6 +442,7 @@ public class TextualUserInterface implements UserInterface {
     public void readShipboardFromFile(String filename) {
         filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
         try {
+            int tr=0;
             File file = new File(filename);
             if (!file.exists()) {
                 throw new FileNotFoundException("File ("+filename+") non trovato: " + file.getAbsolutePath());
@@ -452,9 +454,10 @@ public class TextualUserInterface implements UserInterface {
                     try {
                         controller.userDrawTile(myId, node.get("id").asInt());
                         Orientation o= Orientation.valueOf(node.get("orientation").asText());
-                        while (true){
+                        while (tr<20){
+                            tr++;
                             try {
-                                Thread.sleep(50);
+                                Thread.sleep(100);
                                 gameSession.getState().userRotateHandTile(myId, o);
                                 break;
                             } catch (Exception _) {}
@@ -465,7 +468,7 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error + e.getMessage());
                     }
                 }
-                controller.userFinishShipboard(myId);
+                //controller.userFinishShipboard(myId);
             }
         } catch (FileNotFoundException e) {
             printUpdateMessage(error + e.getMessage());
@@ -510,8 +513,9 @@ public class TextualUserInterface implements UserInterface {
             }
             case 3 -> {//FinishState
                 stringBuilder.append("+-------------------------------+\n")
-                        .append("|         FINISH STATE :)          |\n")
-                        .append("+-------------------------------+\n");
+                        .append("|        FINISH STATE :)        |\n")
+                        .append("+-------------------------------+\n\n")
+                        .append("FinishState - commands:\n 0. EndGame \n 1. CalculateScore\n\n");
                 graphicsQueue.add(stringBuilder.toString());
             }
             default -> {
@@ -703,7 +707,8 @@ public class TextualUserInterface implements UserInterface {
     public void lookAtShipboard(int playerId) {
         String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getPlayer(playerId).get().shipToString()+
-                "BuildState - commands:\n 12. ←-- go back \n\n"+
+                //"BuildState - commands:\n 12. ←-- go back"+
+                "\n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -727,12 +732,15 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
         StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
-        if (playerId == myId || playerId==-99){ //playerid==-99 è per i messaggi per tutti
+        if (playerId == myId || playerId==-99){//playerid==-99 è per i messaggi per tutti
+            int j=0;
             for (int i = 0; i < message.length(); i++) {
-                if (i > 0 && i % 100 == 0) {
+                if(message.charAt(i)=='\n')j=0;
+                if (j > 0 && j % 100 == 0) {
                     str.append("-\n         -");
                 }
                 str.append(message.charAt(i));
+                j++;
             }
         }else str.append("player ").append(gameSession.getPlayer(playerId).get().getUsername()).append(" is playing, wait for your turn\n");
         str.append("\n\u001B[0m");
@@ -858,7 +866,8 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateStopFlight(int playerId) {
-
+        Player p= gameSession.getPlayer(playerId).get();
+        printUpdateMessage("!!!Player " + p.getUsername() + " has landed!!!\t-out of the game");
     }
 
     @Override
@@ -883,6 +892,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
+        if(playerId==myId)lookAtShipboard(playerId);
     }
 
     @Override
@@ -893,16 +903,18 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-        updateGenericCardMessage(playerId,"you have used an energy from coordinates: <" +coordinate.x +","+coordinate.y +">");
+        updateGenericCardMessage(playerId,"you have selected a battery from coordinates: <" +coordinate.x +","+coordinate.y +">");
     }
 
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
+        if(playerId==myId)lookAtShipboard(playerId);
     }
 
     @Override
@@ -912,9 +924,17 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
-        if (idPlayer==myId){
-            printUpdateMessage("dentro updateDestroyedTiles, non so cosa dovrei stampare");
+        StringBuilder str = new StringBuilder();
+        Player p = gameSession.getPlayer(idPlayer).get();
+        str.append("Player ").append(p.getUsername()).append(" has lost the following tiles:\n");
+        for (Point pt : destroyedTiles) {
+            try{
+                Tile t=p.getShipBoard().getTile(pt);
+                str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+            }catch(Exception _){}
         }
+        updateGenericCardMessage(myId,str.toString());
+        if(idPlayer==myId)lookAtShipboard(myId);
     }
 
     @Override
@@ -927,7 +947,29 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    @Override
+    public void updateEndGame(int playerId) {
+        printUpdateMessage("""
+                +-----------------------+
+                | !!! GAME IS ENDED !!! |
+                +-----------------------+
+                
+                thanks for playing with us!
+                """);
+        printUpdateMessage("Game: closing...");
+        executor.shutdownNow();
+        System.exit(0);
+    }
 
+    @Override
+    public void updateCalculateScore(int playerId) {
+        String str = "FINISH STATE\n"+"_".repeat( 200) + "\n\n" +
+                gameSession.getGame().get().getGameboard()+
+                "FinishState - commands:\n 0. EndGame \n 1. CalculateScore\n\n"+
+                "_".repeat( 200)+"\n" +
+                "choose an option:";
+        graphicsQueue.add(str);
+    }
 
 
 //    ----------------------------------------------------------------------------------------------------------
@@ -1204,7 +1246,10 @@ public class TextualUserInterface implements UserInterface {
                     printUpdateMessage("goBack not implemented yet");
                 }
                 case "0:3" -> {//EndGame
-                    printUpdateMessage("EndGame not implemented yet");
+                    controller.adminEndGame(myId);
+                }
+                case "1:3" -> {//CalculateScore
+                    controller.adminCalculateScore(myId);
                 }
                 default -> printUpdateMessage("⚠ Error : invalid command");
             }
