@@ -61,6 +61,9 @@ public interface UserInterface {
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles);
     public void updateLeaderBoard(LeaderBoard leaderBoard);
 
+
+    public void updateAdminCalculateScore(int playerId);
+
     public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException;
     public void setGameSession(GameSession gameSession);//TODO sus non penso serva
 

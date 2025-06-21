@@ -61,6 +61,9 @@ public class Tile {
         return component;
     }
     public ComponentType getComponentType() {return component.getType();}
+    public boolean getIsLocked() {
+        return isLocked;
+    }
 
     public void addToken(Token token){component.addToken(token);}
     public void removeToken(Token token) {component.removeToken(token);}

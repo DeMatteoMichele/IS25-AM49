@@ -927,7 +927,10 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    @Override
+    public void updateAdminCalculateScore(int playerId) {
 
+    }
 
 
 //    ----------------------------------------------------------------------------------------------------------

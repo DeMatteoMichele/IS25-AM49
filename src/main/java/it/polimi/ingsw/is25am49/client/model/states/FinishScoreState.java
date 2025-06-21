@@ -114,6 +114,7 @@ public class FinishScoreState extends State {
 
     public void adminCalculateScore(int playerId) {
         gameSession.calculateScore(playerId);
+        userInterface.updateAdminCalculateScore(playerId);
     }
     public void adminEndGame(int playerId) {
         gameSession.adminEndGame(playerId);

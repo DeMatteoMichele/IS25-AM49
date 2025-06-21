@@ -172,6 +172,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 });
             }
             case 3 -> {
+                Platform.runLater(()->{
+                    showScene(ScenesName.FINISH);
+                });
 
             }
             default -> {
@@ -576,6 +579,13 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
 
     }
+
+    public void updateAdminCalculateScore(int playerId) {
+        finishController finishController = (finishController) controllerList.get(ScenesName.FINISH);
+        Platform.runLater(finishController::printPodium);
+    }
+
+
 
     @Override
     public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {

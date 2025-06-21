@@ -133,7 +133,7 @@ public class SpazioAperto extends AdventureCard {
                 if (batteries.size() != coordinates.size()) {
                     throw new IllegalArgumentException("you have to activate the same number of motors as batteries");
                 }
-                //attivo i cannoni e passo allo stato in cui applico l'effetto
+                //attivo i motori e passo allo stato in cui applico l'effetto
                 for (int i = 0; i < batteries.size(); i++) {
                     ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
                     System.out.println("turning on the motor at " + cannons.get(i).x + " " + cannons.get(i).y);
