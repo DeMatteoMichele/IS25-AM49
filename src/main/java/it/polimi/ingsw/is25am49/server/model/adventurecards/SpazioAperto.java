@@ -185,18 +185,7 @@ public class SpazioAperto extends AdventureCard {
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
         playersNoEnginePower.forEach(gameBoard::playerNoMoreInFlight);
-        gameBoard.checkIfSomeoneHasZeroAstronauts();
-        gameBoard.checkIfIsLapped();
-        if (!gameBoard.getStopFlightPlayers().isEmpty()) {
-            for (Player player : gameBoard.getStopFlightPlayers()) {
-                try {
-                    gameBoard.playerNoMoreInFlight(player);
-                } catch (GameSettingsException e) {
-                    System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
-                }
-            }
-        }
-        isFinished = true;
+        super.update();
     }
 
     @Override

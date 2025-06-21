@@ -369,11 +369,12 @@ public class GameBoard {
      */
     public void drawAdventureCard(Player player) throws GameSettingsException {
         if (player.equals(leaderBoard.getLeader())) {
+            if(mainAdventureDeck.size()==0)throw new OutOfDeckExceptions("you have drawn all the cards!");
             if (isFirstCard || currentCard.getIsFinished()) {
                 currentCard = mainAdventureDeck.getFirstCard();
                 mainAdventureDeck.draw();
                 isFirstCard = false;
-            } else {
+            }else {
                 throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
             }
         } else
@@ -719,19 +720,20 @@ public class GameBoard {
      */
     public  String toString(){
         StringBuilder str = new StringBuilder();
-        int width = 60;
+        int width = 200;
         String border = "+" + "-".repeat(width - 2) + "+\n";
         str.append(border);
         int i = 1;
         List<Player> finalRanking = leaderBoard.stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
         for(Player player : finalRanking){
-            str.append("|      POSITION: "+ i + "----->   ");
-            str.append(player.getUsername()).append("         CREDITS: ");
-            str.append(player.getCredits()).append(" ".repeat(width- (String.valueOf(player.getCredits()).length()+("|      POSITION: "+ i + "----->   ").length()+player.getUsername().length()+("         CREDITS: ").length()) - 1)).append("|\n");
+            str.append("|      POSITION: ").append(i).append("----->   ");
+            str.append(player.getUsername()).append("\tTOTAL CREDIT SCORE: ").append(player.getCredits())
+                    .append("-->\t|\t(-) destroyed tiles: ").append(player.getShipBoard().getDestroyedTiles())
+                    .append("\t|\t(+) score of goods: ").append(player.scoreOfGoods());
+            if (minimumExposedComponents().contains(player)) str.append("\t|\t(+) bonus exposed components: 2");
             i++;
-            str.append(border);
+            str.append("\t|\n").append(border);
         }
-
         return str.toString();
     }
 }

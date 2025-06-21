@@ -578,6 +578,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     @Override
+    public void updateEndGame(int playerId) {
+
+    }
+
+    @Override
+    public void updateCalculateScore(int playerId) {
+
+    }
+
+    @Override
     public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
         RemoteServer serverStub;
         Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);

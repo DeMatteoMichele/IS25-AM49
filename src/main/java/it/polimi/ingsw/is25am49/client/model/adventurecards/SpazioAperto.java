@@ -170,6 +170,7 @@ public class SpazioAperto extends AdventureCard {
 
     @Override
     protected void update() {
+        currentState = AdventureStatesTypes.UPDATE;
         playersNoEnginePower.forEach(gameBoard::playerNoMoreInFlight);
         super.update();
     }
