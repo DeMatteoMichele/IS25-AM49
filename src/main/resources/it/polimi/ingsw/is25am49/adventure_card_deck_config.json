@@ -627,12 +627,6 @@
     "blueGoods": 0
   },
   {
-    "cardId": "II52",
-    "level": 2,
-    "name": "SabotageCard",
-    "description": "Sabotage destroys a random component of the ship with the least crew. In case of a tie, the ship furthest ahead on the route is targeted. The player being sabotaged rolls 2 dice for the column and then rolls again for the row. If no components are at those coordinates, they reroll twice more. If no component is hit after three rolls, the sabotage fails and nothing happens."
-  },
-  {
     "cardId": "I13",
     "level": 1,
     "name": "PiratesCard",

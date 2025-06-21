@@ -5,8 +5,10 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.TileCardDeck;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,6 +56,21 @@ public class BuildController extends GenericSceneController {
     private HBox smallAdventureDeck;
     @FXML
     private Button stopLooking;
+    @FXML
+    private Button discardTile;
+    @FXML
+    private Button rotateTile;
+    @FXML
+    private Button timer;
+    @FXML
+    private Button finish;
+    @FXML
+    private Button lookAtShipboard;
+    @FXML
+    private Button backToShipboard;
+    @FXML
+    private HBox astronautsOrAliens;
+    StackPane highlightPane = new StackPane();
     int count = 0;
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
     private final Map<Integer, Node> container = new HashMap<>();
@@ -67,6 +84,9 @@ public class BuildController extends GenericSceneController {
     public void initialize(){
         Image image = new Image(getClass().getResource("/sfondo3.jpg").toExternalForm());
         backgroundImage.setImage(image);
+        astronautsOrAliens.setDisable(true);
+        astronautsOrAliens.setVisible(false);
+        loadTokens();
 
         backgroundImage.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
@@ -74,6 +94,7 @@ public class BuildController extends GenericSceneController {
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
             }
         });
+
     }
     public void init(){
         loadTilesMap();
@@ -82,6 +103,12 @@ public class BuildController extends GenericSceneController {
         printTileCardDeck();
         printShipboard();
         loadAdventureCards();
+        if(gameSession.getGame().get().getMode()==GameMode.FLIGHT_MODE){
+            timer.setDisable(true);
+            timer.setVisible(false);
+            timerLabel.setVisible(false);
+            timerLabel.setDisable(true);
+        }
     }
     public void loadGrid() {
         if(gameSession.getGame().get().getMode()== GameMode.LEVEL_1 || gameSession.getGame().get().getMode()== GameMode.FLIGHT_MODE){
@@ -150,9 +177,11 @@ public class BuildController extends GenericSceneController {
             }}
 
     }
+
     public void printShipboard() {
 
         gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid().forEach((coordinates, tile) -> {
+
             if (tile.isPresent()) {
                 int idTile = tile.get().getIdTile();
 
@@ -179,8 +208,28 @@ public class BuildController extends GenericSceneController {
 
 
                     shipBoard.add(imageView, coordinates.x - 4, coordinates.y - 5);
+                    if(tile.get().getComponent().getType()== ComponentType.CABINE){
+                     //creo hbox per affiancarli
+                        HBox tokenContainer = new HBox();
+                        tokenContainer.setSpacing(5); // Spazio tra i token
+                        tokenContainer.setAlignment(javafx.geometry.Pos.CENTER);
+
+                        //aggiungo token
+                        tile.get().getComponent().getTokenList().forEach(token -> {
+                            ImageView tokenImageView = new ImageView(tokensMap.get(token).getImage());
+                            tokenImageView.setFitWidth(23);
+                            tokenImageView.setFitHeight(32);
+                            tokenContainer.getChildren().add(tokenImageView);
+
+                        });
+
+                        // aggiungo box al grid
+                        shipBoard.add(tokenContainer, coordinates.x-4, coordinates.y-5);
+                        GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
+                    }
                 }
-            }
+                    }
+
         });}
 
     private void loadAdventureCards(){
@@ -344,6 +393,8 @@ public class BuildController extends GenericSceneController {
     }
     public void handleFinishShipBoard(ActionEvent event){
         try {
+            System.out.println("HO CHIAMATO FINISH SHIPBOARD SULLO USER CON ID : " + guiApplication.getMyId());
+
             guiApplication.getController().userFinishShipboard(guiApplication.getMyId());
         } catch (Exception e) {
             guiApplication.printUpdateMessage(error + e.getMessage());
@@ -532,6 +583,7 @@ public class BuildController extends GenericSceneController {
 
     }
     public void setHandTile(int tileId){
+        buildContainer.getChildren().clear();
         ImageView imageView = tilesMap.get(tileId);
         imageView.setFitHeight(181);
         imageView.setFitWidth(181);
@@ -732,4 +784,107 @@ public class BuildController extends GenericSceneController {
            }
        });
    }
+   public void disableHighlight(){
+        highlightPane.getChildren().clear();
+   }
+   public void selectTypeOfToken(){
+        astronautsOrAliens.getChildren().clear();
+        if(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getAlienPoint().isPresent()){
+            disableAll();
+            loadTokens();
+            if(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getAlienPoint().isPresent()) {
+                Point alienpoint = gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getAlienPoint().get();
+
+                // evidenzio casella
+
+                highlightPane.setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
+                shipBoard.add(highlightPane, alienpoint.x - 4, alienpoint.y - 5);
+
+
+                System.out.println("Alien Point: " + alienpoint);
+                astronautsOrAliens.setDisable(false);
+                astronautsOrAliens.setVisible(true);
+                gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().checkIfAlienArePossible(alienpoint).stream().forEach((token) -> {
+                    if (token == Token.BROWN_ALIENS) {
+                        ImageView brownAlienImage = tokensMap.get(Token.BROWN_ALIENS);
+                        brownAlienImage.setFitWidth(80);
+                        brownAlienImage.setFitHeight(120);
+                        brownAlienImage.setOnMouseClicked(event -> {
+                            try {
+                                guiApplication.getController().userSelectTypeOfToken(guiApplication.getMyId(), token, alienpoint);
+                            } catch (Exception e) {
+                                guiApplication.printUpdateMessage(error + e.getMessage());
+                            }
+                        });
+                        astronautsOrAliens.setSpacing(30);
+                        astronautsOrAliens.getChildren().add(brownAlienImage);
+
+
+                    } else if (token == Token.ASTRONAUT) {
+                        ImageView astronautImage = tokensMap.get(Token.ASTRONAUT);
+                        astronautImage.setFitWidth(80);
+                        astronautImage.setFitHeight(120);
+                        astronautImage.setOnMouseClicked(event -> {
+                            try {
+                                guiApplication.getController().userSelectTypeOfToken(guiApplication.getMyId(), token, alienpoint);
+                            } catch (Exception e) {
+                                guiApplication.printUpdateMessage(error + e.getMessage());
+                            }
+                        });
+                        astronautsOrAliens.setSpacing(30);
+                        astronautsOrAliens.getChildren().add(astronautImage);
+                    } else if (token == Token.PURPLE_ALIENS) {
+                        ImageView purpleAlienImage = tokensMap.get(Token.PURPLE_ALIENS);
+                        purpleAlienImage.setFitWidth(80);
+                        purpleAlienImage.setFitHeight(120);
+                        purpleAlienImage.setOnMouseClicked(event -> {
+                            try {
+
+                                guiApplication.getController().userSelectTypeOfToken(guiApplication.getMyId(), token, alienpoint);
+                            } catch (Exception e) {
+                                guiApplication.printUpdateMessage(error + e.getMessage());
+                            }
+                        });
+                        astronautsOrAliens.setSpacing(30);
+                        astronautsOrAliens.getChildren().add(purpleAlienImage);
+                    }
+                });
+
+            }
+
+   }
+        else{
+            astronautsOrAliens.getChildren().clear();
+            System.out.println("Non ci sono punti alieni disponibili per il giocatore con ID: " + guiApplication.getMyId());
+        }
+    }
+    private void disableAll(){
+        cardContainer.setVisible(false);
+        cardContainer.setDisable(true);
+        buildContainer.setVisible(false);
+        buildContainer.setDisable(true);
+        timerLabel.setVisible(false);
+        timerLabel.setDisable(true);
+        smallAdventureDeckContainer.setVisible(false);
+        smallAdventureDeckContainer.setDisable(true);
+        smallAdventureDeck.setVisible(false);
+        smallAdventureDeck.setDisable(true);
+        stopLooking.setVisible(false);
+        stopLooking.setDisable(true);
+        textFieldLookAtShipboard.setVisible(false);
+        textFieldLookAtShipboard.setDisable(true);
+        discardTile.setVisible(false);
+        discardTile.setDisable(true);
+        rotateTile.setVisible(false);
+        rotateTile.setDisable(true);
+        timer.setVisible(false);
+        timer.setDisable(true);
+        finish.setVisible(false);
+        finish.setDisable(true);
+        lookAtShipboard.setVisible(false);
+        lookAtShipboard.setDisable(true);
+        backToShipboard.setVisible(false);
+        backToShipboard.setDisable(true);
+    }
+
 }
