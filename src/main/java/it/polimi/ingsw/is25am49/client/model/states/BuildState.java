@@ -201,12 +201,16 @@ public class BuildState extends State {
 
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
+        //controlla che tutti abbiano finito la shipboard
         if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
+            userInterface.updateFinishShipboard(playerId);
             if(gameSession.getGame().isPresent()) {
                 Game game = gameSession.getGame().get();
                 for (Player p : game.getListPlayers()) {
-                    if(p.getShipBoard().getAlienPoint().isPresent()) return;
+                    if(p.getShipBoard().getAlienPoint().isPresent()) {
+                        return;
+                    }
                 }
                 userInterface.updateFinishShipboard(playerId);
                 transition(new AdventureState(gameSession, userInterface));

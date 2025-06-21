@@ -127,7 +127,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
 
         // Dopo 3 secondi, chiudi il popup
-        PauseTransition delay = new PauseTransition(Duration.seconds(40));
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> popup.hide());
         delay.play();
     }
@@ -367,16 +367,15 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateFinishShipboard(int playerId) {
+
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
-
             if(playerId==myId){
-
                 buildController.clearShipBoard();
                 buildController.printShipboard();
                 buildController.clearListView();
                 buildController.updateListView();
-
+                buildController.selectTypeOfToken();
             }
         });
 
@@ -426,9 +425,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
         });
     }
 
+
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            if(playerId==myId){
+                buildController.disableHighlight();
+                updateFinishShipboard(playerId);
+            }
+        });
     }
 
     @Override
