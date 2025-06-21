@@ -29,6 +29,8 @@ import java.util.*;
 
 public class AdventureController extends GenericSceneController {
     @FXML
+    public Button stopButton;
+    @FXML
     private StackPane cardMessages;
     @FXML
     private HBox statsContainer;
@@ -83,6 +85,14 @@ public class AdventureController extends GenericSceneController {
     public void handleDrawButton() {
         try {
             guiApplication.getController().userDrawAdventureCard(guiApplication.getMyId());
+        } catch (Exception e) {
+            guiApplication.printUpdateMessage(error + e.getMessage());
+        }
+    }
+
+    public void handleStopButton() {
+        try {
+            //guiApplication.getController().userQuitGame(guiApplication.getMyId());
         } catch (Exception e) {
             guiApplication.printUpdateMessage(error + e.getMessage());
         }
@@ -765,21 +775,22 @@ public class AdventureController extends GenericSceneController {
         }
         return null;
     }
+
     public void drawLeaderBoardState(Canvas canvas, LeaderBoard leaderBoard, ImageView leaderboardImage) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         Image img = leaderboardImage.getImage();
-        double imgWidth = img.getWidth()/2;
-        double imgHeight = img.getHeight()/2;
+        double imgWidth = img.getWidth() / 2;
+        double imgHeight = img.getHeight() / 2;
         canvas.setWidth(imgWidth);
         canvas.setHeight(imgHeight);
         gc.drawImage(img, 0, 0, imgWidth, imgHeight);
 
         double originalWidth = 0;
         double originalHeight = 0;
-        if(getGameMode().equals(GameMode.LEVEL_1) || getGameMode().equals(GameMode.FLIGHT_MODE)) {
+        if (getGameMode().equals(GameMode.LEVEL_1) || getGameMode().equals(GameMode.FLIGHT_MODE)) {
             originalWidth = 985;
             originalHeight = 546;
-        } else if(getGameMode().equals(GameMode.LEVEL_2)){
+        } else if (getGameMode().equals(GameMode.LEVEL_2)) {
             originalWidth = 1055;
             originalHeight = 639;
         }
@@ -809,6 +820,7 @@ public class AdventureController extends GenericSceneController {
             });
         }
     }
+
     private javafx.scene.paint.Color mapPlayerColorToFxColor(Color color) {
         return switch (color) {
             case RED -> javafx.scene.paint.Color.rgb(255, 0, 0, 0.8);

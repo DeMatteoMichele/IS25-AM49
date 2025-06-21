@@ -45,6 +45,11 @@
             <ImageView fx:id="currentCard" fitHeight="230.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </HBox>
+       <HBox prefHeight="100.0" prefWidth="100.0" AnchorPane.leftAnchor="550.0" AnchorPane.bottomAnchor="350.0">
+           <children>
+               <Button fx:id="stopButton" onAction= "#handleStopButton" mnemonicParsing="false" prefHeight="75.0" prefWidth="75.0" style="-fx-font-size: 16px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: linear-gradient(to bottom, #ffd166, #e29100); -fx-border-color: #ffedaa; -fx-border-width: 1.5px; -fx-border-radius: 20px; -fx-background-radius: 20px; -fx-text-fill: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 2); -fx-cursor: hand;" text="Stop" />
+           </children>
+       </HBox>
       <StackPane fx:id="cardEffect" layoutX="14.0" layoutY="270.0" prefHeight="300.0" prefWidth="500.0" AnchorPane.rightAnchor="50.0" AnchorPane.bottomAnchor="50.0"/>
       <StackPane fx:id="leaderboard" layoutX="14.0" layoutY="450.0" prefHeight="320.0" prefWidth="528.0" AnchorPane.leftAnchor="50.0" AnchorPane.bottomAnchor="50.0">
       </StackPane>
