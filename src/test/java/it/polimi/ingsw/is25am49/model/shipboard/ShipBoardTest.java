@@ -43,8 +43,11 @@ class ShipBoardTest {
         shipTest.insertTile(new Point(6,8), tiles.get(143));
         shipTest.insertTile(new Point(8,5), tiles.get(126));
         shipTest.insertTile(new Point(9,6), tiles.get(116));
-        shipTest.insertTile(new Point(5,7), tiles.get(104));
-        shipTest.getTile(new Point(5,7)).setTileOrientation(Orientation.WEST);
+        shipTest.insertTile(new Point(5,7), tiles.get(137));
+        shipTest.insertTile(new Point(5,8), tiles.get(104));
+        shipTest.getTile(new Point(5,8)).setTileOrientation(Orientation.WEST);
+        shipTest.insertTile(new Point(7,8), tiles.get(75));
+        shipTest.insertTile(new Point(8,8), tiles.get(96));
     }
 
     @Test
@@ -72,7 +75,12 @@ class ShipBoardTest {
     }
 
     @Test
-    void destroyTile() {
+    void destroyCenterTileTest() {
+        shipTest=ShipBoard.generateShipboard(2,30);
+        System.out.println(shipTest);
+        shipTest.destroyTile(new Point(7,7));
+        shipTest.destroyDisconnectedTiles();
+        System.out.println(shipTest);
     }
 
     @Test
@@ -114,10 +122,10 @@ class ShipBoardTest {
 
     @Test
     void testAddFillTokenToTiles() {
-        ship1.addTokenToTile(new Point(7,7), Token.BATTERY_CELLS);
-        ship1.fillTileComponent(new Point(7,7), Token.RED_GOODS);
-        ship1.fillTileComponent(new Point(7,7), Token.ASTRONAUT);
-        ship1.addTokenToTile(new Point(7,7), Token.ASTRONAUT);
+       assertThrows(RuntimeException.class,()->ship1.addTokenToTile(new Point(7,7), Token.BATTERY_CELLS));
+        assertThrows(RuntimeException.class,()->ship1.fillTileComponent(new Point(7,7), Token.RED_GOODS));
+       ship1.fillTileComponent(new Point(7,7), Token.ASTRONAUT);
+        assertThrows(RuntimeException.class,()->ship1.addTokenToTile(new Point(7,7), Token.ASTRONAUT));
 
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.addTokenToTile(new Point(5,7), Token.ASTRONAUT));
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.addTokenToTile(new Point(4,5), Token.ASTRONAUT));
@@ -132,7 +140,7 @@ class ShipBoardTest {
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.removeTokenFromTile(new Point(4,5), Token.ASTRONAUT));
         assertThrows(InvalidCoordinatesException.class, ()-> ship1.removeTokenFromTile(new Point(5,7), Token.ASTRONAUT));
         ship1.fillTileComponent(new Point(7,8),Token.BATTERY_CELLS);
-        ship1.removeTokenFromTile(new Point(7,8), Token.BLUE_GOODS);
+        assertThrows(RuntimeException.class,()->ship1.removeTokenFromTile(new Point(7,8), Token.BLUE_GOODS));
         ship1.removeTokenFromTile(new Point(7,8), Token.BATTERY_CELLS);
         assertEquals(2, ship1.getTotalNumberOfaToken(Token.BATTERY_CELLS));
     }
@@ -141,15 +149,12 @@ class ShipBoardTest {
     @Test
     void testTurnOnComponent() {
         ship1.completeShipBoard();
-        ship1.printShipboardSpecial();
-        ship1.turnOnComponent(new Point(7,6),new Point(6,7));
-        assertEquals(0,ship1.getProtectedSides().size());
-
-        ship1.fillTileComponent(new Point(6,7), Token.BATTERY_CELLS);
+        System.out.println(ship1);
         ship1.turnOnComponent(new Point(21,6),new Point(6,7));
         assertEquals(0,ship1.getProtectedSides().size());
-        assertEquals(2,ship1.getTotalNumberOfaToken(Token.BATTERY_CELLS));
-
+        ship1.turnOnComponent(new Point(7,6),new Point(6,7));
+        assertEquals(2,ship1.getProtectedSides().size());
+        assertEquals(1,ship1.getTotalNumberOfaToken(Token.BATTERY_CELLS));
         ship1.turnOnComponent(new Point(7,6),new Point(6,7));
         assertEquals(2,ship1.getProtectedSides().size());
     }
@@ -160,7 +165,7 @@ class ShipBoardTest {
         assertThrows(IllegalMethodOnThisComponentException.class, ()->ship1.getActivatableComponents(ComponentType.CANNON));
         ArrayList<Point> points= ship1.getActivatableComponents(ComponentType.SHIELD);
         System.out.println(points);
-        ship1.addTokenToTile(points.getFirst(),Token.YELLOW_GOODS);
+        assertThrows(RuntimeException.class,()->ship1.addTokenToTile(points.getFirst(),Token.YELLOW_GOODS));
     }
 
     @Test
@@ -205,6 +210,22 @@ class ShipBoardTest {
 
     @Test
     void testGetTotalEnginePower() {
+        System.out.println(shipTest);
+        shipTest.fillTileComponent(new Point(8,6),Token.BATTERY_CELLS);
+        assertEquals(1,shipTest.getTotalEnginePower());
+        shipTest.turnOnComponent(new Point(8,8),new Point(8,6));
+        assertEquals(3,shipTest.getTotalEnginePower());
+        shipTest.addTokenToTile(new Point(6,7),Token.BROWN_ALIENS);
+        assertEquals(5,shipTest.getTotalEnginePower());
+    }
+
+    @Test
+    void getAlienPointTest(){
+        System.out.println(shipTest);
+        assertEquals(new Point(6,7),shipTest.getAlienPoint().get());
+        shipTest.addTokenToTile(new Point(6,7),Token.BROWN_ALIENS);
+        assertEquals(Optional.empty(),shipTest.getAlienPoint());
+
     }
 
 

@@ -547,7 +547,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
+    public void updateEffectMeteorite(int playerId, Point coordinate) {
 
     }
 
