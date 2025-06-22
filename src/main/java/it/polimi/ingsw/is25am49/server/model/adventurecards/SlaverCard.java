@@ -16,7 +16,7 @@ public class SlaverCard extends Enemy {
     protected int creditsEarned;
 
     public SlaverCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
-        super(gameBoard, description, level, name,dayslost, minimumFirePower);
+        super(gameBoard, description, level, name, dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         listEffects.add(new EffectModifyCrew("LoseAstronauts", lostAstronauts));
@@ -85,7 +85,7 @@ public class SlaverCard extends Enemy {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

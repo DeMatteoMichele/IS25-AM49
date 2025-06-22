@@ -63,7 +63,6 @@ public class AdventureState extends State {
     public void userFinishShipboard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

@@ -67,6 +67,7 @@ public class Game {
         try {
             player = getPlayer(playerId);
             player.setConnectionFlag(true);
+            board.getLeaderBoard().connectPlayer(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found
         }

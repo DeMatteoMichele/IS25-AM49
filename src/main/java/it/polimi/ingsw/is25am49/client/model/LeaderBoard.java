@@ -260,6 +260,9 @@ public class LeaderBoard {
         disconnectedPlayers.entrySet().removeIf(entry -> entry.getValue().isConnected());
     }
 
+    public void connectPlayer(Player player) {
+        disconnectedPlayers.remove(player.getIdPlayer());
+    }
 
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
@@ -363,6 +366,7 @@ public class LeaderBoard {
             default -> pos + "     ";
         };
     }
+
 
 }
 

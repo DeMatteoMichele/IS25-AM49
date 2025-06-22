@@ -59,15 +59,9 @@ public class EffectWinGoods extends CardEffect {
                 Token tokenToRemove = minValueToken(component.getTokenList());
                 player.getShipBoard().removeTokenFromTile(coordinate.getKey(), tokenToRemove);
                 System.out.println("rimozione di " + tokenToRemove + " dalla posizione " + coordinate.getKey());
-                if (coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
-                    throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
-                }
                 player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
                 System.out.println("aggiunta di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
             } else {
-                if (coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
-                    throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
-                }
                 if (canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player)) {
                     player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
                     System.out.println("aggiunta di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
