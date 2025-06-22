@@ -84,11 +84,6 @@ public abstract class Enemy extends AdventureCard {
         return totalFirePower == minimumFirePower;
     }
 
-
-    protected void deactivateComponents(ShipBoard shipBoard) {
-        coordinatesOfActivable.forEach(shipBoard::turnOff);
-    }
-
     protected abstract void evaluateBattleOutcome(ShipBoard shipBoard);
 
     protected void tryNextPlayer() {
@@ -106,19 +101,14 @@ public abstract class Enemy extends AdventureCard {
 
     protected abstract void handleEmptyBatteryDecision(ShipBoard shipBoard);
 
-    protected abstract int getMaxActivatableComponents(ShipBoard shipBoard);
-
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         checkCorrectnessOfTokensAndPoints(currentState, coordinates, shipBoard);
         switch (currentState) {
             case DECISION_BATTERIES -> {
-                int maxActivatableComponents = getMaxActivatableComponents(shipBoard);
-                if (coordinates.size() > maxActivatableComponents) {
-                    throw new IllegalTokensException("Hai selezionato troppe batterie! Puoi attivare al massimo " + maxActivatableComponents + " componenti.");
-                }
                 coordinatesOfBatteries = coordinates;
+                checkNumberOfBatteries(coordinatesOfBatteries, shipBoard);
                 if (coordinatesOfBatteries.isEmpty()) {
                     System.out.println("You have decided not to use batteries");
                     handleEmptyBatteryDecision(shipBoard);
@@ -150,23 +140,15 @@ public abstract class Enemy extends AdventureCard {
         checkCorrectnessOfActivable(currentState, coordinates, shipBoard);
         switch (currentState) {
             case DECISION_CANNON -> {
-                try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
-                    activateComponentsWithBatteries(shipBoard,coordinatesOfActivable ,coordinatesOfBatteries );
+                    activateComponentsWithBatteries(shipBoard,coordinatesOfActivable,coordinatesOfBatteries);
                     evaluateBattleOutcome(shipBoard);
-                } catch (IllegalNumOfActivableException e) {
-                    System.out.println("Rechoose correctly the number of cannons as the same as batteries");
-                }
             }
             case DECISION_SHIELDS -> {
-                try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
-                    activateComponentsWithBatteries(shipBoard,coordinatesOfActivable ,coordinatesOfBatteries );
+                    activateComponentsWithBatteries(shipBoard,coordinatesOfActivable,coordinatesOfBatteries);
                     currentState = AdventureStatesTypes.EFFECT;
                     applyEffect();
-                } catch (IllegalNumOfActivableException e) {
-                    System.out.println("Rechoose correctly the number of shields as the same as batteries");
-                }
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
         }

@@ -56,7 +56,6 @@ public class AbandonedStationCard extends AdventureCard {
                 System.out.println("Now check on next player");
                 checkRequirements();
             } catch (IllegalSetOfNextPlayerException e) {
-                //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                 System.out.println("It goes to update state");
                 update();
             }

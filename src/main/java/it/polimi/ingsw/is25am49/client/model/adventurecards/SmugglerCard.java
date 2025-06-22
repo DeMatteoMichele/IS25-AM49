@@ -30,8 +30,7 @@ public class SmugglerCard extends Enemy {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have more firepower to defeat the smugglers! Choose where you want to put your new goods");
             userInterface.updateEnemyDefeated(gameBoard.getCurrentPlayer().getIdPlayer(), "Smugglers", cardId);
             isDefeated = true;
@@ -39,13 +38,11 @@ public class SmugglerCard extends Enemy {
             currentState = AdventureStatesTypes.DECISION_REWARDS;
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have drawn with the smugglers!");
             tryNextPlayer();
         } else {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have been defeated by the smugglers! You lose some goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
             currentState = AdventureStatesTypes.EFFECT;
@@ -91,15 +88,9 @@ public class SmugglerCard extends Enemy {
         update();
     }
 
-    @Override
-    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
-        return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
-    }
-
 
     /**
      * Override toString method to print the card in a box format
-     *
      * @return a string representation of the card
      */
 

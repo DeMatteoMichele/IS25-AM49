@@ -44,25 +44,15 @@ public class SabotageCard extends AdventureCard {
             update();
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you are the only player, you skip this card");
         }
-        //con uno stream trovo il giocatore che ha meno equipaggio
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
                 .map(Map.Entry::getKey)
                 .min((p1, p2) -> Integer.compare(
                         getTotalCrew(p1),
                         getTotalCrew(p2)))
                 .orElse(gameBoard.getCurrentPlayer());
-
-        //debug per stampare per ogni giocatore il totale dell'equipaggio
-
-//        gameBoard.getLeaderBoard().stream().forEach(p ->
-//        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),p.getKey().getUsername() + " " + getTotalCrew(p.getKey())));
-
-        //setto a current player del gameboard il giocatore con meno equipaggio
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
         userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with the lowest crew is: " + gameBoard.getCurrentPlayer().getUsername() + " one of your components it will be destroyed");
         userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has to roll the dices!");
-
-        //passo a roll dices
         currentState = AdventureStatesTypes.ROLL_DICES;
 
 
@@ -95,12 +85,8 @@ public class SabotageCard extends AdventureCard {
 
     @Override
     public void applyEffect() {
-        //imposto le coordinate
         Point coordinate = new Point(row, column);
-
-
         try {
-            //rimuovo il componente, se non lancia eccezioni lo ho rimosso altrimenti catturo l'eccezione
             gameBoard.getCurrentPlayer().getShipBoard().destroyTile(coordinate);
             Set<Point> destroyedTile = new HashSet<>();
             destroyedTile.add(coordinate);
@@ -113,15 +99,12 @@ public class SabotageCard extends AdventureCard {
             currentState = AdventureStatesTypes.DRAW;
         } catch (InvalidCoordinatesException e) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "The component at row: " + row + " and column: " + column + " doesn't exist or it's out of the ship");
-            //se ho lanciato i dadi 6 volte allora ho finito
             if (diceRollCount == 6) {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have rolled the dices 6 times, the card is finished");
                 userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + " has been very lucky this time! no one of his component has been destroyed");
                 isFinished = true;
                 currentState = AdventureStatesTypes.DRAW;
-            }
-            //rilancio i dadi
-            else {
+            } else {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have to roll the dices again");
                 currentState = AdventureStatesTypes.ROLL_DICES;
             }

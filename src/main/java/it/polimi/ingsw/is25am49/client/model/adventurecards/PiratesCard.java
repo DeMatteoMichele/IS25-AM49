@@ -35,21 +35,18 @@ public class PiratesCard extends Enemy {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have defeated the pirates!");
             userInterface.updateEnemyDefeated(gameBoard.getCurrentPlayer().getIdPlayer(), "Pirates", cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to win or stay as you are");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have drawn with the pirates!");
             tryNextPlayerOrHandleDefeatedPlayers();
         } else {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have lost against the pirates!");
             defeatedPlayers.add(gameBoard.getCurrentPlayer());
             tryNextPlayerOrHandleDefeatedPlayers();
@@ -167,18 +164,9 @@ public class PiratesCard extends Enemy {
     }
 
     @Override
-    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
-        if (cannonadesPhase) { //we are in the effect phase, when players are already defeated
-            return shipBoard.getActivatableComponents(ComponentType.SHIELD).size();
-        } else {
-            return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
-        }
-    }
-
-    @Override
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
-        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
+        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard(), coordinatesOfActivable);
         coordinatesOfActivable = new ArrayList<>();
         tryNextPlayerDefeated();
     }

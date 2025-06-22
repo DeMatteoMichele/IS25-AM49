@@ -10,7 +10,6 @@ public class StarDustCard extends AdventureCard {
         super(cardId, gameBoard, description, level, name);
     }
 
-
     @Override
     public void drawCard() {
         super.drawCard();

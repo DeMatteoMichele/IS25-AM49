@@ -125,6 +125,7 @@ public abstract class AdventureCard {
 
     protected void deactivateComponents(ShipBoard shipBoard,List<Point> coordinatesOfActivable) {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
+        coordinatesOfActivable.clear();
     }
 
     protected void activateComponentsWithBatteries(ShipBoard shipBoard, List<Point> coordinatesOfActivable, List<Pair<Point, Token>> coordinatesOfBatteries) {

@@ -27,21 +27,18 @@ public class SmugglerCard extends Enemy {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have more firepower to defeat the smugglers!");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have drawn with the smugglers!");
             tryNextPlayer();
         } else {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have been defeated by the smugglers! You lose some goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
             currentState = AdventureStatesTypes.EFFECT;
@@ -86,11 +83,6 @@ public class SmugglerCard extends Enemy {
     protected void handleRefuseOfRewards() {
         System.out.println("You have refused the rewards. The card is defeated and you don't lose days");
         update();
-    }
-
-    @Override
-    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
-        return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
     }
 
 

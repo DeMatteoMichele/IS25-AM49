@@ -92,9 +92,7 @@ public class SpazioAperto extends AdventureCard {
                 currentState = AdventureStatesTypes.DECISION_MOTOR;
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_MOTOR);
             }
-            default -> {
-                throw new IllegalArgumentException("invalid state");
-            }
+            default -> throw new IllegalArgumentException("invalid state");
         }
     }
 
@@ -117,7 +115,6 @@ public class SpazioAperto extends AdventureCard {
         }
     }
 
-
     @Override
     public void applyEffect() {
         super.applyEffect();
@@ -125,7 +122,7 @@ public class SpazioAperto extends AdventureCard {
         System.out.println("you are in apply effect, now i will calculate the days you have earned");
         //calcolo i giorni guadagnati in base alla potenza dei motori attivati
         processTravelDays(ship);
-        deactivateComponents(ship,motors);
+        deactivateComponents(ship, motors);
     }
 
     @Override

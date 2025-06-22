@@ -35,7 +35,6 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public void drawCard() {
-        //chiamo il super draw
         super.drawCard();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a planet! You can land on it for some goods.");
         currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
@@ -45,9 +44,6 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
-        if (currentState != AdventureStatesTypes.CHECK_REQUIREMENTS) {
-            throw new IllegalMethodOnThisStateException("Wrong state");
-        }
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the planet for some goods?");
         currentState = AdventureStatesTypes.DECISION_LAND_PLANET;
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_PLANET);
@@ -89,7 +85,6 @@ public class PlanetCard extends AdventureCard {
     private void checkNextPlayer() {
         try {
             gameBoard.nextPlayer();
-            currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             userInterface.updateGenericCardMessage(genericIdForUpdates, "It was the last player, end of the card");
@@ -100,13 +95,11 @@ public class PlanetCard extends AdventureCard {
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         if (currentState == AdventureStatesTypes.DECISION_GOODS) {
-            //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             applyEffect();
-        }
-        else {
+        } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
@@ -115,10 +108,8 @@ public class PlanetCard extends AdventureCard {
     @Override
     public void applyEffect() {
         super.applyEffect();
-        //applico l'effetto, aggiorno il player con i giorni persi
         currentEffect.action(gameBoard.getCurrentPlayer());
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
-        //gameBoard.updateLeaderboard();
         if (planets.isEmpty()) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "No more planets to land on!");
             update();

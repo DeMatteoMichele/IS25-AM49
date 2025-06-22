@@ -23,7 +23,7 @@ public class SpazioAperto extends AdventureCard {
     private List<Point> motors;
     private List<Player> playersProcess;
     private int currentPlayerIndex;
-    private Map<Player, Integer> declaredEnginePower = new HashMap<>();
+    private Map<Player, Integer> declaredEnginePower=new HashMap<>();
 
 
     @Override
@@ -51,7 +51,7 @@ public class SpazioAperto extends AdventureCard {
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
         } else {
             //non ho abbastanza batterie per attivare i doppi motori
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries to activate your double motors");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries or double motors");
             processTravelDays(ship);
         }
     }
@@ -62,7 +62,7 @@ public class SpazioAperto extends AdventureCard {
         gameBoard.getCurrentPlayer().setDaysThisTurn(daysEarned);
         gameBoard.updateLeaderboard();
         userInterface.updateLeaderBoard(gameBoard.getLeaderBoard());
-        userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has earned " + daysEarned + " travel days");
+        userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + " has earned " + daysEarned + " travel days");
         currentPlayerIndex++;
         if (currentPlayerIndex >= playersProcess.size()) {
             userInterface.updateGenericCardMessage(genericIdForUpdates, "it was the last player, end of the card");
