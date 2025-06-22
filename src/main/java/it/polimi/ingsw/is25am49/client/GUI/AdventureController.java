@@ -58,7 +58,7 @@ public class AdventureController extends GenericSceneController {
     private int counterStampe;
     private AdventureStatesTypes currentAdventureState;
     private int cosmicCredits;
-    private Point2D[][] coordsLeaderboard;
+    private Point2D[] coordsLeaderboard;
 
     public AdventureController() {
         coordinatesSet = new HashSet<>();
@@ -119,25 +119,25 @@ public class AdventureController extends GenericSceneController {
             leaderboardImage.setFitHeight(273);
             leaderboardImage.setFitWidth(493);
             leaderboardImage.setPreserveRatio(true);
-            coordsLeaderboard = new Point2D[][]{
-                    /* 0 (Num 4)*/ new Point2D[]{new Point2D(234, 112), new Point2D(205, 140), new Point2D(234, 140)},
-                    /* 1 (Num 3)*/ new Point2D[]{new Point2D(310, 81), new Point2D(281, 109), new Point2D(310, 109)},
-                    /* 2 (Num 2)*/ new Point2D[]{new Point2D(410, 66), new Point2D(381, 94), new Point2D(410, 94)},
-                    /* 3 (Num 1)*/ new Point2D[]{new Point2D(519, 81), new Point2D(490, 109), new Point2D(519, 109)},
-                    /* 4 */ new Point2D[]{new Point2D(595, 112), new Point2D(566, 140), new Point2D(595, 140)},
-                    /* 5 */ new Point2D[]{new Point2D(652, 169), new Point2D(623, 197), new Point2D(652, 197)},
-                    /* 6 */ new Point2D[]{new Point2D(679, 245), new Point2D(650, 273), new Point2D(679, 273)},
-                    /* 7 */ new Point2D[]{new Point2D(652, 321), new Point2D(623, 349), new Point2D(652, 349)},
-                    /* 8 */ new Point2D[]{new Point2D(595, 378), new Point2D(566, 406), new Point2D(595, 406)},
-                    /* 9 */ new Point2D[]{new Point2D(519, 409), new Point2D(490, 437), new Point2D(519, 437)},
-                    /* 10*/ new Point2D[]{new Point2D(410, 424), new Point2D(381, 452), new Point2D(410, 452)},
-                    /* 11*/ new Point2D[]{new Point2D(310, 409), new Point2D(281, 437), new Point2D(310, 437)},
-                    /* 12*/ new Point2D[]{new Point2D(234, 378), new Point2D(205, 406), new Point2D(234, 406)},
-                    /* 13*/ new Point2D[]{new Point2D(177, 321), new Point2D(148, 349), new Point2D(177, 349)},
-                    /* 14*/ new Point2D[]{new Point2D(150, 245), new Point2D(121, 273), new Point2D(150, 273)},
-                    /* 15*/ new Point2D[]{new Point2D(177, 169), new Point2D(148, 197), new Point2D(177, 197)},
-                    /* 16*/ new Point2D[]{new Point2D(195, 126), new Point2D(166, 154), new Point2D(195, 154)},
-                    /* 17*/ new Point2D[]{new Point2D(195, 95), new Point2D(166, 123), new Point2D(195, 123)},
+            coordsLeaderboard = new Point2D[]{
+                    new Point2D(129, 59.5),
+                    new Point2D(176.5, 45),
+                    new Point2D(224, 40),
+                    new Point2D(269.5, 40.5),
+                    new Point2D(316, 47),
+                    new Point2D(361, 60),
+                    new Point2D(403, 90.5),
+                    new Point2D(424.5, 141.5),
+                    new Point2D(398.5, 183.5),
+                    new Point2D(355, 210),
+                    new Point2D(312, 225),
+                    new Point2D(265, 233),
+                    new Point2D(215.5, 231.5),
+                    new Point2D(170.5, 226),
+                    new Point2D(128, 210.5),
+                    new Point2D(85.5, 180),
+                    new Point2D(63, 130.5),
+                    new Point2D(88.5, 84.5)
             };
             Canvas canvas = new Canvas();
             drawLeaderBoardState(canvas, getleaderBoard(), leaderboardImage);
@@ -150,31 +150,31 @@ public class AdventureController extends GenericSceneController {
             ImageView leaderboardImage = new ImageView();
             leaderboardImage.setImage(image);
             leaderboardImage.setPreserveRatio(true);
-            coordsLeaderboard = new Point2D[][]{
-                    /* 0 (Num 4)*/ new Point2D[]{new Point2D(287, 98), new Point2D(258, 126), new Point2D(287, 126)},
-                    /* 1 (Num 3)*/ new Point2D[]{new Point2D(366, 68), new Point2D(337, 96), new Point2D(366, 96)},
-                    /* 2 (Num 2)*/ new Point2D[]{new Point2D(470, 56), new Point2D(441, 84), new Point2D(470, 84)},
-                    /* 3 (Num 1)*/ new Point2D[]{new Point2D(574, 68), new Point2D(545, 96), new Point2D(574, 96)},
-                    /* 4 */ new Point2D[]{new Point2D(653, 98), new Point2D(624, 126), new Point2D(653, 126)},
-                    /* 5 */ new Point2D[]{new Point2D(722, 147), new Point2D(693, 175), new Point2D(722, 175)},
-                    /* 6 */ new Point2D[]{new Point2D(764, 218), new Point2D(735, 246), new Point2D(764, 246)},
-                    /* 7 */ new Point2D[]{new Point2D(780, 292), new Point2D(751, 320), new Point2D(780, 320)},
-                    /* 8 */ new Point2D[]{new Point2D(764, 366), new Point2D(735, 394), new Point2D(764, 394)},
-                    /* 9 */ new Point2D[]{new Point2D(722, 437), new Point2D(693, 465), new Point2D(722, 465)},
-                    /* 10*/ new Point2D[]{new Point2D(653, 486), new Point2D(624, 514), new Point2D(653, 514)},
-                    /* 11*/ new Point2D[]{new Point2D(574, 516), new Point2D(545, 544), new Point2D(574, 544)},
-                    /* 12*/ new Point2D[]{new Point2D(470, 528), new Point2D(441, 556), new Point2D(470, 556)},
-                    /* 13*/ new Point2D[]{new Point2D(366, 516), new Point2D(337, 544), new Point2D(366, 544)},
-                    /* 14*/ new Point2D[]{new Point2D(287, 486), new Point2D(258, 514), new Point2D(287, 514)},
-                    /* 15*/ new Point2D[]{new Point2D(218, 437), new Point2D(189, 465), new Point2D(218, 465)},
-                    /* 16*/ new Point2D[]{new Point2D(176, 366), new Point2D(147, 394), new Point2D(176, 394)},
-                    /* 17*/ new Point2D[]{new Point2D(160, 292), new Point2D(131, 320), new Point2D(160, 320)},
-                    /* 18*/ new Point2D[]{new Point2D(176, 218), new Point2D(147, 246), new Point2D(176, 246)},
-                    /* 19*/ new Point2D[]{new Point2D(218, 147), new Point2D(189, 175), new Point2D(218, 175)},
-                    /* 20*/ new Point2D[]{new Point2D(204, 98), new Point2D(175, 126), new Point2D(204, 126)},
-                    /* 21*/ new Point2D[]{new Point2D(188, 68), new Point2D(159, 96), new Point2D(188, 96)},
-                    /* 22*/ new Point2D[]{new Point2D(173, 43), new Point2D(144, 71), new Point2D(173, 71)},
-                    /* 23*/ new Point2D[]{new Point2D(227, 43), new Point2D(198, 71), new Point2D(227, 71)},
+            coordsLeaderboard = new Point2D[]{
+                    new Point2D(128, 74.5),
+                    new Point2D(165, 54),
+                    new Point2D(205, 49),
+                    new Point2D(242, 48),
+                    new Point2D(282, 48.5),
+                    new Point2D(321.5, 55),
+                    new Point2D(361.5, 63),
+                    new Point2D(399.5, 76),
+                    new Point2D(429.5, 100),
+                    new Point2D(457.5, 139.5),
+                    new Point2D(454.5, 184),
+                    new Point2D(428.5, 219.5),
+                    new Point2D(393, 239),
+                    new Point2D(356.5, 254.5),
+                    new Point2D(318, 265),
+                    new Point2D(276.5, 270),
+                    new Point2D(235.5, 267),
+                    new Point2D(198.5, 263),
+                    new Point2D(159, 253),
+                    new Point2D(118.5, 237),
+                    new Point2D(84.5, 212),
+                    new Point2D(61.5, 173),
+                    new Point2D(66, 130),
+                    new Point2D(90.5, 95)
             };
             leaderboardImage.setFitHeight(320);
             leaderboardImage.setFitWidth(528);
@@ -804,19 +804,9 @@ public class AdventureController extends GenericSceneController {
                 javafx.scene.paint.Color playerColor = mapPlayerColorToFxColor(player.getColor());
                 gc.setFill(playerColor);
 
-                Point2D[] vertices = coordsLeaderboard[cellIndex];
-                double[] xPoints = {
-                        vertices[0].getX() * scaleX,
-                        vertices[1].getX() * scaleX,
-                        vertices[2].getX() * scaleX
-                };
-                double[] yPoints = {
-                        vertices[0].getY() * scaleY,
-                        vertices[1].getY() * scaleY,
-                        vertices[2].getY() * scaleY
-                };
-
-                gc.fillPolygon(xPoints, yPoints, 3);
+                Point2D vertix = coordsLeaderboard[cellIndex];
+                int radius = 10;
+                gc.fillOval(vertix.getX() - radius, vertix.getY() - radius, radius * 2, radius * 2);
             });
         }
     }

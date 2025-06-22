@@ -518,7 +518,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEnemyDefeated(int playerIdWhoWon, String enemyName, String cardId) {
-
+        Platform.runLater(()->{
+            if(myId == playerIdWhoWon) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateCardMessageBox("You have defeted the enemy " + enemyName);
+            }
+        });
     }
 
     @Override
