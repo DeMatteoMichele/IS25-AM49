@@ -115,7 +115,7 @@ class ShipBoardTest {
             System.out.println(i+1 +") Generazione");
             ship2=ShipBoard.generateShipboard(2,30);
             ship2.completeShipBoard();
-            ship2.printShipboardSpecial();
+            System.out.println(ship2);
             System.out.println("CONNETTORI ESPOSTI: "+ship2.getNumberOfExposedConnectors()+ " --> conta siano giusti");
         }
     }
