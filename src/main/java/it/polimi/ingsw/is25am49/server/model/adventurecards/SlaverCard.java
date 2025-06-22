@@ -34,6 +34,7 @@ public class SlaverCard extends Enemy {
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
 
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
@@ -46,6 +47,7 @@ public class SlaverCard extends Enemy {
             System.out.println("You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
             currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
         }
     }
 

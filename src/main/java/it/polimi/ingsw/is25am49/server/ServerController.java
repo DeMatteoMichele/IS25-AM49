@@ -92,13 +92,13 @@ public class ServerController {
 
     public void playerDisconnected(int playerId) {
         try {
-            gameSession.getState().connectPlayer(playerId);
+            gameSession.getState().disconnectPlayer(playerId);
             Command command = new Command("playerDisconnectedCallback", playerId);
             command.addParameter(playerId);
             serverSerializer.command_FromServerToClient(command);
             serverRMI.command_FromServerToClient(command);
         } catch (RemoteException e) {
-            System.out.println("Error due to RemoteException in Server  in playerdisconnected ->   " + e.getMessage());
+            System.out.println("Error due to RemoteException in Server  in playerDisconnected ->   " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -351,6 +351,7 @@ public class ServerController {
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision activating hasn't worked in Server ->   " + e.getMessage());
+                e.printStackTrace();
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             }

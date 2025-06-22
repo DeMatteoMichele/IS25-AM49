@@ -47,6 +47,8 @@ public class AbandonedShipCard extends AdventureCard {
         if (numCrew >= lostAstronauts) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have " + numCrew + " astronauts on your ship. If you decide to land on the ship, you win " + creditsEarned + " credits but if your crew is too small you have to quit");
             currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
+            if(!gameBoard.getCurrentPlayer().isConnected())
+                applyDefaultEffect(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP);
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough astronauts to land on the ship");
             tryNextPlayer();
@@ -61,6 +63,8 @@ public class AbandonedShipCard extends AdventureCard {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to decide where you want to remove your astronauts");
             currentEffect = listEffects.getFirst();
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+            if (!gameBoard.getCurrentPlayer().isConnected())
+                applyDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
         } else {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), false, cardId);
             tryNextPlayer();

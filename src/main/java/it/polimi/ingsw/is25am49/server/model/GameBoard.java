@@ -368,13 +368,14 @@ public class GameBoard {
      * @throws GameSettingsException if the card is not finished
      */
     public void drawAdventureCard(Player player) throws GameSettingsException {
-        if (player.equals(leaderBoard.getLeader())) {
+        if (player.equals(leaderBoard.getFirstPlayerConnected())) {
             if(mainAdventureDeck.size()==0)throw new OutOfDeckExceptions("you have drawn all the cards!");
             if (isFirstCard || currentCard.getIsFinished()) {
                 currentCard = mainAdventureDeck.getFirstCard();
                 mainAdventureDeck.draw();
                 isFirstCard = false;
-            }else {
+                leaderBoard.refreshConnections();
+            } else {
                 throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
             }
         } else
@@ -462,6 +463,14 @@ public class GameBoard {
     }
 
     /**
+     * This method is used to get the first player connected in the leaderboard
+     * @return the first player connected
+     */
+    public Player getFirstPlayerConnected(){
+        return leaderBoard.getFirstPlayerConnected();
+    }
+
+    /**
      * This method is used to calculate the final credits of the players
      * It is used at the end of the game
      * For each player, it calculates the credits based on the position in the leaderboard,
@@ -528,12 +537,12 @@ public class GameBoard {
      * @return the next player
      * @throws IllegalSetOfNextPlayerException if the current player is the last player
      */
-    private Player getNextPlayer() {
+    private Player getNextPlayerConnected() {
         int currentPos = leaderBoard.getPos(currentPlayer);
         if (currentPos == leaderBoard.size())
             throw new IllegalSetOfNextPlayerException("This is the last player");
         else
-            return leaderBoard.getPlayerInPosition(currentPos + 1);
+            return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
     }
 
     /**
@@ -546,7 +555,7 @@ public class GameBoard {
 
     public void nextPlayer() {
         //setto il currentplayer al next player dato il current player
-        setCurrentPlayer(getNextPlayer());
+        setCurrentPlayer(getNextPlayerConnected());
     }
 
     /**
@@ -570,7 +579,7 @@ public class GameBoard {
             for(Player player : getStopFlightPlayers()){
                 try{
                     playerNoMoreInFlight(player);
-                }catch (it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException e){
+                }catch (GameSettingsException e){
                     System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
                 }
             }
@@ -735,5 +744,11 @@ public class GameBoard {
             str.append("\t|\n").append(border);
         }
         return str.toString();
+    }
+
+    public void disconnectionWarningToCard(Player player) {
+        if (currentCard != null) {
+            currentCard.disconnectionHandling(player);
+        }
     }
 }

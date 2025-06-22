@@ -48,6 +48,10 @@ public class Player {
         this.connectionFlag = connectionFlag;
     }
 
+    public boolean isConnected() {
+        return connectionFlag;
+    }
+
     public void thereIsHandTile(){
         if(handTile.isEmpty())
             throw new IllegalStateException("There is no tile in hand");

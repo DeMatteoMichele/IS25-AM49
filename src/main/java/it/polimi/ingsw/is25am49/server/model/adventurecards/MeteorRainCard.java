@@ -38,8 +38,9 @@ public class MeteorRainCard extends AdventureCard {
         super.drawCard();
         System.out.println("You have found a meteor rain! The leader must roll the dices");
         currentEffect = listEffects.removeFirst();
-        listOfPlayers.addAll(gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).toList());
+        listOfPlayers.addAll(gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).filter(player -> !gameBoard.getLeaderBoard().getDisconnectedPlayers().containsValue(player)).toList());
         currentState = AdventureStatesTypes.ROLL_DICES;
+        checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
     }
 
     @Override
@@ -68,6 +69,7 @@ public class MeteorRainCard extends AdventureCard {
             if (availableCannons > 0) {
                 System.out.println("Puoi attivare i cannoni. Scegli le coordinate delle batterie da utilizzare.");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 System.out.println("Non hai cannoni da attivare. Subisci l'effetto del meteorite.");
                 currentState = AdventureStatesTypes.EFFECT;
@@ -78,6 +80,7 @@ public class MeteorRainCard extends AdventureCard {
             if (availableShields > 0) {
                 System.out.println("Puoi attivare gli scudi. Scegli le coordinate delle batterie da utilizzare.");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 System.out.println("Non hai scudi da attivare. Subisci l'effetto del meteorite.");
                 currentState = AdventureStatesTypes.EFFECT;
@@ -106,6 +109,7 @@ public class MeteorRainCard extends AdventureCard {
                 }
                 System.out.println("You have decided the coord for the batteries.");
                 currentState = determineStateAfterBatteries();
+                checkConnectionOrDefaultEffect(currentState);
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
         }
@@ -159,7 +163,7 @@ public class MeteorRainCard extends AdventureCard {
     }
 
     private void activateComponentWithBatteries(List<Point> coordinatesOfActivable, ShipBoard shipBoard) {
-        if (coordinatesOfActivable.size() != coordinatesOfBatteries.size()) {
+        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of cannons as batteries");
         }
         System.out.println("You have decided the coord for the components");
@@ -172,10 +176,10 @@ public class MeteorRainCard extends AdventureCard {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
     }
 
-    private void tryNextPlayerDefeated() {
-        int currentIndexOfDefeatedPlayer = listOfPlayers.indexOf(gameBoard.getCurrentPlayer());
-        if (currentIndexOfDefeatedPlayer >= 0 && currentIndexOfDefeatedPlayer < listOfPlayers.size() - 1) { //i have to apply the currenteffect on all the players
-            gameBoard.setCurrentPlayer(listOfPlayers.get(currentIndexOfDefeatedPlayer + 1));
+    private void tryNextPlayer() {
+        int currentIndexPlayer = listOfPlayers.indexOf(gameBoard.getCurrentPlayer());
+        if (currentIndexPlayer >= 0 && currentIndexPlayer < listOfPlayers.size() - 1) { //i have to apply the currenteffect on all the players
+            gameBoard.setCurrentPlayer(listOfPlayers.get(currentIndexPlayer + 1));
             System.out.println("Now effect on the next player");
             checkForBatteriesToUse();
         } else {    //i have applied the effect on all the players
@@ -196,7 +200,7 @@ public class MeteorRainCard extends AdventureCard {
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
         deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
-        tryNextPlayerDefeated();
+        tryNextPlayer();
     }
 
 

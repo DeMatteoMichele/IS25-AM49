@@ -16,20 +16,20 @@ import java.util.List;
 
 public class PlanetCard extends AdventureCard {
 
-    protected final List<Planet> planets=new ArrayList<Planet>();
+    protected final List<Planet> planets = new ArrayList<Planet>();
     protected Planet planet;
 
     private final int daysLost;
-    public PlanetCard(GameBoard gameBoard, String description, int level,String name,int daysLost, List<Planet> planets) {
-        super(gameBoard,description, level,name);
+
+    public PlanetCard(GameBoard gameBoard, String description, int level, String name, int daysLost, List<Planet> planets) {
+        super(gameBoard, description, level, name);
         this.daysLost = daysLost;
         this.planets.addAll(planets);
     }
 
 
-
     @Override
-    public void drawCard(){
+    public void drawCard() {
         //chiamo il super draw
         super.drawCard();
         System.out.println("You have found a planet! You can land on it for some goods.");
@@ -40,22 +40,23 @@ public class PlanetCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
-        if(currentState != AdventureStatesTypes.CHECK_REQUIREMENTS){
+        if (currentState != AdventureStatesTypes.CHECK_REQUIREMENTS) {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
         System.out.println("Do you wanna land on the planet for some goods?");
-        currentState=AdventureStatesTypes.DECISION_LAND_PLANET;
+        currentState = AdventureStatesTypes.DECISION_LAND_PLANET;
+        checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_PLANET);
     }
 
     @Override
-    public void landingOnPlanet(boolean isLanded, int planetId){
+    public void landingOnPlanet(boolean isLanded, int planetId) {
         super.landingOnPlanet(isLanded, planetId);
-        if(isLanded) {
+        if (isLanded) {
             planet = getPlanetById(planetId);
-            if(!planets.contains(planet)){
+            if (!planets.contains(planet)) {
                 throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exists or it is already occupied");
             }
-            if(!planet.isOccupied()){
+            if (!planet.isOccupied()) {
                 System.out.println(gameBoard.getCurrentPlayer().getUsername() + " You have landed on the planet!");
                 planet.setOccupied(true);
                 planets.remove(planet);
@@ -63,17 +64,18 @@ public class PlanetCard extends AdventureCard {
                 System.out.println("You have to choose the position of the goods you won:");
                 currentState = AdventureStatesTypes.DECISION_GOODS;
                 currentEffect = planet.getEffect();
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
             }
-        }
-        else {
+        } else {
             System.out.println("you have decided not to land on the planet");
             System.out.println("Now check on next player");
             checkNextPlayer();
         }
     }
-    public Planet getPlanetById(int planetId){
-        for(Planet planet : planets){
-            if(planet.getPlanetId() == planetId){
+
+    public Planet getPlanetById(int planetId) {
+        for (Planet planet : planets) {
+            if (planet.getPlanetId() == planetId) {
                 return planet;
             }
         }
@@ -81,13 +83,12 @@ public class PlanetCard extends AdventureCard {
     }
 
     private void checkNextPlayer() {
-        try{
+        try {
             gameBoard.nextPlayer();
             System.out.println("it wasn't the last player, go on");
             currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
-        }
-        catch (IllegalSetOfNextPlayerException e) {
+        } catch (IllegalSetOfNextPlayerException e) {
             System.out.println("It was the last player, end of the turn");
             System.out.println("it goes to update state");
             update();
@@ -95,37 +96,34 @@ public class PlanetCard extends AdventureCard {
     }
 
     @Override
-    public void finishDecision(List<Pair<Point, Token>> coordinates){
+    public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
-        checkCorrectnessOfTokensAndPoints(currentState,coordinates,shipBoard);
-        if(currentState==AdventureStatesTypes.DECISION_GOODS){
-            //se viene chiamato (dallo user) e sono in decisiongoods allora chiamo applyeffect dove inserirò le merci, cambio stato
+        checkCorrectnessOfTokensAndPoints(currentState, coordinates, shipBoard);
+        if (currentState == AdventureStatesTypes.DECISION_GOODS) {
             System.out.println("You have decided the position of the goods");
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
-            }
-        //se non sono in decizion goods allora non posso chiamare finishdecision
-        else{throw new IllegalMethodOnThisStateException("Wrong state");}
+        }
+        else {
+            throw new IllegalMethodOnThisStateException("Wrong state");
+        }
     }
-
 
 
     @Override
     public void applyEffect() {
         super.applyEffect();
         System.out.println("You are in apply effect of planet card");
-        //applico l'effetto, aggiorno il player con i giorni persi
         currentEffect.action(gameBoard.getCurrentPlayer());
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
         System.out.println("You have lost " + daysLost + " travel days");
-        if(planets.isEmpty()){
+        if (planets.isEmpty()) {
             System.out.println("You have no more planets to land on, you have to go on with the game");
             update();
             return;
         }
         checkNextPlayer();
-
     }
 
 
@@ -146,7 +144,7 @@ public class PlanetCard extends AdventureCard {
         String daysLostText = "| DAYS LOST: " + daysLost;
         str.append(daysLostText).append(" ".repeat(width - daysLostText.length() - 1)).append("|\n");
         str.append(separator);
-        for(Planet planet : planets){
+        for (Planet planet : planets) {
             String planetText = "| PLANET: " + planet.getPlanetId();
             str.append(planetText).append(" ".repeat(width - planetText.length() - 1)).append("|\n");
             EffectWinGoods effect = (EffectWinGoods) planet.getEffect();
@@ -164,11 +162,4 @@ public class PlanetCard extends AdventureCard {
     }
 
 
-
-
-
-
-
-
-    
 }
