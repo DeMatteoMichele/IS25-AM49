@@ -125,7 +125,11 @@ public abstract class AdventureCard {
     }
 
     protected void deactivateComponents(ShipBoard shipBoard,List<Point> coordinatesOfActivable) {
+        if(coordinatesOfActivable.isEmpty()) {
+            return;
+        }
         coordinatesOfActivable.forEach(shipBoard::turnOff);
+        userInterface.updateDeactivating(shipBoard.getPlayerID(), coordinatesOfActivable);
         coordinatesOfActivable.clear();
     }
 
@@ -136,6 +140,7 @@ public abstract class AdventureCard {
         System.out.println("You have decided the coord for the components");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
             shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
+            userInterface.updateEffectModifyEnergy(shipBoard.getPlayerID(), coordinatesOfBatteries.get(i).getKey(),coordinatesOfBatteries.get(i).getValue());
         }
     }
     protected void checkNumberOfBatteries(List<Pair<Point, Token>> batteries, ShipBoard shipBoard) {
