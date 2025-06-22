@@ -156,6 +156,7 @@ public class MeteorRainCard extends AdventureCard {
         int currentIndexPlayer = listOfPlayers.indexOf(gameBoard.getCurrentPlayer());
         if (currentIndexPlayer >= 0 && currentIndexPlayer < listOfPlayers.size() - 1) { //i have to apply the currenteffect on all the players
             gameBoard.setCurrentPlayer(listOfPlayers.get(currentIndexPlayer + 1));
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             checkForBatteriesToUse();
         } else {    //i have applied the effect on all the players
             if (listEffects.isEmpty()) {  //effects are terminated, card is finished
@@ -163,6 +164,7 @@ public class MeteorRainCard extends AdventureCard {
                 update();
             } else {      //effects are not finished, first player has to roll the dices on the next effect
                 gameBoard.setCurrentPlayer(listOfPlayers.getFirst());
+                userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
                 currentEffect = listEffects.removeFirst();
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Next effect: " + currentEffect.getDescription());
                 userInterface.updateGenericCardMessage(genericIdForUpdates, "Now the leader must roll the dices again!");

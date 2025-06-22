@@ -7,7 +7,6 @@ import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
@@ -55,8 +54,10 @@ public abstract class AdventureCard {
 
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         userInterface.updateDrawAdventureCard(-99, this);
         gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+        userInterface.updateChangeTurn(gameBoard.getFirstPlayerConnected().getIdPlayer());
     }
 
     public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {

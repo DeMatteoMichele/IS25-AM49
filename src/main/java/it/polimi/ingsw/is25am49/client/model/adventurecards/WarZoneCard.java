@@ -74,12 +74,14 @@ public class WarZoneCard extends AdventureCard {
                         getTotalCrew(p2)))
                 .orElse(gameBoard.getCurrentPlayer());
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
+        userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
         userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with less crew than others is " + gameBoard.getCurrentPlayer().getUsername());
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You lose" +daysLost +" travel days");
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
         gameBoard.updateLeaderboard();
         userInterface.updateLeaderBoard(gameBoard.getLeaderBoard());
         gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+        userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
         checkRequirementsEngine();
     }
 
@@ -115,6 +117,7 @@ public class WarZoneCard extends AdventureCard {
             currentEffect = listEffects.removeFirst();
             warZonePhase++;
             gameBoard.setCurrentPlayer(playerWithMinimumEnginePower);
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
@@ -157,6 +160,7 @@ public class WarZoneCard extends AdventureCard {
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 currentEffect.action(gameBoard.getCurrentPlayer());
                 gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+                userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
                 checkRequirementsFirePower();
             }
             default -> throw new IllegalArgumentException("wrong state");
@@ -192,6 +196,7 @@ public class WarZoneCard extends AdventureCard {
             userInterface.updateGenericCardMessage(genericIdForUpdates,"Player with minimum fire power is " + playerWithMinimumFirePower.getUsername());
             currentEffect = listEffects.removeFirst();
             gameBoard.setCurrentPlayer(playerWithMinimumFirePower);
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             warZonePhase++;
             userInterface.updateGenericCardMessage(genericIdForUpdates,playerWithMinimumFirePower.getUsername() + "has to roll the dices");
             currentState = AdventureStatesTypes.ROLL_DICES;

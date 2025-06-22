@@ -33,8 +33,8 @@ public class SpazioAperto extends AdventureCard {
         playersProcess = gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).filter(player -> !gameBoard.getLeaderBoard().getDisconnectedPlayers().containsValue(player)).toList();
         currentPlayerIndex = 0;
         gameBoard.setCurrentPlayer(playersProcess.get(currentPlayerIndex));
+        userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
         checkRequirements();
-
     }
 
     @Override
@@ -67,6 +67,7 @@ public class SpazioAperto extends AdventureCard {
             update();
         } else {
             gameBoard.setCurrentPlayer(playersProcess.get(currentPlayerIndex));
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             checkRequirements();
         }
     }

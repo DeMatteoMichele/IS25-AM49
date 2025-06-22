@@ -99,6 +99,7 @@ public class PiratesCard extends Enemy {
         } else {
             userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices!");
             gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             for (Player player : defeatedPlayers) {
                 player.setDaysThisTurn(-daysLost);
             }
@@ -113,6 +114,7 @@ public class PiratesCard extends Enemy {
         int currentIndexOfDefeatedPlayer = defeatedPlayers.indexOf(gameBoard.getCurrentPlayer());
         if (currentIndexOfDefeatedPlayer >= 0 && currentIndexOfDefeatedPlayer < defeatedPlayers.size() - 1) { //i have to apply the currenteffect on all the players
             gameBoard.setCurrentPlayer(defeatedPlayers.get(currentIndexOfDefeatedPlayer + 1));
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             checkForBatteriesToUseForShields();
         } else {    //i have applied the effect on all the players
             if (listEffects.isEmpty()) {  //effects are terminated, card is finished
@@ -120,6 +122,7 @@ public class PiratesCard extends Enemy {
                 update();
             } else {      //effects are not finished, first player has to roll the dices on the next effect
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
+                userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
                 currentEffect = listEffects.removeFirst();
                 userInterface.updateGenericCardMessage(genericIdForUpdates, "Another meteora! Now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
