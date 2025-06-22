@@ -42,7 +42,6 @@ public class EpidemyCard extends AdventureCard {
                 });
         coordinatesOfAllCabins.removeAll(pointsToRemove);
     }
-
     @Override
     public void checkRequirements() {
         checkInterconnectedCabin();
@@ -52,15 +51,14 @@ public class EpidemyCard extends AdventureCard {
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have interconnected cabins and for each one you will lose one crew memeber");
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
-
         }
     }
 
     private void checkNextPlayer() {
         try {
             gameBoard.nextPlayer();
-            currentState = AdventureStatesTypes.DRAW;
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             userInterface.updateGenericCardMessage(genericIdForUpdates, "It was the last player, end of the turn");
@@ -107,6 +105,3 @@ public class EpidemyCard extends AdventureCard {
     }
 
 }
-
-
-

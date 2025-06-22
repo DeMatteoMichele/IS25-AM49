@@ -8,7 +8,6 @@ import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectModifyCrew;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import javafx.util.Pair;
@@ -20,20 +19,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class WarZoneCard extends AdventureCard {
-
-
     Player playerWithMinimumEnginePower;
     Player playerWithMinimumFirePower;
     private int minimumEnginePower;
     private final List<CardEffect> listEffects;
     private List<Pair<Point, Token>> batteries;
-    private List<Point> cannons;
-    private List<Point> motors;
-    private int number = 0;
+    private int warZonePhase = 0;
     private final int daysLost;
     private double minimumFirePower = 1;
     private static final int BIG_CANNONBALL_LEVEL = 1;
     private List<Point> coordinatesOfActivable = new ArrayList<>();
+    private int lostAstronauts;
 
 
     public WarZoneCard(String cardId, GameBoard gameBoard, String description, int level, String name, int daysLost, int lostAstronauts, List<CardEffect> effects) {
@@ -43,6 +39,7 @@ public class WarZoneCard extends AdventureCard {
         this.listEffects.addAll(effects);
         minimumEnginePower = 1;
         this.daysLost = daysLost;
+        this.lostAstronauts = lostAstronauts;
         for (CardEffect effect : listEffects) {
             effect.setUserInterface(userInterface);
         }
@@ -51,13 +48,11 @@ public class WarZoneCard extends AdventureCard {
     @Override
     public void drawCard() {
         super.drawCard();
-        playerWithMinimumEnginePower = gameBoard.getLeader();
+        playerWithMinimumEnginePower = gameBoard.getFirstPlayerConnected();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a War Zone! Good luck, it will be tough to get out of it.");
         checkRequirements();
     }
 
-
-    //    method to calculate the total crew of a player
     private int getTotalCrew(Player p) {
         return p.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) +
                 p.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS) +
@@ -67,66 +62,65 @@ public class WarZoneCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
-        if (gameBoard.getLeaderBoard().size() == 1) {
+        if (gameBoard.getLeaderBoard().sizeOfConnected() == 1) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you are the only player, you skip this card");
             update();
         }
-        //check the player with minimum equipment starting from the leader
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
                 .map(Map.Entry::getKey)
+                .filter(player -> !gameBoard.getLeaderBoard().getDisconnectedPlayers().containsValue(player))
                 .min((p1, p2) -> Integer.compare(
                         getTotalCrew(p1),
                         getTotalCrew(p2)))
                 .orElse(gameBoard.getCurrentPlayer());
-        //set the current player to the one with minimum crew
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
+        userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
         userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with less crew than others is " + gameBoard.getCurrentPlayer().getUsername());
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You lose 3 travel days");
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You lose" +daysLost +" travel days");
         gameBoard.getCurrentPlayer().setDaysThisTurn(-daysLost);
         gameBoard.updateLeaderboard();
         userInterface.updateLeaderBoard(gameBoard.getLeaderBoard());
-        //now current player is the leader again
-        gameBoard.setCurrentPlayer(gameBoard.getLeader());
-        checkRequirements2();
-
+        gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+        userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
+        checkRequirementsEngine();
     }
 
-    public void checkRequirements2() {
-
-        //check the player with less engine power
-        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you are in phase 2 of the war zone, now we will check the player with less engine power");
+    public void checkRequirementsEngine() {
+        userInterface.updateGenericCardMessage(genericIdForUpdates, "You are in phase 2 of the war zone, now we will check the player with less engine power");
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
-        if (totalNumberOfBatteries > 0) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double motors. One battery activates one motor. " +
-                    "You can activate up to " + totalNumberOfBatteries + " double motors");
-            //I change state to decison batteries to decide how much to activate
+        int totalNumberOfDoubleMotors = ship.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size();
+        if (totalNumberOfBatteries > 0 && totalNumberOfDoubleMotors > 0) {
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double motors. One battery activates one motor. ");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
         } else {
-            //non ho abbastanza batterie
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries to activate your double motors");
             int enginePower = ship.getTotalEnginePower();
-            //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),enginePower);
             if (enginePower < minimumEnginePower) {
-                //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"aggiornamento minimum power" + enginePower);
                 minimumEnginePower = enginePower;
                 playerWithMinimumEnginePower = gameBoard.getCurrentPlayer();
-                //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),playerWithMinimumEnginePower.getUsername());
             }
-            try {
-                //controllo se il current player era l'ultimo o no
-                //se non è l'ultimo richiamo check requirements sul player dopo
-                gameBoard.nextPlayer();
-                checkRequirements2();
-            } catch (IllegalSetOfNextPlayerException e) {
-                //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
-                userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with minimum engine power is " + playerWithMinimumEnginePower.getUsername());
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), playerWithMinimumEnginePower.getUsername() + " you lose  crew members, you have to choose which ones");
-                currentEffect = listEffects.removeFirst();
-                number++;
-                currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
-            }
+            handlePlayersEngine();
+        }
+    }
 
+    public void handlePlayersEngine() {
+        try {
+            gameBoard.nextPlayer();
+            userInterface.updateGenericCardMessage(genericIdForUpdates,"It wasn't the last player, go on with the next player");
+            checkRequirementsEngine();
+        } catch (IllegalSetOfNextPlayerException e) {
+            userInterface.updateGenericCardMessage(genericIdForUpdates,"Player with minimum engine power is " + playerWithMinimumEnginePower.getUsername());
+            userInterface.updateGenericCardMessage(playerWithMinimumEnginePower.getIdPlayer(),playerWithMinimumEnginePower.getUsername() + " you lose" + lostAstronauts + " crew members, you have to choose which ones");
+            currentEffect = listEffects.removeFirst();
+            warZonePhase++;
+            gameBoard.setCurrentPlayer(playerWithMinimumEnginePower);
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
+            currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
         }
     }
 
@@ -135,169 +129,114 @@ public class WarZoneCard extends AdventureCard {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
             case DECISION_BATTERIES -> {
-                if (number == 0) {
-                    if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
-                        throw new IllegalArgumentException("you have chosen more batteries than you have");
-                    } else if (coordinates.size() > ship.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size()) {
-                        throw new IllegalArgumentException("you have chosen" + coordinates.size() + "but you have less engine ");
-                    }
+                if (warZonePhase == 0) {
+                    checkNumberOfBatteries(coordinates, ship);
                     userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
-                    this.batteries = new ArrayList<>(coordinates);
+                    batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to choose which motors you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_MOTOR;
-
-                } else if (number == 1) {
-                    if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
-                        throw new IllegalArgumentException("you have chosen more batteries than you have");
-                    }
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+                    checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_MOTOR);
+                } else if (warZonePhase == 1) {
+                    checkNumberOfBatteries(coordinates, ship);
                     userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
-                    this.batteries = new ArrayList<>(coordinates);
+                    batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to choose which cannons you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_CANNON;
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+                    checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_CANNON);
                 } else {
-                    if (coordinates.size() > ship.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
-                        throw new IllegalArgumentException("you have chosen more batteries than you have");
-                    }
+                    checkNumberOfBatteries(coordinates, ship);
                     userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
-                    this.batteries = new ArrayList<>(coordinates);
+                    batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to choose which shields you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_SHIELDS;
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+                    checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_SHIELDS);
                 }
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
-                //i have to choose which astroauts or aliens to lose
-                gameBoard.setCurrentPlayer(playerWithMinimumEnginePower);
                 currentEffect.setListOfCoordinates(coordinates);
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 currentEffect.action(gameBoard.getCurrentPlayer());
-                gameBoard.setCurrentPlayer(gameBoard.getLeader());
-                userInterface.updateGenericCardMessage(genericIdForUpdates, "The leader is " + gameBoard.getLeader().getUsername());
-                checkRequirements3();
-
+                gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+                userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
+                checkRequirementsFirePower();
             }
             default -> throw new IllegalArgumentException("wrong state");
-
-
         }
     }
 
-    public void checkRequirements3() {
+    public void checkRequirementsFirePower() {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
-        if (totalNumberOfBatteries > 0 && ship.getActivatableComponents(ComponentType.DOUBLE_CANNON).size() > 0) {
+        int totalNumberOfCannons = ship.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
+        if (totalNumberOfBatteries > 0 && totalNumberOfCannons > 0) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double Cannons. One battery activates one cannon. " +
                     "You can activate up to " + totalNumberOfBatteries + " double cannon");
-            //I change state to decison batteries to decide how much to activate
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
         } else {
-            //non ho abbastanza batterie
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries to activate your double cannons");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries or double cannons");
             double firePower = ship.getTotalFirePower();
-            //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),enginePower);
             if (firePower < minimumFirePower) {
-                //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"aggiornamento minimum power" + enginePower);
                 minimumFirePower = firePower;
                 playerWithMinimumFirePower = gameBoard.getCurrentPlayer();
-                //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),playerWithMinimumEnginePower.getUsername());
             }
-            try {
-                //controllo se il current player era l'ultimo o no
-                //se non è l'ultimo richiamo check requirements sul player dopo
-                gameBoard.nextPlayer();
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It wasn't the last player, go on with the next player");
-                checkRequirements3();
-            } catch (IllegalSetOfNextPlayerException e) {
-                //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
-                userInterface.updateGenericCardMessage(genericIdForUpdates, "Player with minimum fire power is " + playerWithMinimumFirePower.getUsername());
-                currentEffect = listEffects.removeFirst();
-                gameBoard.setCurrentPlayer(playerWithMinimumFirePower);
-                number++;
-                userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getLeader().getUsername() + " must roll the dices");
-                currentState = AdventureStatesTypes.ROLL_DICES;
-            }
-
+            handlePlayersFirePower();
         }
     }
 
+    public void handlePlayersFirePower() {
+        try {
+            gameBoard.nextPlayer();
+            checkRequirementsFirePower();
+        } catch (IllegalSetOfNextPlayerException e) {
+            userInterface.updateGenericCardMessage(genericIdForUpdates,"Player with minimum fire power is " + playerWithMinimumFirePower.getUsername());
+            currentEffect = listEffects.removeFirst();
+            gameBoard.setCurrentPlayer(playerWithMinimumFirePower);
+            userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
+            warZonePhase++;
+            userInterface.updateGenericCardMessage(genericIdForUpdates,playerWithMinimumFirePower.getUsername() + "has to roll the dices");
+            currentState = AdventureStatesTypes.ROLL_DICES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
+        }
+    }
 
     @Override
     public void finishDecision(Set<Point> coordinates) {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         switch (currentState) {
-
             case DECISION_MOTOR -> {
-//                if(batteries.size()!=coordinates.size()){
-//                    throw new IllegalArgumentException("you have chosen a different number of batteries and motors");
-//                }
-                motors = new ArrayList<>(coordinates);
-                //i activte all the cannons
-                for (int i = 0; i < coordinates.size(); i++) {
-                    ship.turnOnComponent(motors.get(i), batteries.get(i).getKey());
-                }
+                coordinatesOfActivable = new ArrayList<>(coordinates);
+                activateComponentsWithBatteries(ship, coordinatesOfActivable, batteries);
                 int enginePower = ship.getTotalEnginePower();
                 if (enginePower < minimumEnginePower) {
                     minimumEnginePower = enginePower;
                     playerWithMinimumEnginePower = gameBoard.getCurrentPlayer();
                 }
-                //turn off the motors
-                for (int i = 0; i < coordinates.size(); i++) {
-                    ship.turnOff(motors.get(i));
-                }
-                try {
-                    //controllo se il current player era l'ultimo o no
-                    //se non è l'ultimo richiamo check requirements sul player dopo
-                    gameBoard.nextPlayer();
-                    checkRequirements2();
-                } catch (IllegalSetOfNextPlayerException e) {
-                    //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Player with minimum fire power is " + playerWithMinimumEnginePower.getUsername());
-                    userInterface.updateGenericCardMessage(playerWithMinimumEnginePower.getIdPlayer(), playerWithMinimumEnginePower.getUsername() + " you lose crew members, you have to choose which ones");
-                    currentEffect = listEffects.removeFirst();
-                    //i go to decision astronaut state
-                    number++;
-                    currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
-                }
-
+                deactivateComponents(ship,coordinatesOfActivable);
+                handlePlayersEngine();
             }
             case DECISION_CANNON -> {
-                cannons = new ArrayList<>(coordinates);
-                for (int i = 0; i < coordinates.size(); i++) {
-                    ship.turnOnComponent(cannons.get(i), batteries.get(i).getKey());
-                }
+                coordinatesOfActivable = new ArrayList<>(coordinates);
+                activateComponentsWithBatteries(ship, coordinatesOfActivable, batteries);
                 double firePower = ship.getTotalFirePower();
                 if (firePower < minimumFirePower) {
                     minimumFirePower = firePower;
                     playerWithMinimumFirePower = gameBoard.getCurrentPlayer();
                 }
-                //turn off the cannons
-                for (int i = 0; i < coordinates.size(); i++) {
-                    ship.turnOff(cannons.get(i));
-                }
-                try {
-                    //controllo se il current player era l'ultimo o no
-                    //se non è l'ultimo richiamo check requirements sul player dopo
-                    gameBoard.nextPlayer();
-                    checkRequirements3();
-                } catch (IllegalSetOfNextPlayerException e) {
-                    //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Player with minimum fire power is " + playerWithMinimumFirePower.getUsername());
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), playerWithMinimumFirePower.getUsername() + " you are gonna be hit by some cannons");
-                    currentEffect = listEffects.removeFirst();
-                    gameBoard.setCurrentPlayer(playerWithMinimumFirePower);
-                    number++;
-
-                    currentState = AdventureStatesTypes.ROLL_DICES;
-                }
+                deactivateComponents(ship,coordinatesOfActivable);
+                handlePlayersFirePower();
             }
             case DECISION_SHIELDS -> {
-                try {
-                    List<Point> coordinatesOfShield = new ArrayList<>(coordinates);
-                    activateComponentWithBatteries(coordinatesOfShield, ship);
-                    currentState = AdventureStatesTypes.EFFECT;
-                    applyEffect();
-                } catch (IllegalNumOfActivableException e) {
-                    userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Rechoose correctly the number of shields as the same as batteries");
-                }
+                coordinatesOfActivable = new ArrayList<>(coordinates);
+                activateComponentsWithBatteries(ship, coordinatesOfActivable, batteries);
+                currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+                applyEffect();
             }
             default -> throw new IllegalArgumentException("wrong state");
         }
@@ -310,59 +249,44 @@ public class WarZoneCard extends AdventureCard {
     }
 
     private void checkForBatteriesToUse() {
-        coordinatesOfActivable = new ArrayList<>();
-        batteries = new ArrayList<>();
         boolean hasBatteries = gameBoard.getCurrentPlayer().getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS) > 0;
-        if (hasBatteries) {  // player has batteries
+        if (hasBatteries) {
             checkDimensionOfCannonBall();
-        } else {  // player has no batteries
+        } else {
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
     }
 
     private void checkDimensionOfCannonBall() {
         ShipBoard currentShipBoard = gameBoard.getCurrentPlayer().getShipBoard();
-        if (currentEffect.getLevel() == BIG_CANNONBALL_LEVEL) {//big cannonball, player can't do anything
-            long availableCannons = currentShipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Big cannonball! You can't defend yourself with shields! You can't do nothing! Hope in the dices!");
+        if (currentEffect.getLevel() == BIG_CANNONBALL_LEVEL) {
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Big cannonball! You can't defend yourself with shields! You can't do nothing! Hope that the cannonball misses your ship!");
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         } else {
             long availableShields = currentShipBoard.getActivatableComponents(ComponentType.SHIELD).size();
-            if (availableShields > 0) {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate shields. Choose the coordinates.");
+            if (availableShields > 0 && currentShipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS) > 0) {
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate shields. Choose the coordinates of the batteries.");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
-                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have shield to activate. You can't do nothing! Hope in the dices!");
+                userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have shield to activate. You can't do nothing! Hope that the cannonball misses your ship!");
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
         }
     }
 
-
-    private void activateComponentWithBatteries(List<Point> coordinatesOfActivable, ShipBoard shipBoard) {
-        if (coordinatesOfActivable.size() != batteries.size()) {
-            throw new IllegalNumOfActivableException("You have to choose at max the same number of cannons as batteries");
-        }
-        for (int i = 0; i < coordinatesOfActivable.size(); i++) {
-            shipBoard.turnOnComponent(coordinatesOfActivable.get(i), batteries.get(i).getKey());
-        }
-    }
-
-    protected void deactivateComponents(ShipBoard shipBoard) {
-        coordinatesOfActivable.forEach(shipBoard::turnOff);
-    }
-
-
     @Override
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
-        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
+        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard(),coordinatesOfActivable);
         tryAgain();
-
-
     }
 
     private void tryAgain() {
@@ -373,13 +297,15 @@ public class WarZoneCard extends AdventureCard {
             currentEffect = listEffects.removeFirst();
             userInterface.updateGenericCardMessage(genericIdForUpdates, "Now the leader must roll the dices again!");
             currentState = AdventureStatesTypes.ROLL_DICES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        final int width = 90;  // Larghezza standard del box
+        final int width = 90;
         String border = "+" + "-".repeat(width - 2) + "+\n";
         String separator = "|" + "-".repeat(width - 2) + "|\n";
         str.append(border);
@@ -396,8 +322,6 @@ public class WarZoneCard extends AdventureCard {
         str.append(lostAstronautsText).append(" ".repeat(width - lostAstronautsText.length() - 1)).append("|\n");
         str.append(separator);
         str.append("| CANNONADE EFFECTS: ").append(" ".repeat(width - "| CANNONADE EFFECTS: ".length() - 1)).append("|\n");
-
-        // Skip the first effect (ModifyCrew) as it's already displayed
         for (int i = 1; i < listEffects.size(); i++) {
             CardEffect effect = listEffects.get(i);
             if (effect instanceof EffectCannonata cannonata) {
@@ -406,11 +330,8 @@ public class WarZoneCard extends AdventureCard {
                 String effectOrientation = "|   -EFFECT ORIENTATION: " + cannonata.getOrientation();
                 str.append(effectOrientation).append(" ".repeat(width - effectOrientation.length() - 1)).append("|\n");
             }
-            // Qui puoi aggiungere altri tipi di effetti se necessario
             str.append(separator);
         }
         return str.toString();
-
-
     }
 }

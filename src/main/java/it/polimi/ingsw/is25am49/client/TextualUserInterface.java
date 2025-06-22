@@ -19,6 +19,7 @@ import it.polimi.ingsw.is25am49.client.model.*;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -515,7 +516,7 @@ public class TextualUserInterface implements UserInterface {
                 stringBuilder.append("+-------------------------------+\n")
                         .append("|        FINISH STATE :)        |\n")
                         .append("+-------------------------------+\n\n")
-                        .append("FinishState - commands:\n 0. EndGame \n 1. CalculateScore\n\n");
+                        .append("FinishState - commands:\n0. EndGame \n1. CalculateScore\n\n");
                 graphicsQueue.add(stringBuilder.toString());
             }
             default -> {
@@ -712,6 +713,23 @@ public class TextualUserInterface implements UserInterface {
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
+    }
+
+    /**
+     * @param playerId
+     * @param cardState
+     */
+    @Override
+    public void updateCardState(int playerId, AdventureStatesTypes cardState) {
+
+    }
+
+    /**
+     * @param playerId
+     */
+    @Override
+    public void updateChangeTurn(int playerId) {
+
     }
 
     public String adventureStateMenu(){
@@ -965,7 +983,7 @@ public class TextualUserInterface implements UserInterface {
     public void updateCalculateScore(int playerId) {
         String str = "FINISH STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getGame().get().getGameboard()+
-                "FinishState - commands:\n 0. EndGame \n 1. CalculateScore\n\n"+
+                "FinishState - commands:\n0. EndGame \n1. CalculateScore\n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);

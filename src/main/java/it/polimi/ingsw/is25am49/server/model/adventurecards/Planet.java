@@ -27,19 +27,17 @@ public class Planet {
         return planetId;
     }
 
-    public CardEffect getEffect(){
+    public CardEffect getEffect() {
         return effect;
     }
 
     public int getPlayernumber() {
         return playernumber;
     }
+
     public void setPlayernumber(int playernumber) {
         this.playernumber = playernumber;
     }
-
-
-
 
 
 }

@@ -50,25 +50,4 @@ public class StarDustCard extends AdventureCard {
         str.append(border);
         return str.toString();
     }
-
-
-//    @Override
-//    public void applyEffect() {
-//        super.applyEffect();
-//        boolean hasMorePlayers = true;
-//        while(hasMorePlayers) {
-//            Player player = gameBoard.getCurrentPlayer();
-//            int numExposedConnectors = player.getShipBoard().getNumberOfExposedConnectors();
-//            if(numExposedConnectors > 0) {
-//                player.setDaysThisTurn(numExposedConnectors);
-//            }
-//            try {
-//                gameBoard.nextPlayer();
-//            } catch (IllegalSetOfNextPlayerException e) {
-//                hasMorePlayers = false;
-//            }
-//        }
-//        currentState = AdventureStatesTypes.UPDATE;
-//    }
-
 }

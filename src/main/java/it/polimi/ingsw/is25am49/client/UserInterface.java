@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.client;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.util.Pair;
@@ -38,6 +39,8 @@ public interface UserInterface {
     public void lookAtShipboard(int playerId);
 
     //ADVENTURE STATE:
+    public void updateCardState(int playerId, AdventureStatesTypes cardState);
+    public void updateChangeTurn(int playerId);
     public void updateGenericCardMessage(int playerId, String message);
     public void updateThrowDices(int playerId, int firstDice, int secondDice);
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard);
@@ -68,6 +71,4 @@ public interface UserInterface {
 
     public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException;
     public void setGameSession(GameSession gameSession);//TODO sus non penso serva
-
-
 }

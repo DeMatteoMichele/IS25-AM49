@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 public class LeaderBoard {
     private final HashMap<Player, Integer> mapLeaderboard;
+    private final HashMap<Integer, Player> disconnectedPlayers;
     private final ArrayList<Map.Entry<Player, Integer>> arrayLeaderboard;
     private final ArrayList<Optional<Player>> showableLeaderBoard;
     private final int level;
@@ -20,143 +21,144 @@ public class LeaderBoard {
     public LeaderBoard(GameMode mode) {
         mapLeaderboard = new HashMap<>();
         arrayLeaderboard = new ArrayList<>();
+        disconnectedPlayers = new HashMap<>();
         switch (mode) {
-            case FLIGHT_MODE,LEVEL_1 -> {
+            case FLIGHT_MODE, LEVEL_1 -> {
                 level = 1;
                 numberOfCells = 18;
-                break;
             }
             case LEVEL_2 -> {
                 level = 2;
                 numberOfCells = 24;
-                break;
             }
-            default -> {
-                throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
-            }
+            default -> throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
+
         }
         int i;
         showableLeaderBoard = new ArrayList<>(numberOfCells);
-        for(i=0;i<numberOfCells;i++) {
+        for (i = 0; i < numberOfCells; i++) {
             showableLeaderBoard.add(Optional.empty());
         }
     }
+
     //per implementarlo devo prima capire come verrano implementate le posizioni nel configurateflight
-    public void add(Player player){
-        switch(arrayLeaderboard.size()) {
+    public void add(Player player) {
+        switch (arrayLeaderboard.size()) {
             case 3 -> {
                 mapLeaderboard.put(player, 0);
                 arrayLeaderboard.add(Map.entry(player, 0));
                 showableLeaderBoard.set(0, Optional.of(player));
-                break;}
+
+            }
             case 2 -> {
                 mapLeaderboard.put(player, 1);
                 arrayLeaderboard.add(Map.entry(player, 1));
                 showableLeaderBoard.set(1, Optional.of(player));
-                break;
+
             }
             case 1 -> {
-                if(level == 1){
+                if (level == 1) {
                     mapLeaderboard.put(player, 2);
                     arrayLeaderboard.add(Map.entry(player, 2));
                     showableLeaderBoard.set(2, Optional.of(player));
-                }
-                else if(level == 2){
+                } else if (level == 2) {
                     mapLeaderboard.put(player, 3);
                     arrayLeaderboard.add(Map.entry(player, 3));
                     showableLeaderBoard.set(3, Optional.of(player));
-                }
-                else
+                } else
                     throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
-                break;
+
             }
             case 0 -> {
-                if(level == 1){
+                if (level == 1) {
                     mapLeaderboard.put(player, 4);
                     arrayLeaderboard.add(Map.entry(player, 4));
                     showableLeaderBoard.set(4, Optional.of(player));
-                }
-                else if(level == 2){
+                } else if (level == 2) {
                     mapLeaderboard.put(player, 6);
                     arrayLeaderboard.add(Map.entry(player, 6));
                     showableLeaderBoard.set(6, Optional.of(player));
-                }
-                else
+                } else
                     throw new GameSettingsException("Error, the Game mode  must be LEVEL_1 or LEVEL_2");
-                break;
+
             }
-            default -> {
-                throw new GameSettingsException("You cannot insert more than 4 players");
-            }
+            default -> throw new GameSettingsException("You cannot insert more than 4 players");
+
         }
     }
-    public int getDays(Player player){
-        if(mapLeaderboard.containsKey(player))
+
+    public int getDays(Player player) {
+        if (mapLeaderboard.containsKey(player))
             return mapLeaderboard.get(player);
         else
             throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
     }
-    private int findIndexOfPlayerInShowableLeaderBoard(Player player){
+
+    private int findIndexOfPlayerInShowableLeaderBoard(Player player) {
         int indexOfPlayer = showableLeaderBoard.indexOf(Optional.of(player));
-        if(indexOfPlayer == -1)
+        if (indexOfPlayer == -1)
             throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
         else
             return indexOfPlayer;
     }
-    private int decreaseDaysFromShowableLeaderBoard(Player player, int daysModified){
+
+    private int decreaseDaysFromShowableLeaderBoard(Player player, int daysModified) {
         int positionChanged = 0;
         int index = findIndexOfPlayerInShowableLeaderBoard(player);
         int sign = Integer.signum(daysModified);
         Optional<Player> temp = showableLeaderBoard.get(index);
         showableLeaderBoard.set(index, Optional.empty());
-        while(daysModified != 0){
-            if(showableLeaderBoard.get(moduleNumberOfCells(index+sign)).isEmpty()){
+        while (daysModified != 0) {
+            if (showableLeaderBoard.get(moduleNumberOfCells(index + sign)).isEmpty()) {
                 daysModified = daysModified - sign;
                 positionChanged = positionChanged + sign;
-            }
-            else if(showableLeaderBoard.get(moduleNumberOfCells(index+sign)).isPresent()){
-               positionChanged = positionChanged + sign;
+            } else if (showableLeaderBoard.get(moduleNumberOfCells(index + sign)).isPresent()) {
+                positionChanged = positionChanged + sign;
             }
             index = index + sign;
         }
         showableLeaderBoard.set(moduleNumberOfCells(index), temp);
         return positionChanged;
     }
+
     // days può essere maggiore o minore di zero
-    public void modifyFlightDays(Player player, int daysModified){
-        if(mapLeaderboard.containsKey(player)){
+    public void modifyFlightDays(Player player, int daysModified) {
+        if (mapLeaderboard.containsKey(player)) {
             int tmpDays = mapLeaderboard.get(player);
             int daysToChange = decreaseDaysFromShowableLeaderBoard(player, daysModified);
-            Map.Entry<Player, Integer> entryBefore = arrayLeaderboard.set(getPos(player)-1, Map.entry(player, tmpDays + daysToChange));
+            Map.Entry<Player, Integer> entryBefore = arrayLeaderboard.set(getPos(player) - 1, Map.entry(player, tmpDays + daysToChange));
             mapLeaderboard.put(player, tmpDays + daysToChange);
             sort();
-        }
-        else
+        } else
             throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
     }
-    public void remove(Player player){
-        if(mapLeaderboard.containsKey(player)){
+
+    public void remove(Player player) {
+        if (mapLeaderboard.containsKey(player)) {
             int tmpDays = mapLeaderboard.get(player);
             mapLeaderboard.remove(player);
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
             showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
-        }
-        else
+        } else
             throw new GameSettingsException("This player is not in the leaderboard");
     }
-    private void sort(){
-        arrayLeaderboard.sort((p1,p2) -> Integer.compare(p2.getValue(), p1.getValue()));
+
+    private void sort() {
+        arrayLeaderboard.sort((p1, p2) -> Integer.compare(p2.getValue(), p1.getValue()));
     }
+
     public int getNumberOfCells() {
         return numberOfCells;
     }
+
     public Player getLeader() {
-        if(mapLeaderboard.isEmpty())
+        if (mapLeaderboard.isEmpty())
             throw new IllegalSetOfNextPlayerException("The leader board is empty");
         else
             return arrayLeaderboard.getFirst().getKey();
     }
+
     public int getPos(Player player) {
         if (mapLeaderboard.containsKey(player)) {
             int tmpDays = mapLeaderboard.get(player);
@@ -164,91 +166,147 @@ public class LeaderBoard {
         } else
             throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
     }
-    public Stream<Map.Entry<Player, Integer>> stream(){
+
+    public Stream<Map.Entry<Player, Integer>> stream() {
         return arrayLeaderboard.stream();
     }
-    public int size(){
-        if(arrayLeaderboard.size() == mapLeaderboard.size())
+
+    public int size() {
+        if (arrayLeaderboard.size() == mapLeaderboard.size())
             return arrayLeaderboard.size();
         else
             throw new GameSettingsException("Something went wrong while adding or removing the players");
     }
+
     // 1 <= pos <= 4
-    public Player getPlayerInPosition(int pos){
-        if(pos <= arrayLeaderboard.size() && pos > 0)
-            return arrayLeaderboard.get(pos-1).getKey();
+    public Player getPlayerInPosition(int pos) {
+        if (pos <= arrayLeaderboard.size() && pos > 0)
+            return arrayLeaderboard.get(pos - 1).getKey();
         else
             throw new IndexOutOfBoundsException("Error, the given position does not exist");
     }
-    public boolean isEmpty(){
-        if(arrayLeaderboard.size() == mapLeaderboard.size())
+
+    public Player getPlayerConnectedStartingFromThisPosition(int position) {
+        if (position <= 0 || position > size()) {
+            throw new IndexOutOfBoundsException("Error, the given position does not exist");
+        }
+        while (position <= size()) {
+            Player player = getPlayerInPosition(position);
+            if (!isDisconnected(player))
+                break;
+            position++;
+        }
+
+        if( position > size()) {
+            throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
+        }
+        else
+            return getPlayerInPosition(position);
+
+    }
+
+
+    public boolean isEmpty() {
+        if (arrayLeaderboard.size() == mapLeaderboard.size())
             return arrayLeaderboard.isEmpty();
         else
             throw new GameSettingsException("Something went wrong while adding or removing the players");
     }
-    public ArrayList<Optional<Player>> getShowableLeaderBoard(){return showableLeaderBoard;}
-    public int moduleNumberOfCells(int num){
+
+    public ArrayList<Optional<Player>> getShowableLeaderBoard() {
+        return showableLeaderBoard;
+    }
+
+    public int moduleNumberOfCells(int num) {
         int numParz = num % numberOfCells;
-        if(numParz < 0)
+        if (numParz < 0)
             return numParz + numberOfCells;
         else
             return numParz;
     }
-    public boolean isSorted(){
-        for(int i = 0; i < arrayLeaderboard.size()-1; i++){
-            if(arrayLeaderboard.get(i).getValue() < arrayLeaderboard.get(i+1).getValue())
+
+    public boolean isSorted() {
+        for (int i = 0; i < arrayLeaderboard.size() - 1; i++) {
+            if (arrayLeaderboard.get(i).getValue() < arrayLeaderboard.get(i + 1).getValue())
                 return false;
         }
         return true;
     }
-    public boolean contains(Player player){
+
+    public boolean contains(Player player) {
         return mapLeaderboard.containsKey(player);
     }
 
-    public Optional<Player> getPlayerWithDays(int days){
+    public Optional<Player> getPlayerWithDays(int days) {
         int showableIndex = moduleNumberOfCells(days);
-        if(showableLeaderBoard.get(showableIndex).isPresent())
+        if (showableLeaderBoard.get(showableIndex).isPresent())
             return showableLeaderBoard.get(showableIndex);
         else
             return Optional.empty();
     }
-    public void addToNearestPosition(Player player, int days){
-        int i=0;
-        while(getPlayerWithDays(days-i).isPresent()){
+
+    public void addToNearestPosition(Player player, int days) {
+        int i = 0;
+        while (getPlayerWithDays(days - i).isPresent()) {
             i++;
         }
-        mapLeaderboard.put(player, days-i);
-        arrayLeaderboard.add(Map.entry(player, days-i));
-        showableLeaderBoard.set(moduleNumberOfCells(days-i), Optional.of(player));
+        mapLeaderboard.put(player, days - i);
+        arrayLeaderboard.add(Map.entry(player, days - i));
+        showableLeaderBoard.set(moduleNumberOfCells(days - i), Optional.of(player));
         sort();
+    }
+
+    public void refreshConnections() {
+        disconnectedPlayers.entrySet().removeIf(entry -> entry.getValue().isConnected());
+    }
+
+
+    public void disconnectPlayer(Player player) {
+        disconnectedPlayers.put(player.getIdPlayer(), player);
+    }
+
+    public boolean isDisconnected(Player player) {
+        return disconnectedPlayers.containsKey(player.getIdPlayer());
+    }
+
+    public Player getFirstPlayerConnected() {
+        return getPlayerConnectedStartingFromThisPosition(1);
+    }
+
+    public Map<Integer, Player> getDisconnectedPlayers() {
+        return disconnectedPlayers;
+    }
+
+    public int sizeOfConnected() {
+        return (size() - disconnectedPlayers.size());
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("""
-        
-                              ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○
-                          ○                                           ○
-                        ○                  LEADERBOARD                  ○
-        """).append(String.format("\t\t\t\t○                     [%3d]                     ○\n",numberOfCells)).
-         append( """
-                                ○                                               ○
-                                ○                                               ○
-                                  ○                                           ○
-                """ );
+                        
+                                              ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○
+                                          ○                                           ○
+                                        ○                  LEADERBOARD                  ○
+                        """).append(String.format("\t\t\t\t○                     [%3d]                     ○\n", numberOfCells)).
+                append("""
+                                        ○                                               ○
+                                        ○                                               ○
+                                          ○                                           ○
+                        """);
         str.append(playersToString());
 
         str.append("\n");
-        for(Map.Entry<Player, Integer> entry : arrayLeaderboard){
-            str.append(String.format("%d°) [%-6s] %-20s --> %3d travel days\n", getPos(entry.getKey()),entry.getKey().getColor(),entry.getKey().getUsername(), entry.getValue() ));
+        for (Map.Entry<Player, Integer> entry : arrayLeaderboard) {
+            str.append(String.format("%d°) [%-6s] %-20s --> %3d travel days\n", getPos(entry.getKey()), entry.getKey().getColor(), entry.getKey().getUsername(), entry.getValue()));
         }
         str.append("\n");
         return str.toString();
     }
 
-    private String playersToString(){
-        switch (mapLeaderboard.size()){
+    private String playersToString() {
+        switch (mapLeaderboard.size()) {
             case 1 -> {
                 return String.format("\t\t\t\t\t  ○  ○  ○  ○  ○  ○  %s  ○  ○  ○  ○  ○  ○\n\t\t\t\t\t                 %s\n",
                         colorToString(arrayLeaderboard.get(0).getKey()),
@@ -285,6 +343,7 @@ public class LeaderBoard {
             }
         }
     }
+
     private String colorToString(Player player) {
         return switch (player.getColor()) {
             case RED -> "\u001B[31m●\u001B[0m";
@@ -294,6 +353,7 @@ public class LeaderBoard {
             default -> "●";
         };
     }
+
     private String posToString(int pos) {
         return switch (pos) {
             case 1 -> "[1st]";

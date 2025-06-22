@@ -44,7 +44,8 @@ public class EffectWinGoods extends CardEffect {
     }
 
     public void action(Player player) {
-        if (coordinates == null || coordinates.isEmpty()) {
+//        if (coordinates == null || coordinates.isEmpty()) {
+        if (coordinates == null){
             throw new IllegalMethodOnThisCardException("You have to set the coordinates before using this method");
         }
         for (Pair<Point, Token> coordinate : coordinates) {

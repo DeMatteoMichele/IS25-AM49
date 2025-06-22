@@ -32,20 +32,14 @@ public class PiratesCard extends Enemy {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have defeated the pirates!");
-            System.out.println("Now decide if you want to win or stay as you are");
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have drawn with the pirates!");
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             tryNextPlayerOrHandleDefeatedPlayers();
         } else {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have lost against the pirates!");
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             defeatedPlayers.add(gameBoard.getCurrentPlayer());
             tryNextPlayerOrHandleDefeatedPlayers();
         }
@@ -101,6 +95,7 @@ public class PiratesCard extends Enemy {
             currentEffect = listEffects.removeFirst();
             currentState = AdventureStatesTypes.ROLL_DICES;
             cannonadesPhase = true;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
 
@@ -117,9 +112,9 @@ public class PiratesCard extends Enemy {
             } else {      //effects are not finished, first player has to roll the dices on the next effect
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
                 currentEffect = listEffects.removeFirst();
-                System.out.println("Next effect: " + currentEffect.getDescription());
                 System.out.println("Now the first defeated must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
             }
         }
     }
@@ -153,6 +148,7 @@ public class PiratesCard extends Enemy {
         if (availableShields > 0) {
             System.out.println("Puoi attivare gli scudi. Scegli le coordinate delle batterie da utilizzare.");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            coordinatesOfActivable = currentShipBoard.getActivatableComponents(ComponentType.SHIELD);
         } else {
             System.out.println("Non hai scudi da attivare. Subisci l'effetto della cannonata.");
             currentState = AdventureStatesTypes.EFFECT;
@@ -161,18 +157,9 @@ public class PiratesCard extends Enemy {
     }
 
     @Override
-    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
-        if (cannonadesPhase) { //we are in the effect phase, when players are already defeated
-            return shipBoard.getActivatableComponents(ComponentType.SHIELD).size();
-        } else {
-            return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
-        }
-    }
-
-    @Override
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
-        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
+        deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard(), coordinatesOfActivable);
         coordinatesOfActivable = new ArrayList<>();
         tryNextPlayerDefeated();
     }
@@ -183,7 +170,7 @@ public class PiratesCard extends Enemy {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

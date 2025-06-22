@@ -37,33 +37,27 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public void drawCard() {
-        //chiamo il draw di adventure card
         super.drawCard();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found an Abandoned Station! You can land on it for some goods.");
-        //passo alla richiesta di requisiti
         checkRequirements();
     }
 
 
     @Override
     public void checkRequirements() {
-
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT) + ship.getTotalNumberOfaToken(Token.BROWN_ALIENS) + ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
-        //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
         if (totalNumCrewMembers >= lostAstronauts) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the station for some goods?");
             currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP);
         } else {
-            //non ho abastanza membri per atterrare
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough members to land on the station!");
             try {
-                //controllo se il current player era l'ultimo o no
-                //se non è l'ultimo richiamo check requirements sul player dopo
                 gameBoard.nextPlayer();
                 checkRequirements();
             } catch (IllegalSetOfNextPlayerException e) {
-                //se era l'ultimo catturo l'eccezione propagata verso l'alto da nextPlayer
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "It goes to update state");
                 update();
             }
@@ -72,16 +66,13 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public void landingOnStationOrShip(boolean IsLanded) throws IllegalMethodOnThisStateException {
-
-        //se questo metodo è chiamato il player ha scelto di scendere sulla stazione
-        //prendo il primo effetto (l'unico in questa carta)
-        //vado nello stato dove decido le merci da caricare e le rispettive posizioni
         super.landingOnStationOrShip(IsLanded);
         if (IsLanded) {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), true, cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to decide where you want to add your goods and which ones");
             currentState = AdventureStatesTypes.DECISION_GOODS;
-            currentEffect = listEffects.getFirst();
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
         } else {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), false, cardId);
             try {
@@ -92,14 +83,7 @@ public class AbandonedStationCard extends AdventureCard {
                 update();
             }
         }
-
     }
-
-    @Override
-    public void finishDecision(Set<Point> coordinates) {
-        throw new IllegalMethodOnThisCardException("This method is not allowed in this card");
-    }
-
 
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
@@ -108,6 +92,7 @@ public class AbandonedStationCard extends AdventureCard {
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");
@@ -126,7 +111,6 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public String toString() {
-
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";
@@ -158,8 +142,6 @@ public class AbandonedStationCard extends AdventureCard {
             str.append(blueText).append(" ".repeat(width - blueText.length() - 1)).append("|\n");
             str.append(border);
         }
-
-
         return str.toString();
     }
 }

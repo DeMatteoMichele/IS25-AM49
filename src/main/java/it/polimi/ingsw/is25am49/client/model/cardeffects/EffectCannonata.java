@@ -26,36 +26,38 @@ public class EffectCannonata extends CardEffect {
      * This method applies the cannon effect to the player.
      * It depends on the level of the cannonade
      * It destroys the tile in the position of the cannonade
+     *
      * @param player the player to which the effect is applied
      */
     public void action(Player player) {
         // Implementazione per cannonata di livello 1
         if (level == 1) {
-            Optional<Point> target = player.getShipBoard().getExposedPoint(position,direction);
+            Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
             if (target.isPresent()) {
                 player.getShipBoard().destroyTile(target.get());
-                System.out.println("distruggo il componente in posizione " + target.get());
+                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get());
                 player.getShipBoard().destroyDisconnectedTiles();
             }
-        } else if(level==0) {
+        } else if (level == 0) {
             //cannonata di livello zero, si può prevenire con attivazione di scudi
             //controllo se ci sono scudi che proteggono dalle direioni da cui colpisce la cannoanata
-            if(player.getShipBoard().getProtectedSides().contains(direction)) {
-                System.out.println("No damage, shield activated");
-            }
-            else{
-                Optional<Point> target = player.getShipBoard().getExposedPoint(position,direction);
+            if (player.getShipBoard().getProtectedSides().contains(direction)) {
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, shield activated");
+            } else {
+                Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    System.out.println("distruggo il componente in posizione " + target.get());
-                    player.getShipBoard().destroyDisconnectedTiles();
+                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
+                    userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
             }
-    }}
+        }
+    }
 
     /**
      * This method sets the position where the cannonade hits
      * It sets the number of row or column (it depend on the orientation) where the cannonade hits
+     *
      * @param position the position of the cannonade
      */
     public void setPosition(int position) {
@@ -64,10 +66,11 @@ public class EffectCannonata extends CardEffect {
     }
 
     public void setListOfCoordinates(List<Pair<Point, Token>> listOfCoordinates) {
-        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
+
     public void setCoordinate(Point coordinate) {
-        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
     @Override
