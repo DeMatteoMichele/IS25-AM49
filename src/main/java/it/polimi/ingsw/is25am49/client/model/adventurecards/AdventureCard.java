@@ -5,8 +5,8 @@ import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
@@ -54,8 +54,10 @@ public abstract class AdventureCard {
 
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         userInterface.updateDrawAdventureCard(-99, this);
         gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+        userInterface.updateChangeTurn(gameBoard.getFirstPlayerConnected().getIdPlayer());
     }
 
     public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {
@@ -118,10 +120,30 @@ public abstract class AdventureCard {
 
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         gameBoard.finishUpdateLeaderboard();
         isFinished = true;
     }
 
+    protected void deactivateComponents(ShipBoard shipBoard,List<Point> coordinatesOfActivable) {
+        if(coordinatesOfActivable.isEmpty()) {
+            return;
+        }
+        coordinatesOfActivable.forEach(shipBoard::turnOff);
+        userInterface.updateDeactivating(shipBoard.getPlayerID(), coordinatesOfActivable);
+        coordinatesOfActivable.clear();
+    }
+
+    protected void activateComponentsWithBatteries(ShipBoard shipBoard, List<Point> coordinatesOfActivable, List<Pair<Point, Token>> coordinatesOfBatteries) {
+        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
+            throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
+        }
+        System.out.println("You have decided the coord for the components");
+        for (int i = 0; i < coordinatesOfActivable.size(); i++) {
+            shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
+            userInterface.updateEffectModifyEnergy(shipBoard.getPlayerID(), coordinatesOfBatteries.get(i).getKey(),coordinatesOfBatteries.get(i).getValue());
+        }
+    }
     protected void checkNumberOfBatteries(List<Pair<Point, Token>> batteries, ShipBoard shipBoard) {
         if (batteries.size() > shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
             throw new IllegalArgumentException("you have chosen more batteries than you have");

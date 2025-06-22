@@ -579,7 +579,9 @@ public class GameBoard {
 
     public void nextPlayer() {
         //setto il currentplayer al next player dato il current player
-        setCurrentPlayer(getNextPlayerConnected());
+        Player nextPlayer = getNextPlayerConnected();
+        setCurrentPlayer(nextPlayer);
+        ui.updateChangeTurn(nextPlayer.getIdPlayer());
     }
 
     /**

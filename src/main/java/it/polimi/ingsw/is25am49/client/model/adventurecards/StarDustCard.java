@@ -10,12 +10,12 @@ public class StarDustCard extends AdventureCard {
         super(cardId, gameBoard, description, level, name);
     }
 
-
     @Override
     public void drawCard() {
         super.drawCard();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a Star Dust! You will lose traveldays as much as you have exposed connectors on you ship!");
         currentState = AdventureStatesTypes.EFFECT;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         applyEffect();
     }
 

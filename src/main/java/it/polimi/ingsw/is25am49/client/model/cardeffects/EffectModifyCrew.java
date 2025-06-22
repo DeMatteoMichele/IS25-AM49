@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.client.model.cardeffects;
 
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalSizeToRemove;
@@ -20,13 +21,16 @@ public class EffectModifyCrew extends CardEffect {
     }
 
     public void action(Player player) {
-        if (coordinates.size() != lostCrew) {
-            throw new IllegalSizeToRemove("Please select the right amount of crew to remove " + coordinates.size());
-        }
-        //per tutte le coordinate nella lista rimuovo il rispettivo Token
-        for (Pair<Point, Token> coordinate : coordinates) {
-            player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
-            userInterface.updateEffectModifyCrew(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
+        ShipBoard shipBoard = player.getShipBoard();
+        int totalCrew = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT) + shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS) + shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+        if ((totalCrew < lostCrew && coordinates.size() == totalCrew) || (coordinates.size() == lostCrew)) {
+            //per tutte le coordinate nella lista rimuovo il rispettivo Token
+            for (Pair<Point, Token> coordinate : coordinates) {
+                player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
+                System.out.println("rimozione di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
+            }
+        } else {
+            throw new IllegalSizeToRemove("Please select the right amount of crew to remove: " + lostCrew);
         }
     }
 

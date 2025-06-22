@@ -138,8 +138,6 @@ public class AdventureState extends State {
 
     }
 
-
-
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }

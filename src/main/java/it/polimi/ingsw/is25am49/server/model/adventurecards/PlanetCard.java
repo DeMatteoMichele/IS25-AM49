@@ -27,22 +27,16 @@ public class PlanetCard extends AdventureCard {
         this.planets.addAll(planets);
     }
 
-
     @Override
     public void drawCard() {
-        //chiamo il super draw
         super.drawCard();
         System.out.println("You have found a planet! You can land on it for some goods.");
-        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
         checkRequirements();
     }
 
 
     @Override
     public void checkRequirements() {
-        if (currentState != AdventureStatesTypes.CHECK_REQUIREMENTS) {
-            throw new IllegalMethodOnThisStateException("Wrong state");
-        }
         System.out.println("Do you wanna land on the planet for some goods?");
         currentState = AdventureStatesTypes.DECISION_LAND_PLANET;
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_PLANET);
@@ -54,7 +48,7 @@ public class PlanetCard extends AdventureCard {
         if (isLanded) {
             planet = getPlanetById(planetId);
             if (!planets.contains(planet)) {
-                throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exists or it is already occupied");
+                throw new IllegalPlanetToLand("You cannot land on this planet, it doesnt exist or it is already occupied");
             }
             if (!planet.isOccupied()) {
                 System.out.println(gameBoard.getCurrentPlayer().getUsername() + " You have landed on the planet!");
@@ -86,7 +80,6 @@ public class PlanetCard extends AdventureCard {
         try {
             gameBoard.nextPlayer();
             System.out.println("it wasn't the last player, go on");
-            currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             System.out.println("It was the last player, end of the turn");
@@ -104,8 +97,7 @@ public class PlanetCard extends AdventureCard {
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             applyEffect();
-        }
-        else {
+        } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }

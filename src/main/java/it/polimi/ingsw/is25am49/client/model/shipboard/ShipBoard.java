@@ -26,6 +26,7 @@ public class ShipBoard {
     private Point lastPlacedPoint;
     private boolean isCompleted;
     private int destroyedTiles;
+    private int playerID;
 
     public HashMap<Point,Optional<Tile>> getGrid() {
         return grid;
@@ -38,6 +39,7 @@ public class ShipBoard {
     }
 
     public ShipBoard(int level, int playerID, Color color) {
+        this.playerID = playerID;
         grid = new HashMap<>();
         lastPlacedPoint = new Point(7, 7);
         isCompleted = false;
@@ -1401,6 +1403,10 @@ public class ShipBoard {
                     }
                     return 0;
                 }).sum();
+    }
+
+    public int getPlayerID(){
+        return playerID;
     }
 }
 
