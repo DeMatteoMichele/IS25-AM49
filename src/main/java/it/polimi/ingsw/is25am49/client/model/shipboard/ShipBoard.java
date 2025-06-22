@@ -680,40 +680,44 @@ public class ShipBoard {
      */
     public int getNumberOfExposedConnectors() {
         Set<Point> external = new HashSet<>(getExternalPoints());
-        int exposedConnectors = 0;
-        for (Point point : external) {
-            int n = 4;
+        int exposedConnectors=0;
+        for (Point point:external){
+            //System.out.println("sto guardando: "+point);
+            int n=4;
             try {
                 Tile centerTile = getTile(point);
                 Tile sideTile;
                 try {
                     sideTile = this.getTile(new Point(point.x, point.y - 1));
-                    if (connectorsMatch(centerTile.getConnector(0), sideTile.getConnector(2))) n--;
+                    if(connectorsMatch(centerTile.getConnector(0), sideTile.getConnector(2)))n--;
+                    else if(centerTile.getConnector(0).equals(ConnectorType.FLAT))n--;
                 } catch (InvalidCoordinatesException _) {
-                    if (centerTile.getConnector(0).equals(ConnectorType.FLAT)) n--;
+                    if(centerTile.getConnector(0).equals(ConnectorType.FLAT))n--;
                 }
                 try {
                     sideTile = this.getTile(new Point(point.x + 1, point.y));
                     if (connectorsMatch(centerTile.getConnector(1), sideTile.getConnector(3))) n--;
+                    else if(centerTile.getConnector(1).equals(ConnectorType.FLAT))n--;
                 } catch (InvalidCoordinatesException _) {
-                    if (centerTile.getConnector(1).equals(ConnectorType.FLAT)) n--;
+                    if(centerTile.getConnector(1).equals(ConnectorType.FLAT))n--;
                 }
                 try {
                     sideTile = this.getTile(new Point(point.x, point.y + 1));
                     if (connectorsMatch(centerTile.getConnector(2), sideTile.getConnector(0))) n--;
+                    else if(centerTile.getConnector(2).equals(ConnectorType.FLAT))n--;
                 } catch (InvalidCoordinatesException _) {
-                    if (centerTile.getConnector(2).equals(ConnectorType.FLAT)) n--;
+                    if(centerTile.getConnector(2).equals(ConnectorType.FLAT))n--;
                 }
                 try {
                     sideTile = this.getTile(new Point(point.x - 1, point.y));
                     if (connectorsMatch(centerTile.getConnector(3), sideTile.getConnector(1))) n--;
+                    else if(centerTile.getConnector(3).equals(ConnectorType.FLAT))n--;
                 } catch (InvalidCoordinatesException _) {
-                    if (centerTile.getConnector(3).equals(ConnectorType.FLAT)) n--;
+                    if(centerTile.getConnector(3).equals(ConnectorType.FLAT))n--;
                 }
-            } catch (InvalidCoordinatesException _) {
-                n = 0;
-            }
-            exposedConnectors += n;
+            }catch (InvalidCoordinatesException _) {n=0;}
+            //System.out.println("ha "+n+" connettori esposti");
+            exposedConnectors+=n;
         }
         return exposedConnectors;
     }
@@ -1266,23 +1270,6 @@ public class ShipBoard {
         };
     }
 
-    private String compToEmoji(ComponentType c) {
-        return switch (c) {
-            case CABINE -> "֍";
-            case BATTERY -> "↯";
-            case STORAGE -> "□";
-            case SPECIAL_STORAGE -> "■";
-            case SHIELD -> "◉";
-            case CANNON -> "Ϯ";
-            case DOUBLE_CANNON -> "Џ";
-            case ENGINE -> "Ѫ";
-            case DOUBLE_ENGINE -> "Ѭ";
-            case BROWN_ALIEN_MODULE -> "፠";
-            case PURPLE_ALIEN_MODULE -> "፨";
-            case FRAME_SECTION -> "ᚸ";
-            default -> " ";
-        };
-    }
 
     private String centerToStr(Tile t) {
         switch (t.getIdTile()) {
