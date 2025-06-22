@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model;
 
+import it.polimi.ingsw.is25am49.server.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
@@ -135,12 +136,12 @@ public class LeaderBoard {
 
     public void remove(Player player) {
         if (mapLeaderboard.containsKey(player)) {
-            if(mapLeaderboard.size()<2) throw new GameSettingsException("the leaderboard has one player left, going in finish state");
             int tmpDays = mapLeaderboard.get(player);
             mapLeaderboard.remove(player);
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
             showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
+            if(mapLeaderboard.size() == 1) throw new NotEnoughPlayerException("the leaderboard has one player left, going in finish state");
         } else
             throw new GameSettingsException("This player is not in the leaderboard");
     }

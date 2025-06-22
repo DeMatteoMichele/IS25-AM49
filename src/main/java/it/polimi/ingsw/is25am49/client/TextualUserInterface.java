@@ -851,6 +851,7 @@ public class TextualUserInterface implements UserInterface {
             }catch(Exception _){}
         }
         updateGenericCardMessage(myId,str.toString());
+        if(playerId==myId)updateShipBoard(myId);
     }
 
     @Override
@@ -906,7 +907,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
-        if(playerId==myId)lookAtShipboard(playerId);
+        if(playerId==myId)updateShipBoard(playerId);
     }
 
     @Override
@@ -917,7 +918,6 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
-
     }
 
     @Override
@@ -928,7 +928,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
-        if(playerId==myId)lookAtShipboard(playerId);
+        if(playerId==myId)updateShipBoard(playerId);
     }
 
     @Override
@@ -948,7 +948,7 @@ public class TextualUserInterface implements UserInterface {
             }catch(Exception _){}
         }
         updateGenericCardMessage(myId,str.toString());
-        if(idPlayer==myId)lookAtShipboard(myId);
+        if(idPlayer==myId)updateShipBoard(myId);
     }
 
     @Override
@@ -1260,8 +1260,11 @@ public class TextualUserInterface implements UserInterface {
                     try {
                         lineReader.printAbove("do you really want to stop flight? (y/n) >> ");
                         String s = lineReader.readLine().trim();
-                        //if (s.equalsIgnoreCase("y")) controller.userStopFlight(myId);
-                        //else printUpdateMessage("flight not stopped");
+                        if (s.equalsIgnoreCase("y")) {
+                            controller.userStopFlight(myId);
+                            printUpdateMessage("you will land at the end of this turn, you can still play");
+                        }
+                        else printUpdateMessage("flight not stopped");
                     } catch (Exception e) {
                         printUpdateMessage(error + e.getMessage());
                     }
