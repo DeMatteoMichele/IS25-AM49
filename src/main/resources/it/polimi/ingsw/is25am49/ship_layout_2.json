@@ -1,0 +1,159 @@
+[
+  {
+    "id": 3,
+    "orientation": "WEST",
+    "x": 7,
+    "y": 8
+  },
+  {
+    "id": 60,
+    "orientation": "NORTH",
+    "x": 6,
+    "y": 7
+  },
+  {
+    "id": 32,
+    "orientation": "SOUTH",
+    "x": 8,
+    "y": 6
+  },
+  {
+    "id": 124,
+    "orientation": "NORTH",
+    "x": 7,
+    "y": 6
+  },
+  {
+    "id": 49,
+    "orientation": "WEST",
+    "x": 8,
+    "y": 8
+  },
+  {
+    "id": 152,
+    "orientation": "NORTH",
+    "x": 9,
+    "y": 6
+  },
+  {
+    "id": 51,
+    "orientation": "NORTH",
+    "x": 8,
+    "y": 7
+  },
+  {
+    "id": 143,
+    "orientation": "NORTH",
+    "x": 9,
+    "y": 7
+  },
+  {
+    "id": 67,
+    "orientation": "WEST",
+    "x": 9,
+    "y": 8
+  },
+  {
+    "id": 14,
+    "orientation": "WEST",
+    "x": 10,
+    "y": 7
+  },
+  {
+    "id": 100,
+    "orientation": "NORTH",
+    "x": 8,
+    "y": 9
+  },
+  {
+    "id": 78,
+    "orientation": "NORTH",
+    "x": 9,
+    "y": 9
+  },
+  {
+    "id": 103,
+    "orientation": "EAST",
+    "x": 10,
+    "y": 9
+  },
+    {
+        "id": 4,
+        "orientation": "EAST",
+        "x": 11,
+        "y": 7
+    },
+    {
+        "id": 68,
+        "orientation": "SOUTH",
+        "x": 11,
+        "y": 8
+    },
+    {
+        "id": 15,
+        "orientation": "WEST",
+        "x": 12,
+        "y": 7
+    },
+    {
+        "id": 39,
+        "orientation": "SOUTH",
+        "x": 5,
+        "y": 7
+    },
+  {
+    "id": 138,
+    "orientation": "NORTH",
+    "x": 5,
+    "y": 8
+  },
+  {
+    "id": 145,
+    "orientation": "SOUTH",
+    "x": 4,
+    "y": 7
+  },
+  {
+    "id": 71,
+    "orientation": "NORTH",
+    "x": 4,
+    "y": 8
+  },
+  {
+    "id": 58,
+    "orientation": "SOUTH",
+    "x": 6,
+    "y": 8
+  },
+  {
+    "id": 131,
+    "orientation": "NORTH",
+    "x": 6,
+    "y": 6
+  },
+  {
+    "id": 102,
+    "orientation": "NORTH",
+    "x": 8,
+    "y": 5
+  },
+  {
+    "id": 105,
+    "orientation": "NORTH",
+    "x": 5,
+    "y": 6
+  },
+  {
+    "id": 86,
+    "orientation": "NORTH",
+    "x": 6,
+    "y": 9
+  },
+  {
+    "id": 118,
+    "orientation": "SOUTH",
+    "x": 5,
+    "y": 9
+  }
+
+]
