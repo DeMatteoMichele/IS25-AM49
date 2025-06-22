@@ -128,7 +128,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
 
         // Dopo 3 secondi, chiudi il popup
-        PauseTransition delay = new PauseTransition(Duration.seconds(40));
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(event -> popup.hide());
         delay.play();
     }
@@ -368,16 +368,15 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateFinishShipboard(int playerId) {
+
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
         Platform.runLater(()->{
-
             if(playerId==myId){
-
                 buildController.clearShipBoard();
                 buildController.printShipboard();
                 buildController.clearListView();
                 buildController.updateListView();
-
+                buildController.selectTypeOfToken();
             }
         });
 
@@ -427,9 +426,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
         });
     }
 
+
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
-
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            if(playerId==myId){
+                buildController.disableHighlight();
+                updateFinishShipboard(playerId);
+            }
+        });
     }
 
     @Override
@@ -461,19 +467,29 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateCardMessageBox(message);
+            }
+        });
     }
 
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.configureEffectPaneDices(firstDice, secondDice);
+            }
+        });
     }
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
         Platform.runLater(()->{
             AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-            adventureController.updateCurrentCard(adventureCard.getCardId());
+            adventureController.updateCurrentCard(adventureCard);
         });
     }
 
@@ -510,7 +526,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateStopFlight(int playerId) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.stopFlight();
+            }
+        });
     }
 
     @Override
@@ -554,16 +575,37 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updatePlayerStats(0, 0, 0, credits, 0);
+            }
+        });
     }
 
     @Override
-    public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
-
+    public void updateDestroyedTiles(int playerId, Set<Point> destroyedTiles) {
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateShipboardDestroyedTiles(destroyedTiles);
+                adventureController.updatePlayerStats(0, 0, 0, 0, destroyedTiles.size());
+            }
+        });
     }
-
+    //Complesso, si potrebbe rivedere la modalità di gestione della leaderboard
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
+
+    }
+
+    @Override
+    public void updateEndGame(int playerId) {
+
+    }
+
+    @Override
+    public void updateCalculateScore(int playerId) {
 
     }
 

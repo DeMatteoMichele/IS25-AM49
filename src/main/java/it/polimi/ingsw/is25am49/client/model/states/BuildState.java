@@ -98,6 +98,9 @@ public class BuildState extends State {
         player.getShipBoard().checkCoordinates(coordinates);
         if(!player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))throw new RuntimeException("you cannot add a "+token+" token in this position, correct alien module is missing");
         player.getShipBoard().checkAddTokenToTile(coordinates, token);
+        if(token.equals(Token.BROWN_ALIENS)||token.equals(Token.PURPLE_ALIENS)){
+            if(player.getShipBoard().getTotalNumberOfaToken(token)>0)throw new RuntimeException("you can have only one "+token+" token in your shipboard");
+        }
     }
     @Override
     public void checkUserThrowDices(int playerId) {
@@ -201,12 +204,16 @@ public class BuildState extends State {
 
     public void userFinishShipboard(int playerId) {
         Player player = getPlayerById(playerId);
+        //controlla che tutti abbiano finito la shipboard
         if (gameSession.userFinishShipboard(player)) {
             gameSession.mergeSmallDecks();
+            userInterface.updateFinishShipboard(playerId);
             if(gameSession.getGame().isPresent()) {
                 Game game = gameSession.getGame().get();
                 for (Player p : game.getListPlayers()) {
-                    if(p.getShipBoard().getAlienPoint().isPresent()) return;
+                    if(p.getShipBoard().getAlienPoint().isPresent()) {
+                        return;
+                    }
                 }
                 userInterface.updateFinishShipboard(playerId);
                 transition(new AdventureState(gameSession, userInterface));
