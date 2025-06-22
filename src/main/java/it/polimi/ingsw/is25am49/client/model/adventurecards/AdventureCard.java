@@ -54,7 +54,7 @@ public abstract class AdventureCard {
 
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
-        System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
+        userInterface.updateDrawAdventureCard(-99, this);
         gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
     }
 
