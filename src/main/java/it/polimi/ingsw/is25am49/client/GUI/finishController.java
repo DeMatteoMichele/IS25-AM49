@@ -27,10 +27,20 @@ public class finishController extends GenericSceneController{
     private Label thirdPosition;
     @FXML
     private Label fourthPosition;
+    @FXML
+    private ImageView backgroundImage;
 
     public void initialize() {
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/is25am49/podio.png")));
         podio.setImage(image);
+        Image image2 = new Image(getClass().getResource("/sfondo3.jpg").toExternalForm());
+        backgroundImage.setImage(image2);
+        backgroundImage.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
+                backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
+            }
+        });
     }
     public void calculateScore(ActionEvent event) {
         try{
@@ -42,7 +52,6 @@ public class finishController extends GenericSceneController{
     public void endGame(ActionEvent event) {
         try {
             guiApplication.getController().adminEndGame(guiApplication.getMyId());
-            calculateScore.setVisible(true);
         }catch (Exception e) {
             guiApplication.printUpdateMessage(error + e.getMessage());
         }
@@ -50,8 +59,25 @@ public class finishController extends GenericSceneController{
     public void printPodium(){
         List<Player> finalRanking = gameSession.getLeaderBoard().stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
         firstPosition.setText("1st: " + finalRanking.get(0).getUsername() + " - " + finalRanking.get(0).getCredits() + " credits");
+        ImageView playerIcon= getPlayerIcon(finalRanking.get(0).getIdPlayer());
+        firstPosition.setGraphic(playerIcon);
+        secondPosition.setText("2nd: " + finalRanking.get(1).getUsername() + " - " + finalRanking.get(1).getCredits() + " credits");
+        ImageView playerIcon2 = getPlayerIcon(finalRanking.get(1).getIdPlayer());
+        secondPosition.setGraphic(playerIcon2);
+        if(finalRanking.size()>2){
+            thirdPosition.setText("3rd: " + finalRanking.get(2).getUsername() + " - " + finalRanking.get(2).getCredits() + " credits");
+            ImageView playerIcon3 = getPlayerIcon(finalRanking.get(2).getIdPlayer());
+            thirdPosition.setGraphic(playerIcon3);
+        }
+        if(finalRanking.size()>3){
+            fourthPosition.setText("4th: " + finalRanking.get(3).getUsername() + " - " + finalRanking.get(3).getCredits() + " credits");
+            ImageView playerIcon4 = getPlayerIcon(finalRanking.get(3).getIdPlayer());
+            fourthPosition.setGraphic(playerIcon4);
+        }
+    }
+    public ImageView getPlayerIcon(int playerId) {
+        Color playerColor = gameSession.getPlayer(playerId).get().getColor();
         ImageView playerIcon;
-        Color playerColor = gameSession.getPlayer(finalRanking.get(0).getIdPlayer()).get().getColor();
 
         switch (playerColor) {
             case RED:
@@ -71,29 +97,6 @@ public class finishController extends GenericSceneController{
         }
         playerIcon.setFitWidth(34);
         playerIcon.setFitHeight(55);
-        firstPosition.setGraphic(playerIcon);
-        secondPosition.setText("2nd: " + finalRanking.get(1).getUsername() + " - " + finalRanking.get(1).getCredits() + " credits");
-        ImageView playerIcon2;
-        Color playerColor2 = gameSession.getPlayer(finalRanking.get(1).getIdPlayer()).get().getColor();
-
-        switch (playerColor2) {
-            case RED:
-                playerIcon2 = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
-                break;
-            case BLUE:
-                playerIcon2 = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
-                break;
-            case GREEN:
-                playerIcon2 = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
-                break;
-            case YELLOW:
-                playerIcon2 = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
-                break;
-            default:
-                playerIcon2 = null;
-        }
-        playerIcon2.setFitWidth(34);
-        playerIcon2.setFitHeight(55);
-        secondPosition.setGraphic(playerIcon2);
+        return playerIcon;
     }
 }

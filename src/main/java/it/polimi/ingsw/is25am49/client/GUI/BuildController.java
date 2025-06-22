@@ -119,6 +119,10 @@ public class BuildController extends GenericSceneController {
             timer.setVisible(false);
             timerLabel.setVisible(false);
             timerLabel.setDisable(true);
+            stopLooking.setVisible(false);
+            stopLooking.setDisable(true);
+            smallAdventureDeckContainer.setVisible(false);
+            smallAdventureDeckContainer.setDisable(true);
         }
     }
     public void loadGrid() {
@@ -878,7 +882,7 @@ public class BuildController extends GenericSceneController {
                    imageView.setFitHeight(60);
 
                    // Imposta la rotazione dell'immagine in base all'orientamento della tile
-                   switch (tile.get().getTileOrientation()){
+                   switch (tile.get().getTileOrientation()) {
                        case NORTH -> imageView.setRotate(0);
                        case EAST -> imageView.setRotate(90);
                        case SOUTH -> imageView.setRotate(180);
@@ -887,8 +891,51 @@ public class BuildController extends GenericSceneController {
 
                    // Aggiungi la nuova ImageView alla griglia
                    shipBoard.add(imageView, coordinates.x - 4, coordinates.y - 5);
-               } else {
-                   System.out.println("Immagine non trovata per la tile ID: " + idTile);
+                   if (tile.get().getComponent().getType() == ComponentType.CABINE) {
+                       //creo hbox per affiancarli
+                       HBox tokenContainer = new HBox();
+                       tokenContainer.setSpacing(5); // Spazio tra i token
+                       tokenContainer.setAlignment(javafx.geometry.Pos.CENTER);
+
+                       //aggiungo token
+                       tile.get().getComponent().getTokenList().forEach(token -> {
+
+                           ImageView tokenImageView;
+                           Color playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();
+                           if (token == Token.ASTRONAUT) {
+                               //se il token è un astronauta, prendo il colore del giocatore
+                               playerColor = gameSession.getPlayer(playerId).get().getColor();
+
+                               switch (playerColor) {
+                                   case RED:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                                       break;
+                                   case BLUE:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
+                                       break;
+                                   case GREEN:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
+                                       break;
+                                   case YELLOW:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
+                                       break;
+                                   default:
+                                       // Immagine predefinita in caso di colore non gestito
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                               }
+                           } else {
+                               tokenImageView = tokensMap.get(token);
+                           }
+                           tokenImageView.setFitWidth(23);
+                           tokenImageView.setFitHeight(32);
+                           tokenContainer.getChildren().add(tokenImageView);
+
+                       });
+                       shipBoard.add(tokenContainer, coordinates.x - 4, coordinates.y - 5);
+                       GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
+                   } else {
+                       System.out.println("Immagine non trovata per la tile ID: " + idTile);
+                   }
                }
            }
        });

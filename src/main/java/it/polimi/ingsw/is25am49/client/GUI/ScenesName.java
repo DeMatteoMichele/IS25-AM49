@@ -43,9 +43,9 @@ public enum ScenesName {
             case 2 -> {
                 return ADVENTURE;
             }
-//            case 3 -> {
-//                //return FINISH;
-//            }
+            case 3 -> {
+                return FINISH;
+            }
             default -> throw new IllegalArgumentException("Invalid state index: " + stateIndex);
         }
     }

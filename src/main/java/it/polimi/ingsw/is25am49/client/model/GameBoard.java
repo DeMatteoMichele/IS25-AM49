@@ -513,7 +513,7 @@ public class GameBoard {
 
             credits = 5 - leaderBoard.getPos(player);
             credits -= player.getShipBoard().getDestroyedTiles();
-            credits += player.scoreOfGoods();
+            credits += player.scoreOfGoods()/2;
             if (minimumExposedComponents().contains(player)) {
                 credits += 2;
             }
