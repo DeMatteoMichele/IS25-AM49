@@ -442,6 +442,7 @@ public class TextualUserInterface implements UserInterface {
 
     public void readShipboardFromFile(String filename) {
         filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
+        int delay = 150; // delay in milliseconds
         try {
             int tr=0;
             File file = new File(filename);
@@ -458,11 +459,12 @@ public class TextualUserInterface implements UserInterface {
                         while (tr<20){
                             tr++;
                             try {
-                                Thread.sleep(100);
+                                Thread.sleep(delay);
                                 gameSession.getState().userRotateHandTile(myId, o);
                                 break;
                             } catch (Exception _) {}
                         }
+                        Thread.sleep(delay);
                         Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
                         controller.userPlaceTile(myId, p, o);
                     }catch (Exception e){
@@ -1151,11 +1153,12 @@ public class TextualUserInterface implements UserInterface {
                 case "14:1" -> {//loadShipboard
                     try {
                         lineReader.printAbove("which ship do you want to load:\n " +
-                                "1 --> ship_layout_1.json\n" +
-                                "2 --> ship_layout_2.json\n");
+                                "1 --> ship_layout_1.json\n " +
+                                "2 --> ship_layout_2.json\n ");
                         String s = lineReader.readLine(prompt).trim();
                         switch (s){
                             case "1" ->readShipboardFromFile("ship_layout_1.json");
+                            case "2" ->readShipboardFromFile("ship_layout_2.json");
                             default -> printUpdateMessage(error + "invalid input");
                         }
                     } catch (Exception e) {
