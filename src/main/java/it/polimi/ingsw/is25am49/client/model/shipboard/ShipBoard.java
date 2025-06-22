@@ -551,7 +551,7 @@ public class ShipBoard {
             for (Point p : elimina) {
                 destroyTile(p);
             }
-        }catch (it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesException _){
+        }catch (InvalidCoordinatesException _){
             for (Point p : elimina) {
                 destroyTile(p);
             }

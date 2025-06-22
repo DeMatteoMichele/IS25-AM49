@@ -154,7 +154,13 @@ public class AdventureState extends State {
     }
 
     public void userStopFlight(int playerId) {
-
+        Player player = getPlayerById(playerId);
+        try {
+            gameSession.userStopFlight(player);
+        }catch (GameSettingsException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
+            gameSession.getGame().ifPresent(Game::finishGame);
+            transition(new FinishScoreState(gameSession));
+        }
     }
 
     public void adminCalculateScore(int playerId) {

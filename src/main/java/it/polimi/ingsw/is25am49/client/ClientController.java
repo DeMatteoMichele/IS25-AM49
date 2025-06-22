@@ -232,6 +232,7 @@ public class ClientController {
         try {
             gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
         } catch (Exception e) {
+            e.printStackTrace();
             ui.printUpdateMessage(error + "Error while finishing decision token: --> " + e.getMessage());
         }
     }

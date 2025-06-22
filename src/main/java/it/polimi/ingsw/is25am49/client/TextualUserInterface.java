@@ -735,15 +735,11 @@ public class TextualUserInterface implements UserInterface {
     public String adventureStateMenu(){
         return """
                 AdventureState - commands:\s
-                1.  DrawAdventureCard
-                2.  ThrowDices
-                3.  ActivateComponent
-                4.  DecisionToken
-                5.  LandOnPlanet
-                6.  LandOnStationOrShip
-                7.  AcceptPrizes
-                8.  StopFlight
-                9. LookAtShipboard
+                1.  DrawAdventureCard           6.  LandOnStationOrShip
+                2.  ThrowDices                  7.  AcceptPrizes
+                3.  ActivateComponent           8.  StopFlight
+                4.  DecisionToken               9.  LookAtShipboard
+                5.  LandOnPlanet                10. StopFlight
                 12. ←-- go back
                 """;
     }
@@ -1256,6 +1252,16 @@ public class TextualUserInterface implements UserInterface {
                         int id = Integer.parseInt(lineReader.readLine("insert the playerId >> ").trim());
                         if (gameSession.getPlayer(id).isPresent()) updateShipBoard(id);
                         else printUpdateMessage(error + "player not found");
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
+                    }
+                }
+                case "10:2" -> {//StopFlight
+                    try {
+                        lineReader.printAbove("do you really want to stop flight? (y/n) >> ");
+                        String s = lineReader.readLine().trim();
+                        //if (s.equalsIgnoreCase("y")) controller.userStopFlight(myId);
+                        //else printUpdateMessage("flight not stopped");
                     } catch (Exception e) {
                         printUpdateMessage(error + e.getMessage());
                     }

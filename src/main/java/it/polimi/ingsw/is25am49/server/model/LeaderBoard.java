@@ -135,6 +135,7 @@ public class LeaderBoard {
 
     public void remove(Player player) {
         if (mapLeaderboard.containsKey(player)) {
+            if(mapLeaderboard.size()<2) throw new GameSettingsException("the leaderboard has one player left, going in finish state");
             int tmpDays = mapLeaderboard.get(player);
             mapLeaderboard.remove(player);
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
