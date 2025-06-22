@@ -27,16 +27,15 @@ public class EpidemyCard extends AdventureCard {
 
     public void checkInterconnectedCabin(){
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
-        //metto in una lista tutte le pisizioni di cabine, moduli alieni viola e moduli alienni marroni
         coordinatesOfAllCabins.addAll(ship.getComponentsPositions(ComponentType.CABINE));
         List<Point> pointsToRemove = new ArrayList<>();
         coordinatesOfAllCabins
-                .forEach(point ->{
+                .forEach(point -> {
                     Point north = new Point(point.x, point.y - 1);
                     Point south = new Point(point.x, point.y + 1);
                     Point east = new Point(point.x + 1, point.y);
                     Point west = new Point(point.x - 1, point.y);
-                    if(!coordinatesOfAllCabins.contains(north) && !coordinatesOfAllCabins.contains(south) && !coordinatesOfAllCabins.contains(east) && !coordinatesOfAllCabins.contains(west)){
+                    if (!coordinatesOfAllCabins.contains(north) && !coordinatesOfAllCabins.contains(south) && !coordinatesOfAllCabins.contains(east) && !coordinatesOfAllCabins.contains(west)) {
                         pointsToRemove.add(point);
                     }
                 });
@@ -50,20 +49,18 @@ public class EpidemyCard extends AdventureCard {
             System.out.println(gameBoard.getCurrentPlayer().getUsername() + " has not interconnected cabins, no crew members will be removed");
             System.out.println("Now i check on next player");
             checkNextPlayer();
-
         }
         else{
             System.out.println(gameBoard.getCurrentPlayer().getUsername() + " it has interconnected cabins and for each one you will lose one crew memeber");
             currentState= AdventureStatesTypes.EFFECT;
             applyEffect();
-
         }
     }
+
     private void checkNextPlayer() {
         try {
             gameBoard.nextPlayer();
             System.out.println("it wasn't the last player, go on");
-            currentState = AdventureStatesTypes.DRAW;
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             System.out.println("It was the last player, end of the turn");
@@ -82,19 +79,17 @@ public class EpidemyCard extends AdventureCard {
             }
             else if(ship.getPositionsOfaToken(Token.BROWN_ALIENS).contains(point)){
                 ship.removeTokenFromTile(point, Token.BROWN_ALIENS);
-
             }
             else{
                 ship.removeTokenFromTile(point, Token.PURPLE_ALIENS);
             }
-
         });
         coordinatesOfAllCabins.clear();
         checkNextPlayer();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

@@ -129,7 +129,7 @@ class WarZoneCardTest {
     }
 
     @Test
-    void checkRequirements2() {
+    void checkRequirementsEngine() {
     }
 
     @Test

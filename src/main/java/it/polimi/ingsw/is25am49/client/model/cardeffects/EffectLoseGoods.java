@@ -31,22 +31,25 @@ public class EffectLoseGoods extends CardEffect {
         List<Point> coordinatesOfGreenGoods = player.getShipBoard().getPositionsOfaToken(Token.GREEN_GOODS);
         List<Point> coordinatesOfBlueGoods = player.getShipBoard().getPositionsOfaToken(Token.BLUE_GOODS);
         while (redGoods != 0 && numberOfTokensToLose != 0) {
+            userInterface.updateEffectLoseGoods(player.getIdPlayer(), coordinatesOfRedGoods.get(0), Token.RED_GOODS);
             player.getShipBoard().removeTokenFromTile(coordinatesOfRedGoods.removeFirst(), Token.RED_GOODS);
             redGoods--;
             numberOfTokensToLose--;
         }
         while (yellowGoods != 0 && numberOfTokensToLose != 0) {
+            userInterface.updateEffectLoseGoods(player.getIdPlayer(), coordinatesOfYellowGoods.get(0), Token.YELLOW_GOODS);
             player.getShipBoard().removeTokenFromTile(coordinatesOfYellowGoods.removeFirst(), Token.YELLOW_GOODS);
             yellowGoods--;
             numberOfTokensToLose--;
         }
         while (greenGoods != 0 && numberOfTokensToLose != 0) {
+            userInterface.updateEffectLoseGoods(player.getIdPlayer(), coordinatesOfGreenGoods.get(0), Token.GREEN_GOODS);
             player.getShipBoard().removeTokenFromTile(coordinatesOfGreenGoods.removeFirst(), Token.GREEN_GOODS);
             greenGoods--;
             numberOfTokensToLose--;
         }
         while (blueGoods != 0 && numberOfTokensToLose != 0) {
-
+            userInterface.updateEffectLoseGoods(player.getIdPlayer(), coordinatesOfBlueGoods.get(0), Token.BLUE_GOODS);
             player.getShipBoard().removeTokenFromTile(coordinatesOfBlueGoods.removeFirst(), Token.BLUE_GOODS);
             blueGoods--;
             numberOfTokensToLose--;
@@ -54,13 +57,13 @@ public class EffectLoseGoods extends CardEffect {
         if (numberOfTokensToLose != 0) {
             int batteryCells = player.getShipBoard().getTotalNumberOfaToken(Token.BATTERY_CELLS);
             List<Point> coordinatesOfBatteryCells = player.getShipBoard().getPositionsOfaToken(Token.BATTERY_CELLS);
-            while ( batteryCells != 0 && numberOfTokensToLose != 0) {
+            while (batteryCells != 0 && numberOfTokensToLose != 0) {
+                userInterface.updateEffectModifyEnergy(player.getIdPlayer(), coordinatesOfBatteryCells.get(0), Token.BATTERY_CELLS);
                 player.getShipBoard().removeTokenFromTile(coordinatesOfBatteryCells.removeFirst(), Token.BATTERY_CELLS);
                 batteryCells--;
                 numberOfTokensToLose--;
             }
         }
-
     }
 
 

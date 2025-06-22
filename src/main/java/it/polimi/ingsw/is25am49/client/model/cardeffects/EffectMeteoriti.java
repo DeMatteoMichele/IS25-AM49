@@ -19,45 +19,53 @@ public class EffectMeteoriti extends CardEffect {
     private int position;
 
 
-
     public EffectMeteoriti(String name_effect, int level, Orientation direction) {
         super(name_effect);
         this.level = level;
         this.direction = direction;
     }
+
     public void action(Player player) {
         //meteorite piccolo
         // posso attivare gli scudi, se non li attivo subisco effetto
         //componente distrutto solo se colspice il connettore esposto
-        if(level==0) {
+        if (level == 0) {
             if (player.getShipBoard().getProtectedSides().contains(direction)) {
-                System.out.println("No damage, shield activated");
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, shield activated");
             } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     if (player.getShipBoard().getTile(target.get()).getConnector(direction) == ConnectorType.FLAT) {
-                        System.out.println("No damage, the meteor bounces ");
+                        userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, the meteor coming from " + direction+ " pointing at " + position +" bounces ");
                     } else {
                         player.getShipBoard().destroyTile(target.get());
-                        System.out.println("distruggo il componente in posizione " + target.get());
+                        userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
                         player.getShipBoard().destroyDisconnectedTiles();
-
-                    }}}
-        }
-        else{
+                    }
+                }
+                else {
+                    userInterface.updateGenericCardMessage(player.getIdPlayer(), "Meteora coming from " + direction+" pointing at " + position + "  missed you!");
+                }
+            }
+        } else {
             //meteorite grande
             //unica possibilità è sparargli contro con un cannone
-            if(defendAgainstMeteor(player)){
-                System.out.println("Distruggo il meteorite");
-            }
-            else{
+            if (defendAgainstMeteor(player)) {
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big Meteora destroyed by cannons!");
+            } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
-                target.ifPresent(point -> player.getShipBoard().destroyTile(point));
-                System.out.println("distruggo il componente in posizione " + target.get());
-                player.getShipBoard().destroyDisconnectedTiles();
+                if(target.isPresent()) {
+                    player.getShipBoard().destroyTile(target.get());
+                    userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
+                    player.getShipBoard().destroyDisconnectedTiles();
+                }
+                else {
+                    userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big meteora coming from " + direction+" pointing at " + position + "  missed you!");
+                }
             }
         }
     }
+
     private List<Point> getAvailableCannons(Player player) {
         //ottengo tutti i cannoni singoli e doppi
         List<Point> cannons = new ArrayList<>(player.getShipBoard().getComponentsPositions(ComponentType.CANNON));

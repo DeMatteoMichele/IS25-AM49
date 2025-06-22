@@ -11,11 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EffectModifyEnergy extends CardEffect {
+
+    //***************************************************************
+    //****************************************************************
+    //******************USELESS CLASS***********************
+    //****************************************************************
+    //****************************************************************
     private int energy;
     private Point coordinate;
     List<Pair<Point,Token>> coordinates = new ArrayList<>();
     public EffectModifyEnergy(String name_effect, int energy) {
-
         super(name_effect);
         this.energy = energy;
     }

@@ -28,80 +28,81 @@ public class EffectWinGoods extends CardEffect {
     public int getRedGoods() {
         return redGoods;
     }
+
     public int getYellowGoods() {
         return yellowGoods;
     }
+
     public int getGreenGoods() {
         return greenGoods;
     }
+
     public int getBlueGoods() {
         return blueGoods;
     }
+
     public void action(Player player) {
-        if(coordinates == null || coordinates.isEmpty()) {
+//        if (coordinates == null || coordinates.isEmpty()) {
+        if (coordinates == null){
             throw new IllegalMethodOnThisCardException("You have to set the coordinates before using this method");
         }
-        for(Pair<Point, Token> coordinate : coordinates) {
+        for (Pair<Point, Token> coordinate : coordinates) {
             Component component = player.getShipBoard().getTile(coordinate.getKey()).getComponent();
-            if(component.getLevel()==component.getTokenList().size()) {
+            if (component.getLevel() == component.getTokenList().size()) {
                 //se è pieno rimuovo il token di minore valore per inserire quello di maggior valore
-                boolean isPossible = addTokenToTile(coordinate.getKey(), coordinate.getValue(), player);
+                boolean isPossible = canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player);
                 if (!isPossible) {
                     continue;
                 }
                 Token tokenToRemove = minValueToken(component.getTokenList());
                 player.getShipBoard().removeTokenFromTile(coordinate.getKey(), tokenToRemove);
                 userInterface.updateEffectLoseGoods(player.getIdPlayer(), coordinate.getKey(), tokenToRemove);
-                if(coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
+                if (coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
                     throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
                 }
                 player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
                 userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
-            }
-            else{
-                if(coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
+            } else {
+                if (coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
                     throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
                 }
-
-                boolean isPossible = addTokenToTile(coordinate.getKey(), coordinate.getValue(), player);
-                if (!isPossible) {
-                    continue;
+                if (canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player)) {
+                    player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
+                    userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
                 }
-                player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
-                userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
             }
+        }
+    }
 
-    }}
+    private boolean canAddATokenToThisTile(Point coordinate, Token token, Player player) {
+        boolean canAdd = false;
 
-private boolean addTokenToTile(Point coordinate, Token token, Player player) {
-    boolean canAdd = false;
+        switch (token) {
+            case RED_GOODS:
+                canAdd = redGoods > 0;
+                if (canAdd) redGoods--;
+                break;
+            case YELLOW_GOODS:
+                canAdd = yellowGoods > 0;
+                if (canAdd) yellowGoods--;
+                break;
+            case GREEN_GOODS:
+                canAdd = greenGoods > 0;
+                if (canAdd) greenGoods--;
+                break;
+            case BLUE_GOODS:
+                canAdd = blueGoods > 0;
+                if (canAdd) blueGoods--;
+                break;
+        }
+        if (canAdd) {
+            return true; // si può aggiungere
+        } else {
+            userInterface.updateGenericCardMessage(player.getIdPlayer(), "you are trying to add a token that the card didn't give you or you have already added it the maximum number of times");
+            return false; //non si può aggiungere
+        }
+    }
 
-    switch (token) {
-        case RED_GOODS:
-            canAdd = redGoods > 0;
-            if (canAdd) redGoods--;
-            break;
-        case YELLOW_GOODS:
-            canAdd = yellowGoods > 0;
-            if (canAdd) yellowGoods--;
-            break;
-        case GREEN_GOODS:
-            canAdd = greenGoods > 0;
-            if (canAdd) greenGoods--;
-            break;
-        case BLUE_GOODS:
-            canAdd = blueGoods > 0;
-            if (canAdd) blueGoods--;
-            break;
-  }
-
-      if (canAdd) {
-          return true; // si può aggiungere
-      } else {
-          userInterface.updateGenericCardMessage(player.getIdPlayer(), "you are trying to add a token that the card didn't give you or you have already added it the maximum number of times");
-          return false; //non si può aggiungere
-      }
-  }
     private Token minValueToken(List<Token> tokens) {
         Token minValueToken = tokens.getFirst();
         for (Token token : tokens) {

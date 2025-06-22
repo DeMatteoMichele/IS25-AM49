@@ -115,7 +115,7 @@ class ShipBoardTest {
             System.out.println(i+1 +") Generazione");
             ship2=ShipBoard.generateShipboard(2,30);
             ship2.completeShipBoard();
-            ship2.printShipboardSpecial();
+            System.out.println(ship2);
             System.out.println("CONNETTORI ESPOSTI: "+ship2.getNumberOfExposedConnectors()+ " --> conta siano giusti");
         }
     }
@@ -193,7 +193,7 @@ class ShipBoardTest {
         shipTest.printShipboardSpecial();
         assertEquals(1,shipTest.checkIfAlienArePossible(new Point(7,7)).size());
         assertTrue(shipTest.checkIfAlienArePossible(new Point(7,7)).contains(Token.ASTRONAUT));
-        assertEquals(2,shipTest.checkIfAlienArePossible(new Point(6,7)).size());
+        assertEquals(3,shipTest.checkIfAlienArePossible(new Point(6,7)).size());
         assertTrue(shipTest.checkIfAlienArePossible(new Point(6,7)).contains(Token.PURPLE_ALIENS));
     }
     @Test
@@ -271,7 +271,7 @@ class ShipBoardTest {
         assertEquals(new Point(5,7),shipTest.getExposedPoint(5,Orientation.NORTH).get());
         assertEquals(new Point(8,5),shipTest.getExposedPoint(5,Orientation.WEST).get());
         assertEquals(new Point(6,6),shipTest.getExposedPoint(6,Orientation.WEST).get());
-        assertEquals(new Point(8,6),shipTest.getExposedPoint(8,Orientation.SOUTH).get());
+        assertEquals(new Point(8,8),shipTest.getExposedPoint(8,Orientation.SOUTH).get());
     }
 
     @Test

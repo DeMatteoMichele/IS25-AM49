@@ -232,6 +232,7 @@ public class ClientController {
         try {
             gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
         } catch (Exception e) {
+            e.printStackTrace();
             ui.printUpdateMessage(error + "Error while finishing decision token: --> " + e.getMessage());
         }
     }
@@ -470,7 +471,6 @@ public class ClientController {
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
-
     }
 
     public void userThrowDices(int playerId) {
@@ -593,7 +593,16 @@ public class ClientController {
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
+    }
 
+    public void userStopFlight(int playerId) {
+        Command command = new Command("userStopFlight", myId);
+        command.addParameter(playerId);
+        try {
+            serverMethods.command_FromClientToServer(command);
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
+        }
     }
 
     public int getplayerId() {

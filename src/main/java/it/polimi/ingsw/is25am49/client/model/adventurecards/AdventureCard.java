@@ -4,18 +4,16 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
-import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import javafx.util.Pair;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 public abstract class AdventureCard {
 
@@ -56,8 +54,10 @@ public abstract class AdventureCard {
 
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
-        userInterface.updateDrawAdventureCard(gameBoard.getCurrentPlayer().getIdPlayer(), this);
-        gameBoard.setCurrentPlayer(gameBoard.getLeader());
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+        userInterface.updateDrawAdventureCard(-99, this);
+        gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
+        userInterface.updateChangeTurn(gameBoard.getFirstPlayerConnected().getIdPlayer());
     }
 
     public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {
@@ -65,7 +65,7 @@ public abstract class AdventureCard {
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
-    public void landingOnPlanet(boolean isLanded, int playerId) throws IllegalMethodOnThisStateException {
+    public void landingOnPlanet(boolean isLanded, int planetId) throws IllegalMethodOnThisStateException {
         if (currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
@@ -120,8 +120,102 @@ public abstract class AdventureCard {
 
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         gameBoard.finishUpdateLeaderboard();
         isFinished = true;
+    }
+
+    protected void deactivateComponents(ShipBoard shipBoard,List<Point> coordinatesOfActivable) {
+        if(coordinatesOfActivable.isEmpty()) {
+            return;
+        }
+        coordinatesOfActivable.forEach(shipBoard::turnOff);
+        userInterface.updateDeactivating(shipBoard.getPlayerID(), coordinatesOfActivable);
+        coordinatesOfActivable.clear();
+    }
+
+    protected void activateComponentsWithBatteries(ShipBoard shipBoard, List<Point> coordinatesOfActivable, List<Pair<Point, Token>> coordinatesOfBatteries) {
+        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
+            throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
+        }
+        System.out.println("You have decided the coord for the components");
+        for (int i = 0; i < coordinatesOfActivable.size(); i++) {
+            shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
+            userInterface.updateEffectModifyEnergy(shipBoard.getPlayerID(), coordinatesOfBatteries.get(i).getKey(),coordinatesOfBatteries.get(i).getValue());
+        }
+    }
+    protected void checkNumberOfBatteries(List<Pair<Point, Token>> batteries, ShipBoard shipBoard) {
+        if (batteries.size() > shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
+            throw new IllegalArgumentException("you have chosen more batteries than you have");
+        }
+    }
+
+    protected void checkConnectionOrDefaultEffect(AdventureStatesTypes currState) {
+        if (!gameBoard.getCurrentPlayer().isConnected())
+            applyDefaultEffect(currState);
+    }
+
+    protected void applyDefaultEffect(AdventureStatesTypes currState) {
+        switch (currState) {
+            case ROLL_DICES -> {
+                System.out.println("Default effect of rolling dices on " + gameBoard.getCurrentPlayer().getUsername());
+                rollDices();
+            }
+            case DECISION_ASTRONAUTS_OR_ALIENS -> {
+                ArrayList<Point> astronauts = gameBoard.getCurrentPlayer().getShipBoard().getPositionsOfaToken(Token.ASTRONAUT);
+                ArrayList<Point> brownAliens = gameBoard.getCurrentPlayer().getShipBoard().getPositionsOfaToken(Token.BROWN_ALIENS);
+                ArrayList<Point> purpleAliens = gameBoard.getCurrentPlayer().getShipBoard().getPositionsOfaToken(Token.PURPLE_ALIENS);
+                ArrayList<Pair<Point, Token>> coordinates = new ArrayList<>();
+                for (Point point : astronauts) {
+                    coordinates.add(new Pair<>(point, Token.ASTRONAUT));
+                }
+                for (Point point : brownAliens) {
+                    coordinates.add(new Pair<>(point, Token.BROWN_ALIENS));
+                }
+                for (Point point : purpleAliens) {
+                    coordinates.add(new Pair<>(point, Token.PURPLE_ALIENS));
+                }
+                if (coordinates.size() > currentEffect.getLostCrew()) {
+                    coordinates = new ArrayList<>(coordinates.subList(0, currentEffect.getLostCrew()));
+                }
+                finishDecision(coordinates);
+                System.out.println("Default effect of losing crew on" + gameBoard.getCurrentPlayer().getUsername());
+            }
+            case DECISION_BATTERIES -> {
+                ArrayList<Pair<Point, Token>> batteries = new ArrayList<>();
+                finishDecision(batteries);
+                System.out.println("Default effect of losing batteries on" + gameBoard.getCurrentPlayer().getUsername());
+            }
+            case DECISION_CANNON -> {
+                Set<Point> cannons = new HashSet<>();
+                finishDecision(cannons);
+                System.out.println("Default effect of losing cannons on" + gameBoard.getCurrentPlayer().getUsername());
+            }
+            case DECISION_MOTOR -> {
+                Set<Point> motors = new HashSet<>();
+                finishDecision(motors);
+                System.out.println("Default effect of losing motors on" + gameBoard.getCurrentPlayer().getUsername());
+            }
+            case DECISION_SHIELDS -> {
+                Set<Point> shields = new HashSet<>();
+                finishDecision(shields);
+                System.out.println("Default effect of losing shields on" + gameBoard.getCurrentPlayer().getUsername());
+            }
+            case DECISION_GOODS -> {
+                ArrayList<Pair<Point, Token>> goods = new ArrayList<>();
+                finishDecision(goods);
+                System.out.println("Default effect of losing goods on" + gameBoard.getCurrentPlayer().getUsername());
+            }
+            case DECISION_LAND_PLANET -> {
+                landingOnPlanet(false, -1);
+            }
+            case DECISION_LAND_STATION_OR_SHIP -> {
+                landingOnStationOrShip(false);
+            }
+            case DECISION_REWARDS -> {
+                acceptPrizes(false);
+            }
+        }
     }
 
     public String getName() {
@@ -135,7 +229,7 @@ public abstract class AdventureCard {
     }
 
     public void checkFinishDecisionActivatingStates() {
-        if (currentState == AdventureStatesTypes.DECISION_CANNON || currentState == AdventureStatesTypes.DECISION_MOTOR) {
+        if (currentState == AdventureStatesTypes.DECISION_CANNON || currentState == AdventureStatesTypes.DECISION_MOTOR || currentState == AdventureStatesTypes.DECISION_SHIELDS) {
             //OK
         } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
@@ -143,22 +237,12 @@ public abstract class AdventureCard {
     }
 
     public void checkFinishDecisionTokenStates() {
-        if (currentState == AdventureStatesTypes.DECISION_BATTERIES || currentState == AdventureStatesTypes.DECISION_GOODS || currentState == AdventureStatesTypes.DECISION_SHIELDS || currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS) {
+        if (currentState == AdventureStatesTypes.DECISION_BATTERIES || currentState == AdventureStatesTypes.DECISION_GOODS  || currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS) {
             //OK
         } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
 
-    }
-
-    public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates) {
-        List<Point> cannons = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.DOUBLE_CANNON);
-        List<Point> engines = gameBoard.getCurrentPlayer().getShipBoard().getComponentsPositions(ComponentType.DOUBLE_ENGINE);
-        for (Point point : coordinates) {
-            if (!cannons.contains(point) && !engines.contains(point)) {
-                throw new IllegalMethodOnThisStateException("Invalid coordinates: they have to be cannons or engines");
-            }
-        }
     }
 
     public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> coordinates) {
@@ -186,7 +270,7 @@ public abstract class AdventureCard {
     }
 
     /**
-     * if description is longer than the width, it will be split into multiple lines
+     * If description is longer than the width, it will be split into multiple lines
      *
      * @param sb    the StringBuilder to append the text to
      * @param text  the text to append
@@ -219,5 +303,24 @@ public abstract class AdventureCard {
             remainingContent = remainingContent.substring(charsToTake);
         }
     }
+
+    public void disconnectionHandling(Player player) {
+        if (gameBoard.getCurrentPlayer().equals(player) &&
+                currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||
+                currentState == AdventureStatesTypes.DECISION_BATTERIES ||
+                currentState == AdventureStatesTypes.DECISION_GOODS ||
+                currentState == AdventureStatesTypes.DECISION_LAND_PLANET ||
+                currentState == AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP ||
+                currentState == AdventureStatesTypes.DECISION_REWARDS ||
+                currentState == AdventureStatesTypes.DECISION_CANNON ||
+                currentState == AdventureStatesTypes.DECISION_MOTOR ||
+                currentState == AdventureStatesTypes.DECISION_SHIELDS ||
+                currentState == AdventureStatesTypes.ROLL_DICES) {
+            applyDefaultEffect(currentState);
+        } else {
+            System.out.println("Disconnection handling not needed in this state");
+        }
+    }
+
 
 }

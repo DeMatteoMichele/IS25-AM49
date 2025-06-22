@@ -31,27 +31,31 @@ public class EffectCannonata extends CardEffect {
     public void action(Player player) {
         // Implementazione per cannonata di livello 1
         if (level == 1) {
-            Optional<Point> target = player.getShipBoard().getExposedPoint(position,direction);
+            Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
             if (target.isPresent()) {
                 player.getShipBoard().destroyTile(target.get());
-                System.out.println("distruggo il componente in posizione " + target.get());
+                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get());
                 player.getShipBoard().destroyDisconnectedTiles();
+            }
+            else {
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big cannonade coming from " + direction+" pointing at " + position + "  missed you!");
             }
         } else if(level==0) {
             //cannonata di livello zero, si può prevenire con attivazione di scudi
             //controllo se ci sono scudi che proteggono dalle direioni da cui colpisce la cannoanata
-            if(player.getShipBoard().getProtectedSides().contains(direction)) {
-                System.out.println("No damage, shield activated");
-            }
-            else{
-                Optional<Point> target = player.getShipBoard().getExposedPoint(position,direction);
+            if (player.getShipBoard().getProtectedSides().contains(direction)) {
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, shield activated");
+            } else {
+                Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    System.out.println("distruggo il componente in posizione " + target.get());
-                    player.getShipBoard().destroyDisconnectedTiles();
+                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
+                    userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Small cannonade coming from " + direction+" pointing at " + position + "  missed you!");
             }
-    }}
+        }
+    }
 
     /**
      * This method sets the position where the cannonade hits
@@ -64,10 +68,10 @@ public class EffectCannonata extends CardEffect {
     }
 
     public void setListOfCoordinates(List<Pair<Point, Token>> listOfCoordinates) {
-        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
     public void setCoordinate(Point coordinate) {
-        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
     @Override

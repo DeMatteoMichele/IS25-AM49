@@ -16,7 +16,7 @@ public class SlaverCard extends Enemy {
     protected int creditsEarned;
 
     public SlaverCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int creditsEarned, int lostAstronauts) {
-        super(gameBoard, description, level, name,dayslost, minimumFirePower);
+        super(gameBoard, description, level, name, dayslost, minimumFirePower);
         this.lostAstronauts = lostAstronauts;
         this.creditsEarned = creditsEarned;
         listEffects.add(new EffectModifyCrew("LoseAstronauts", lostAstronauts));
@@ -27,25 +27,24 @@ public class SlaverCard extends Enemy {
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have more firepower to defeat the Slavers! You win some credits!");
             System.out.println("Now decide if you want to accept the rewards ");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
 
         } else if (checkDrawFirePower(shipBoard)) {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have drawn with the Slavers!");
             tryNextPlayer();
         } else {
-            deactivateComponents(shipBoard);
-            coordinatesOfActivable = new ArrayList<>();
+            deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
             currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
         }
     }
 
@@ -86,12 +85,7 @@ public class SlaverCard extends Enemy {
     }
 
     @Override
-    protected int getMaxActivatableComponents(ShipBoard shipBoard) {
-        return shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
-    }
-
-    @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

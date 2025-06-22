@@ -51,7 +51,8 @@ public class EffectCannonata extends CardEffect {
                     player.getShipBoard().destroyDisconnectedTiles();
                 }
             }
-    }}
+        }
+    }
 
     /**
      * This method sets the position where the cannonade hits

@@ -20,17 +20,17 @@ public class EffectMeteoriti extends CardEffect {
     private int position;
 
 
-
     public EffectMeteoriti(String name_effect, int level, Orientation direction) {
         super(name_effect);
         this.level = level;
         this.direction = direction;
     }
+
     public void action(Player player) {
         //meteorite piccolo
         // posso attivare gli scudi, se non li attivo subisco effetto
         //componente distrutto solo se colspice il connettore esposto
-        if(level==0) {
+        if (level == 0) {
             if (player.getShipBoard().getProtectedSides().contains(direction)) {
                 System.out.println("No damage, shield activated");
             } else {
@@ -43,22 +43,25 @@ public class EffectMeteoriti extends CardEffect {
                         System.out.println("distruggo il componente in posizione " + target.get());
                         player.getShipBoard().destroyDisconnectedTiles();
 
-                    }}}
-        }
-        else{
+                    }
+                }
+            }
+        } else {
             //meteorite grande
             //unica possibilità è sparargli contro con un cannone
-            if(defendAgainstMeteor(player)){
+            if (defendAgainstMeteor(player)) {
                 System.out.println("Distruggo il meteorite");
-            }
-            else{
+            } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
-                target.ifPresent(point -> player.getShipBoard().destroyTile(point));
-                System.out.println("distruggo il componente in posizione " + target.map(point -> point.getX() + " " + point.getY()).orElse(""));
+                target.ifPresent(point -> {
+                    player.getShipBoard().destroyTile(point);
+                    System.out.println("distruggo il componente in posizione " +point.getX() + "," + point.getY());
+                });
                 player.getShipBoard().destroyDisconnectedTiles();
             }
         }
     }
+
     private List<Point> getAvailableCannons(Player player) {
         //ottengo tutti i cannoni singoli e doppi
         List<Point> cannons = new ArrayList<>(player.getShipBoard().getComponentsPositions(ComponentType.CANNON));
@@ -141,7 +144,7 @@ public class EffectMeteoriti extends CardEffect {
 
     @Override
     public List<Integer> getGoods() {
-        throw  new IllegalMethodOnThisCardException("Illegal Method On This Card");
+        throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
     public Orientation getOrientation() {

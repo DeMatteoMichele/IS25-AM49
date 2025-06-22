@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.server.model.states;
 import it.polimi.ingsw.is25am49.server.model.Game;
 import it.polimi.ingsw.is25am49.server.model.GameSession;
 import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
@@ -63,7 +64,6 @@ public class AdventureState extends State {
     public void userFinishShipboard(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex){
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
@@ -154,7 +154,13 @@ public class AdventureState extends State {
     }
 
     public void userStopFlight(int playerId) {
-
+        Player player = getPlayerById(playerId);
+        try {
+            gameSession.userStopFlight(player);
+        }catch (NotEnoughPlayerException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
+            gameSession.getGame().ifPresent(Game::finishGame);
+            transition(new FinishScoreState(gameSession));
+        }
     }
 
     public void adminCalculateScore(int playerId) {

@@ -60,7 +60,6 @@ public class EffectLoseGoods extends CardEffect {
                 numberOfTokensToLose--;
             }
         }
-
     }
 
 

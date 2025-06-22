@@ -51,13 +51,26 @@ public class Game {
     }
 
     public void disconnectPlayer(int playerId) {
-        Player player = getPlayer(playerId);
-        player.setConnectionFlag(false);
+        Player player;
+        try {
+            player = getPlayer(playerId);
+            player.setConnectionFlag(false);
+            board.getLeaderBoard().disconnectPlayer(player);
+            board.disconnectionWarningToCard(player);
+        } catch (IllegalArgumentException e) {
+            //nothing to do if player not found
+        }
     }
 
     public void connectPlayer(int playerId) {
-        Player player = getPlayer(playerId);
-        player.setConnectionFlag(true);
+        Player player;
+        try {
+            player = getPlayer(playerId);
+            player.setConnectionFlag(true);
+            board.getLeaderBoard().connectPlayer(player);
+        } catch (IllegalArgumentException e) {
+            //nothing to do if player not found
+        }
     }
 
     public GameBoard getGameboard() {
@@ -241,7 +254,7 @@ public class Game {
     }
 
     public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates) {
-        board.getCurrentCard().checkFinishDecisionActivatingCoordinates(coordinates);
+
     }
 
     public void checkFinishDecisionTokenStates() {

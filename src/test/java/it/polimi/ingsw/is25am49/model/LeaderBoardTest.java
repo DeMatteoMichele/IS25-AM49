@@ -2,6 +2,7 @@ package it.polimi.ingsw.is25am49.model;
 
 import it.polimi.ingsw.is25am49.server.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
@@ -196,5 +197,47 @@ class LeaderBoardTest {
         assertEquals(player2, leaderBoard2.getPlayerInPosition(2));
         assertEquals(player3, leaderBoard2.getPlayerInPosition(3));
         assertEquals(player4, leaderBoard2.getPlayerInPosition(4));
+    }
+
+    @Test
+    void testGetNextPlayerConnectedStartingFromThisPosition() {
+
+        leaderBoard1.add(player1);
+        leaderBoard1.add(player2);
+        leaderBoard1.add(player3);
+        leaderBoard1.add(player4);
+
+        leaderBoard1.disconnectPlayer(player2);
+
+        assertEquals(player3, leaderBoard1.getPlayerConnectedStartingFromThisPosition(2));
+
+        leaderBoard1.disconnectPlayer(player3);
+
+        assertEquals(player4, leaderBoard1.getPlayerConnectedStartingFromThisPosition(2));
+
+        leaderBoard1.disconnectPlayer(player1);
+        leaderBoard1.disconnectPlayer(player4);
+        assertThrows(IllegalSetOfNextPlayerException.class,
+                () -> leaderBoard1.getPlayerConnectedStartingFromThisPosition(1));
+    }
+
+    @Test
+    void testRefreshConnection() {
+        leaderBoard1.add(player1);
+        leaderBoard1.add(player2);
+        leaderBoard1.add(player3);
+        leaderBoard1.add(player4);
+
+        leaderBoard1.disconnectPlayer(player2);
+        assertTrue(leaderBoard1.isDisconnected(player2));
+
+        leaderBoard1.refreshConnections();
+        assertFalse(leaderBoard1.isDisconnected(player2));
+
+        leaderBoard1.disconnectPlayer(player3);
+        assertTrue(leaderBoard1.isDisconnected(player3));
+
+        leaderBoard1.refreshConnections();
+        assertFalse(leaderBoard1.isDisconnected(player3));
     }
 }

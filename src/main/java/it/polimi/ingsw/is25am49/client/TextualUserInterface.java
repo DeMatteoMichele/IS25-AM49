@@ -19,6 +19,7 @@ import it.polimi.ingsw.is25am49.client.model.*;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -441,6 +442,7 @@ public class TextualUserInterface implements UserInterface {
 
     public void readShipboardFromFile(String filename) {
         filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
+        int delay = 150; // delay in milliseconds
         try {
             int tr=0;
             File file = new File(filename);
@@ -457,11 +459,12 @@ public class TextualUserInterface implements UserInterface {
                         while (tr<20){
                             tr++;
                             try {
-                                Thread.sleep(100);
+                                Thread.sleep(delay);
                                 gameSession.getState().userRotateHandTile(myId, o);
                                 break;
                             } catch (Exception _) {}
                         }
+                        Thread.sleep(delay);
                         Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
                         controller.userPlaceTile(myId, p, o);
                     }catch (Exception e){
@@ -515,7 +518,7 @@ public class TextualUserInterface implements UserInterface {
                 stringBuilder.append("+-------------------------------+\n")
                         .append("|        FINISH STATE :)        |\n")
                         .append("+-------------------------------+\n\n")
-                        .append("FinishState - commands:\n 0. EndGame \n 1. CalculateScore\n\n");
+                        .append("FinishState - commands:\n0. EndGame \n1. CalculateScore\n\n");
                 graphicsQueue.add(stringBuilder.toString());
             }
             default -> {
@@ -714,18 +717,31 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    /**
+     * @param playerId
+     * @param cardState
+     */
+    @Override
+    public void updateCardState(int playerId, AdventureStatesTypes cardState) {
+
+    }
+
+    /**
+     * @param playerId
+     */
+    @Override
+    public void updateChangeTurn(int playerId) {
+
+    }
+
     public String adventureStateMenu(){
         return """
                 AdventureState - commands:\s
-                1.  DrawAdventureCard
-                2.  ThrowDices
-                3.  ActivateComponent
-                4.  DecisionToken
-                5.  LandOnPlanet
-                6.  LandOnStationOrShip
-                7.  AcceptPrizes
-                8.  StopFlight
-                9. LookAtShipboard
+                1.  DrawAdventureCard           6.  LandOnStationOrShip
+                2.  ThrowDices                  7.  AcceptPrizes
+                3.  ActivateComponent           8.  StopFlight
+                4.  DecisionToken               9.  LookAtShipboard
+                5.  LandOnPlanet                10. StopFlight
                 12. ←-- go back
                 """;
     }
@@ -837,6 +853,7 @@ public class TextualUserInterface implements UserInterface {
             }catch(Exception _){}
         }
         updateGenericCardMessage(myId,str.toString());
+        if(playerId==myId)updateShipBoard(myId);
     }
 
     @Override
@@ -892,7 +909,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
-        if(playerId==myId)lookAtShipboard(playerId);
+        if(playerId==myId)updateShipBoard(playerId);
     }
 
     @Override
@@ -903,7 +920,6 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
-
     }
 
     @Override
@@ -914,7 +930,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
-        if(playerId==myId)lookAtShipboard(playerId);
+        if(playerId==myId)updateShipBoard(playerId);
     }
 
     @Override
@@ -934,7 +950,7 @@ public class TextualUserInterface implements UserInterface {
             }catch(Exception _){}
         }
         updateGenericCardMessage(myId,str.toString());
-        if(idPlayer==myId)lookAtShipboard(myId);
+        if(idPlayer==myId)updateShipBoard(myId);
     }
 
     @Override
@@ -965,7 +981,7 @@ public class TextualUserInterface implements UserInterface {
     public void updateCalculateScore(int playerId) {
         String str = "FINISH STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getGame().get().getGameboard()+
-                "FinishState - commands:\n 0. EndGame \n 1. CalculateScore\n\n"+
+                "FinishState - commands:\n0. EndGame \n1. CalculateScore\n\n"+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -1137,10 +1153,12 @@ public class TextualUserInterface implements UserInterface {
                 case "14:1" -> {//loadShipboard
                     try {
                         lineReader.printAbove("which ship do you want to load:\n " +
-                                "1 --> ship_layout_1.json\n");
+                                "1 --> ship_layout_1.json\n " +
+                                "2 --> ship_layout_2.json\n ");
                         String s = lineReader.readLine(prompt).trim();
                         switch (s){
                             case "1" ->readShipboardFromFile("ship_layout_1.json");
+                            case "2" ->readShipboardFromFile("ship_layout_2.json");
                             default -> printUpdateMessage(error + "invalid input");
                         }
                     } catch (Exception e) {
@@ -1238,6 +1256,19 @@ public class TextualUserInterface implements UserInterface {
                         int id = Integer.parseInt(lineReader.readLine("insert the playerId >> ").trim());
                         if (gameSession.getPlayer(id).isPresent()) updateShipBoard(id);
                         else printUpdateMessage(error + "player not found");
+                    } catch (Exception e) {
+                        printUpdateMessage(error + e.getMessage());
+                    }
+                }
+                case "10:2" -> {//StopFlight
+                    try {
+                        lineReader.printAbove("do you really want to stop flight? (y/n) >> ");
+                        String s = lineReader.readLine().trim();
+                        if (s.equalsIgnoreCase("y")) {
+                            controller.userStopFlight(myId);
+                            printUpdateMessage("you will land at the end of this turn, you can still play");
+                        }
+                        else printUpdateMessage("flight not stopped");
                     } catch (Exception e) {
                         printUpdateMessage(error + e.getMessage());
                     }
