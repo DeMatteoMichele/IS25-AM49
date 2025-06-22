@@ -31,7 +31,6 @@ public class PlanetCard extends AdventureCard {
     public void drawCard() {
         super.drawCard();
         System.out.println("You have found a planet! You can land on it for some goods.");
-        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
         checkRequirements();
     }
 

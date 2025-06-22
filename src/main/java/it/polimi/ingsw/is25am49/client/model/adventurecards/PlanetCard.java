@@ -37,7 +37,6 @@ public class PlanetCard extends AdventureCard {
     public void drawCard() {
         super.drawCard();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a planet! You can land on it for some goods.");
-        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
         checkRequirements();
     }
 
@@ -46,6 +45,7 @@ public class PlanetCard extends AdventureCard {
     public void checkRequirements() {
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the planet for some goods?");
         currentState = AdventureStatesTypes.DECISION_LAND_PLANET;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_PLANET);
     }
 
@@ -64,6 +64,7 @@ public class PlanetCard extends AdventureCard {
                 planet.setPlayernumber(gameBoard.getCurrentPlayer().getPlayerNumber());
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have to choose the position of the goods you won:");
                 currentState = AdventureStatesTypes.DECISION_GOODS;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 currentEffect = planet.getEffect();
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
             }
@@ -97,6 +98,7 @@ public class PlanetCard extends AdventureCard {
         if (currentState == AdventureStatesTypes.DECISION_GOODS) {
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             applyEffect();
         } else {

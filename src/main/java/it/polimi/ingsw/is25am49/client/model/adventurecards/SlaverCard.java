@@ -37,6 +37,7 @@ public class SlaverCard extends Enemy {
             isDefeated = true;
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
 
         } else if (checkDrawFirePower(shipBoard)) {
@@ -48,6 +49,7 @@ public class SlaverCard extends Enemy {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have been defeated by the Slavers! You lose some members of your crew,decide where you want to remove them");
             currentEffect = listEffects.get(LOSE_CREW_INDEX); //loseAstronauts effect
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
         }
     }
@@ -80,6 +82,7 @@ public class SlaverCard extends Enemy {
     @Override
     protected void handleRewards() {
         currentState = AdventureStatesTypes.EFFECT;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         applyEffect();
     }
 

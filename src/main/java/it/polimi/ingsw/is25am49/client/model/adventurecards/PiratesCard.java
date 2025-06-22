@@ -40,6 +40,7 @@ public class PiratesCard extends Enemy {
             userInterface.updateEnemyDefeated(gameBoard.getCurrentPlayer().getIdPlayer(), "Pirates", cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to win or stay as you are");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard, coordinatesOfActivable);
@@ -64,6 +65,7 @@ public class PiratesCard extends Enemy {
             evaluateBattleOutcome(shipBoard);
         else {
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
     }
@@ -102,7 +104,7 @@ public class PiratesCard extends Enemy {
             }
             currentEffect = listEffects.removeFirst();
             currentState = AdventureStatesTypes.ROLL_DICES;
-            cannonadesPhase = true;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
@@ -121,6 +123,7 @@ public class PiratesCard extends Enemy {
                 currentEffect = listEffects.removeFirst();
                 userInterface.updateGenericCardMessage(genericIdForUpdates, "Another meteora! Now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
             }
         }
@@ -138,6 +141,7 @@ public class PiratesCard extends Enemy {
             checkDimensionOfCannonade();
         } else {  // player has no batteries for shields
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
     }
@@ -146,19 +150,21 @@ public class PiratesCard extends Enemy {
         if (currentEffect.getLevel() == BIG_CANNONADE_LEVEL) {//big cannonade, player cant defend himself
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Big cannonade! You cannot defend yourself with shields!");
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
             return;
         }
         ShipBoard currentShipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         long availableShields = currentShipBoard.getActivatableComponents(ComponentType.SHIELD).stream().count();
-
         if (availableShields > 0) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate the shields. Choose the coordinates of the batteries to use.");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             coordinatesOfActivable = currentShipBoard.getActivatableComponents(ComponentType.SHIELD);
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have no shields to activate. You suffer the effect of the cannonade.");
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
     }

@@ -28,11 +28,8 @@ public class SpazioAperto extends AdventureCard {
 
     @Override
     public void drawCard() {
-        //chiamo il super
         super.drawCard();
         System.out.println("You have found an open space! You can choose if you wanna activate your double motors for travel days");
-        //passo alla richiesta di requisiti
-        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
         playersProcess = gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).filter(player -> !gameBoard.getLeaderBoard().getDisconnectedPlayers().containsValue(player)).toList();
         currentPlayerIndex = 0;
         gameBoard.setCurrentPlayer(playersProcess.get(currentPlayerIndex));

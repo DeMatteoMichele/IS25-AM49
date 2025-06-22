@@ -119,6 +119,7 @@ public abstract class AdventureCard {
 
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         gameBoard.finishUpdateLeaderboard();
         isFinished = true;
     }

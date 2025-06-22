@@ -49,6 +49,7 @@ public abstract class Enemy extends AdventureCard {
             if (canDefeatOrDrawOnlyUsingBatteries(shipBoard)) {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have enough batteries to defeat/draw with a " + this.getClass().getSimpleName() + "! Choose what batteries do you want to use");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 if (checkDrawFirePower(shipBoard)) {
@@ -113,18 +114,21 @@ public abstract class Enemy extends AdventureCard {
                 }
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided the coord for the batteries.");
                 currentState = determineStateAfterBatteries();
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(currentState);
             }
             case DECISION_GOODS -> {
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
@@ -146,6 +150,7 @@ public abstract class Enemy extends AdventureCard {
                     activateComponentsWithBatteries(shipBoard,coordinatesOfActivable,coordinatesOfBatteries);
                     userInterface.updateFinishDecisionActivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates);
                     currentState = AdventureStatesTypes.EFFECT;
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                     applyEffect();
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);

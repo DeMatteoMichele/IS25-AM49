@@ -28,11 +28,8 @@ public class SpazioAperto extends AdventureCard {
 
     @Override
     public void drawCard() {
-        //chiamo il super
         super.drawCard();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found an open space! You can choose if you wanna activate your double motors for travel days");
-        //passo alla richiesta di requisiti
-        currentState = AdventureStatesTypes.CHECK_REQUIREMENTS;
         playersProcess = gameBoard.getLeaderBoard().stream().map(Map.Entry::getKey).filter(player -> !gameBoard.getLeaderBoard().getDisconnectedPlayers().containsValue(player)).toList();
         currentPlayerIndex = 0;
         gameBoard.setCurrentPlayer(playersProcess.get(currentPlayerIndex));
@@ -48,6 +45,7 @@ public class SpazioAperto extends AdventureCard {
         if (totalNumberOfBatteries > 0 && totalNumberOfDoubleMotors > 0) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double motors. One battery activates one motor. " + "Now choose which batteries you wanna use and how much");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
         } else {
             //non ho abbastanza batterie per attivare i doppi motori
@@ -87,6 +85,7 @@ public class SpazioAperto extends AdventureCard {
                 }
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "now choose which motors you wanna activate");
                 currentState = AdventureStatesTypes.DECISION_MOTOR;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_MOTOR);
             }
             default -> throw new IllegalArgumentException("invalid state");
@@ -104,6 +103,7 @@ public class SpazioAperto extends AdventureCard {
                 }
                 activateComponentsWithBatteries(ship, motors, batteries);
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
             default -> throw new IllegalArgumentException("invalid state");
@@ -122,6 +122,7 @@ public class SpazioAperto extends AdventureCard {
     @Override
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         declaredEnginePower.forEach((player, power) -> { if (power == 0) gameBoard.playerNoMoreInFlight(player); });
         super.update();
     }

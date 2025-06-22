@@ -50,6 +50,7 @@ public class AbandonedStationCard extends AdventureCard {
         if (totalNumCrewMembers >= lostAstronauts) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the station for some goods?");
             currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP);
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough members to land on the station!");
@@ -70,7 +71,7 @@ public class AbandonedStationCard extends AdventureCard {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), true, cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to decide where you want to add your goods and which ones");
             currentState = AdventureStatesTypes.DECISION_GOODS;
-            currentEffect = listEffects.getFirst();
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
         } else {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), false, cardId);
@@ -91,6 +92,7 @@ public class AbandonedStationCard extends AdventureCard {
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");

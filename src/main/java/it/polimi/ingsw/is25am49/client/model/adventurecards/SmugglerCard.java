@@ -36,6 +36,7 @@ public class SmugglerCard extends Enemy {
             isDefeated = true;
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard, coordinatesOfActivable);
@@ -46,6 +47,7 @@ public class SmugglerCard extends Enemy {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have been defeated by the smugglers! You lose some goods");
             currentEffect = listEffects.get(LOSE_GOODS_INDEX); //lost effect
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
 
@@ -79,6 +81,7 @@ public class SmugglerCard extends Enemy {
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have accepted the rewards! You can now choose where to put your new goods");
         currentEffect = listEffects.get(WIN_GOODS_INDEX); //the curreffect is wingoods
         currentState = AdventureStatesTypes.DECISION_GOODS;
+        userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
     }
 

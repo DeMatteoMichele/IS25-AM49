@@ -91,6 +91,7 @@ public class WarZoneCard extends AdventureCard {
         if (totalNumberOfBatteries > 0 && totalNumberOfDoubleMotors > 0) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double motors. One battery activates one motor. ");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries to activate your double motors");
@@ -115,6 +116,7 @@ public class WarZoneCard extends AdventureCard {
             warZonePhase++;
             gameBoard.setCurrentPlayer(playerWithMinimumEnginePower);
             currentState = AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS);
         }
     }
@@ -130,6 +132,7 @@ public class WarZoneCard extends AdventureCard {
                     batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to choose which motors you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_MOTOR;
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                     checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_MOTOR);
                 } else if (warZonePhase == 1) {
                     checkNumberOfBatteries(coordinates, ship);
@@ -137,6 +140,7 @@ public class WarZoneCard extends AdventureCard {
                     batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to choose which cannons you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_CANNON;
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                     checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_CANNON);
                 } else {
                     checkNumberOfBatteries(coordinates, ship);
@@ -144,6 +148,7 @@ public class WarZoneCard extends AdventureCard {
                     batteries = new ArrayList<>(coordinates);
                     userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to choose which shields you wanna activate");
                     currentState = AdventureStatesTypes.DECISION_SHIELDS;
+                    userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                     checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_SHIELDS);
                 }
             }
@@ -166,6 +171,7 @@ public class WarZoneCard extends AdventureCard {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double Cannons. One battery activates one cannon. " +
                     "You can activate up to " + totalNumberOfBatteries + " double cannon");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough batteries or double cannons");
@@ -189,6 +195,7 @@ public class WarZoneCard extends AdventureCard {
             warZonePhase++;
             userInterface.updateGenericCardMessage(genericIdForUpdates,playerWithMinimumFirePower.getUsername() + "has to roll the dices");
             currentState = AdventureStatesTypes.ROLL_DICES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
@@ -223,6 +230,7 @@ public class WarZoneCard extends AdventureCard {
                 coordinatesOfActivable = new ArrayList<>(coordinates);
                 activateComponentsWithBatteries(ship, coordinatesOfActivable, batteries);
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
             default -> throw new IllegalArgumentException("wrong state");
@@ -241,6 +249,7 @@ public class WarZoneCard extends AdventureCard {
             checkDimensionOfCannonBall();
         } else {
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
     }
@@ -250,16 +259,19 @@ public class WarZoneCard extends AdventureCard {
         if (currentEffect.getLevel() == BIG_CANNONBALL_LEVEL) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Big cannonball! You can't defend yourself with shields! You can't do nothing! Hope that the cannonball misses your ship!");
             currentState = AdventureStatesTypes.EFFECT;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         } else {
             long availableShields = currentShipBoard.getActivatableComponents(ComponentType.SHIELD).size();
             if (availableShields > 0 && currentShipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS) > 0) {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate shields. Choose the coordinates of the batteries.");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have shield to activate. You can't do nothing! Hope that the cannonball misses your ship!");
                 currentState = AdventureStatesTypes.EFFECT;
+                userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
             }
         }
@@ -280,6 +292,7 @@ public class WarZoneCard extends AdventureCard {
             currentEffect = listEffects.removeFirst();
             userInterface.updateGenericCardMessage(genericIdForUpdates, "Now the leader must roll the dices again!");
             currentState = AdventureStatesTypes.ROLL_DICES;
+            userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
