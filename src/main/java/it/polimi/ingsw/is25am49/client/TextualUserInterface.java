@@ -1151,7 +1151,8 @@ public class TextualUserInterface implements UserInterface {
                 case "14:1" -> {//loadShipboard
                     try {
                         lineReader.printAbove("which ship do you want to load:\n " +
-                                "1 --> ship_layout_1.json\n");
+                                "1 --> ship_layout_1.json\n" +
+                                "2 --> ship_layout_2.json\n");
                         String s = lineReader.readLine(prompt).trim();
                         switch (s){
                             case "1" ->readShipboardFromFile("ship_layout_1.json");
