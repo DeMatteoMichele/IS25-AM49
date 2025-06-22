@@ -84,15 +84,6 @@ public abstract class Enemy extends AdventureCard {
         return totalFirePower == minimumFirePower;
     }
 
-    private void activateComponentsWithBatteries(ShipBoard shipBoard) {
-        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
-            throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
-        }
-        System.out.println("You have decided the coord for the components");
-        for (int i = 0; i < coordinatesOfActivable.size(); i++) {
-            shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
-        }
-    }
 
     protected void deactivateComponents(ShipBoard shipBoard) {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
@@ -161,7 +152,7 @@ public abstract class Enemy extends AdventureCard {
             case DECISION_CANNON -> {
                 try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
-                    activateComponentsWithBatteries(shipBoard);
+                    activateComponentsWithBatteries(shipBoard,coordinatesOfActivable ,coordinatesOfBatteries );
                     evaluateBattleOutcome(shipBoard);
                 } catch (IllegalNumOfActivableException e) {
                     System.out.println("Rechoose correctly the number of cannons as the same as batteries");
@@ -170,7 +161,7 @@ public abstract class Enemy extends AdventureCard {
             case DECISION_SHIELDS -> {
                 try {
                     coordinatesOfActivable = new ArrayList<>(coordinates);
-                    activateComponentsWithBatteries(shipBoard);
+                    activateComponentsWithBatteries(shipBoard,coordinatesOfActivable ,coordinatesOfBatteries );
                     currentState = AdventureStatesTypes.EFFECT;
                     applyEffect();
                 } catch (IllegalNumOfActivableException e) {

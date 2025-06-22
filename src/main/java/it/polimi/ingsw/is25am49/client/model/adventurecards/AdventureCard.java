@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -122,6 +123,19 @@ public abstract class AdventureCard {
         isFinished = true;
     }
 
+    protected void deactivateComponents(ShipBoard shipBoard,List<Point> coordinatesOfActivable) {
+        coordinatesOfActivable.forEach(shipBoard::turnOff);
+    }
+
+    protected void activateComponentsWithBatteries(ShipBoard shipBoard, List<Point> coordinatesOfActivable, List<Pair<Point, Token>> coordinatesOfBatteries) {
+        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
+            throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
+        }
+        System.out.println("You have decided the coord for the components");
+        for (int i = 0; i < coordinatesOfActivable.size(); i++) {
+            shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
+        }
+    }
     protected void checkNumberOfBatteries(List<Pair<Point, Token>> batteries, ShipBoard shipBoard) {
         if (batteries.size() > shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
             throw new IllegalArgumentException("you have chosen more batteries than you have");
