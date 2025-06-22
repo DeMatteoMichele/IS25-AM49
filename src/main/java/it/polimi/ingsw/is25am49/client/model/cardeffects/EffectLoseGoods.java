@@ -13,13 +13,11 @@ public class EffectLoseGoods extends CardEffect {
     private int numberOfTokensToLose;
 
     List<Point> coordinates = new ArrayList<>();
-
     public EffectLoseGoods(String name_effect, int numberOfTokensToLose) {
 
         super(name_effect);
         this.numberOfTokensToLose = numberOfTokensToLose;
     }
-
     public void action(Player player) {
         //rimuovo in ordine di importanza dal rosso finchè non sono finiti tutte le merci da rimuovere
         //oppure finchè non ci sono più merci di quel colore nella nave
@@ -84,7 +82,6 @@ public class EffectLoseGoods extends CardEffect {
     public int getLooseGoods() {
         return numberOfTokensToLose;
     }
-
     public int getLostCrew() {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
     }

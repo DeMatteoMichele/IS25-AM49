@@ -172,8 +172,7 @@ public class WarZoneCard extends AdventureCard {
         int totalNumberOfBatteries = ship.getTotalNumberOfaToken(Token.BATTERY_CELLS);
         int totalNumberOfCannons = ship.getActivatableComponents(ComponentType.DOUBLE_CANNON).size();
         if (totalNumberOfBatteries > 0 && totalNumberOfCannons > 0) {
-            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double Cannons. One battery activates one cannon. " +
-                    "You can activate up to " + totalNumberOfBatteries + " double cannon");
+            userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have enough batteries to activate your double Cannons. One battery activates one cannon. ");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);

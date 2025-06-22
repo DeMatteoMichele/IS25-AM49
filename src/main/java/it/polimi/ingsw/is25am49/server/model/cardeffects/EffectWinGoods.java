@@ -52,7 +52,7 @@ public class EffectWinGoods extends CardEffect {
             Component component = player.getShipBoard().getTile(coordinate.getKey()).getComponent();
             if (component.getLevel() == component.getTokenList().size()) {
                 //se è pieno rimuovo il token di minore valore per inserire quello di maggior valore
-                boolean isPossible = addTokenToTile(coordinate.getKey(), coordinate.getValue(), player);
+                boolean isPossible = canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player);
                 if (!isPossible) {
                     continue;
                 }
@@ -68,19 +68,18 @@ public class EffectWinGoods extends CardEffect {
                 if (coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
                     throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
                 }
-                boolean isPossible = addTokenToTile(coordinate.getKey(), coordinate.getValue(), player);
-                if (!isPossible) {
-                    continue;
+                if (canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player)) {
+                    player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
+                    System.out.println("aggiunta di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
                 }
-                player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
-                System.out.println("aggiunta di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
             }
 
         }
     }
 
-    private boolean addTokenToTile(Point coordinate, Token token, Player player) {
+    private boolean canAddATokenToThisTile(Point coordinate, Token token, Player player) {
         boolean canAdd = false;
+
         switch (token) {
             case RED_GOODS:
                 canAdd = redGoods > 0;
@@ -110,7 +109,7 @@ public class EffectWinGoods extends CardEffect {
     private Token minValueToken(List<Token> tokens) {
         Token minValueToken = tokens.getFirst();
         for (Token token : tokens) {
-            // Controllo se il token corrente ha un valore minore rispetto al minimo trovato finora
+            // controllo se il token corrente ha un valore minore rispetto al minimo trovato finora
             if (getTokenValue(token) < getTokenValue(minValueToken)) {
                 minValueToken = token;
             }

@@ -42,7 +42,8 @@ public class EffectWinGoods extends CardEffect {
     }
 
     public void action(Player player) {
-        if (coordinates == null || coordinates.isEmpty()) {
+//        if (coordinates == null || coordinates.isEmpty()) {
+        if (coordinates == null){
             throw new IllegalMethodOnThisCardException("You have to set the coordinates before using this method");
         }
         for (Pair<Point, Token> coordinate : coordinates) {
@@ -65,11 +66,10 @@ public class EffectWinGoods extends CardEffect {
                 if (coordinate.getValue().equals(Token.RED_GOODS) && !player.getShipBoard().getTile(coordinate.getKey()).getComponentType().equals(ComponentType.SPECIAL_STORAGE)) {
                     throw new IllegalMethodOnThisCardException("you can't add a red goods in a normal storage");
                 }
-                if (!canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player)) {
-                    continue;
+                if (canAddATokenToThisTile(coordinate.getKey(), coordinate.getValue(), player)) {
+                    player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
+                    userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
                 }
-                player.getShipBoard().addTokenToTile(coordinate.getKey(), coordinate.getValue());
-                userInterface.updateEffectWinGoods(player.getIdPlayer(), coordinate.getKey(), coordinate.getValue());
             }
         }
     }
@@ -95,7 +95,6 @@ public class EffectWinGoods extends CardEffect {
                 if (canAdd) blueGoods--;
                 break;
         }
-
         if (canAdd) {
             return true; // si può aggiungere
         } else {
