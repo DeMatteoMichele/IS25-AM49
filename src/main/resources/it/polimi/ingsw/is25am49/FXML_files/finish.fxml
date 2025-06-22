@@ -18,9 +18,7 @@
       <Label fx:id="thirdPosition" layoutX="395.0" layoutY="217.0"  />
       <Label fx:id="fourthPosition" layoutX="467.0" layoutY="288.0"  />
    <ImageView fx:id="podio" fitHeight="234.0" fitWidth="447.0" layoutX="97.0" layoutY="107.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@/resour" />
-         </image>
+
       </ImageView>
 
 

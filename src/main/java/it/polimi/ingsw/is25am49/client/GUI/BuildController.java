@@ -841,7 +841,7 @@ public class BuildController extends GenericSceneController {
                 smallAdventureDeck.getChildren().add(imageView);
                 smallAdventureDeck.setSpacing(20);
             } else {
-                System.out.println("Immagine non trovata per la carta ID: " + idCard);
+//                System.out.println("Immagine non trovata per la carta ID: " + idCard);
             }
         }
     }
@@ -934,7 +934,7 @@ public class BuildController extends GenericSceneController {
                        shipBoard.add(tokenContainer, coordinates.x - 4, coordinates.y - 5);
                        GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
                    } else {
-                       System.out.println("Immagine non trovata per la tile ID: " + idTile);
+//                       System.out.println("Immagine non trovata per la tile ID: " + idTile);
                    }
                }
            }
@@ -1040,6 +1040,10 @@ public class BuildController extends GenericSceneController {
         rotateTile.setDisable(true);
         finish.setVisible(false);
         finish.setDisable(true);
+        timer.setLayoutX(155);
+        timer.setLayoutY(191);
+        timerLabel.setLayoutX(155);
+        timerLabel.setLayoutY(250);
 
     }
 
