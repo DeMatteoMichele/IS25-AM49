@@ -29,10 +29,11 @@ public class SmugglerCard extends Enemy {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
-            System.out.println("You have more firepower to defeat the smugglers! Choose where you want to put your new goods");
+            System.out.println("You have more firepower to defeat the smugglers!");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
@@ -78,6 +79,7 @@ public class SmugglerCard extends Enemy {
         System.out.println("You have accepted the rewards! You can now choose where to put your new goods");
         currentEffect = listEffects.get(WIN_GOODS_INDEX); //the curreffect is wingoods
         currentState = AdventureStatesTypes.DECISION_GOODS;
+        checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
     }
 
     @Override
@@ -131,9 +133,5 @@ public class SmugglerCard extends Enemy {
         str.append(border);
         return str.toString();
 
-        }
-
-
-
-
     }
+}

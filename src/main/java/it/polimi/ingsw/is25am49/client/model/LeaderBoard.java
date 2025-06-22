@@ -269,6 +269,18 @@ public class LeaderBoard {
         return disconnectedPlayers.containsKey(player.getIdPlayer());
     }
 
+    public Player getFirstPlayerConnected() {
+        return getPlayerConnectedStartingFromThisPosition(1);
+    }
+
+    public Map<Integer, Player> getDisconnectedPlayers() {
+        return disconnectedPlayers;
+    }
+
+    public int sizeOfConnected() {
+        return (size() - disconnectedPlayers.size());
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

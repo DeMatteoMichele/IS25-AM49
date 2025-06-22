@@ -350,6 +350,7 @@ public class ServerController {
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision activating hasn't worked in Server ->   " + e.getMessage());
+                e.printStackTrace();
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             }

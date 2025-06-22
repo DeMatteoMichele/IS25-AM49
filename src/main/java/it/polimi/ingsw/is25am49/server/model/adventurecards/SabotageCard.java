@@ -9,6 +9,9 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.InvalidCoordinatesExcept
 
 import java.awt.*;
 import java.util.Map;
+//*******************************************************************
+//******************DEPRECATED CARD***********************
+//******************************************************************
 
 public class SabotageCard extends AdventureCard {
 
@@ -29,7 +32,6 @@ public class SabotageCard extends AdventureCard {
         checkRequirements();
     }
 
-//    method to calculate the total crew of a player
     private int getTotalCrew(Player p){
         return p.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT)+
                 p.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS)+
@@ -42,29 +44,21 @@ public class SabotageCard extends AdventureCard {
             update();
             System.out.println("you are the only player, you skip this card");
         }
-        //con uno stream trovo il giocatore che ha meno equipaggio
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
                 .map(Map.Entry::getKey)
                 .min((p1, p2) -> Integer.compare(
                         getTotalCrew(p1),
                         getTotalCrew(p2)))
                 .orElse(gameBoard.getCurrentPlayer());
-
-        //debug per stampare per ogni giocatore il totale dell'equipaggio
-
-//        gameBoard.getLeaderBoard().stream().forEach(p ->
-//        System.out.println(p.getKey().getUsername() + " " + getTotalCrew(p.getKey())));
-
-        //setto a current player del gameboard il giocatore con meno equipaggio
         gameBoard.setCurrentPlayer(playerWithMinimumCrew);
         System.out.println("Player with the lowest crew is: " + gameBoard.getCurrentPlayer().getUsername()+" one of your components it will be destroyed");
         System.out.println("you have to roll dices: ");
-
-        //passo a roll dices
         currentState=AdventureStatesTypes.ROLL_DICES;
-
-
     }
+
+    //*******************************************************************
+//******************DEPRECATED CARD***********************
+//******************************************************************
 
     public void rollDices() {
         if(currentState != AdventureStatesTypes.ROLL_DICES)

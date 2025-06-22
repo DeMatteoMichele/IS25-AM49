@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.animation.PauseTransition;
@@ -441,6 +442,23 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     }
 
+    /**
+     * @param playerId
+     * @param cardState
+     */
+    @Override
+    public void updateCardState(int playerId, AdventureStatesTypes cardState) {
+
+    }
+
+    /**
+     * @param playerId
+     */
+    @Override
+    public void updateChangeTurn(int playerId) {
+
+    }
+
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
 
@@ -525,8 +543,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     }
 
+    /**
+     * @param playerId
+     * @param coordinate
+     */
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
+    public void updateEffectMeteorite(int playerId, Point coordinate) {
 
     }
 

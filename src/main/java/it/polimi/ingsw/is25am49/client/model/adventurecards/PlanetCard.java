@@ -47,6 +47,7 @@ public class PlanetCard extends AdventureCard {
         }
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the planet for some goods?");
         currentState = AdventureStatesTypes.DECISION_LAND_PLANET;
+        checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_PLANET);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class PlanetCard extends AdventureCard {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have to choose the position of the goods you won:");
                 currentState = AdventureStatesTypes.DECISION_GOODS;
                 currentEffect = planet.getEffect();
-                //userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(),"Effect is: " + currentEffect.getClass().getName());
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
             }
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "you have decided not to land on the planet");
@@ -102,8 +103,6 @@ public class PlanetCard extends AdventureCard {
             userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             applyEffect();
         }
-        //se non sono in decizion goods allora non posso chiamare finishdecision
-
         else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
@@ -123,7 +122,6 @@ public class PlanetCard extends AdventureCard {
             return;
         }
         checkNextPlayer();
-
     }
 
 

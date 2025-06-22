@@ -41,6 +41,7 @@ public class PiratesCard extends Enemy {
             userInterface.updateEnemyDefeated(gameBoard.getCurrentPlayer().getIdPlayer(), "Pirates", cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now decide if you want to win or stay as you are");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
@@ -105,6 +106,7 @@ public class PiratesCard extends Enemy {
             currentEffect = listEffects.removeFirst();
             currentState = AdventureStatesTypes.ROLL_DICES;
             cannonadesPhase = true;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
 
@@ -122,6 +124,7 @@ public class PiratesCard extends Enemy {
                 currentEffect = listEffects.removeFirst();
                 userInterface.updateGenericCardMessage(genericIdForUpdates, "Another meteora! Now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
             }
         }
     }
@@ -155,6 +158,7 @@ public class PiratesCard extends Enemy {
         if (availableShields > 0) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate the shields. Choose the coordinates of the batteries to use.");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            coordinatesOfActivable = currentShipBoard.getActivatableComponents(ComponentType.SHIELD);
         } else {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have no shields to activate. You suffer the effect of the cannonade.");
             currentState = AdventureStatesTypes.EFFECT;

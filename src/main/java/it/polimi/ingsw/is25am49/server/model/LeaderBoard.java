@@ -270,5 +270,16 @@ public class LeaderBoard {
     }
 
 
+    public Player getFirstPlayerConnected() {
+        return getPlayerConnectedStartingFromThisPosition(1);
+    }
+
+    public Map<Integer, Player> getDisconnectedPlayers() {
+        return disconnectedPlayers;
+    }
+
+    public int sizeOfConnected() {
+        return (size() - disconnectedPlayers.size());
+    }
 }
 

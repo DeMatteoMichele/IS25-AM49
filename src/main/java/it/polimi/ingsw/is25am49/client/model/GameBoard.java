@@ -388,11 +388,12 @@ public class GameBoard {
      * @throws GameSettingsException if the card is not finished
      */
     public void drawAdventureCard(Player player) {
-        if (player.equals(leaderBoard.getLeader())) {
+        if (player.equals(leaderBoard.getFirstPlayerConnected())) {
             if (isFirstCard || currentCard.getIsFinished()) {
                 currentCard = mainAdventureDeck.getFirstCard();
                 mainAdventureDeck.draw();
                 isFirstCard = false;
+                leaderBoard.refreshConnections();
             } else {
                 throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
             }
@@ -481,6 +482,14 @@ public class GameBoard {
      */
     public Player getLeader() {
         return leaderBoard.getLeader();
+    }
+
+    /**
+     * This method is used to get the first player connected in the leaderboard
+     * @return the first player connected
+     */
+    public Player getFirstPlayerConnected(){
+        return leaderBoard.getFirstPlayerConnected();
     }
 
     /**
@@ -592,7 +601,7 @@ public class GameBoard {
             for(Player player : getStopFlightPlayers()){
                 try{
                     playerNoMoreInFlight(player);
-                }catch (it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException e){
+                }catch (GameSettingsException e){
                     System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
                 }
             }
@@ -767,5 +776,11 @@ public class GameBoard {
         }
 
         return str.toString();
+    }
+
+    public void disconnectionWarningToCard(Player player) {
+        if (currentCard != null) {
+            currentCard.disconnectionHandling(player);
+        }
     }
 }

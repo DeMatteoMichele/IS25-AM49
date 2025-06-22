@@ -49,6 +49,7 @@ public abstract class Enemy extends AdventureCard {
             if (canDefeatOrDrawOnlyUsingBatteries(shipBoard)) {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have enough batteries to defeat/draw with a " + this.getClass().getSimpleName() + "! Choose what batteries do you want to use");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 if (checkDrawFirePower(shipBoard)) {
                     evaluateBattleOutcome(shipBoard);
@@ -83,7 +84,7 @@ public abstract class Enemy extends AdventureCard {
     }
 
     private void activateComponentsWithBatteries(ShipBoard shipBoard) {
-        if (coordinatesOfActivable.size() != coordinatesOfBatteries.size()) {
+        if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
         }
         userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided the coord for the components");
@@ -133,6 +134,7 @@ public abstract class Enemy extends AdventureCard {
                 }
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided the coord for the batteries.");
                 currentState = determineStateAfterBatteries();
+                checkConnectionOrDefaultEffect(currentState);
             }
             case DECISION_GOODS -> {
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);

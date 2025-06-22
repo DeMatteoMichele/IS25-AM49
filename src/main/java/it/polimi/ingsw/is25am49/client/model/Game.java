@@ -56,6 +56,7 @@ public class Game {
             player = getPlayer(playerId);
             player.setConnectionFlag(false);
             board.getLeaderBoard().disconnectPlayer(player);
+            board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found
         }
@@ -251,7 +252,7 @@ public class Game {
     }
 
     public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates) {
-        board.getCurrentCard().checkFinishDecisionActivatingCoordinates(coordinates);
+
     }
 
     public void checkFinishDecisionTokenStates() {

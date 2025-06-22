@@ -47,13 +47,13 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public void checkRequirements() {
-
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         int totalNumCrewMembers = ship.getTotalNumberOfaToken(Token.ASTRONAUT) + ship.getTotalNumberOfaToken(Token.BROWN_ALIENS) + ship.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
         //se ho abbastanza astronauti devo decidere se atterrare e passo allo stato apposito
         if (totalNumCrewMembers >= lostAstronauts) {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Do you wanna land on the station for some goods?");
             currentState = AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP);
         } else {
             //non ho abastanza membri per atterrare
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You don't have enough members to land on the station!");
@@ -82,6 +82,7 @@ public class AbandonedStationCard extends AdventureCard {
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to decide where you want to add your goods and which ones");
             currentState = AdventureStatesTypes.DECISION_GOODS;
             currentEffect = listEffects.getFirst();
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
         } else {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), false, cardId);
             try {
@@ -126,7 +127,6 @@ public class AbandonedStationCard extends AdventureCard {
 
     @Override
     public String toString() {
-
         StringBuilder str = new StringBuilder();
         final int width = 90;  // Larghezza standard del box
         String border = "+" + "-".repeat(width - 2) + "+\n";

@@ -37,6 +37,7 @@ public class PiratesCard extends Enemy {
             System.out.println("You have defeated the pirates!");
             System.out.println("Now decide if you want to win or stay as you are");
             currentState = AdventureStatesTypes.DECISION_REWARDS;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_REWARDS);
         } else if (checkDrawFirePower(shipBoard)) {
             deactivateComponents(shipBoard);
             coordinatesOfActivable = new ArrayList<>();
@@ -101,6 +102,7 @@ public class PiratesCard extends Enemy {
             currentEffect = listEffects.removeFirst();
             currentState = AdventureStatesTypes.ROLL_DICES;
             cannonadesPhase = true;
+            checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
     }
 
@@ -120,6 +122,7 @@ public class PiratesCard extends Enemy {
                 System.out.println("Next effect: " + currentEffect.getDescription());
                 System.out.println("Now the first defeated must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
             }
         }
     }
@@ -153,6 +156,7 @@ public class PiratesCard extends Enemy {
         if (availableShields > 0) {
             System.out.println("Puoi attivare gli scudi. Scegli le coordinate delle batterie da utilizzare.");
             currentState = AdventureStatesTypes.DECISION_BATTERIES;
+            coordinatesOfActivable = currentShipBoard.getActivatableComponents(ComponentType.SHIELD);
         } else {
             System.out.println("Non hai scudi da attivare. Subisci l'effetto della cannonata.");
             currentState = AdventureStatesTypes.EFFECT;

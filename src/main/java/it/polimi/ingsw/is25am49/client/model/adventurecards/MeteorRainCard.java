@@ -70,6 +70,7 @@ public class MeteorRainCard extends AdventureCard {
             if (availableCannons > 0) {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate the cannons. Choose the coordinates of the batteries to use.");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have no cannons to activate. You suffer the effect of the meteorite.");
                 currentState = AdventureStatesTypes.EFFECT;
@@ -80,6 +81,7 @@ public class MeteorRainCard extends AdventureCard {
             if (availableShields > 0) {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You can activate the shields. Choose the coordinates of the batteries to use.");
                 currentState = AdventureStatesTypes.DECISION_BATTERIES;
+                checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_BATTERIES);
             } else {
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have no shields to activate. You suffer the effect of the meteorite.");
                 currentState = AdventureStatesTypes.EFFECT;
@@ -107,6 +109,7 @@ public class MeteorRainCard extends AdventureCard {
                 }
                 userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfBatteries, coordinatesOfBatteries.size(), true);
                 currentState = determineStateAfterBatteries();
+                checkConnectionOrDefaultEffect(currentState);
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
         }
@@ -174,10 +177,10 @@ public class MeteorRainCard extends AdventureCard {
         userInterface.updateDeactivating(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfActivable);
     }
 
-    private void tryNextPlayerDefeated() {
-        int currentIndexOfDefeatedPlayer = listOfPlayers.indexOf(gameBoard.getCurrentPlayer());
-        if (currentIndexOfDefeatedPlayer >= 0 && currentIndexOfDefeatedPlayer < listOfPlayers.size() - 1) { //i have to apply the currenteffect on all the players
-            gameBoard.setCurrentPlayer(listOfPlayers.get(currentIndexOfDefeatedPlayer + 1));
+    private void tryNextPlayer() {
+        int currentIndexPlayer = listOfPlayers.indexOf(gameBoard.getCurrentPlayer());
+        if (currentIndexPlayer >= 0 && currentIndexPlayer < listOfPlayers.size() - 1) { //i have to apply the currenteffect on all the players
+            gameBoard.setCurrentPlayer(listOfPlayers.get(currentIndexPlayer + 1));
             checkForBatteriesToUse();
         } else {    //i have applied the effect on all the players
             if (listEffects.isEmpty()) {  //effects are terminated, card is finished
@@ -197,7 +200,7 @@ public class MeteorRainCard extends AdventureCard {
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
         deactivateComponents(gameBoard.getCurrentPlayer().getShipBoard());
-        tryNextPlayerDefeated();
+        tryNextPlayer();
     }
 
 

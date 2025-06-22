@@ -19,6 +19,7 @@ import it.polimi.ingsw.is25am49.client.model.*;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -709,6 +710,23 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    /**
+     * @param playerId
+     * @param cardState
+     */
+    @Override
+    public void updateCardState(int playerId, AdventureStatesTypes cardState) {
+
+    }
+
+    /**
+     * @param playerId
+     */
+    @Override
+    public void updateChangeTurn(int playerId) {
+
+    }
+
     public String adventureStateMenu(){
         return """
                 AdventureState - commands:\s
@@ -911,7 +929,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate, Token token) {
+    public void updateEffectMeteorite(int playerId, Point coordinate) {
         if (playerId==myId){
             printUpdateMessage("dentro updateEffectMeteorite");
         }
