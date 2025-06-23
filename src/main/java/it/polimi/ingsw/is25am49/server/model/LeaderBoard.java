@@ -141,7 +141,7 @@ public class LeaderBoard {
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
             showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
-            if(mapLeaderboard.size() == 1) throw new NotEnoughPlayerException("the leaderboard has one player left, going in finish state");
+            if(mapLeaderboard.isEmpty()) throw new NotEnoughPlayerException("the leaderboard has zero player left, going in finish state");
         } else
             throw new GameSettingsException("This player is not in the leaderboard");
     }

@@ -22,7 +22,8 @@ public class FinishScoreState extends State {
 
 
     public void checkAdminEndGame(int playerId) {
-        gameSession.checkAdminEndGame(playerId);
+        //gameSession.checkAdminEndGame(playerId);
+        //no controlli
     }
 
     public void adminCreateGame(int playerId, GameMode gamemode, int maxPlayers) {

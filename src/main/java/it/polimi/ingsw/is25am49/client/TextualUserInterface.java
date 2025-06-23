@@ -39,7 +39,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.231.154";
+    private final String serverIP = "localhost";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -912,7 +912,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
-        if(playerId==myId)updateShipBoard(playerId);
+        updateShipBoard(playerId);
     }
 
     @Override
@@ -945,7 +945,7 @@ public class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
-        if(playerId==myId)updateShipBoard(playerId);
+        updateShipBoard(playerId);
     }
 
     @Override
@@ -1212,18 +1212,21 @@ public class TextualUserInterface implements UserInterface {
                         }
                         if (!points.isEmpty()) controller.userFinishDecisionActivating(myId, points);
                         else printUpdateMessage(error + "no point inserted");
-                    } else {
+                    } else if(s.equalsIgnoreCase("n")){
                         controller.userFinishDecisionActivating(myId, points);
-                    }
+                    }else printUpdateMessage(error + "invalid input");
 
                 }
                 case "4:2" -> {//handleDecisionToken
                     lineReader.printAbove("do you want to handle the decision token? (y/n) >> ");
-                    if (lineReader.readLine().equalsIgnoreCase("y")) {
+                    String s = lineReader.readLine().trim();
+                    if (s.equalsIgnoreCase("y")) {
                         ArrayList<Pair<Point, Token>> tokens = decisionToken();
                         if (!tokens.isEmpty()) controller.userFinishDecisionToken(myId, tokens);
                         else printUpdateMessage(error + "no point inserted");
-                    }else controller.userFinishDecisionToken(myId, new ArrayList<>());
+                    }
+                    else if(s.equalsIgnoreCase("n")) controller.userFinishDecisionToken(myId, new ArrayList<>());
+                    else printUpdateMessage(error + "invalid input");
                 }
                 case "5:2" -> {//LandOnPlanet
                     try {
@@ -1297,7 +1300,10 @@ public class TextualUserInterface implements UserInterface {
 //                    printUpdateMessage("goBack not implemented yet");
 //                }
                 case "0:3" -> {//EndGame
-                    controller.adminEndGame(myId);
+                    lineReader.printAbove("do you really want to end the game? (y/n) >> ");
+                    String s = lineReader.readLine().trim();
+                    if (s.equalsIgnoreCase("y"))controller.adminEndGame(myId);
+                    else printUpdateMessage("game not ended");
                 }
                 case "1:3" -> {//CalculateScore
                     controller.adminCalculateScore(myId);
