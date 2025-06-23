@@ -37,9 +37,9 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
-public abstract class TextualUserInterface implements UserInterface {
+public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.8.111";
+    private final String serverIP = "192.168.213.12";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -923,6 +923,18 @@ public abstract class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+    }
+
+    /**
+     * @param playerId
+     * @param redgoods
+     * @param yellowgoods
+     * @param greengoods
+     * @param bluegoods
+     */
+    @Override
+    public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
+
     }
 
     @Override
