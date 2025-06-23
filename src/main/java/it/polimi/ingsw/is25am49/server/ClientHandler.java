@@ -371,4 +371,8 @@ public class ClientHandler {
     public boolean containsClient(int playerId) {
         return connections.containsKey(playerId);
     }
+
+    public boolean isConnected(int playerId) {
+        return connections.get(playerId);
+    }
 }

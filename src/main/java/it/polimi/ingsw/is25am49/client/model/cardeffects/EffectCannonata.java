@@ -52,7 +52,7 @@ public class EffectCannonata extends CardEffect {
                     userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
                     userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
-                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Small cannonade coming from " + direction+" pointing at " + position + "  missed you!");
+                else userInterface.updateGenericCardMessage(player.getIdPlayer(), "Small cannonade coming from " + direction+" pointing at " + position + "  missed you!");
             }
         }
     }
