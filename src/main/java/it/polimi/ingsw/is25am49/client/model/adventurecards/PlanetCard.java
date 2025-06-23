@@ -97,11 +97,11 @@ public class PlanetCard extends AdventureCard {
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         if (currentState == AdventureStatesTypes.DECISION_GOODS) {
+            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
-            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
         } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }

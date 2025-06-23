@@ -200,7 +200,7 @@ public class GameSession {
         game.ifPresent(g -> g.checkCalculateScore(game.get().getPlayer(playerId)));
     }
     public void calculateScore(int playerId) {
-        checkIsAdmin(playerId);
+        //checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
     }
 
