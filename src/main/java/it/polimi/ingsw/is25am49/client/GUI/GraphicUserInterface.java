@@ -173,6 +173,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 });
             }
             case 3 -> {
+                System.out.println("FINISH STATE");
+                Platform.runLater(()->{
+                    showScene(ScenesName.FINISH);
+                });
 
             }
             default -> {
@@ -606,7 +610,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateCalculateScore(int playerId) {
-
+        finishController finishController = (finishController) controllerList.get(ScenesName.FINISH);
+        Platform.runLater(finishController::printPodium);
     }
 
     @Override

@@ -1154,11 +1154,16 @@ public class TextualUserInterface implements UserInterface {
                     try {
                         lineReader.printAbove("which ship do you want to load:\n " +
                                 "1 --> ship_layout_1.json\n " +
-                                "2 --> ship_layout_2.json\n ");
+                                "2 --> ship_layout_2.json\n " +
+                                "3 --> ship_layout_3.json\n"  +
+                                "4 --> ship_layout_4.json\n" );
+
                         String s = lineReader.readLine(prompt).trim();
                         switch (s){
                             case "1" ->readShipboardFromFile("ship_layout_1.json");
                             case "2" ->readShipboardFromFile("ship_layout_2.json");
+                            case "3"->readShipboardFromFile("ship_layout_3.json");
+                            case "4"->readShipboardFromFile("ship_layout_4.json");
                             default -> printUpdateMessage(error + "invalid input");
                         }
                     } catch (Exception e) {
