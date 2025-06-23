@@ -39,7 +39,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.220.111";
+    private final String serverIP = "192.168.220.12";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -742,7 +742,6 @@ public class TextualUserInterface implements UserInterface {
                 3.  ActivateComponent           8.  StopFlight
                 4.  DecisionToken               9.  LookAtShipboard
                 5.  LandOnPlanet                10. StopFlight
-                12. ←-- go back
                 """;
     }
     @Override
@@ -895,7 +894,7 @@ public class TextualUserInterface implements UserInterface {
     public void updateShipBoard(int playerId) {
         String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getPlayer(playerId).get().shipToString()+
-                "AdventureState - commands:\n 12. ←-- go back \n\n"+
+                adventureStateMenu()+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -957,7 +956,7 @@ public class TextualUserInterface implements UserInterface {
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
         String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getLeaderBoard()+
-                "AdventureState - commands:\n 1. DrawAdventureCard \n\n"+
+                adventureStateMenu()+
                 "_".repeat( 200)+"\n" +
                 "choose an option:";
         graphicsQueue.add(str);
@@ -1278,9 +1277,9 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error + e.getMessage());
                     }
                 }
-                case "12:2" -> {//go back
-                    printUpdateMessage("goBack not implemented yet");
-                }
+//                case "12:2" -> {//go back
+//                    printUpdateMessage("goBack not implemented yet");
+//                }
                 case "0:3" -> {//EndGame
                     controller.adminEndGame(myId);
                 }
