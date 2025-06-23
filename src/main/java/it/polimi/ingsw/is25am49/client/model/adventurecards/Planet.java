@@ -40,5 +40,20 @@ public class Planet {
         this.playernumber = playernumber;
     }
 
+    public int getRedGoods() {
+        return effect.getRedGoods();
+    }
+
+    public int getYellowGoods() {
+        return effect.getYellowGoods();
+    }
+
+    public int getGreenGoods() {
+        return effect.getGreenGoods();
+    }
+
+    public int getBlueGoods() {
+        return effect.getBlueGoods();
+    }
 
 }

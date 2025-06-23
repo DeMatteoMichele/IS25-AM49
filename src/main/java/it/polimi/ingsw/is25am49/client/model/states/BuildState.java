@@ -100,6 +100,7 @@ public class BuildState extends State {
         player.getShipBoard().checkAddTokenToTile(coordinates, token);
         if(token.equals(Token.BROWN_ALIENS)||token.equals(Token.PURPLE_ALIENS)){
             if(player.getShipBoard().getTotalNumberOfaToken(token)>0)throw new RuntimeException("you can have only one "+token+" token in your shipboard");
+            if (gameSession.getGame().get().isTestFlight())throw new GameSettingsException("This is a Test Flight you can not add an alien");
         }
     }
     @Override
@@ -211,7 +212,7 @@ public class BuildState extends State {
             if(gameSession.getGame().isPresent()) {
                 Game game = gameSession.getGame().get();
                 for (Player p : game.getListPlayers()) {
-                    if(p.getShipBoard().getAlienPoint().isPresent()) {
+                    if(p.getShipBoard().getAlienPoint().isPresent() && p.isConnected()) {
                         return;
                     }
                 }
@@ -260,7 +261,6 @@ public class BuildState extends State {
             }
         }else throw new RuntimeException("timer is done GAME NON SETTATO non so perch'");
     }
-    //todo NON è stata ricopiata esattamente, Bisogna decidere bene cosa fare con le transizioni di stato
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
         if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
