@@ -94,15 +94,13 @@ public class BuildState extends State {
     @Override
     public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
-        if(gameSession.getGame().isPresent()){
-            if (gameSession.getGame().get().isTestFlight())throw new GameSettingsException("This is a Test Flight you can not add an alien");
-        }
         if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.getShipBoard().checkCoordinates(coordinates);
         if(!player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))throw new RuntimeException("you cannot add a "+token+" token in this position, correct alien module is missing");
         player.getShipBoard().checkAddTokenToTile(coordinates, token);
         if(token.equals(Token.BROWN_ALIENS)||token.equals(Token.PURPLE_ALIENS)){
             if(player.getShipBoard().getTotalNumberOfaToken(token)>0)throw new RuntimeException("you can have only one "+token+" token in your shipboard");
+            if (gameSession.getGame().get().isTestFlight())throw new GameSettingsException("This is a Test Flight you can not add an alien");
         }
     }
     @Override
