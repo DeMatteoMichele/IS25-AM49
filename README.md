@@ -19,10 +19,10 @@ Team members: Michele De Matteo, Andrea Compagnoni, Daniele Confalonieri, Davis 
 
 | Feature                              | Status      |
 
-| ✅ Basic rules                       | Implemented |
-| ✅ Complete rules                    | Implemented |
-| ✅ CLI interface                     | Implemented |
-| ✅ GUI interface (JavaFX)            | Implemented |
-| ✅ Socket-based networking           | Implemented |
-| ✅ RMI-based networking              | Implemented |
-| ✅ Disconnection resilience          | Implemented |
+| ✅ Basic rules                       : Implemented |
+| ✅ Complete rules                    : Implemented |
+| ✅ CLI interface                     : Implemented |
+| ✅ GUI interface (JavaFX)            : Implemented |
+| ✅ Socket-based networking           : Implemented |
+| ✅ RMI-based networking              : Implemented |
+| ✅ Disconnection resilience          : Implemented |
