@@ -118,18 +118,18 @@ public abstract class Enemy extends AdventureCard {
                 checkConnectionOrDefaultEffect(currentState);
             }
             case DECISION_GOODS -> {
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
             }
             default -> throw new IllegalMethodOnThisStateException("Invalid state: " + currentState);
         }
