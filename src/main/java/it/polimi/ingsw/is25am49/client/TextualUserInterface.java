@@ -37,7 +37,7 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
-public class TextualUserInterface implements UserInterface {
+public abstract class TextualUserInterface implements UserInterface {
     //Server settings:
     private final String serverIP = "192.168.8.111";
     private final int serverPortSocket = 8081;
