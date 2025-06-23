@@ -49,6 +49,7 @@ public class WarZoneCard extends AdventureCard {
     public void drawCard() {
         super.drawCard();
         playerWithMinimumEnginePower = gameBoard.getFirstPlayerConnected();
+        playerWithMinimumFirePower = gameBoard.getFirstPlayerConnected();
         userInterface.updateGenericCardMessage(genericIdForUpdates, "You have found a War Zone! Good luck, it will be tough to get out of it.");
         checkRequirements();
     }

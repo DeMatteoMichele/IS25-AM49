@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.client.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectMeteoriti;
+import it.polimi.ingsw.is25am49.client.model.Game;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
-
+    private Game game;
     private AdventureCardDeck mainAdventureDeck;
     private final TileCardDeck tilesDeck;
     private final ConcurrentHashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
@@ -538,13 +539,8 @@ public class GameBoard {
 
         landedPlayers.forEach(player -> {
             int credits = 0;
-
-            credits = 5 - leaderBoard.getPos(player);
             credits -= player.getShipBoard().getDestroyedTiles();
             credits += player.scoreOfGoods()/2;
-            if (minimumExposedComponents().contains(player)) {
-                credits += 2;
-            }
             player.addCredits(credits);
         });
     }
@@ -815,7 +811,9 @@ public class GameBoard {
         }
         return str.toString();
     }
-
+    public void setGame(Game game) {
+        this.game=game;
+    }
     public void disconnectionWarningToCard(Player player) {
         if (currentCard != null) {
             currentCard.disconnectionHandling(player);

@@ -25,6 +25,7 @@ public class Game {
     public Game(Player admin, GameSession session, GameMode mode, int maxPlayers, int seedForGeneration) {
         this.session = session;
         board = new GameBoard(seedForGeneration);
+        board.setGame(this);
         players = new ArrayList<>();
         this.mode = mode;
         winner = Optional.empty();
