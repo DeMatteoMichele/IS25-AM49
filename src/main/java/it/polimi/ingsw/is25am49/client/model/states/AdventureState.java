@@ -4,6 +4,8 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.Game;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
+import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
@@ -128,10 +130,14 @@ public class AdventureState extends State {
 
     public void userStopFlight(int playerId) {
         Player player = getPlayerById(playerId);
-        gameSession.userStopFlight(player);
+        try {
+            gameSession.userStopFlight(player);
+        }catch (NotEnoughPlayerException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
+            gameSession.getGame().ifPresent(Game::finishGame);
+            transition(new FinishScoreState(gameSession, userInterface));
+        }
+
     }
-
-
 
     public void adminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");

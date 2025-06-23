@@ -36,13 +36,15 @@ public class EffectMeteoriti extends CardEffect {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     if (player.getShipBoard().getTile(target.get()).getConnector(direction) == ConnectorType.FLAT) {
-                        userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, the meteor bounces ");
+                        userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, the meteor coming from " + direction+ " pointing at " + position +" bounces ");
                     } else {
                         player.getShipBoard().destroyTile(target.get());
                         userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
                         player.getShipBoard().destroyDisconnectedTiles();
-
                     }
+                }
+                else {
+                    userInterface.updateGenericCardMessage(player.getIdPlayer(), "Meteora coming from " + direction+" pointing at " + position + "  missed you!");
                 }
             }
         } else {
@@ -52,11 +54,14 @@ public class EffectMeteoriti extends CardEffect {
                 userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big Meteora destroyed by cannons!");
             } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
-                target.ifPresent(point -> {
-                    player.getShipBoard().destroyTile(point);
-                    userInterface.updateEffectMeteorite(player.getIdPlayer(), point);
-                });
-                player.getShipBoard().destroyDisconnectedTiles();
+                if(target.isPresent()) {
+                    player.getShipBoard().destroyTile(target.get());
+                    userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
+                    player.getShipBoard().destroyDisconnectedTiles();
+                }
+                else {
+                    userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big meteora coming from " + direction+" pointing at " + position + "  missed you!");
+                }
             }
         }
     }

@@ -73,6 +73,7 @@ public class GameBoard {
 
     /**
      * This method is used to check if the player is the current player
+     *
      * @param player the player to check
      * @throws IllegalMethodOnThisStateException if the player is not the current player
      */
@@ -84,24 +85,26 @@ public class GameBoard {
 
     /**
      * This method is used to configurate the flight of the game
+     *
      * @param gameMode the game mode
-     * @param players the players of the game
+     * @param players  the players of the game
      */
     public void configurateFlight(GameMode gameMode, ArrayList<Player> players) {
-        int level=switch (gameMode) {
+        int level = switch (gameMode) {
             case FLIGHT_MODE -> 0;
             case LEVEL_1 -> 1;
             case LEVEL_2 -> 2;
             default -> throw new GameSettingsException("Illegal gameMode");
         };
         players.stream().forEach(player ->
-                player.setShipBoard(new ShipBoard(level, player.getPlayerNumber(),player.getColor()))
+                player.setShipBoard(new ShipBoard(level, player.getPlayerNumber(), player.getColor()))
         );
         setLeaderBoard(gameMode);
     }
 
     /**
      * This method is used to initialize the game
+     *
      * @param gameMode the game mode
      */
     public void initialize(GameMode gameMode) {
@@ -111,6 +114,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the main adventure deck
+     *
      * @return the main adventure deck
      */
     public AdventureCardDeck getMainAdventureDeck() {
@@ -120,6 +124,7 @@ public class GameBoard {
     /**
      * This method is used to generate the small decks
      * If the game mode is FLIGHT_MODE, it generates a main deck with all the cards
+     *
      * @param gameMode the game mode
      * @throws RuntimeException if the file is not found
      */
@@ -144,7 +149,7 @@ public class GameBoard {
                     card = switch (name) {
                         case "SpazioAperto" -> new SpazioAperto(cardId, this, description, level, name);
                         case "StarDustCard" -> new StarDustCard(cardId, this, description, level, name);
-                        case "PlanetCard"->{
+                        case "PlanetCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             List<Planet> planets = new ArrayList<>();
                             JsonNode planetsNode = node.get("planets");
@@ -155,7 +160,7 @@ public class GameBoard {
                                     int greenGoods = planetNode.get("greenGoods").asInt();
                                     int blueGoods = planetNode.get("blueGoods").asInt();
                                     int planetId = planetNode.get("planetId").asInt();
-                                    Planet planet = new Planet(redGoods, yellowGoods, greenGoods, blueGoods,planetId);
+                                    Planet planet = new Planet(redGoods, yellowGoods, greenGoods, blueGoods, planetId);
                                     planets.add(planet);
                                 }
                             }
@@ -167,7 +172,7 @@ public class GameBoard {
                             int lostAstronauts = node.get("lostAstronauts").asInt();
                             yield new AbandonedShipCard(cardId, this, description, level, name, daysLost, creditsEarned, lostAstronauts);
                         }
-                        case "AbandonedStationCard"->{
+                        case "AbandonedStationCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int minimumAstronauts = node.get("minimumAstronauts").asInt();
                             int redGoods = node.get("redGoods").asInt();
@@ -177,21 +182,21 @@ public class GameBoard {
                             yield new AbandonedStationCard(cardId, this, description, level, name, daysLost, minimumAstronauts, redGoods, yellowGoods, greenGoods, blueGoods);
                         }
                         case "SabotageCard" -> new SabotageCard(cardId, this, description, level, name);
-                        case "WarZoneCard"->{
+                        case "WarZoneCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int loseAstronauts = node.get("lostAstronauts").asInt();
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for(JsonNode effectNode : effectsNode) {
+                            for (JsonNode effectNode : effectsNode) {
                                 String name2 = effectNode.get("name").asText();
                                 int power = effectNode.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effectNode.get("orientation").asText());
                                 effects.add(new EffectCannonata(name2, power, orientation));
                             }
-                            yield new WarZoneCard(cardId,this, description, level,name, daysLost, loseAstronauts,effects);
+                            yield new WarZoneCard(cardId, this, description, level, name, daysLost, loseAstronauts, effects);
 
                         }
-                        case "SmugglerCard"->{
+                        case "SmugglerCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int redGoods = node.get("redGoods").asInt();
@@ -202,10 +207,10 @@ public class GameBoard {
                             yield new SmugglerCard(cardId, this, description, level, name, daysLost, minimumFirePower, redGoods, yellowGoods, greenGoods, blueGoods, lostGoods);
 
                         }
-                        case "MeteorRainCard"->{
+                        case "MeteorRainCard" -> {
                             JsonNode effectsNode = node.get("effects");
                             List<CardEffect> effects = new ArrayList<>();
-                            for(JsonNode effect : effectsNode) {
+                            for (JsonNode effect : effectsNode) {
                                 String name2 = effect.get("name").asText();
                                 int power = effect.get("level").asInt();
                                 Orientation orientation = Orientation.valueOf(effect.get("orientation").asText());
@@ -228,14 +233,14 @@ public class GameBoard {
                             }
                             yield new PiratesCard(cardId, this, description, level, name, daysLost, minimumFirePower, creditsEarned, effects);
                         }
-                        case "SlaverCard"->{
+                        case "SlaverCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int minimumFirePower = node.get("minimumFirepower").asInt();
                             int creditsEarned = node.get("creditsEarned").asInt();
                             int lostAstronauts = node.get("lostAstronauts").asInt();
-                            yield new SlaverCard(cardId,this,description,level,name,daysLost,minimumFirePower,creditsEarned,lostAstronauts);
+                            yield new SlaverCard(cardId, this, description, level, name, daysLost, minimumFirePower, creditsEarned, lostAstronauts);
                         }
-                        case "EpidemyCard"->new EpidemyCard(cardId,this,description,level,name);
+                        case "EpidemyCard" -> new EpidemyCard(cardId, this, description, level, name);
                         default -> null;
                     };
 
@@ -261,7 +266,7 @@ public class GameBoard {
                 if (gameMode == GameMode.LEVEL_1) {
                     // Creo 4 mazzi separati, ognuno con 2 carte di livello 1
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
+                        Collections.shuffle(deckLevel1, new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel1.remove(i));
                         smallDeck.add(deckLevel1.remove(i));
@@ -271,8 +276,8 @@ public class GameBoard {
                 if (gameMode == GameMode.LEVEL_2) {
                     //creo 4 mazzi separati, ognuno con 2 carte di livello 2 e una di livello 1
                     for (int i = 0; i < 4; i++) {
-                        Collections.shuffle(deckLevel2,new Random(seedForGeneration));
-                        Collections.shuffle(deckLevel1,new Random(seedForGeneration));
+                        Collections.shuffle(deckLevel2, new Random(seedForGeneration));
+                        Collections.shuffle(deckLevel1, new Random(seedForGeneration));
                         AdventureCardDeck smallDeck = new AdventureCardDeck();
                         smallDeck.add(deckLevel2.remove(i));
                         smallDeck.add(deckLevel2.remove(i));
@@ -292,6 +297,7 @@ public class GameBoard {
 
     /**
      * This method is used to set the leaderboard
+     *
      * @param gameMode the game mode
      */
     public void setLeaderBoard(GameMode gameMode) {
@@ -300,6 +306,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the small adventure deck
+     *
      * @param index
      * @return AdventureCardDeck the small adventure deck
      */
@@ -323,6 +330,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the leaderboard
+     *
      * @return the leaderboard
      */
     public LeaderBoard getLeaderBoard() {
@@ -336,6 +344,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the current card
+     *
      * @return the current card (AdventureCard)
      */
     public AdventureCard getCurrentCard() {
@@ -351,6 +360,7 @@ public class GameBoard {
      * This method is used to remove a player from the leaderboard
      * and add it to the landed players
      * It's called when a player choose or is forced to land
+     *
      * @param player the player to check
      * @throws GameSettingsException if the player is already landed
      */
@@ -363,14 +373,16 @@ public class GameBoard {
             ui.updateStopFlight(player.getIdPlayer());
         }
     }
+
     /**
      * This method is used to check if is possible to draw an adventure card
+     *
      * @param player the player who is drawing the card
      * @throws IllegalMethodOnThisStateException if the player is not the leader
-     * @throws GameSettingsException if the card is not finished
+     * @throws GameSettingsException             if the card is not finished
      */
-    public void checkDrawAdventureCard(Player player){
-        if (player.equals(leaderBoard.getLeader())) {
+    public void checkDrawAdventureCard(Player player) {
+        if (player.equals(leaderBoard.getFirstPlayerConnected())) {
             if (isFirstCard || currentCard.getIsFinished() || !mainAdventureDeck.getDeck().isEmpty()) {
                 //OK
             } else {
@@ -383,20 +395,20 @@ public class GameBoard {
 
     /**
      * This method is used to draw an adventure card
+     *
      * @param player the player who is drawing the card
      * @throws IllegalMethodOnThisStateException if the player is not the leader
-     * @throws GameSettingsException if the card is not finished
+     * @throws GameSettingsException             if the card is not finished
      */
     public void drawAdventureCard(Player player) {
         if (player.equals(leaderBoard.getFirstPlayerConnected())) {
-            if(mainAdventureDeck.size()==0)throw new OutOfDeckExceptions("you have drawn all the cards!");
+            if (mainAdventureDeck.size() == 0) throw new OutOfDeckExceptions("you have drawn all the cards!");
             if (isFirstCard || currentCard.getIsFinished()) {
                 currentCard = mainAdventureDeck.getFirstCard();
                 mainAdventureDeck.draw();
                 isFirstCard = false;
                 leaderBoard.refreshConnections();
-            }
-            else {
+            } else {
                 throw new IllegalMethodOnThisStateException("You can't draw adventure card until it is finished.");
             }
         } else
@@ -405,6 +417,7 @@ public class GameBoard {
 
     /**
      * This method is used to roll the dices on the current card
+     *
      * @param player the player who roll the dices
      */
     public void userThrowDices(Player player) {
@@ -436,19 +449,20 @@ public class GameBoard {
     }
 
     public void userStopFlight(Player player) {
-        if(currentCard.getIsFinished()){
+        if (currentCard.getIsFinished()) {
             playerNoMoreInFlight(player);
-        }
-        else{
+        } else {
             stopFlightPlayers.add(player);
         }
     }
+
     public List<Player> getStopFlightPlayers() {
         return stopFlightPlayers;
     }
 
     /**
      * This method is used to add a player to the leaderboard
+     *
      * @param player the player to add
      */
     public void addPlayerToLeaderboard(Player player) {
@@ -462,15 +476,18 @@ public class GameBoard {
 
     public void addDiscardedTile(Player player) {
         Optional<Tile> newTile = player.discardTile();
-        newTile.ifPresent(tile -> {tile.setTileOrientation(Orientation.NORTH);});
+        newTile.ifPresent(tile -> {
+            tile.setTileOrientation(Orientation.NORTH);
+        });
         newTile.ifPresent(tile -> tilesDeck.addDiscardTile(tile, player));
-        ui.updateDiscardTile(player.getIdPlayer(),newTile.get().getIdTile());
+        ui.updateDiscardTile(player.getIdPlayer(), newTile.get().getIdTile());
 
     }
 
     /**
      * This method is used to draw a tile from the tiles deck
-     * @param index the index of the tile to draw
+     *
+     * @param index  the index of the tile to draw
      * @param player the player who is drawing the tile
      * @return the tile drawn
      */
@@ -480,6 +497,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the leader of the game
+     *
      * @return the player who is the leader
      */
     public Player getLeader() {
@@ -488,9 +506,10 @@ public class GameBoard {
 
     /**
      * This method is used to get the first player connected in the leaderboard
+     *
      * @return the first player connected
      */
-    public Player getFirstPlayerConnected(){
+    public Player getFirstPlayerConnected() {
         return leaderBoard.getFirstPlayerConnected();
     }
 
@@ -522,7 +541,7 @@ public class GameBoard {
 
             credits = 5 - leaderBoard.getPos(player);
             credits -= player.getShipBoard().getDestroyedTiles();
-            credits += player.scoreOfGoods();
+            credits += player.scoreOfGoods()/2;
             if (minimumExposedComponents().contains(player)) {
                 credits += 2;
             }
@@ -535,6 +554,7 @@ public class GameBoard {
      * This method is used to get the players with the minimum exposed components
      * First it calculates the minimum value of exposed components
      * Then it filters the players with the same value
+     *
      * @return the list of players with the minimum exposed components
      */
     public List<Player> minimumExposedComponents() {
@@ -558,6 +578,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the next player in the leaderboard
+     *
      * @return the next player
      * @throws IllegalSetOfNextPlayerException if the current player is the last player
      */
@@ -565,12 +586,18 @@ public class GameBoard {
         int currentPos = leaderBoard.getPos(currentPlayer);
         if (currentPos == leaderBoard.size())
             throw new IllegalSetOfNextPlayerException("This is the last player");
-        else
-            return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
+        else {
+            try {
+                return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
+            } catch (Exception e) {
+                throw new IllegalSetOfNextPlayerException(e.getMessage());
+            }
+        }
     }
 
     /**
      * This method is used to get the current player in the game
+     *
      * @return the current player
      */
     public Player getCurrentPlayer() {
@@ -586,6 +613,7 @@ public class GameBoard {
 
     /**
      * This method is used to set the current player
+     *
      * @param currentPlayer the current player
      */
     public void setCurrentPlayer(Player currentPlayer) {
@@ -601,11 +629,11 @@ public class GameBoard {
         updateLeaderboard();
         checkIfSomeoneHasZeroAstronauts();
         checkIfIsLapped();
-        if(!getStopFlightPlayers().isEmpty()){
-            for(Player player : getStopFlightPlayers()){
-                try{
+        if (!getStopFlightPlayers().isEmpty()) {
+            for (Player player : getStopFlightPlayers()) {
+                try {
                     playerNoMoreInFlight(player);
-                }catch (GameSettingsException e){
+                } catch (GameSettingsException e) {
                     System.out.println("Player " + player.getIdPlayer() + " has already quit the game");
                 }
             }
@@ -662,6 +690,7 @@ public class GameBoard {
 
     /**
      * This method is used to set the main adventure deck
+     *
      * @param mainAdventureDeck the main adventure deck
      */
     public void setMainAdventureDeck(AdventureCardDeck mainAdventureDeck) {
@@ -671,6 +700,7 @@ public class GameBoard {
     /**
      * This method is used when the player finish the shipboard
      * It adds the player to the leaderboard
+     *
      * @param player the player who finish the shipboard
      * @return the size of the leaderboard
      */
@@ -684,10 +714,11 @@ public class GameBoard {
     /**
      * This method is used to look at small adventure card deck
      * It's synchronized to avoid concurrent access
+     *
      * @param player the player who wanna look at the deck
-     * @param index the index of the deck
+     * @param index  the index of the deck
      * @throws GameSettingsException if any player is already watching a deck
-     * @throws OutOfDeckExceptions if the deck does not exist
+     * @throws OutOfDeckExceptions   if the deck does not exist
      */
     public void userLookSmallAdventureCardDeck(Player player, int index) {
         synchronized (mapSmallAdventureDecks.get(index)) {
@@ -705,8 +736,9 @@ public class GameBoard {
 
     /**
      * This method is used to stop looking at small adventure card deck
+     *
      * @param player the player who is stopping to look at the deck
-     * @param index the index of the deck
+     * @param index  the index of the deck
      * @throws OutOfDeckExceptions if the deck does not exist
      */
     public void userStopLookSmallAdventureCardDeck(Player player, int index) {
@@ -732,7 +764,7 @@ public class GameBoard {
                 .forEach(player -> {
                     if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0) {
                         playersWithZeroAstronauts.add(player);
-                        ui.updateGenericCardMessage(player.getIdPlayer(),player.getUsername() + " has no more astronauts in his ship, he has to land now!");
+                        ui.updateGenericCardMessage(player.getIdPlayer(), player.getUsername() + " has no more astronauts in his ship, he has to land now!");
                     }
                 });
         playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
@@ -747,7 +779,7 @@ public class GameBoard {
     }
 
 
-    public TileCardDeck getTilesDeck(){
+    public TileCardDeck getTilesDeck() {
         return tilesDeck;
     }
 
@@ -762,16 +794,17 @@ public class GameBoard {
     /**
      * This method is used to get the string representation of the final ranking
      * It's based on the total credits for each player
+     *
      * @return a string representation of the final ranking
      */
-    public  String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
         int width = 200;
         String border = "+" + "-".repeat(width - 2) + "+\n";
         str.append(border);
         int i = 1;
         List<Player> finalRanking = leaderBoard.stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
-        for(Player player : finalRanking){
+        for (Player player : finalRanking) {
             str.append("|      POSITION: ").append(i).append("----->   ");
             str.append(player.getUsername()).append("\tTOTAL CREDIT SCORE: ").append(player.getCredits())
                     .append("-->\t|\t(-) destroyed tiles: ").append(player.getShipBoard().getDestroyedTiles())

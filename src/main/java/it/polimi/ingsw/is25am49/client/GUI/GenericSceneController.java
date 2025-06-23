@@ -1,6 +1,8 @@
 package it.polimi.ingsw.is25am49.client.GUI;
 
 import it.polimi.ingsw.is25am49.client.model.GameSession;
+import it.polimi.ingsw.is25am49.client.model.Player;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.fxml.FXML;
@@ -9,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -55,15 +56,14 @@ public abstract class GenericSceneController {
 
     public void loadTokens() {
         String basePath = "/it/polimi/ingsw/is25am49/tokens/";
-
-        tokensMap.put(Token.ASTRONAUT, createTokenImage(basePath + "Astronaut.png"));
-        tokensMap.put(Token.BROWN_ALIENS, createTokenImage(basePath + "Brownalien.png"));
-        tokensMap.put(Token.PURPLE_ALIENS, createTokenImage(basePath + "Purplealien.png"));
-        tokensMap.put(Token.YELLOW_GOODS, createTokenImage(basePath + "Yellowgood.png"));
-        tokensMap.put(Token.RED_GOODS, createTokenImage(basePath + "Redgood.png"));
-        tokensMap.put(Token.BLUE_GOODS, createTokenImage(basePath + "Bluegood.png"));
-        tokensMap.put(Token.GREEN_GOODS, createTokenImage(basePath + "Greengood.png"));
-        tokensMap.put(Token.BATTERY_CELLS, createTokenImage(basePath + "Battery.png"));
+        tokensMap.put(Token.ASTRONAUT, createTokenImage(basePath + "astronaut.png"));
+        tokensMap.put(Token.BROWN_ALIENS, createTokenImage(basePath + "brownalien.png"));
+        tokensMap.put(Token.PURPLE_ALIENS, createTokenImage(basePath + "purplealien.png"));
+        tokensMap.put(Token.YELLOW_GOODS, createTokenImage(basePath + "yellowgood.png"));
+        tokensMap.put(Token.RED_GOODS, createTokenImage(basePath + "redgood.png"));
+        tokensMap.put(Token.BLUE_GOODS, createTokenImage(basePath + "bluegood.png"));
+        tokensMap.put(Token.GREEN_GOODS, createTokenImage(basePath + "greengood.png"));
+        tokensMap.put(Token.BATTERY_CELLS, createTokenImage(basePath + "battery.png"));
     }
 
     private ImageView createTokenImage(String imagePath) {

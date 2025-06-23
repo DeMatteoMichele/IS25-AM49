@@ -37,7 +37,7 @@ public class ServerSerializer implements RemoteClient {
         while (true) {
             try {
                 Command command = filesFromSocketQueue.take();
-                deSerializeStringFromClient(command);
+                deSerializeCommandFromClient(command);
             } catch (InterruptedException e) {
                 System.err.println("Thread that process the FilesFromSocketQueue has been interrrupted: " + e.getMessage());
             }
@@ -52,8 +52,7 @@ public class ServerSerializer implements RemoteClient {
         this.clientHandler = clientHandler;
     }
 
-    //se cambiano i parametri dei metodi bisogna modificare questo codice
-    public Command deSerializeStringFromClient(Command command) {
+    public Command deSerializeCommandFromClient(Command command) {
         command.setServerController(serverController);
         if (command.getTypeOfMessage().equals("MSG")) {
             command.callMethod();
@@ -109,7 +108,7 @@ public class ServerSerializer implements RemoteClient {
 
     public int deserializeHandshake(Command command) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
-            Command commandTemp = deSerializeStringFromClient(command);
+            Command commandTemp = deSerializeCommandFromClient(command);
             Command commandToSend = new Command("registerClientCallback", commandTemp.getPlayerId());
             serializeObjectFromServer(commandToSend, true, commandTemp.getPlayerId());
             return commandTemp.getPlayerId();

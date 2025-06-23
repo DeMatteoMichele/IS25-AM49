@@ -5,6 +5,7 @@ import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.TileCardDeck;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
@@ -14,7 +15,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
@@ -30,6 +34,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class BuildController extends GenericSceneController {
     @FXML
@@ -70,6 +75,11 @@ public class BuildController extends GenericSceneController {
     private Button backToShipboard;
     @FXML
     private HBox astronautsOrAliens;
+    @FXML
+    private Label chooseAliens;
+    @FXML
+    private Label waitingLabel;
+    StackPane highlightPane = new StackPane();
     int count = 0;
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
     private final Map<Integer, Node> container = new HashMap<>();
@@ -85,6 +95,10 @@ public class BuildController extends GenericSceneController {
         backgroundImage.setImage(image);
         astronautsOrAliens.setDisable(true);
         astronautsOrAliens.setVisible(false);
+        chooseAliens.setVisible(false);
+        chooseAliens.setDisable(true);
+        waitingLabel.setVisible(false);
+        waitingLabel.setDisable(true);
         loadTokens();
 
         backgroundImage.sceneProperty().addListener((observable, oldScene, newScene) -> {
@@ -107,6 +121,10 @@ public class BuildController extends GenericSceneController {
             timer.setVisible(false);
             timerLabel.setVisible(false);
             timerLabel.setDisable(true);
+            stopLooking.setVisible(false);
+            stopLooking.setDisable(true);
+            smallAdventureDeckContainer.setVisible(false);
+            smallAdventureDeckContainer.setDisable(true);
         }
     }
     public void loadGrid() {
@@ -215,10 +233,37 @@ public class BuildController extends GenericSceneController {
 
                         //aggiungo token
                         tile.get().getComponent().getTokenList().forEach(token -> {
-                            ImageView tokenImageView = new ImageView(tokensMap.get(token).getImage());
-                            tokenImageView.setFitWidth(23);
-                            tokenImageView.setFitHeight(32);
-                            tokenContainer.getChildren().add(tokenImageView);
+
+                                ImageView tokenImageView;
+                                Color playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();
+                                if(token==Token.ASTRONAUT) {
+                                    //se il token è un astronauta, prendo il colore del giocatore
+                                    playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();
+
+                                    switch (playerColor) {
+                                        case RED:
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                                            break;
+                                        case BLUE:
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
+                                            break;
+                                        case GREEN:
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
+                                            break;
+                                        case YELLOW:
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
+                                            break;
+                                        default:
+                                            // Immagine predefinita in caso di colore non gestito
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                                    }
+                                }
+                                else{
+                                    tokenImageView = tokensMap.get(token);
+                                }
+                                tokenImageView.setFitWidth(23);
+                                tokenImageView.setFitHeight(32);
+                                tokenContainer.getChildren().add(tokenImageView);
 
                         });
 
@@ -317,8 +362,48 @@ public class BuildController extends GenericSceneController {
         for(Player p : listPlayers){
             listViewPlayers.getItems().add(p.getUsername() + "  "+ p.getColor() + " (ID: " + p.getIdPlayer() + ")");
         }
-        playerInformation.setText("You are " + gameSession.getPlayer(guiApplication.getMyId()).get().getUsername() + " (ID: " + guiApplication.getMyId() + ")\n"+ "Lost Components: "+ gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getDestroyedTiles());
+        ImageView playerIcon;
+        Color playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();
 
+        switch (playerColor) {
+            case RED:
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                break;
+            case BLUE:
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
+                break;
+            case GREEN:
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
+                break;
+            case YELLOW:
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
+                break;
+            default:
+                playerIcon = null;
+        }
+        playerIcon.setFitWidth(34);
+        playerIcon.setFitHeight(55);
+
+
+        playerInformation.setText("You are " + gameSession.getPlayer(guiApplication.getMyId()).get().getUsername() + " (ID: " + guiApplication.getMyId() + ")\n"+ "Lost Components: "+ gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getDestroyedTiles());
+        playerInformation.setGraphic(playerIcon);
+        playerInformation.setContentDisplay(ContentDisplay.LEFT);
+        playerInformation.setGraphicTextGap(10);
+
+
+        listViewPlayers.setOnMouseClicked(event -> {
+            int selectedIndex = listViewPlayers.getSelectionModel().getSelectedIndex();
+            System.out.println("Selected index: " + selectedIndex);
+            if(selectedIndex==guiApplication.getMyId()){
+                clearShipBoard();
+                setupDragAndDropCells(); // Riconfigura le celle per il drag and drop
+                printShipboard();
+            }
+            else{
+                guiApplication.lookAtShipboard(selectedIndex);
+            }
+
+        });
     }
 
     private void printTileCardDeck(){
@@ -501,6 +586,37 @@ public class BuildController extends GenericSceneController {
         }catch (Exception e){}
 
     }
+//    public void enablePickTile(){
+//        try{
+//            gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTile(new Point(9,5));
+//            System.out.println("Enabling pick tile for coordinates (9,5)");
+//            System.out.println(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTile(new Point(9,5)).getIsLocked());
+//            ImageView imageView = tilesMap.get(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTile(new Point(9,5)).getIdTile());
+//            imageView.setOnMouseClicked(event -> {
+//                try {
+//                    guiApplication.getController().userPickTile(guiApplication.getMyId(), new Point(9,5));
+//                } catch (Exception e) {
+//                    guiApplication.printUpdateMessage(error + e.getMessage());
+//                }
+//            });
+//        } catch (Exception e) {
+//
+//        }
+//        try{
+//            gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTile(new Point(10,5));
+//
+//            ImageView imageView = tilesMap.get(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTile(new Point(10,5)).getIdTile());
+//            imageView.setOnMouseClicked(event -> {
+//                try {
+//                    guiApplication.getController().userPickTile(guiApplication.getMyId(), new Point(10,5));
+//                } catch (Exception e) {
+//                    guiApplication.printUpdateMessage(error + e.getMessage());
+//                }
+//            });
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
     public void removeFromShipBoard(Point coordinates, int idTile) {
         try{
@@ -727,7 +843,7 @@ public class BuildController extends GenericSceneController {
                 smallAdventureDeck.getChildren().add(imageView);
                 smallAdventureDeck.setSpacing(20);
             } else {
-                System.out.println("Immagine non trovata per la carta ID: " + idCard);
+//                System.out.println("Immagine non trovata per la carta ID: " + idCard);
             }
         }
     }
@@ -768,7 +884,7 @@ public class BuildController extends GenericSceneController {
                    imageView.setFitHeight(60);
 
                    // Imposta la rotazione dell'immagine in base all'orientamento della tile
-                   switch (tile.get().getTileOrientation()){
+                   switch (tile.get().getTileOrientation()) {
                        case NORTH -> imageView.setRotate(0);
                        case EAST -> imageView.setRotate(90);
                        case SOUTH -> imageView.setRotate(180);
@@ -777,11 +893,57 @@ public class BuildController extends GenericSceneController {
 
                    // Aggiungi la nuova ImageView alla griglia
                    shipBoard.add(imageView, coordinates.x - 4, coordinates.y - 5);
-               } else {
-                   System.out.println("Immagine non trovata per la tile ID: " + idTile);
+                   if (tile.get().getComponent().getType() == ComponentType.CABINE) {
+                       //creo hbox per affiancarli
+                       HBox tokenContainer = new HBox();
+                       tokenContainer.setSpacing(5); // Spazio tra i token
+                       tokenContainer.setAlignment(javafx.geometry.Pos.CENTER);
+
+                       //aggiungo token
+                       tile.get().getComponent().getTokenList().forEach(token -> {
+
+                           ImageView tokenImageView;
+                           Color playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();
+                           if (token == Token.ASTRONAUT) {
+                               //se il token è un astronauta, prendo il colore del giocatore
+                               playerColor = gameSession.getPlayer(playerId).get().getColor();
+
+                               switch (playerColor) {
+                                   case RED:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                                       break;
+                                   case BLUE:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
+                                       break;
+                                   case GREEN:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
+                                       break;
+                                   case YELLOW:
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
+                                       break;
+                                   default:
+                                       // Immagine predefinita in caso di colore non gestito
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
+                               }
+                           } else {
+                               tokenImageView = tokensMap.get(token);
+                           }
+                           tokenImageView.setFitWidth(23);
+                           tokenImageView.setFitHeight(32);
+                           tokenContainer.getChildren().add(tokenImageView);
+
+                       });
+                       shipBoard.add(tokenContainer, coordinates.x - 4, coordinates.y - 5);
+                       GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
+                   } else {
+//                       System.out.println("Immagine non trovata per la tile ID: " + idTile);
+                   }
                }
            }
        });
+   }
+   public void disableHighlight(){
+        highlightPane.getChildren().clear();
    }
    public void selectTypeOfToken(){
         astronautsOrAliens.getChildren().clear();
@@ -800,6 +962,8 @@ public class BuildController extends GenericSceneController {
                 System.out.println("Alien Point: " + alienpoint);
                 astronautsOrAliens.setDisable(false);
                 astronautsOrAliens.setVisible(true);
+                chooseAliens.setDisable(false);
+                chooseAliens.setVisible(true);
                 gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().checkIfAlienArePossible(alienpoint).stream().forEach((token) -> {
                     if (token == Token.BROWN_ALIENS) {
                         ImageView brownAlienImage = tokensMap.get(Token.BROWN_ALIENS);
@@ -851,6 +1015,13 @@ public class BuildController extends GenericSceneController {
    }
         else{
             astronautsOrAliens.getChildren().clear();
+            disableAll();
+            waitingLabel.setDisable(false);
+            waitingLabel.setVisible(true);
+            astronautsOrAliens.setDisable(true);
+            astronautsOrAliens.setVisible(false);
+            chooseAliens.setDisable(true);
+            chooseAliens.setVisible(false);
             System.out.println("Non ci sono punti alieni disponibili per il giocatore con ID: " + guiApplication.getMyId());
         }
     }
@@ -877,10 +1048,11 @@ public class BuildController extends GenericSceneController {
         timer.setDisable(true);
         finish.setVisible(false);
         finish.setDisable(true);
-        lookAtShipboard.setVisible(false);
-        lookAtShipboard.setDisable(true);
-        backToShipboard.setVisible(false);
-        backToShipboard.setDisable(true);
+        timer.setLayoutX(155);
+        timer.setLayoutY(191);
+        timerLabel.setLayoutX(155);
+        timerLabel.setLayoutY(250);
+
     }
 
 }

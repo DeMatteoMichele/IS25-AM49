@@ -12,13 +12,13 @@
     "y": 7
   },
   {
-    "id": 58,
-    "orientation": "SOUTH",
+    "id": 53,
+    "orientation": "NORTH",
     "x": 6,
     "y": 8
   },
   {
-    "id": 76,
+    "id": 88,
     "orientation": "NORTH",
     "x": 6,
     "y": 9
@@ -91,7 +91,7 @@
   },
   {
     "id": 44,
-    "orientation": "NORTH",
+    "orientation": "EAST",
     "x": 5,
     "y": 9
   }

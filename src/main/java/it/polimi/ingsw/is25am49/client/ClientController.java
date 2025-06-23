@@ -65,7 +65,7 @@ public class ClientController {
     }
 
     public void registerClientCallback(int playerId) {
-        ui.printUpdateMessage("DEBUG: In registerClientCallback - playerId: " + playerId);
+//        ui.printUpdateMessage("DEBUG: In registerClientCallback - playerId: " + playerId);
         this.myId = playerId;
         ui.setClientId(playerId);
         if(serverHandler!=null) {
@@ -93,18 +93,18 @@ public class ClientController {
     public void playerConnectedCallback(int clientId) {
         try {
             gameSession.getState().connectPlayer(clientId);
-            ui.printUpdateMessage("DEBUG: In playerConnectedCallback player with id " + clientId + " has been connected.");
+//            ui.printUpdateMessage("DEBUG: In playerConnectedCallback player with id " + clientId + " has been connected.");
         } catch (IllegalArgumentException e) {
-            ui.printUpdateMessage("DEBUG: ITS OK! In playerConnectedCallback player not found for id " + clientId);
+//            ui.printUpdateMessage("DEBUG: ITS OK! In playerConnectedCallback player not found for id " + clientId);
         }
     }
 
     public void playerDisconnectedCallback(int clientId) {
         try {
             gameSession.getState().disconnectPlayer(clientId);
-            ui.printUpdateMessage("DEBUG: In playerDisconnectedCallback player with id " + clientId + " has been disconnected.");
+//            ui.printUpdateMessage("DEBUG: In playerDisconnectedCallback player with id " + clientId + " has been disconnected.");
         } catch (Exception e) {
-            ui.printUpdateMessage("DEBUG: ITS OK! In playerDisconnectedCallback player not found for id " + clientId);
+//            ui.printUpdateMessage("DEBUG: ITS OK! In playerDisconnectedCallback player not found for id " + clientId);
         }
     }
 
@@ -232,6 +232,7 @@ public class ClientController {
         try {
             gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
         } catch (Exception e) {
+            e.printStackTrace();
             ui.printUpdateMessage(error + "Error while finishing decision token: --> " + e.getMessage());
         }
     }
@@ -304,7 +305,7 @@ public class ClientController {
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
         Command command = new Command("registerClientRMI", myId);
-        ui.printUpdateMessage("DEBUG: In registerClientRMI - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
+//        ui.printUpdateMessage("DEBUG: In registerClientRMI - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
         command.addParameter(client);
         serverMethods.command_FromClientToServer(command);
     }
@@ -318,7 +319,7 @@ public class ClientController {
         File idFile = new File("$IdClient" + username + ".json");
         myId = mapper.readTree(idFile).get("playerId").asInt();
         Command command = new Command("registerClientSocket", myId);
-        ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
+//        ui.printUpdateMessage("DEBUG: In registerClientSocket - myId: " + myId+" using idFile: "+idFile.getAbsolutePath());
         serverHandler.connectCommand();
         serverMethods.command_FromClientToServer(command);
     }
@@ -339,7 +340,7 @@ public class ClientController {
 
     public void playerJoin(String username) {
         try {
-            System.out.println("DEBUG: In playerJoin - myId: " + myId + ", username: " + username);
+//            System.out.println("DEBUG: In playerJoin - myId: " + myId + ", username: " + username);
             gameSession.getState().checkUserJoinLobby(myId, username);
             Command command = new Command("playerJoin", myId);
             command.addParameter(myId);
@@ -470,7 +471,6 @@ public class ClientController {
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
-
     }
 
     public void userThrowDices(int playerId) {
@@ -593,7 +593,16 @@ public class ClientController {
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
+    }
 
+    public void userStopFlight(int playerId) {
+        Command command = new Command("userStopFlight", myId);
+        command.addParameter(playerId);
+        try {
+            serverMethods.command_FromClientToServer(command);
+        } catch (RemoteException e) {
+            ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
+        }
     }
 
     public int getplayerId() {
@@ -605,7 +614,7 @@ public class ClientController {
     }
 
     public void createMyIdJson() {
-        ui.printUpdateMessage("DEBUG: In createMyIdJson - Tentativo di scrivere myId: " + myId + " per username: " + username + " nel file: $IdClient" + username + ".json");
+//        ui.printUpdateMessage("DEBUG: In createMyIdJson - Tentativo di scrivere myId: " + myId + " per username: " + username + " nel file: $IdClient" + username + ".json");
         File idFile = new File("$IdClient" + username + ".json");
         try {
             if (idFile.exists()) {
@@ -616,7 +625,7 @@ public class ClientController {
             rootNode.put("playerId", myId);
             idFile = new File("$IdClient" + username + ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(idFile, rootNode);
-            ui.printUpdateMessage("DEBUG: File " + idFile.getAbsolutePath() + " scritto con successo in createMyIdJson.");
+//            ui.printUpdateMessage("DEBUG: File " + idFile.getAbsolutePath() + " scritto con successo in createMyIdJson.");
         } catch (IOException e) {
             ui.printUpdateMessage(error + "Errore durante l'inizializzazione dell'ID (scrittura file): " + e.getMessage() + " per file: " + idFile.getAbsolutePath());
         }

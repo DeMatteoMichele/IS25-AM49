@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model.adventurecards;
 
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalSizeToRemove;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
@@ -160,6 +161,9 @@ public abstract class AdventureCard {
                 if (coordinates.size() > currentEffect.getLostCrew()) {
                     throw new IllegalTokensException("Non puoi scegliere un numero di crew maggiore di " + currentEffect.getLostCrew() + "!");
                 }
+                int totalCrew = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT) + shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS) + shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+                if (!((totalCrew < currentEffect.getLostCrew() && coordinates.size() == totalCrew) || (coordinates.size() == currentEffect.getLostCrew())))
+                    throw new IllegalSizeToRemove("Please select the right amount of crew to remove: " + currentEffect.getLostCrew());
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
@@ -373,7 +377,7 @@ public abstract class AdventureCard {
 
     public void disconnectionHandling(Player player) {
         if (gameBoard.getCurrentPlayer().equals(player) &&
-                currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||
+                (currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||
                 currentState == AdventureStatesTypes.DECISION_BATTERIES ||
                 currentState == AdventureStatesTypes.DECISION_GOODS ||
                 currentState == AdventureStatesTypes.DECISION_LAND_PLANET ||
@@ -382,7 +386,7 @@ public abstract class AdventureCard {
                 currentState == AdventureStatesTypes.DECISION_CANNON ||
                 currentState == AdventureStatesTypes.DECISION_MOTOR ||
                 currentState == AdventureStatesTypes.DECISION_SHIELDS ||
-                currentState == AdventureStatesTypes.ROLL_DICES) {
+                currentState == AdventureStatesTypes.ROLL_DICES)) {
             applyDefaultEffect(currentState);
         } else {
             System.out.println("Disconnection handling not needed in this state");

@@ -26,7 +26,6 @@ public class EffectCannonata extends CardEffect {
      * This method applies the cannon effect to the player.
      * It depends on the level of the cannonade
      * It destroys the tile in the position of the cannonade
-     *
      * @param player the player to which the effect is applied
      */
     public void action(Player player) {
@@ -38,7 +37,10 @@ public class EffectCannonata extends CardEffect {
                 userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get());
                 player.getShipBoard().destroyDisconnectedTiles();
             }
-        } else if (level == 0) {
+            else {
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big cannonade coming from " + direction+" pointing at " + position + "  missed you!");
+            }
+        } else if(level==0) {
             //cannonata di livello zero, si può prevenire con attivazione di scudi
             //controllo se ci sono scudi che proteggono dalle direioni da cui colpisce la cannoanata
             if (player.getShipBoard().getProtectedSides().contains(direction)) {
@@ -50,6 +52,7 @@ public class EffectCannonata extends CardEffect {
                     userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
                     userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
+                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Small cannonade coming from " + direction+" pointing at " + position + "  missed you!");
             }
         }
     }
@@ -57,7 +60,6 @@ public class EffectCannonata extends CardEffect {
     /**
      * This method sets the position where the cannonade hits
      * It sets the number of row or column (it depend on the orientation) where the cannonade hits
-     *
      * @param position the position of the cannonade
      */
     public void setPosition(int position) {
@@ -68,7 +70,6 @@ public class EffectCannonata extends CardEffect {
     public void setListOfCoordinates(List<Pair<Point, Token>> listOfCoordinates) {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
-
     public void setCoordinate(Point coordinate) {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }

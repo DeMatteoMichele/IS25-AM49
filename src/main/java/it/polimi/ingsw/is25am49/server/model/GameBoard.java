@@ -498,7 +498,7 @@ public class GameBoard {
 
             credits = 5 - leaderBoard.getPos(player);
             credits -= player.getShipBoard().getDestroyedTiles();
-            credits += player.scoreOfGoods();
+            credits += player.scoreOfGoods()/2;
             if (minimumExposedComponents().contains(player)) {
                 credits += 2;
             }
@@ -541,8 +541,13 @@ public class GameBoard {
         int currentPos = leaderBoard.getPos(currentPlayer);
         if (currentPos == leaderBoard.size())
             throw new IllegalSetOfNextPlayerException("This is the last player");
-        else
-            return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
+        else {
+            try {
+                return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
+            } catch (IllegalSetOfNextPlayerException e) {
+                throw new IllegalSetOfNextPlayerException(e.getMessage());
+            }
+        }
     }
 
     /**
@@ -630,7 +635,6 @@ public class GameBoard {
                 });
         //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
         lappedPlayers.forEach(this::playerNoMoreInFlight);
-
     }
 
     /**

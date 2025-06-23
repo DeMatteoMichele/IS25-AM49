@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model;
 
+import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalSetOfNextPlayerException;
@@ -140,6 +141,7 @@ public class LeaderBoard {
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
             showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
+            if(mapLeaderboard.size() <2) throw new NotEnoughPlayerException("the leaderboard has one player left, going in finish state");
         } else
             throw new GameSettingsException("This player is not in the leaderboard");
     }
@@ -193,16 +195,10 @@ public class LeaderBoard {
         while (position <= size()) {
             Player player = getPlayerInPosition(position);
             if (!isDisconnected(player))
-                break;
+                return getPlayerInPosition(position);
             position++;
         }
-
-        if( position > size()) {
-            throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
-        }
-        else
-            return getPlayerInPosition(position);
-
+        throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
     }
 
 
@@ -260,6 +256,9 @@ public class LeaderBoard {
         disconnectedPlayers.entrySet().removeIf(entry -> entry.getValue().isConnected());
     }
 
+    public void connectPlayer(Player player) {
+        disconnectedPlayers.remove(player.getIdPlayer());
+    }
 
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
@@ -363,6 +362,7 @@ public class LeaderBoard {
             default -> pos + "     ";
         };
     }
+
 
 }
 

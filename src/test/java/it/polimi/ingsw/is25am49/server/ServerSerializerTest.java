@@ -70,12 +70,12 @@ class ServerSerializerTest {
 //        filesJson.add(testFile3);
 //    }
 //    @Test
-//    void deSerializeStringFromClient() {
+//    void deSerializeCommandFromClient() {
 //        int i = 0;
 //        Command serProva1;
 //        for(File file: filesJson){
-//            serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serObjectArray.get(i),false,99));
-//            assertEquals(serProva1.toString(), serverSerializer.deSerializeStringFromClient(file).toString());
+//            serProva1 = serverSerializer.deSerializeCommandFromClient(serverSerializer.serializeObjectFromServer(serObjectArray.get(i),false,99));
+//            assertEquals(serProva1.toString(), serverSerializer.deSerializeCommandFromClient(file).toString());
 //            i++;
 //        }
 //    }
@@ -100,10 +100,10 @@ class ServerSerializerTest {
 //        Command serProva1;
 //        Command serProva2;
 //        for(Command serOb: serObjectArray){
-//            serProva1 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serOb,false,99));
+//            serProva1 = serverSerializer.deSerializeCommandFromClient(serverSerializer.serializeObjectFromServer(serOb,false,99));
 //            System.out.println(serProva1);
 //            System.out.println(serOb);
-//            serProva2 = serverSerializer.deSerializeStringFromClient(serverSerializer.serializeObjectFromServer(serProva1,false, 99));
+//            serProva2 = serverSerializer.deSerializeCommandFromClient(serverSerializer.serializeObjectFromServer(serProva1,false, 99));
 //            System.out.println(serProva2);
 //            System.out.println(serProva1);
 //            assertEquals(serProva1.toString(), serProva2.toString());

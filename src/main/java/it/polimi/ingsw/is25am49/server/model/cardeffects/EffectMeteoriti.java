@@ -53,8 +53,10 @@ public class EffectMeteoriti extends CardEffect {
                 System.out.println("Distruggo il meteorite");
             } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
-                target.ifPresent(point -> player.getShipBoard().destroyTile(point));
-                System.out.println("distruggo il componente in posizione " + target.map(point -> point.getX() + " " + point.getY()).orElse(""));
+                target.ifPresent(point -> {
+                    player.getShipBoard().destroyTile(point);
+                    System.out.println("distruggo il componente in posizione " +point.getX() + "," + point.getY());
+                });
                 player.getShipBoard().destroyDisconnectedTiles();
             }
         }
