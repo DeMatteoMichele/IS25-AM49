@@ -86,4 +86,36 @@ public class EffectLoseGoods extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LoseGoods");
     }
 
+    /**
+     * @return 
+     */
+    @Override
+    public int getRedGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getYellowGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getBlueGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getGreenGoods() {
+        return 0;
+    }
+
 }

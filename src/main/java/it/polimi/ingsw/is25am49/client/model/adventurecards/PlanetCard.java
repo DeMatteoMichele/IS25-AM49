@@ -66,6 +66,7 @@ public class PlanetCard extends AdventureCard {
                 currentState = AdventureStatesTypes.DECISION_GOODS;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 currentEffect = planet.getEffect();
+                userInterface.updateNumberOfWinGoods(gameBoard.getCurrentPlayer().getIdPlayer(),currentEffect.getRedGoods(), currentEffect.getYellowGoods(), currentEffect.getGreenGoods(), currentEffect.getBlueGoods());
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
             }
         } else {
@@ -99,8 +100,8 @@ public class PlanetCard extends AdventureCard {
             currentEffect.setListOfCoordinates(coordinates);
             currentState = AdventureStatesTypes.EFFECT;
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
-            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             applyEffect();
+            userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
         } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }

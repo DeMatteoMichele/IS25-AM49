@@ -452,6 +452,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
         });
 
     }
+    public void updateDisableBuild(){
+        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
+        Platform.runLater(()->{
+            buildController.disableBuild();
+        });
+    }
 
     /**
      * @param playerId
@@ -627,6 +633,18 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 adventureController.addTokenToTile(coordinate, token);
             }
         });
+    }
+
+    /**
+     * @param playerId
+     * @param redgoods
+     * @param yellowgoods
+     * @param greengoods
+     * @param bluegoods
+     */
+    @Override
+    public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
+
     }
 
     @Override

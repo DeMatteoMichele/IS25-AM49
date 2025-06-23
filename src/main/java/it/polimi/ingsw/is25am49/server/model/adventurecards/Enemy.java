@@ -64,7 +64,7 @@ public abstract class Enemy extends AdventureCard {
     protected boolean canDefeatOrDrawOnlyUsingBatteries(ShipBoard shipBoard) {
         double firePowerUserCanActivateWithBatteries = shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON)
                 .stream()
-                .map(point -> shipBoard.getTile(point).getFirePower())
+                .map(point -> shipBoard.getTile(point).getPotentialFirePower())
                 .sorted(Comparator.reverseOrder())
                 .limit(shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS))
                 .mapToDouble(Double::doubleValue)

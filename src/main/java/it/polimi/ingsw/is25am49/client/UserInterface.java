@@ -59,6 +59,7 @@ public interface UserInterface {
     public void updateEffectCannonade(int playerId, Point coordinate, Orientation orientation);
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token);
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token);
+    public void updateNumberOfWinGoods(int playerId,int redgoods, int yellowgoods, int greengoods, int bluegoods);
     public void updateEffectModifyEnergy(int playerId,Point coordinate, Token token);
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation orientation);
     public void updateEarnedCredits(int playerId, int credits);

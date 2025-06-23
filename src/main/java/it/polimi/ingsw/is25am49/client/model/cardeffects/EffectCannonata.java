@@ -84,6 +84,38 @@ public class EffectCannonata extends CardEffect {
         throw new IllegalMethodOnThisCardException("Illegal Method On Effect LostCrew");
     }
 
+    /**
+     * @return 
+     */
+    @Override
+    public int getRedGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getYellowGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getBlueGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getGreenGoods() {
+        return 0;
+    }
+
     public Orientation getOrientation() {
         return direction;
     }

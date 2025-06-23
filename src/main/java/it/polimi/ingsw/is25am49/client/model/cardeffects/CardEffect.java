@@ -77,4 +77,9 @@ public abstract class CardEffect {
     public void setUserInterface(UserInterface userInterface) {
         this.userInterface = userInterface;
     }
+
+    public abstract int getRedGoods();
+    public abstract int getYellowGoods();
+    public abstract int getBlueGoods();
+    public abstract int getGreenGoods();
 }

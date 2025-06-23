@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
+    private Game game;
 
     private AdventureCardDeck mainAdventureDeck;
     private final TileCardDeck tilesDeck;
@@ -360,6 +361,7 @@ public class GameBoard {
             leaderBoard.remove(player);
         }
     }
+
 
     /**
      * This method is used to draw an adventure card
@@ -748,6 +750,9 @@ public class GameBoard {
             str.append("\t|\n").append(border);
         }
         return str.toString();
+    }
+    public void setGame(Game game) {
+        this.game=game;
     }
 
     public void disconnectionWarningToCard(Player player) {

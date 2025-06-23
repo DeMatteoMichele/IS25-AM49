@@ -21,16 +21,9 @@ public class EffectModifyCrew extends CardEffect {
     }
 
     public void action(Player player) {
-        ShipBoard shipBoard = player.getShipBoard();
-        int totalCrew = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT) + shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS) + shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
-        if ((totalCrew < lostCrew && coordinates.size() == totalCrew) || (coordinates.size() == lostCrew)) {
-            //per tutte le coordinate nella lista rimuovo il rispettivo Token
-            for (Pair<Point, Token> coordinate : coordinates) {
-                player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
-                System.out.println("rimozione di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
-            }
-        } else {
-            throw new IllegalSizeToRemove("Please select the right amount of crew to remove: " + lostCrew);
+        for (Pair<Point, Token> coordinate : coordinates) {
+            player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
+            System.out.println("rimozione di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
         }
     }
 
@@ -54,5 +47,37 @@ public class EffectModifyCrew extends CardEffect {
     @Override
     public int getLostCrew() {
         return lostCrew;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getRedGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getYellowGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getBlueGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getGreenGoods() {
+        return 0;
     }
 }

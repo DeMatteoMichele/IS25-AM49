@@ -49,6 +49,38 @@ public class EffectModifyEnergy extends CardEffect {
         throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
     }
 
+    /**
+     * @return 
+     */
+    @Override
+    public int getRedGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getYellowGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getBlueGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getGreenGoods() {
+        return 0;
+    }
+
     public void setListOfCoordinates(List<Pair<Point, Token>> coordinates) {
         this.coordinates = coordinates;
     }
