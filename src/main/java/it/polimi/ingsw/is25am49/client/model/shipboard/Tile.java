@@ -154,6 +154,7 @@ public class Tile {
 
     //restituisce la potenza di fuoco di un cannone, verifica che sia acceso
     public double getFirePower(){return component.getFirePower()*(tileOrientation.equals(Orientation.NORTH)?1:0.5);}
+    public double getPotentialFirePower(){return component.getLevel()*(tileOrientation.equals(Orientation.NORTH)?1:0.5);}
     public int getEnginePower(){return component.getEnginePower();}
 
     public static Map<Integer,Tile> generateTiles(){
