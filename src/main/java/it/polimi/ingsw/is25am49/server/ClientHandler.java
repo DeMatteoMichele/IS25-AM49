@@ -348,7 +348,7 @@ public class ClientHandler {
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
         try {
-            System.setProperty("java.rmi.server.hostname", "localhost");
+            System.setProperty("java.rmi.server.hostname", "192.168.8.12");
             ServerRMI serverRMI = new ServerRMI(serverController);
             serverRMI.setNetworkController(networkController);
             Registry reg = LocateRegistry.createRegistry(1099);

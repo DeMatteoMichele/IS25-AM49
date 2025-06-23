@@ -48,4 +48,36 @@ public class EffectModifyCrew extends CardEffect {
     public int getLostCrew() {
         return lostCrew;
     }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getRedGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getYellowGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getBlueGoods() {
+        return 0;
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public int getGreenGoods() {
+        return 0;
+    }
 }

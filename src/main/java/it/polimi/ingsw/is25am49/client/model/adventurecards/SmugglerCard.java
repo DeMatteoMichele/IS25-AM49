@@ -50,7 +50,6 @@ public class SmugglerCard extends Enemy {
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             applyEffect();
         }
-
     }
 
     @Override
@@ -82,6 +81,7 @@ public class SmugglerCard extends Enemy {
         currentEffect = listEffects.get(WIN_GOODS_INDEX); //the curreffect is wingoods
         currentState = AdventureStatesTypes.DECISION_GOODS;
         userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
+        userInterface.updateNumberOfWinGoods(gameBoard.getCurrentPlayer().getIdPlayer(),currentEffect.getRedGoods(), currentEffect.getYellowGoods(), currentEffect.getGreenGoods(), currentEffect.getBlueGoods());
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
     }
 
