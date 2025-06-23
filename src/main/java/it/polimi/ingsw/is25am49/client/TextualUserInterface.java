@@ -39,7 +39,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.8.111";
+    private final String serverIP = "localhost";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -330,7 +330,11 @@ public class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error + "invalid choice");
                 }
             } else {
-                printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
+                try {
+                    controller.userSelectTypeOfToken(playerId, Token.ASTRONAUT, new Point(0, 0));
+                }catch (Exception _) {
+                    printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
+                }
             }
         } else throw new GameSettingsException("shipboard not completed yet");
     }

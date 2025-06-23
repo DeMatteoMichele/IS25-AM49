@@ -214,7 +214,7 @@ public class BuildState extends State {
             if(gameSession.getGame().isPresent()) {
                 Game game = gameSession.getGame().get();
                 for (Player p : game.getListPlayers()) {
-                    if(p.getShipBoard().getAlienPoint().isPresent()) {
+                    if(p.getShipBoard().getAlienPoint().isPresent() && p.isConnected()) {
                         return;
                     }
                 }
