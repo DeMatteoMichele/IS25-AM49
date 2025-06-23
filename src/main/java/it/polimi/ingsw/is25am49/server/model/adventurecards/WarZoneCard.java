@@ -26,7 +26,7 @@ public class WarZoneCard extends AdventureCard {
     private List<Pair<Point, Token>> batteries;
     private int warZonePhase = 0;
     private final int daysLost;
-    private double minimumFirePower = 1;
+    private double minimumFirePower = 100;
     private static final int BIG_CANNONBALL_LEVEL = 1;
     private List<Point> coordinatesOfActivable = new ArrayList<>();
     private int lostAstronauts;
@@ -37,7 +37,7 @@ public class WarZoneCard extends AdventureCard {
         listEffects = new ArrayList<>();
         listEffects.add(new EffectModifyCrew("ModifyCrew", lostAstronauts));
         this.listEffects.addAll(effects);
-        minimumEnginePower = 1;
+        minimumEnginePower = 100;
         this.daysLost = daysLost;
         this.lostAstronauts = lostAstronauts;
     }
@@ -45,8 +45,6 @@ public class WarZoneCard extends AdventureCard {
     @Override
     public void drawCard() {
         super.drawCard();
-        playerWithMinimumEnginePower = gameBoard.getFirstPlayerConnected();
-        playerWithMinimumFirePower = gameBoard.getFirstPlayerConnected();
         System.out.println("You have found a War Zone! Good luck, it will be tough to get out of it.");
         checkRequirements();
     }

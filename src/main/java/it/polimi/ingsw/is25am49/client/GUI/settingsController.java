@@ -26,7 +26,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class settingsController extends GenericSceneController {
-    private final String serverIP = "localhost";
+    private final String serverIP = "192.168.231.154";
     private final int serverPortSocket = 8081;
 
     private String username;
@@ -134,6 +134,7 @@ public class settingsController extends GenericSceneController {
             System.out.println("Username set to: " + username);
             guiApplication.setUsername(username);
             guiApplication.getController().setUsername(username);
+
             if (!isAlreadyConnected) {
                 System.out.println("entrato");
                 guiApplication.getController().createMyIdJson();
@@ -211,4 +212,5 @@ public class settingsController extends GenericSceneController {
         disableRetryVisibility();
         enableConnectionButtons();
     }
+
 }

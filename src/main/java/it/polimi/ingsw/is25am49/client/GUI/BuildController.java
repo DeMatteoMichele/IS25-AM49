@@ -81,6 +81,12 @@ public class BuildController extends GenericSceneController {
     private Label waitingLabel;
     @FXML
     private Button build1;
+    @FXML
+    private Button build2;
+    @FXML
+    private Button build3;
+    @FXML
+    private Button build4;
     StackPane highlightPane = new StackPane();
     int count = 0;
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
@@ -949,6 +955,10 @@ public class BuildController extends GenericSceneController {
         highlightPane.getChildren().clear();
    }
    public void selectTypeOfToken(){
+       disableBuild4();
+       disableBuild3();
+       disableBuild2();
+       disableBuild1();
         astronautsOrAliens.getChildren().clear();
         if(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getAlienPoint().isPresent()){
             disableAll();
@@ -962,7 +972,7 @@ public class BuildController extends GenericSceneController {
                 shipBoard.add(highlightPane, alienpoint.x - 4, alienpoint.y - 5);
 
 
-                System.out.println("Alien Point: " + alienpoint);
+//                System.out.println("Alien Point: " + alienpoint);
                 astronautsOrAliens.setDisable(false);
                 astronautsOrAliens.setVisible(true);
                 chooseAliens.setDisable(false);
@@ -970,8 +980,8 @@ public class BuildController extends GenericSceneController {
                 gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().checkIfAlienArePossible(alienpoint).stream().forEach((token) -> {
                     if (token == Token.BROWN_ALIENS) {
                         ImageView brownAlienImage = tokensMap.get(Token.BROWN_ALIENS);
-                        brownAlienImage.setFitWidth(80);
-                        brownAlienImage.setFitHeight(120);
+                        brownAlienImage.setFitWidth(90);
+                        brownAlienImage.setFitHeight(135);
                         brownAlienImage.setOnMouseClicked(event -> {
                             try {
                                 guiApplication.getController().userSelectTypeOfToken(guiApplication.getMyId(), token, alienpoint);
@@ -985,8 +995,8 @@ public class BuildController extends GenericSceneController {
 
                     } else if (token == Token.ASTRONAUT) {
                         ImageView astronautImage = tokensMap.get(Token.ASTRONAUT);
-                        astronautImage.setFitWidth(80);
-                        astronautImage.setFitHeight(120);
+                        astronautImage.setFitWidth(106);
+                        astronautImage.setFitHeight(135);
                         astronautImage.setOnMouseClicked(event -> {
                             try {
                                 guiApplication.getController().userSelectTypeOfToken(guiApplication.getMyId(), token, alienpoint);
@@ -998,8 +1008,8 @@ public class BuildController extends GenericSceneController {
                         astronautsOrAliens.getChildren().add(astronautImage);
                     } else if (token == Token.PURPLE_ALIENS) {
                         ImageView purpleAlienImage = tokensMap.get(Token.PURPLE_ALIENS);
-                        purpleAlienImage.setFitWidth(80);
-                        purpleAlienImage.setFitHeight(120);
+                        purpleAlienImage.setFitWidth(106);
+                        purpleAlienImage.setFitHeight(135);
                         purpleAlienImage.setOnMouseClicked(event -> {
                             try {
 
@@ -1025,7 +1035,10 @@ public class BuildController extends GenericSceneController {
             astronautsOrAliens.setVisible(false);
             chooseAliens.setDisable(true);
             chooseAliens.setVisible(false);
-            System.out.println("Non ci sono punti alieni disponibili per il giocatore con ID: " + guiApplication.getMyId());
+            disableBuild4();
+            disableBuild3();
+            disableBuild2();
+            disableBuild1();
         }
     }
     private void disableAll(){
@@ -1054,54 +1067,118 @@ public class BuildController extends GenericSceneController {
     public void loadShip1(ActionEvent event) {
         try{
             readShipboardFromFile("ship_layout_1.json");
-            guiApplication.updateDisableBuild();
+            disableBuild1();
         } catch (Exception e) {
             guiApplication.printUpdateMessage(error + e.getMessage());
         }
 
     }
-    public void disableBuild(){
+    public void loadShip2(ActionEvent event) {
+        try{
+            readShipboardFromFile("ship_layout_2.json");
+            disableBuild2();
+        } catch (Exception e) {
+            guiApplication.printUpdateMessage(error + e.getMessage());
+        }
+    }
+    public void loadShip3(ActionEvent event) {
+        try{
+            readShipboardFromFile("ship_layout_3.json");
+            disableBuild3();
+        } catch (Exception e) {
+            guiApplication.printUpdateMessage(error + e.getMessage());
+        }
+    }
+    public void loadShip4(ActionEvent event) {
+        try{
+            readShipboardFromFile("ship_layout_4.json");
+            disableBuild4();
+        } catch (Exception e) {
+            guiApplication.printUpdateMessage(error + e.getMessage());
+        }
+    }
+    public void disableBuild1(){
         build1.setVisible(false);
         build1.setDisable(true);
     }
+    public void disableBuild2(){
+        build2.setVisible(false);
+        build2.setDisable(true);
+    }
+    public void disableBuild3(){
+        build3.setVisible(false);
+        build3.setDisable(true);
+    }
+    public void disableBuild4(){
+        build4.setVisible(false);
+        build4.setDisable(true);
+    }
     public void readShipboardFromFile(String filename) {
-        filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
-        int delay = 150; // delay in milliseconds
+        filename = "src/main/resources/it/polimi/ingsw/is25am49/" + filename;
+
         try {
-            int tr=0;
             File file = new File(filename);
             if (!file.exists()) {
-                throw new FileNotFoundException("File ("+filename+") non trovato: " + file.getAbsolutePath());
-            } else {
-                Game game = gameSession.getGame().get();
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootArray = objectMapper.readTree(file);
-                for (JsonNode node : rootArray) {
-                    try {
-                        guiApplication.getController().userDrawTile(guiApplication.getMyId(), node.get("id").asInt());
-                        Orientation o= Orientation.valueOf(node.get("orientation").asText());
-                        while (tr<20){
-                            tr++;
-                            try {
-                                Thread.sleep(delay);
-                                gameSession.getState().userRotateHandTile(guiApplication.getMyId(), o);
-                                break;
-                            } catch (Exception _) {}
-                        }
-                        Thread.sleep(delay);
-                        Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
-                        guiApplication.getController().userPlaceTile(guiApplication.getMyId(), p, o);
-                    }catch (Exception e){
-                        guiApplication.printUpdateMessage(error + e.getMessage());
-                    }
-                }
-                //controller.userFinishShipboard(myId);
+                throw new FileNotFoundException("File (" + filename + ") non trovato: " + file.getAbsolutePath());
             }
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootArray = objectMapper.readTree(file);
+
+            // Elabora i nodi in sequenza per vedere gli aggiornamenti
+            processNodesSequentially(rootArray, 0);
+
         } catch (FileNotFoundException e) {
             guiApplication.printUpdateMessage(error + e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void processNodesSequentially(JsonNode rootArray, int index) {
+        if (index >= rootArray.size()) {
+            return;
+        }
+
+        JsonNode node = rootArray.get(index);
+        Timeline timeline = new Timeline();
+
+        KeyFrame kf1 = new KeyFrame(Duration.ZERO, e -> {
+            try {
+                guiApplication.getController().userDrawTile(guiApplication.getMyId(), node.get("id").asInt());
+            } catch (Exception ex) {
+                guiApplication.printUpdateMessage(error + ex.getMessage());
+            }
+        });
+
+        KeyFrame kf2 = new KeyFrame(Duration.millis(150), e -> {
+            try {
+                Orientation o = Orientation.valueOf(node.get("orientation").asText());
+                gameSession.getState().userRotateHandTile(guiApplication.getMyId(), o);
+            } catch (Exception ex) {
+                guiApplication.printUpdateMessage(error + ex.getMessage());
+
+            }
+        });
+
+        KeyFrame kf3 = new KeyFrame(Duration.millis(300), e -> {
+            try {
+                Orientation o = Orientation.valueOf(node.get("orientation").asText());
+                Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
+                guiApplication.getController().userPlaceTile(guiApplication.getMyId(), p, o);
+            } catch (Exception ex) {
+                guiApplication.printUpdateMessage(error + ex.getMessage());
+
+            } finally {
+                KeyFrame nextNode = new KeyFrame(Duration.millis(200),
+                        event -> processNodesSequentially(rootArray, index + 1));
+                Timeline nextTimeline = new Timeline(nextNode);
+                nextTimeline.play();
+            }
+        });
+
+        timeline.getKeyFrames().addAll(kf1, kf2, kf3);
+        timeline.play();
     }
 
 }
