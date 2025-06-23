@@ -193,7 +193,7 @@ public class GameSession {
     }
 
     public void calculateScore(int playerId) throws GameSettingsException {
-        checkIsAdmin(playerId);
+        //checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
     }
 
