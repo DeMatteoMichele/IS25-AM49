@@ -377,7 +377,7 @@ public abstract class AdventureCard {
 
     public void disconnectionHandling(Player player) {
         if (gameBoard.getCurrentPlayer().equals(player) &&
-                currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||
+                (currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||
                 currentState == AdventureStatesTypes.DECISION_BATTERIES ||
                 currentState == AdventureStatesTypes.DECISION_GOODS ||
                 currentState == AdventureStatesTypes.DECISION_LAND_PLANET ||
@@ -386,7 +386,7 @@ public abstract class AdventureCard {
                 currentState == AdventureStatesTypes.DECISION_CANNON ||
                 currentState == AdventureStatesTypes.DECISION_MOTOR ||
                 currentState == AdventureStatesTypes.DECISION_SHIELDS ||
-                currentState == AdventureStatesTypes.ROLL_DICES) {
+                currentState == AdventureStatesTypes.ROLL_DICES)) {
             applyDefaultEffect(currentState);
         } else {
             System.out.println("Disconnection handling not needed in this state");
