@@ -37,9 +37,9 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
-public abstract class TextualUserInterface implements UserInterface {
+public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "localhost";
+    private final String serverIP = "192.168.213.12";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -330,11 +330,7 @@ public abstract class TextualUserInterface implements UserInterface {
                         printUpdateMessage(error + "invalid choice");
                 }
             } else {
-                try {
-                    controller.userSelectTypeOfToken(playerId, Token.ASTRONAUT, new Point(0, 0));
-                }catch (Exception _) {
-                    printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
-                }
+                printUpdateMessage("ALL ALIENS INSERTED, waiting for other players ...\n");
             }
         } else throw new GameSettingsException("shipboard not completed yet");
     }
@@ -927,6 +923,18 @@ public abstract class TextualUserInterface implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+    }
+
+    /**
+     * @param playerId
+     * @param redgoods
+     * @param yellowgoods
+     * @param greengoods
+     * @param bluegoods
+     */
+    @Override
+    public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
+
     }
 
     @Override
