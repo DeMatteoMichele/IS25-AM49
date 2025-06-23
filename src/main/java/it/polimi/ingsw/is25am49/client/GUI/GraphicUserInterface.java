@@ -7,6 +7,7 @@ import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
+import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -458,7 +459,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateCardState(int playerId, AdventureStatesTypes cardState) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateCardState(cardState);
+            }
+        });
     }
 
     /**
@@ -466,7 +472,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateChangeTurn(int playerId) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateChangeTurn();
+            }
+        });
     }
 
     @Override
@@ -500,32 +511,62 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.clearEffectPane();
+            }
+        });
     }
 
     @Override
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.clearEffectPane();
+            }
+        });
     }
 
     @Override
     public void updateDeactivating(int playerId, List<Point> coordinates) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.deActivatePoints(coordinates);
+            }
+        });
     }
 
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.clearEffectPane();
+            }
+        });
     }
 
     @Override
     public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.clearEffectPane();
+            }
+        });
     }
 
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.clearEffectPane();
+            }
+        });
     }
 
     @Override
@@ -550,27 +591,52 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.removeTokenFromTile(coordinate, token);
+            }
+        });
     }
 
     @Override
-    public void updateEffectCannonade(int playerId, Point coordinate) {
-
+    public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateAttack(coordinate, or, false);
+            }
+        });
     }
 
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.removeTokenFromTile(coordinate, token);
+            }
+        });
     }
 
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.addTokenToTile(coordinate, token);
+            }
+        });
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.removeTokenFromTile(coordinate, token);
+            }
+        });
     }
 
     /**
@@ -578,8 +644,13 @@ public class GraphicUserInterface extends Application implements UserInterface {
      * @param coordinate
      */
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate) {
-
+    public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
+        Platform.runLater(()->{
+            if(myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updateAttack(coordinate, or, true);
+            }
+        });
     }
 
     @Override
@@ -605,7 +676,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     //Complesso, si potrebbe rivedere la modalità di gestione della leaderboard
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
-
+        Platform.runLater(()->{
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.reDrawLeaderBoard(leaderBoard);
+        });
     }
 
     @Override

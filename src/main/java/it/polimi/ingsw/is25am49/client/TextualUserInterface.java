@@ -907,7 +907,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateEffectCannonade(int playerId, Point coordinate) {
+    public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         if(playerId==myId)updateShipBoard(playerId);
     }
@@ -928,7 +928,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate) {
+    public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         if(playerId==myId)updateShipBoard(playerId);
     }

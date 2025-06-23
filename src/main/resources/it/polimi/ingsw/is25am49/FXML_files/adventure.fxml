@@ -11,7 +11,7 @@
 
 
 <?import javafx.scene.control.Label?>
-<AnchorPane id = "adventureContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="958.0" xmlns="http://javafx.com/javafx/23.0.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.AdventureController">
+<AnchorPane fx:id = "adventureContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="958.0" xmlns="http://javafx.com/javafx/23.0.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.AdventureController">
    <children>
        <ImageView fx:id="backgroundImage" pickOnBounds="true"/>
        <HBox fx:id="statsContainer" prefHeight="200.0" prefWidth="350.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor ="400.0"/>

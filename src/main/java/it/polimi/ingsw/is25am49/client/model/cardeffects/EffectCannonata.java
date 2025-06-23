@@ -34,7 +34,7 @@ public class EffectCannonata extends CardEffect {
             Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
             if (target.isPresent()) {
                 player.getShipBoard().destroyTile(target.get());
-                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get());
+                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get(), direction);
                 player.getShipBoard().destroyDisconnectedTiles();
             }
             else {
@@ -49,7 +49,7 @@ public class EffectCannonata extends CardEffect {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
+                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get(), direction);
                     userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
                 userInterface.updateGenericCardMessage(player.getIdPlayer(), "Small cannonade coming from " + direction+" pointing at " + position + "  missed you!");
