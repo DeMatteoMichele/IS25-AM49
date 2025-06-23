@@ -85,11 +85,11 @@ public class AbandonedShipCard extends AdventureCard {
     public void finishDecision(List<Pair<Point, Token>> coordinatesOfAstronauts) {
         switch (currentState) {
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfAstronauts, lostAstronauts, true);
                 currentEffect.setListOfCoordinates(coordinatesOfAstronauts);
                 currentState = AdventureStatesTypes.EFFECT;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinatesOfAstronauts, lostAstronauts, true);
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");
         }

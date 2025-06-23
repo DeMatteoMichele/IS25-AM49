@@ -264,6 +264,11 @@ public class TextualUserInterface implements UserInterface {
                     executor.shutdownNow(); // Interrompe entrambi i thread
                     System.exit(0);
                 }
+                if( inputString.equalsIgnoreCase("reconnect")) {
+                    controller.clientReset();
+                    userSettings();
+                    continue;
+                }
                 handleInput(inputString.toLowerCase());
                 terminal.flush();
             }
@@ -456,7 +461,7 @@ public class TextualUserInterface implements UserInterface {
                     try {
                         controller.userDrawTile(myId, node.get("id").asInt());
                         Orientation o= Orientation.valueOf(node.get("orientation").asText());
-                        while (tr<20){
+                        while (tr<35){
                             tr++;
                             try {
                                 Thread.sleep(delay);
@@ -803,7 +808,7 @@ public class TextualUserInterface implements UserInterface {
     };
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-        if(playerId == myId){
+        printUpdateMessage("Player " + gameSession.getPlayer(playerId).get().getUsername() + " has thrown the dices:\n");
             StringBuilder str = new StringBuilder();
             str.append("Throwing...\n");
             String[] dice1 = DICE[firstDice - 1];
@@ -812,7 +817,6 @@ public class TextualUserInterface implements UserInterface {
                 str.append(dice1[i]).append("   ").append(dice2[i]).append("\n");
             }
             lineReader.printAbove(str.toString());
-        }
     }
 
     @Override

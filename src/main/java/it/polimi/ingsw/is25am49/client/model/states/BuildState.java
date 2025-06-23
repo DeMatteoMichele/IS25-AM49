@@ -94,6 +94,9 @@ public class BuildState extends State {
     @Override
     public void checkUserSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
+        if(gameSession.getGame().isPresent()){
+            if (gameSession.getGame().get().isTestFlight())throw new GameSettingsException("This is a Test Flight you can not add an alien");
+        }
         if(player.isWatching())throw new RuntimeException("you are still watching a small deck, stop watching it first");
         player.getShipBoard().checkCoordinates(coordinates);
         if(!player.getShipBoard().checkIfAlienArePossible(coordinates).contains(token))throw new RuntimeException("you cannot add a "+token+" token in this position, correct alien module is missing");
@@ -260,7 +263,6 @@ public class BuildState extends State {
             }
         }else throw new RuntimeException("timer is done GAME NON SETTATO non so perch'");
     }
-    //todo NON è stata ricopiata esattamente, Bisogna decidere bene cosa fare con le transizioni di stato
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         Player player = getPlayerById(playerId);
         if(gameSession.userSelectTypeOfToken(player, token, coordinates)) {
