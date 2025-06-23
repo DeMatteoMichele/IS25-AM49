@@ -39,7 +39,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "192.168.220.12";
+    private final String serverIP = "192.168.220.111";
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -309,7 +309,7 @@ public class TextualUserInterface implements UserInterface {
                         "a --> astronaut\n" +
                         "p --> purple aliens\n" +
                         "b --> brown aliens\n" +
-                        ">>"
+                        ">> "
                 ).trim();
                 switch (selection.toLowerCase()) {
                     case "p":
@@ -1155,8 +1155,8 @@ public class TextualUserInterface implements UserInterface {
                         lineReader.printAbove("which ship do you want to load:\n " +
                                 "1 --> ship_layout_1.json\n " +
                                 "2 --> ship_layout_2.json\n " +
-                                "3 --> ship_layout_3.json\n "  +
-                                "4 --> ship_layout_4.json\n");
+                                "3 --> ship_layout_3.json\n"  +
+                                "4 --> ship_layout_4.json\n" );
 
                         String s = lineReader.readLine(prompt).trim();
                         switch (s){
