@@ -44,8 +44,6 @@ public class BuildController extends GenericSceneController {
     @FXML
     private GridPane shipBoard;
     @FXML
-    private TextField textFieldLookAtShipboard;
-    @FXML
     private ListView<String> listViewPlayers;
     @FXML
     private Label playerInformation;
@@ -765,22 +763,22 @@ public class BuildController extends GenericSceneController {
         }
     }
 
-    public void handleLookAtShipboard(ActionEvent event) {
-        try {
-            int idPlayer = Integer.parseInt(textFieldLookAtShipboard.getText());
-            if(idPlayer<0 || idPlayer > 3 || idPlayer == guiApplication.getMyId() || gameSession.getPlayer(idPlayer).isEmpty()) {
-                guiApplication.printUpdateMessage(error + "Giocatore con ID " + idPlayer + " non trovato");
-
-            }
-            else{
-                System.out.println("Visualizzazione shipboard del giocatore con ID: " + idPlayer);
-                guiApplication.lookAtShipboard(idPlayer);
-            }
-
-        } catch (NumberFormatException e) {
-            guiApplication.printUpdateMessage(error + "Inserisci un ID giocatore valido");
-        }
-    }
+//    public void handleLookAtShipboard(ActionEvent event) {
+//        try {
+//            int idPlayer = Integer.parseInt(textFieldLookAtShipboard.getText());
+//            if(idPlayer<0 || idPlayer > 3 || idPlayer == guiApplication.getMyId() || gameSession.getPlayer(idPlayer).isEmpty()) {
+//                guiApplication.printUpdateMessage(error + "Giocatore con ID " + idPlayer + " non trovato");
+//
+//            }
+//            else{
+//                System.out.println("Visualizzazione shipboard del giocatore con ID: " + idPlayer);
+//                guiApplication.lookAtShipboard(idPlayer);
+//            }
+//
+//        } catch (NumberFormatException e) {
+//            guiApplication.printUpdateMessage(error + "Inserisci un ID giocatore valido");
+//        }
+//    }
 
     public void returnBackToShipboard(ActionEvent event) {
         clearShipBoard();
@@ -1038,8 +1036,6 @@ public class BuildController extends GenericSceneController {
         smallAdventureDeck.setDisable(true);
         stopLooking.setVisible(false);
         stopLooking.setDisable(true);
-        textFieldLookAtShipboard.setVisible(false);
-        textFieldLookAtShipboard.setDisable(true);
         discardTile.setVisible(false);
         discardTile.setDisable(true);
         rotateTile.setVisible(false);
