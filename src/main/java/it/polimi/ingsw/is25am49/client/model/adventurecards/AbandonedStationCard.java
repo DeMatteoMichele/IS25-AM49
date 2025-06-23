@@ -70,6 +70,7 @@ public class AbandonedStationCard extends AdventureCard {
         if (IsLanded) {
             userInterface.updateLandOnStationOrShip(gameBoard.getCurrentPlayer().getIdPlayer(), true, cardId);
             userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Now you have to decide where you want to add your goods and which ones");
+            currentEffect=listEffects.getFirst();
             currentState = AdventureStatesTypes.DECISION_GOODS;
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
@@ -89,11 +90,11 @@ public class AbandonedStationCard extends AdventureCard {
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         switch (currentState) {
             case DECISION_GOODS -> {
-                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
                 currentEffect.setListOfCoordinates(coordinates);
                 currentState = AdventureStatesTypes.EFFECT;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 applyEffect();
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), false);
             }
             default -> throw new IllegalMethodOnThisStateException("Wrong state");
         }
