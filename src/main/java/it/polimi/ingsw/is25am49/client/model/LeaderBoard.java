@@ -195,16 +195,10 @@ public class LeaderBoard {
         while (position <= size()) {
             Player player = getPlayerInPosition(position);
             if (!isDisconnected(player))
-                break;
+                return getPlayerInPosition(position);
             position++;
         }
-
-        if( position > size()) {
-            throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
-        }
-        else
-            return getPlayerInPosition(position);
-
+        throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
     }
 
 
