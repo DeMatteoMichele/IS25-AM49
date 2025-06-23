@@ -70,7 +70,6 @@ public class BuildController extends GenericSceneController {
     private Button backToShipboard;
     @FXML
     private HBox astronautsOrAliens;
-    StackPane highlightPane = new StackPane();
     int count = 0;
     //salvo la posizione in cui salvo la tessera e il nodo corrispondente
     private final Map<Integer, Node> container = new HashMap<>();
@@ -783,9 +782,6 @@ public class BuildController extends GenericSceneController {
                }
            }
        });
-   }
-   public void disableHighlight(){
-        highlightPane.getChildren().clear();
    }
    public void selectTypeOfToken(){
         astronautsOrAliens.getChildren().clear();

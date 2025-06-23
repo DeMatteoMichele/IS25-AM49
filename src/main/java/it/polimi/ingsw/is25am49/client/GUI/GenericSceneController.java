@@ -29,6 +29,8 @@ public abstract class GenericSceneController {
     protected final Map<String, ImageView> adventureCardMap = new HashMap<>();
     protected final Map<Token, ImageView> tokensMap = new HashMap<>();
 
+    protected StackPane highlightPane = new StackPane();
+
     /**
      * Sets the GUI application instance associated with this controller.
      *
@@ -70,5 +72,8 @@ public abstract class GenericSceneController {
         imageView.setFitWidth(20);
         imageView.setFitHeight(20);
         return imageView;
+    }
+    public void disableHighlight(){
+        highlightPane.getChildren().clear();
     }
 }
