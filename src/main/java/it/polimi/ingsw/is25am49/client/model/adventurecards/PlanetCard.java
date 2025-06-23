@@ -66,6 +66,7 @@ public class PlanetCard extends AdventureCard {
                 currentState = AdventureStatesTypes.DECISION_GOODS;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 currentEffect = planet.getEffect();
+                userInterface.updateNumberOfWinGoods(gameBoard.getCurrentPlayer().getIdPlayer(),currentEffect.getRedGoods(), currentEffect.getYellowGoods(), currentEffect.getGreenGoods(), currentEffect.getBlueGoods());
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
             }
         } else {

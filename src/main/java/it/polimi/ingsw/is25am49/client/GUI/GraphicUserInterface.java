@@ -563,6 +563,18 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     }
 
+    /**
+     * @param playerId
+     * @param redgoods
+     * @param yellowgoods
+     * @param greengoods
+     * @param bluegoods
+     */
+    @Override
+    public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
+
+    }
+
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
 
