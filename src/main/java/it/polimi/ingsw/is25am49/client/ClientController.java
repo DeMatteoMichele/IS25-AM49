@@ -201,6 +201,7 @@ public class ClientController {
             gameSession.getState().userSelectTypeOfToken(playerId, token, coordinates);
         } catch (Exception e) {
             ui.printUpdateMessage(error + "Error while selecting a token: --> " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

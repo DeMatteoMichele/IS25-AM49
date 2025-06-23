@@ -83,7 +83,7 @@ public class AdventureController extends GenericSceneController {
         currentAdventureState = AdventureStatesTypes.DRAW;
         scheduler = Executors.newScheduledThreadPool(10);
         timeIsDone = false;
-        playerStatistics = new double[4];
+        playerStatistics = new double[5];
     }
 
 
@@ -124,6 +124,8 @@ public class AdventureController extends GenericSceneController {
         loadGrid();
         printShipboard();
         updatePlayerStats(0, 0, 0, 0, 0);
+        cardEffect.setVisible(true);
+        cardMessages.setVisible(true);
     }
 
     private void loadLeaderBoard() {
@@ -569,6 +571,7 @@ public class AdventureController extends GenericSceneController {
         }
         HBox buttonsBox = new HBox(10);
         buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.getChildren().add(finishButton);
 
         VBox container = new VBox(20, labelString, buttonsBox);
         container.setAlignment(Pos.CENTER);
@@ -716,6 +719,7 @@ public class AdventureController extends GenericSceneController {
 
     public void updateCardState(AdventureStatesTypes state) {
         currentAdventureState = state;
+        dbg();
         switch (currentAdventureState) {
             case DRAW -> {
                 drawButton.setDisable(false);
@@ -727,11 +731,15 @@ public class AdventureController extends GenericSceneController {
             case DECISION_BATTERIES, DECISION_ASTRONAUTS_OR_ALIENS -> {
                 drawButton.setDisable(true);
                 enableAllCellsShipboard();
+                tokens.setDisable(false);
+                tokens.setVisible(true);
                 configureEffectPaneFinishDecision(InputActions.SELECT_TOKENS);
             }
             case DECISION_CANNON, DECISION_SHIELDS, DECISION_MOTOR -> {
                 drawButton.setDisable(true);
                 enableAllCellsShipboard();
+                tokens.setDisable(false);
+                tokens.setVisible(true);
                 configureEffectPaneFinishDecision(InputActions.ACTIVATE_COMPONENTS);
             }
             //TODO
@@ -773,15 +781,18 @@ public class AdventureController extends GenericSceneController {
             }
             default -> {
             }
+
         }
     }
 
     private void clickTile(Point coordinates) {
         switch (currentAdventureState) {
             case AdventureStatesTypes.DECISION_BATTERIES -> {
+                dbg();
                 if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
                     tokens.setDisable(false);
                     tokens.setVisible(true);
+                    dbg();
                     tokens.getChildren().clear();
                     tokens.getChildren().add(setUpTokensBox(coordinates, Token.BATTERY_CELLS));
                 } else {
@@ -802,7 +813,9 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS -> {
+                dbg();
                 if (isTheComponentOfThisType(ComponentType.CABINE, coordinates)) {
+                    dbg();
                     tokens.setDisable(false);
                     tokens.setVisible(true);
                     tokens.getChildren().clear();
@@ -895,7 +908,7 @@ public class AdventureController extends GenericSceneController {
     }
 
     private void dbg() {
-        System.out.println("Debug" + counterStampe++);
+        System.out.println("Debug" + counterStampe++ + " " + currentAdventureState.toString() + " " + currentAdventureCard.getCardId());
     }
 
     private boolean isTheComponentOfThisType(ComponentType type, Point coordinates) {
@@ -967,10 +980,12 @@ public class AdventureController extends GenericSceneController {
         HBox temporaryToken = (HBox) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
         HBox newHBox = new HBox(1);
         newHBox.setAlignment(Pos.CENTER);
+        dbg();
         temporaryToken.getProperties().forEach((key, value) -> {
             if (value instanceof ImageView imgV) {
                 Image im = imgV.getImage();
                 ImageView imageView = new ImageView(im);
+                dbg();
                 switch (tok) {
                     case ASTRONAUT -> imageView.setOnMouseClicked(event -> {
                         if (isPresentInTokenList(coordinates, Token.ASTRONAUT) || isPresentInTokenList(coordinates, Token.PURPLE_ALIENS) || isPresentInTokenList(coordinates, Token.BROWN_ALIENS)) {
@@ -1011,8 +1026,6 @@ public class AdventureController extends GenericSceneController {
 
     public void clearEffectPane() {
         cardEffect.getChildren().clear();
-        cardEffect.setDisable(true);
-        cardEffect.setVisible(false);
     }
 
     public void updateChangeTurn() {
