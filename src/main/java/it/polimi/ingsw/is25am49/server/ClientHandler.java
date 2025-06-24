@@ -10,7 +10,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 public class ClientHandler {
     private final ServerSerializer serverSerializer;
@@ -336,7 +338,26 @@ public class ClientHandler {
         }
     }
 
+    private static String askForIp(){
+        Scanner scanner = new Scanner(System.in);
+        String ipPattern =
+                "^localhost$|^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+        Pattern pattern = Pattern.compile(ipPattern);
+        String serverIP;
+        do {
+            System.out.print("Inserisci l'IP del server: ");
+            serverIP = scanner.nextLine();
+            serverIP = serverIP.trim();
+            if (!pattern.matcher(serverIP).matches()) {
+                System.out.println("IP non valido. Riprova.");
+            }
+        } while (!pattern.matcher(serverIP).matches());
+        System.out.println("IP valido inserito: " + serverIP);
+        return serverIP;
+    }
+
     public static void main(String[] args) {
+        String serverIp = askForIp();
         gameSession = new GameSession();
         networkController = new NetworkController();
         ServerController serverController = new ServerController(gameSession);
@@ -348,7 +369,7 @@ public class ClientHandler {
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
         try {
-            System.setProperty("java.rmi.server.hostname", "localhost");
+            System.setProperty("java.rmi.server.hostname", serverIp);
             ServerRMI serverRMI = new ServerRMI(serverController);
             serverRMI.setNetworkController(networkController);
             Registry reg = LocateRegistry.createRegistry(1099);
