@@ -10,7 +10,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 public class ClientHandler {
     private final ServerSerializer serverSerializer;
@@ -69,7 +71,7 @@ public class ClientHandler {
     private void startServer(int port) throws IOException {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
-        scheduler.scheduleAtFixedRate(this::centralHeartBeatMonitor, 0, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::centralHeartBeatMonitor, 0, 3, TimeUnit.SECONDS);
         startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
@@ -136,7 +138,7 @@ public class ClientHandler {
     private void centralHeartBeatMonitor() {
         for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
             if (connections.get(entry.getKey())) {
-                if (System.currentTimeMillis() - entry.getValue() > 20000) {
+                if (System.currentTimeMillis() - entry.getValue() > 10000) {
                     System.out.println("SOCKET: Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
                     shutDownClientRelated(entry.getKey());
                 }
@@ -336,7 +338,28 @@ public class ClientHandler {
         }
     }
 
+    private static String askForIp(){
+        Scanner scanner = new Scanner(System.in);
+        String ipPattern =
+                "^localhost$|^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+        Pattern pattern = Pattern.compile(ipPattern);
+        String serverIP;
+        do {
+            System.out.print("Inserisci l'IP del server (lettera qualsiasi per localhost): ");
+            serverIP = scanner.nextLine().trim();
+            if (serverIP.matches("[a-zA-Z]")) {
+                serverIP = "localhost";
+            }
+            if (!pattern.matcher(serverIP).matches()) {
+                System.out.println("IP non valido. Riprova.");
+            }
+        } while (!pattern.matcher(serverIP).matches());
+        System.out.println("IP valido inserito: " + serverIP);
+        return serverIP;
+    }
+
     public static void main(String[] args) {
+        String serverIp = askForIp();
         gameSession = new GameSession();
         networkController = new NetworkController();
         ServerController serverController = new ServerController(gameSession);
@@ -348,7 +371,7 @@ public class ClientHandler {
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
         try {
-            System.setProperty("java.rmi.server.hostname", "localhost");
+            System.setProperty("java.rmi.server.hostname", serverIp);
             ServerRMI serverRMI = new ServerRMI(serverController);
             serverRMI.setNetworkController(networkController);
             Registry reg = LocateRegistry.createRegistry(1099);
@@ -370,5 +393,9 @@ public class ClientHandler {
 
     public boolean containsClient(int playerId) {
         return connections.containsKey(playerId);
+    }
+
+    public boolean isConnected(int playerId) {
+        return connections.get(playerId);
     }
 }

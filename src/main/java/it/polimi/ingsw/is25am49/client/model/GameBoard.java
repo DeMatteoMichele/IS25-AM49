@@ -8,6 +8,7 @@ import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectMeteoriti;
 import it.polimi.ingsw.is25am49.client.model.Game;
+import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -27,6 +28,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
@@ -339,10 +341,6 @@ public class GameBoard {
     }
 
 
-//    public void setCurrentCard(AdventureCard card) {
-//        currentCard = card;
-//    }
-
     /**
      * This method is used to get the current card
      *
@@ -370,8 +368,12 @@ public class GameBoard {
             throw new GameSettingsException("This player is already landed");
         else {
             landedPlayers.add(player);
-            leaderBoard.remove(player);
-            ui.updateStopFlight(player.getIdPlayer());
+            try {
+                leaderBoard.remove(player);
+                ui.updateStopFlight(player.getIdPlayer());
+            } catch (NotEnoughPlayerException e) {
+                game.finishGame();
+            }
         }
     }
 
@@ -445,12 +447,8 @@ public class GameBoard {
 
     }
 
-    public void userQuitGame(Player player) throws GameSettingsException {
-
-    }
-
     public void userStopFlight(Player player) {
-        if (currentCard.getIsFinished()) {
+        if (isFirstCard || currentCard.getIsFinished()) {
             playerNoMoreInFlight(player);
         } else {
             stopFlightPlayers.add(player);
@@ -540,7 +538,7 @@ public class GameBoard {
         landedPlayers.forEach(player -> {
             int credits = 0;
             credits -= player.getShipBoard().getDestroyedTiles();
-            credits += player.scoreOfGoods()/2;
+            credits += player.scoreOfGoods() / 2;
             player.addCredits(credits);
         });
     }
@@ -585,7 +583,7 @@ public class GameBoard {
         else {
             try {
                 return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
-            } catch (Exception e) {
+            } catch (IllegalSetOfNextPlayerException e) {
                 throw new IllegalSetOfNextPlayerException(e.getMessage());
             }
         }
@@ -634,7 +632,7 @@ public class GameBoard {
                 }
             }
         }
-        ui.updateLeaderBoard(leaderBoard);
+        if (!game.gameIsFinished()) ui.updateLeaderBoard(leaderBoard);
     }
 
     /**
@@ -681,7 +679,7 @@ public class GameBoard {
                     }
                 });
         //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
-        lappedPlayers.forEach(this::playerNoMoreInFlight);
+        lappedPlayers.forEach(this::userStopFlight);
     }
 
     /**
@@ -760,10 +758,10 @@ public class GameBoard {
                 .forEach(player -> {
                     if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0) {
                         playersWithZeroAstronauts.add(player);
-                        ui.updateGenericCardMessage(player.getIdPlayer(), player.getUsername() + " has no more astronauts in his ship, he has to land now!");
+                        ui.updateGenericCardMessage(player.getIdPlayer(), player.getUsername() + " has no more astronauts in his ship, he will now land!");
                     }
                 });
-        playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
+        playersWithZeroAstronauts.forEach(this::userStopFlight);
     }
 
     public void setSeedForGeneration(int seed) {
@@ -799,7 +797,13 @@ public class GameBoard {
         String border = "+" + "-".repeat(width - 2) + "+\n";
         str.append(border);
         int i = 1;
-        List<Player> finalRanking = leaderBoard.stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
+       List<Player> finalRanking = Stream.concat(
+               leaderBoard.stream().map(Map.Entry::getKey),
+               landedPlayers.stream()
+           )
+           .sorted(Comparator.comparingInt(Player::getCredits).reversed())
+           .toList();
+
         for (Player player : finalRanking) {
             str.append("|      POSITION: ").append(i).append("----->   ");
             str.append(player.getUsername()).append("\tTOTAL CREDIT SCORE: ").append(player.getCredits())
@@ -811,9 +815,11 @@ public class GameBoard {
         }
         return str.toString();
     }
+
     public void setGame(Game game) {
-        this.game=game;
+        this.game = game;
     }
+
     public void disconnectionWarningToCard(Player player) {
         if (currentCard != null) {
             currentCard.disconnectionHandling(player);

@@ -241,7 +241,7 @@ public class BuildController extends GenericSceneController {
                         tokenContainer.setAlignment(javafx.geometry.Pos.CENTER);
 
                         //aggiungo token
-                        tile.get().getComponent().getTokenList().forEach(token -> {
+                       new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
 
                                 ImageView tokenImageView;
                                 Color playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();

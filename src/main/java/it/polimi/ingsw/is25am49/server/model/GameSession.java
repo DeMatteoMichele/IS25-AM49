@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model;
 
+import it.polimi.ingsw.is25am49.server.model.states.FinishScoreState;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
@@ -104,7 +105,7 @@ public class GameSession {
     }
 
     public void userJoinLobby(String username, int playerID) throws GameSettingsException {
-        checkJoinLobby(playerID,username);
+        checkJoinLobby(playerID, username);
         Player tempPlayer = new Player(username, getColor(), playerID);
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
@@ -115,14 +116,15 @@ public class GameSession {
         } else throw new GameSettingsException("Game is not ready yet");
     }
 
-    public void checkJoinLobby(int playerId,String username) throws GameSettingsException {
+    public void checkJoinLobby(int playerId, String username) throws GameSettingsException {
         if (admin.isPresent()) {
             if (game.isPresent()) {
                 if (checkPlayers()) {
-                    if(checkIsInLobby(playerId))throw new GameSettingsException("you already joined the lobby");
-                    if(checkUsernameAlreadyTaken(username))throw new IllegalUsernameException("username already taken");
+                    if (checkIsInLobby(playerId)) throw new GameSettingsException("you already joined the lobby");
+                    if (checkUsernameAlreadyTaken(username))
+                        throw new IllegalUsernameException("username already taken");
                 } else throw new GameSettingsException("too many players");
-            }else throw new GameSettingsException("game is not ready yet");
+            } else throw new GameSettingsException("game is not ready yet");
         }
     }
 
@@ -188,9 +190,6 @@ public class GameSession {
         game.ifPresent(game -> game.userAcceptPrizes(isAccepted));
     }
 
-    public void userQuitGame(Player player) {
-        game.ifPresent(game -> game.userQuitGame(player));
-    }
 
     public void calculateScore(int playerId) throws GameSettingsException {
         //checkIsAdmin(playerId);
@@ -204,16 +203,11 @@ public class GameSession {
 
     public void userEndGame(int playerId) throws GameSettingsException {
         if (game.map(Game::gameIsFinished).orElse(false)) {
-            checkIsAdmin(playerId);
+            //checkIsAdmin(playerId);
             game = Optional.empty();
             setState(new InitState(this));
         } else
             throw new GameSettingsException("The game is not finished yet");
-    }
-
-    public Optional<Player> userShowWinner(int playerId) throws GameSettingsException {
-        checkIsAdmin(playerId);
-        return game.flatMap(Game::userShowWinner);
     }
 
     public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
@@ -235,6 +229,7 @@ public class GameSession {
     public void signalToControllerThatGameStarted() {
         serverController.signalThatGameStarted();
     }
+
     public void userStopFlight(Player player) {
         game.ifPresent(g -> g.userStopFlight(player));
     }
@@ -247,4 +242,12 @@ public class GameSession {
         game.ifPresent(g -> g.disconnectPlayer(playerId));
     }
 
+    public void finishGame() {
+        setState(new FinishScoreState(this));
+    }
+
+    public void finishGameDueToDisconnection() {
+        setState(new FinishScoreState(this));
+        serverController.changeState("FinishScoreState");
+    }
 }

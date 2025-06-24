@@ -706,7 +706,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEndGame(int playerId) {
-
+        finishController finishController = (finishController) controllerList.get(ScenesName.FINISH);
+        Platform.runLater(finishController::printEndGame);
     }
 
     @Override

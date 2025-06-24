@@ -130,12 +130,12 @@ public class AdventureState extends State {
 
     public void userStopFlight(int playerId) {
         Player player = getPlayerById(playerId);
-        try {
+        //try {
             gameSession.userStopFlight(player);
-        }catch (NotEnoughPlayerException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
-            gameSession.getGame().ifPresent(Game::finishGame);
-            transition(new FinishScoreState(gameSession, userInterface));
-        }
+       // }catch (NotEnoughPlayerException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
+         //   gameSession.getGame().ifPresent(Game::finishGame);
+           // transition(new FinishScoreState(gameSession, userInterface));
+        //}
 
     }
 
@@ -269,9 +269,7 @@ public class AdventureState extends State {
     public void checkAdminCalculateScore(int playerId) {
         throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
     }
-    public void checkUserEndGame(int playerId) {
-        throw new IllegalMethodOnThisStateException("Illegal method while in AdventureState");
-    }
+
 
     public Player getCurrentPlayer() {
         return gameSession.getGame()

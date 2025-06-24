@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model;
 
+import it.polimi.ingsw.is25am49.server.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -8,12 +9,13 @@ import javafx.util.Pair;
 
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class Game {
     private GameSession session;
     private GameMode mode;
     private final GameBoard board;
-
     private final ArrayList<Player> players;
     private Optional<Player> winner;
     private Timer timer;
@@ -21,6 +23,8 @@ public class Game {
     private int numPlayers;
     private boolean isFinished;
     private int seedForGeneration;
+    private final ScheduledExecutorService scheduler;
+
 
     public Game(Player admin, GameSession session, GameMode mode, int maxPlayers, int seedForGeneration) {
         this.session = session;
@@ -31,7 +35,7 @@ public class Game {
         winner = Optional.empty();
         timer = null;
         isFinished = false;
-
+        scheduler= Executors.newScheduledThreadPool(1);
         players.add(admin);
         numPlayers = 1;
         this.maxPlayers = Math.max(Math.min(4, maxPlayers), 2);
@@ -53,7 +57,15 @@ public class Game {
         try {
             player = getPlayer(playerId);
             player.setConnectionFlag(false);
-            board.getLeaderBoard().disconnectPlayer(player);
+            try {
+                board.getLeaderBoard().disconnectPlayer(player);
+            } catch (NotEnoughPlayerException e) {
+                scheduler.schedule(() -> {
+                    if (board.getLeaderBoard().size()- board.getLeaderBoard().sizeOfDisconnected() <= 1) {
+                        finishGameDueToDisconnection();
+                    }
+                }, 30, java.util.concurrent.TimeUnit.SECONDS);
+            }
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found
@@ -124,11 +136,14 @@ public class Game {
     public boolean gameIsFinished() {
         return isFinished;
     }
-    public void finishGame() {isFinished = true;}
 
-    public Optional<Player> userShowWinner() {
+    public void finishGame() {
         isFinished = true;
-        return winner;
+        session.finishGame();
+    }
+    public void finishGameDueToDisconnection() {
+        isFinished = true;
+        session.finishGameDueToDisconnection();
     }
 
     public boolean isTestFlight() {
@@ -193,9 +208,6 @@ public class Game {
         board.getCurrentCard().finishDecision(coordinates);
     }
 
-    public void userQuitGame(Player player) throws GameSettingsException {
-        board.userQuitGame(player);
-    }
 
     public void userStopFlight(Player player) {
         board.userStopFlight(player);

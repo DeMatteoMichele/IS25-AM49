@@ -34,13 +34,13 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         initialDelay = 5;
         this.userInterface = userInterface;
         reconnectionTries = 0;
-        thresholdTries = 20;
+        thresholdTries = 50;
         secondsDelayForReconnection = 2;
         executorService = Executors.newFixedThreadPool(10);
         scheduler = Executors.newScheduledThreadPool(10);
         hasResetted = false;
         isConnected = false;
-        scheduler.scheduleAtFixedRate(this::startHeartBeat, initialDelay, secondsDelayForReconnection, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::sendHeartBeat, initialDelay, secondsDelayForReconnection, TimeUnit.SECONDS);
         commandsFromServerQueue = new ArrayBlockingQueue<>(50000, true);
         executorService.submit(this::processCommandsFromServerQueue);
     }
@@ -122,9 +122,9 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     }
 
     private void startHeartBeat() {
-        while(isConnected) {
+//        while(isConnected) {
             sendHeartBeat();
-        }
+        //}
     }
 
     //remains here for the glory, but not used

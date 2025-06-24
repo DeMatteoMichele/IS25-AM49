@@ -138,7 +138,6 @@ public abstract class AdventureCard {
         if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
         }
-        System.out.println("You have decided the coord for the components");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
             shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
             userInterface.updateEffectModifyEnergy(shipBoard.getPlayerID(), coordinatesOfBatteries.get(i).getKey(),coordinatesOfBatteries.get(i).getValue());
@@ -158,7 +157,7 @@ public abstract class AdventureCard {
     protected void applyDefaultEffect(AdventureStatesTypes currState) {
         switch (currState) {
             case ROLL_DICES -> {
-                System.out.println("Default effect of rolling dices on " + gameBoard.getCurrentPlayer().getUsername());
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect of rolling dices on " + gameBoard.getCurrentPlayer().getUsername());
                 rollDices();
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
@@ -178,41 +177,44 @@ public abstract class AdventureCard {
                 if (coordinates.size() > currentEffect.getLostCrew()) {
                     coordinates = new ArrayList<>(coordinates.subList(0, currentEffect.getLostCrew()));
                 }
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect of losing crew on" + gameBoard.getCurrentPlayer().getUsername());
                 finishDecision(coordinates);
-                System.out.println("Default effect of losing crew on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_BATTERIES -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect: no batteries chosen on  " + gameBoard.getCurrentPlayer().getUsername());
                 ArrayList<Pair<Point, Token>> batteries = new ArrayList<>();
                 finishDecision(batteries);
-                System.out.println("Default effect of losing batteries on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_CANNON -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect: no cannons activated on " + gameBoard.getCurrentPlayer().getUsername());
                 Set<Point> cannons = new HashSet<>();
                 finishDecision(cannons);
-                System.out.println("Default effect of losing cannons on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_MOTOR -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect: no engines activated on" + gameBoard.getCurrentPlayer().getUsername());
                 Set<Point> motors = new HashSet<>();
                 finishDecision(motors);
-                System.out.println("Default effect of losing motors on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_SHIELDS -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect: no shield activated on " + gameBoard.getCurrentPlayer().getUsername());
                 Set<Point> shields = new HashSet<>();
                 finishDecision(shields);
-                System.out.println("Default effect of losing shields on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_GOODS -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect of decision goods on" + gameBoard.getCurrentPlayer().getUsername());
                 ArrayList<Pair<Point, Token>> goods = new ArrayList<>();
                 finishDecision(goods);
-                System.out.println("Default effect of losing goods on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_LAND_PLANET -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect of not landing on planet on " + gameBoard.getCurrentPlayer().getUsername());
                 landingOnPlanet(false, -1);
             }
             case DECISION_LAND_STATION_OR_SHIP -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect of not landing on station/ship on " + gameBoard.getCurrentPlayer().getUsername());
                 landingOnStationOrShip(false);
             }
             case DECISION_REWARDS -> {
+                userInterface.updateGenericCardMessage(genericIdForUpdates,"Default effect of not accepting the prizes on" + gameBoard.getCurrentPlayer().getUsername());
                 acceptPrizes(false);
             }
         }
@@ -318,9 +320,7 @@ public abstract class AdventureCard {
                 currentState == AdventureStatesTypes.ROLL_DICES)) {
             applyDefaultEffect(currentState);
         } else {
-            System.out.println("Disconnection handling not needed in this state");
+            userInterface.updateGenericCardMessage(genericIdForUpdates,gameBoard.getCurrentPlayer().getUsername() + " has disconnected, you can continue the game without him!");
         }
     }
-
-
 }

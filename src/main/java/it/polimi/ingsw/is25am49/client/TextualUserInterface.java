@@ -527,7 +527,6 @@ public class TextualUserInterface implements UserInterface {
                 graphicsQueue.add(stringBuilder.toString());
             }
             default -> {
-                printUpdateMessage("stateIndex: " + stateIndex);
             }
         }
     }
@@ -939,7 +938,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-        updateGenericCardMessage(playerId,"you have selected a battery from coordinates: <" +coordinate.x +","+coordinate.y +">");
+        updateGenericCardMessage(playerId,"battery from coordinates: <" +coordinate.x +","+coordinate.y +"> have been removed");
     }
 
     @Override
@@ -1218,7 +1217,7 @@ public class TextualUserInterface implements UserInterface {
 
                 }
                 case "4:2" -> {//handleDecisionToken
-                    lineReader.printAbove("do you want to handle the decision token? (y/n) >> ");
+                    lineReader.printAbove("do you want to decide for your tokens? (y/n) >> ");
                     String s = lineReader.readLine().trim();
                     if (s.equalsIgnoreCase("y")) {
                         ArrayList<Pair<Point, Token>> tokens = decisionToken();

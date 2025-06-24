@@ -23,7 +23,6 @@ public class EffectModifyCrew extends CardEffect {
     public void action(Player player) {
         for (Pair<Point, Token> coordinate : coordinates) {
             player.getShipBoard().removeTokenFromTile(coordinate.getKey(), coordinate.getValue());
-            System.out.println("rimozione di " + coordinate.getValue() + " dalla posizione " + coordinate.getKey());
         }
     }
 

@@ -6,13 +6,10 @@ import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
 
+import it.polimi.ingsw.is25am49.server.model.exceptions.*;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
-import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
-import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisStateException;
-import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
-import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
@@ -27,11 +24,11 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
     private Game game;
-
     private AdventureCardDeck mainAdventureDeck;
     private final TileCardDeck tilesDeck;
     private final ConcurrentHashMap<Integer, AdventureCardDeck> mapSmallAdventureDecks;
@@ -329,10 +326,6 @@ public class GameBoard {
     }
 
 
-//    public void setCurrentCard(AdventureCard card) {
-//        currentCard = card;
-//    }
-
     /**
      * This method is used to get the current card
      * @return the current card (AdventureCard)
@@ -358,10 +351,13 @@ public class GameBoard {
             throw new GameSettingsException("This player is already landed");
         else {
             landedPlayers.add(player);
-            leaderBoard.remove(player);
+            try {
+                leaderBoard.remove(player);
+            } catch (NotEnoughPlayerException e) {
+                game.finishGame();
+            }
         }
     }
-
 
     /**
      * This method is used to draw an adventure card
@@ -412,12 +408,8 @@ public class GameBoard {
 
     }
 
-    public void userQuitGame(Player player) throws GameSettingsException {
-
-    }
-
     public void userStopFlight(Player player) {
-        if(currentCard.getIsFinished()){
+        if(isFirstCard ||currentCard.getIsFinished()){
             playerNoMoreInFlight(player);
         }
         else{
@@ -497,13 +489,8 @@ public class GameBoard {
 
         landedPlayers.forEach(player -> {
             int credits = 0;
-
-            credits = 5 - leaderBoard.getPos(player);
             credits -= player.getShipBoard().getDestroyedTiles();
             credits += player.scoreOfGoods()/2;
-            if (minimumExposedComponents().contains(player)) {
-                credits += 2;
-            }
             player.addCredits(credits);
         });
     }
@@ -636,7 +623,7 @@ public class GameBoard {
                     }
                 });
         //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
-        lappedPlayers.forEach(this::playerNoMoreInFlight);
+        lappedPlayers.forEach(this::userStopFlight);
     }
 
     /**
@@ -711,7 +698,7 @@ public class GameBoard {
                     if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0)
                         playersWithZeroAstronauts.add(player);
                 });
-        playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
+        playersWithZeroAstronauts.forEach(this::userStopFlight);
     }
 
     public void setSeedForGeneration(int seed) {
@@ -739,7 +726,12 @@ public class GameBoard {
         String border = "+" + "-".repeat(width - 2) + "+\n";
         str.append(border);
         int i = 1;
-        List<Player> finalRanking = leaderBoard.stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
+        List<Player> finalRanking = Stream.concat(
+                        leaderBoard.stream().map(Map.Entry::getKey),
+                        landedPlayers.stream()
+                )
+                .sorted(Comparator.comparingInt(Player::getCredits).reversed())
+                .toList();
         for(Player player : finalRanking){
             str.append("|      POSITION: ").append(i).append("----->   ");
             str.append(player.getUsername()).append("\tTOTAL CREDIT SCORE: ").append(player.getCredits())

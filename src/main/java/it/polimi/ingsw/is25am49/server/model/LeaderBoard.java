@@ -5,6 +5,8 @@ import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +20,7 @@ public class LeaderBoard {
     private final ArrayList<Optional<Player>> showableLeaderBoard;
     private final int level;
     private final int numberOfCells;
+
 
     public LeaderBoard(GameMode mode) {
         mapLeaderboard = new HashMap<>();
@@ -141,7 +144,8 @@ public class LeaderBoard {
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
             showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
-            if(mapLeaderboard.isEmpty()) throw new NotEnoughPlayerException("the leaderboard has zero player left, going in finish state");
+            if (mapLeaderboard.isEmpty())
+                throw new NotEnoughPlayerException("the leaderboard has zero player left, going in finish state");
         } else
             throw new GameSettingsException("This player is not in the leaderboard");
     }
@@ -198,7 +202,7 @@ public class LeaderBoard {
                 return getPlayerInPosition(position);
             position++;
         }
-            throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
+        throw new IllegalSetOfNextPlayerException("No connected player found next to the given position");
     }
 
 
@@ -233,24 +237,6 @@ public class LeaderBoard {
         return mapLeaderboard.containsKey(player);
     }
 
-    public Optional<Player> getPlayerWithDays(int days) {
-        int showableIndex = moduleNumberOfCells(days);
-        if (showableLeaderBoard.get(showableIndex).isPresent())
-            return showableLeaderBoard.get(showableIndex);
-        else
-            return Optional.empty();
-    }
-
-    public void addToNearestPosition(Player player, int days) {
-        int i = 0;
-        while (getPlayerWithDays(days - i).isPresent()) {
-            i++;
-        }
-        mapLeaderboard.put(player, days - i);
-        arrayLeaderboard.add(Map.entry(player, days - i));
-        showableLeaderBoard.set(moduleNumberOfCells(days - i), Optional.of(player));
-        sort();
-    }
 
     public void refreshConnections() {
         disconnectedPlayers.entrySet().removeIf(entry -> entry.getValue().isConnected());
@@ -262,12 +248,14 @@ public class LeaderBoard {
 
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
+        if (arrayLeaderboard.size() - disconnectedPlayers.size() <= 1) {
+            throw new NotEnoughPlayerException("The leaderboard has only one player left, going in finish state");
+        }
     }
 
     public boolean isDisconnected(Player player) {
         return disconnectedPlayers.containsKey(player.getIdPlayer());
     }
-
 
     public Player getFirstPlayerConnected() {
         return getPlayerConnectedStartingFromThisPosition(1);
@@ -279,6 +267,10 @@ public class LeaderBoard {
 
     public int sizeOfConnected() {
         return (size() - disconnectedPlayers.size());
+    }
+
+    public int sizeOfDisconnected() {
+        return disconnectedPlayers.size();
     }
 }
 
