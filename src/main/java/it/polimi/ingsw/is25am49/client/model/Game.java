@@ -57,6 +57,13 @@ public class Game {
             player = getPlayer(playerId);
             player.setConnectionFlag(false);
             board.getLeaderBoard().disconnectPlayer(player);
+
+            player.getShipBoard().disconnectedWhileChoosingAliens();
+            try {
+                session.getState().userFinishShipboard(playerId);
+            } catch (Exception _) {}
+
+
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found
