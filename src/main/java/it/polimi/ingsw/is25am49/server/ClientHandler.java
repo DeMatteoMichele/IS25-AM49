@@ -71,7 +71,7 @@ public class ClientHandler {
     private void startServer(int port) throws IOException {
         System.out.println("Server started, waiting for client connection...");
         serverSocket = new ServerSocket(port);
-        scheduler.scheduleAtFixedRate(this::centralHeartBeatMonitor, 0, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::centralHeartBeatMonitor, 0, 3, TimeUnit.SECONDS);
         startBroadCastService();
         while (true) {
             Socket socket = serverSocket.accept();
@@ -138,7 +138,7 @@ public class ClientHandler {
     private void centralHeartBeatMonitor() {
         for (Map.Entry<Integer, Long> entry : lastHeartBeats.entrySet()) {
             if (connections.get(entry.getKey())) {
-                if (System.currentTimeMillis() - entry.getValue() > 20000) {
+                if (System.currentTimeMillis() - entry.getValue() > 10000) {
                     System.out.println("SOCKET: Client " + entry.getKey() + " doesn't respond. Shutting down his connection");
                     shutDownClientRelated(entry.getKey());
                 }

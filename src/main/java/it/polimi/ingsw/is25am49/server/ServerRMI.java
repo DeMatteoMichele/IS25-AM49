@@ -33,7 +33,7 @@ public class ServerRMI extends UnicastRemoteObject implements RemoteClient, Remo
         gameStarted = false;
         executorService = Executors.newFixedThreadPool(100);
         scheduler = Executors.newScheduledThreadPool(100);
-        scheduler.scheduleAtFixedRate(this::startHeartBeatMonitoring, 10, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::startHeartBeatMonitoring, 10, 1, TimeUnit.SECONDS);
         executorService.submit(this::processFilesFromClientQueue);
     }
 
