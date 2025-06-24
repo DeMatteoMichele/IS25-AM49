@@ -39,40 +39,44 @@ public class GraphicUserInterface extends Application implements UserInterface {
     private GameSession gameSession;
     private final String serverIP = "localhost";
     private final int serverPortRMI = 1099;
-    private  String username;
-    private Map<ScenesName,Scene> scenesList;
-    private Map<ScenesName,GenericSceneController> controllerList;
-    private int myId=-1;
-    private final ExecutorService executor =  Executors.newFixedThreadPool(10);
+    private String username;
+    private Map<ScenesName, Scene> scenesList;
+    private Map<ScenesName, GenericSceneController> controllerList;
+    private int myId = -1;
+    private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 
     private Stage stage;
 
 
-
-    public GraphicUserInterface(){
-            gameSession = new GameSession( this);
+    public GraphicUserInterface() {
+        gameSession = new GameSession(this);
     }
-    public int getMyId(){
+
+    public int getMyId() {
         return myId;
     }
-    public GraphicUserInterface getGui() {
-            return this;
-        }
-        public GameSession getGameSession() {
-            return gameSession;
-        }
-        public String getUsername() {
-            return username;
-        }
-        public void setUsername(String username) {
-            this.username = username;
-        }
 
-    private void loadStage(Stage primaryStage)  {
+    public GraphicUserInterface getGui() {
+        return this;
+    }
+
+    public GameSession getGameSession() {
+        return gameSession;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    private void loadStage(Stage primaryStage) {
 
         // Load all scenes defined in ScenesName enum using FXMLLoader
-        try{
+        try {
             stage = primaryStage;
 
             FXMLLoader loader;
@@ -83,12 +87,13 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 loader = new FXMLLoader(getClass().getResource(scenesName.getPath()));
                 root = loader.load();
                 GenericSceneController controller = loader.getController();
-                controller.setGui(this,gameSession);
+                controller.setGui(this, gameSession);
                 controllerList.put(scenesName, loader.getController());
                 scenesList.put(scenesName, new Scene(root, 1280, 720));
-            } }catch (Exception e) {
-                throw new RuntimeException(e);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -110,6 +115,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public Stage getPrimaryStage() {
         return stage;
     }
+
     public void showError(Stage owner, String message) {
         // Crea il contenuto del popup
         Label label = new Label(message);
@@ -121,9 +127,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
         popup.setAutoHide(true);
         popup.setHideOnEscape(true);
         popup.show(owner);
-       // Posiziona il popup (centrato rispetto alla finestra)
-       double centerX = owner.getX() + (owner.getWidth() - popup.getWidth()) / 2;
-       double centerY = owner.getY() + (owner.getHeight() - popup.getHeight()) / 2;
+        // Posiziona il popup (centrato rispetto alla finestra)
+        double centerX = owner.getX() + (owner.getWidth() - popup.getWidth()) / 2;
+        double centerY = owner.getY() + (owner.getHeight() - popup.getHeight()) / 2;
         popup.setX(centerX);
         popup.setY(centerY);
 
@@ -134,16 +140,16 @@ public class GraphicUserInterface extends Application implements UserInterface {
         delay.play();
     }
 
-      public void start(Stage primaryStage) {
-            loadStage(primaryStage);
-            showScene(ScenesName.HOME);
-            controller = new ClientController(gameSession, this);
+    public void start(Stage primaryStage) {
+        loadStage(primaryStage);
+        showScene(ScenesName.HOME);
+        controller = new ClientController(gameSession, this);
 
-     }
+    }
 
-      public static void main(String args[]) {
-            launch(args);
-        }
+    public static void main(String args[]) {
+        launch(args);
+    }
 
 
     public ClientController getController() {
@@ -159,23 +165,23 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 BuildController buildcontr = (BuildController) sceneController;
                 System.out.println("BUILD STATE");
                 buildcontr.init();
-                Platform.runLater(()-> {
+                Platform.runLater(() -> {
                     showScene(ScenesName.BUILD);
                 });
 
 
             }
-            case 2->{//Adventure state
+            case 2 -> {//Adventure state
                 AdventureController adventureContr = (AdventureController) sceneController;
                 System.out.println("ADVENTURE STATE");
                 adventureContr.init();
-                Platform.runLater(()-> {
+                Platform.runLater(() -> {
                     showScene(ScenesName.ADVENTURE);
                 });
             }
             case 3 -> {
                 System.out.println("FINISH STATE");
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     showScene(ScenesName.FINISH);
                 });
 
@@ -189,11 +195,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void printUpdateMessage(String msg) {
-        Platform.runLater(()->{
-            if(msg.contains("⚠")){
+        Platform.runLater(() -> {
+            if (msg.contains("⚠")) {
                 showError(stage, msg);
-            }
-            else{
+            } else {
                 Label label = new Label(msg);
                 label.setStyle("-fx-background-color: blue; -fx-text-fill: white; -fx-padding: 10px; -fx-background-radius: 5; -fx-font-size: 20px;");
 
@@ -225,26 +230,26 @@ public class GraphicUserInterface extends Application implements UserInterface {
 //        executor.submit(()-> Platform.runLater(()->{
 //            showScene(ScenesName.INIT);
 //        }));
-        Platform.runLater(()->showScene(ScenesName.INIT));
-
+        Platform.runLater(() -> showScene(ScenesName.INIT));
 
 
     }
 
-//chiamato quando utente fa join, stampa welcome con il suo nome
+    //chiamato quando utente fa join, stampa welcome con il suo nome
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
         InitController contr = (InitController) controllerList.get(ScenesName.INIT);
         Platform.runLater(() -> {
 //            System.out.println("PlayerID: " +playerId);
 //            System.out.println("myId: " + myId);
-            if (playerId==myId) {
+            if (playerId == myId) {
                 contr.setWelcome(username);
 
             }
 
         });
     }
+
     //chiamato quando viene creato il game, setta le informazioni sul game e inserisce l'admin
     @Override
     public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
@@ -262,7 +267,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
         });
         updateGameNewPlayer(playerId);
     }
-//chiamata quando utente fa join, se è l'admin setta a default le impostazioni, se è un altro player le aggiorna
+
+    //chiamata quando utente fa join, se è l'admin setta a default le impostazioni, se è un altro player le aggiorna
     @Override
     public void updateGameNewPlayer(int playerId) {
         InitController contr = (InitController) controllerList.get(ScenesName.INIT);
@@ -273,7 +279,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 contr.getInfo().getItems().add("Players: 1/4");
                 contr.getInfo().getItems().add("Game mode--> DEFAULT");
                 contr.getInfo().getItems().add("Max players--> 4 (DEFAULT)");
-                if(myId==playerId){
+                if (myId == playerId) {
                     contr.showAdmin();
                 }
             } else if (gameSession.getGame().isPresent()) {
@@ -284,32 +290,31 @@ public class GraphicUserInterface extends Application implements UserInterface {
                         .anyMatch(item -> item.contains(gameSession.getPlayer(playerId).get().getUsername()));
 
                 if (!playerAlreadyInList) {
-                    if(gameSession.getAdmin().map(player -> player.getIdPlayer() == playerId).orElse(false)) {
+                    if (gameSession.getAdmin().map(player -> player.getIdPlayer() == playerId).orElse(false)) {
                         contr.getLobby().getItems().add(gameSession.getPlayer(playerId).get().getUsername() + " (ADMIN)    " + gameSession.getPlayer(playerId).get().getColor());
-                    }
-                    else {
+                    } else {
                         contr.getLobby().getItems().add(gameSession.getPlayer(playerId).get().getUsername() + "   " + gameSession.getPlayer(playerId).get().getColor());
 
-                    }}
+                    }
+                }
                 if (contr.getInfo().getItems().isEmpty()) {
-                   contr.getInfo().getItems().add("Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
-               } else {
-                   contr.getInfo().getItems().set(0, "Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
-               }
+                    contr.getInfo().getItems().add("Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
+                } else {
+                    contr.getInfo().getItems().set(0, "Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
+                }
 //                contr.getInfo().getItems().add("Players: " + gameSession.getGame().get().numOfPlayers() + "/" + gameSession.getGame().get().getMaxPlayers());
-
 
 
             }
         });
-        }
+    }
 
 
     @Override
     public void updatePlaceTile(int playerId, Point coordinates) {
-        if(playerId==myId){
+        if (playerId == myId) {
             BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
 
                 buildController.addToShipBoard(coordinates);
 
@@ -320,22 +325,23 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updatePickTile(int playerId, Point coordinates, int idTile) {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-            if(playerId==myId){
+            if (playerId == myId) {
                 System.out.println("PICKTILE");
-                buildController.removeFromShipBoard(coordinates,idTile);
+                buildController.removeFromShipBoard(coordinates, idTile);
                 buildController.setHandTile(idTile);
 //
 //                BuildController.setHandTileFromPickTile();
-        }});
+            }
+        });
     }
 
     @Override
     public void updateRotateTileClockWise(int playerId) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
-            if(playerId==myId){
+        Platform.runLater(() -> {
+            if (playerId == myId) {
                 buildController.rotateHandTile();
             }
         });
@@ -344,9 +350,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateDiscardTile(int playerId, int idTile) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
 //            System.out.println("discard tile in handtile with id: " + idTile);
-            if(playerId==myId){
+            if (playerId == myId) {
                 buildController.clearHandTiles();
             }
 //            BuildController.printTileCardDeck();
@@ -358,25 +364,25 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateDrawTile(int playerId, int idTIle) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
 
             buildController.disableTile(idTIle);
 //            BuildController.printTileCardDeck();
 
-        if(playerId==myId){
+            if (playerId == myId) {
 //            BuildController.clearHandTiles();
-            buildController.setHandTile(idTIle);
-            buildController.dragHandTile();
-        }
-    });
+                buildController.setHandTile(idTIle);
+                buildController.dragHandTile();
+            }
+        });
     }
 
     @Override
     public void updateFinishShipboard(int playerId) {
 
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
-            if(playerId==myId){
+        Platform.runLater(() -> {
+            if (playerId == myId) {
                 buildController.clearShipBoard();
                 buildController.printShipboard();
                 buildController.clearListView();
@@ -390,18 +396,19 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
-            if(playerId==myId){
+        Platform.runLater(() -> {
+            if (playerId == myId) {
                 buildController.showAdventureCardDeck(smallDeckIndex);
             }
 
-    });}
+        });
+    }
 
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
-            if(playerId==myId){
+        Platform.runLater(() -> {
+            if (playerId == myId) {
                 buildController.clearSmallAdventureDeck();
             }
 
@@ -412,11 +419,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updatePlaceTimer(int playerId) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
 
-                buildController.showCountDown();
-                printUpdateMessage("Timer placed by player " + playerId);
-
+            buildController.showCountDown();
+            printUpdateMessage("Timer placed by player " + playerId);
 
 
         });
@@ -425,7 +431,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateTimerIsDone() {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             printUpdateMessage("Timer is finished");
             buildController.playTimerEndAnimation();
         });
@@ -435,8 +441,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
-            if(playerId==myId){
+        Platform.runLater(() -> {
+            if (playerId == myId) {
                 buildController.disableHighlight();
                 updateFinishShipboard(playerId);
             }
@@ -445,18 +451,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void lookAtShipboard(int playerId) {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
             buildController.clearShipBoard();
             buildController.printPlayerIdShipboard(playerId);
         });
 
-    }
-    public void updateDisableBuild(){
-        BuildController buildController = (BuildController) controllerList.get(ScenesName.BUILD);
-        Platform.runLater(()->{
-            buildController.disableBuild();
-        });
     }
 
     /**
@@ -465,11 +465,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateCardState(int playerId, AdventureStatesTypes cardState) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateCardState(cardState);
-            }
+        Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.updateCardState(cardState);
         });
     }
 
@@ -478,8 +476,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateChangeTurn(int playerId) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateChangeTurn();
             }
@@ -488,8 +486,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateCardMessageBox(message);
             }
@@ -498,8 +496,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.configureEffectPaneDices(firstDice, secondDice);
             }
@@ -508,7 +506,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             adventureController.updateCurrentCard(adventureCard);
         });
@@ -517,8 +515,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
@@ -527,8 +525,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
@@ -537,8 +535,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateDeactivating(int playerId, List<Point> coordinates) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.deActivatePoints(coordinates);
             }
@@ -547,8 +545,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
@@ -557,8 +555,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
@@ -567,8 +565,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
@@ -577,8 +575,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateStopFlight(int playerId) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.stopFlight();
             }
@@ -587,8 +585,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEnemyDefeated(int playerIdWhoWon, String enemyName, String cardId) {
-        Platform.runLater(()->{
-            if(myId == playerIdWhoWon) {
+        Platform.runLater(() -> {
+            if (myId == playerIdWhoWon) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateCardMessageBox("You have defeted the enemy " + enemyName);
             }
@@ -597,8 +595,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.removeTokenFromTile(coordinate, token);
             }
@@ -607,8 +605,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateAttack(coordinate, or, false);
             }
@@ -617,8 +615,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.removeTokenFromTile(coordinate, token);
             }
@@ -627,8 +625,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.addTokenToTile(coordinate, token);
             }
@@ -644,13 +642,18 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
-
+        Platform.runLater(() -> {
+            if (myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.configureEffectPaneGoods(redgoods, greengoods, bluegoods, yellowgoods);
+            }
+        });
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.removeTokenFromTile(coordinate, token);
             }
@@ -663,8 +666,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateAttack(coordinate, or, true);
             }
@@ -673,8 +676,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updatePlayerStats(0, 0, 0, credits, 0);
             }
@@ -683,20 +686,21 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateDestroyedTiles(int playerId, Set<Point> destroyedTiles) {
-        Platform.runLater(()->{
-            if(myId == playerId) {
+        Platform.runLater(() -> {
+            if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateShipboardDestroyedTiles(destroyedTiles);
                 adventureController.updatePlayerStats(0, 0, 0, 0, destroyedTiles.size());
             }
         });
     }
+
     //Complesso, si potrebbe rivedere la modalità di gestione della leaderboard
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
-        Platform.runLater(()->{
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.reDrawLeaderBoard(leaderBoard);
+        Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.reDrawLeaderBoard(leaderBoard);
         });
     }
 
@@ -719,7 +723,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         settingsController settingsController = (settingsController) controllerList.get(ScenesName.SETTINGS);
         if (!isReconnecting) {
             clientRMI = new ClientRMI(controller, serverStub, this, serverIP);
-            System.out.println("Client successfully connected to ["+serverIP+" , 1099]");
+            System.out.println("Client successfully connected to [" + serverIP + " , 1099]");
             controller.setServerMethods(serverStub);
             try {
                 System.out.println("trying to log in to the server ...");
@@ -733,7 +737,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             }
         } else {
             clientRMI.replaceServerStub(serverStub);
-            System.out.println("Reconnected successfully to ["+serverIP+" , 1099]");
+            System.out.println("Reconnected successfully to [" + serverIP + " , 1099]");
             controller.setServerMethods(serverStub);
             try {
                 System.out.println("trying to log in to the server ...");
@@ -741,7 +745,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 System.out.println("client logged");
             } catch (RemoteException e) {
                 System.out.println("client failed logging on server RMI --> " + e.getMessage());
-               printUpdateMessage(settingsController.error+ " client failed logging on server RMI --> " + e.getMessage());
+                printUpdateMessage(settingsController.error + " client failed logging on server RMI --> " + e.getMessage());
             }
         }
     }

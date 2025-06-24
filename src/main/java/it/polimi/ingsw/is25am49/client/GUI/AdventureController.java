@@ -71,7 +71,9 @@ public class AdventureController extends GenericSceneController {
     private AdventureStatesTypes currentAdventureState;
     private Point2D[] coordsLeaderboard;
     private ScheduledExecutorService scheduler;
-    private double[] playerStatistics;
+    private final double[] playerStatistics;
+    private final int[] goodsNumbers;
+    private final Map<Integer, Image> goodsMap;
 
     public AdventureController() {
         coordinatesSet = new HashSet<>();
@@ -84,6 +86,8 @@ public class AdventureController extends GenericSceneController {
         scheduler = Executors.newScheduledThreadPool(10);
         timeIsDone = false;
         playerStatistics = new double[5];
+        goodsNumbers = new int[5];
+        goodsMap = new HashMap<>();
     }
 
 
@@ -98,6 +102,11 @@ public class AdventureController extends GenericSceneController {
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
             }
         });
+        String path = "/it/polimi/ingsw/is25am49/tokens/";
+        goodsMap.put(0, new Image(Objects.requireNonNull(getClass().getResource(path + "Redgood.png")).toExternalForm()));
+        goodsMap.put(1, new Image(Objects.requireNonNull(getClass().getResource(path + "Greengood.png")).toExternalForm()));
+        goodsMap.put(2, new Image(Objects.requireNonNull(getClass().getResource(path + "Bluegood.png")).toExternalForm()));
+        goodsMap.put(3, new Image(Objects.requireNonNull(getClass().getResource(path + "Yellowgood.png")).toExternalForm()));
     }
 
     public void handleDrawButton() {
@@ -110,7 +119,7 @@ public class AdventureController extends GenericSceneController {
 
     public void handleStopButton() {
         try {
-            //guiApplication.getController().userQuitGame(guiApplication.getMyId());
+            guiApplication.getController().userStopFlight(guiApplication.getMyId());
         } catch (Exception e) {
             guiApplication.printUpdateMessage(error + e.getMessage());
         }
@@ -257,8 +266,6 @@ public class AdventureController extends GenericSceneController {
             }
             currentAdventureCard = card;
         }
-        if (isThisPlayerLeader())
-            updateViewForSpecificCard();
     }
 
     public void printShipboard() {
@@ -281,15 +288,13 @@ public class AdventureController extends GenericSceneController {
                     }
                     Image i = new Image(Objects.requireNonNull(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Graysquare.png")).toExternalForm());
                     shipboardGrid.add(imageView, coordinates.x - 4, coordinates.y - 5);
-                    if (tile.get().getComponent().getType().equals(ComponentType.BATTERY)) {
-
-                    }
+                    shipboard.getProperties().put(coordinates, imageView);
                     if (tile.get().getComponent() instanceof ContainerComponent) {
                         switch (tile.get().getTileOrientation()) {
                             case NORTH, SOUTH -> {
                                 HBox tokensBox = new HBox(1);
                                 tokensBox.setAlignment(Pos.CENTER);
-                                if (tile.get().getComponent().getType().equals(ComponentType.BATTERY)) {
+                                if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
                                     BackgroundImage backgroundImageGray = new BackgroundImage(
                                             i,
                                             BackgroundRepeat.NO_REPEAT,
@@ -323,7 +328,7 @@ public class AdventureController extends GenericSceneController {
                                         tokensBox.getProperties().put(tokenIndex, imgV);
                                         ind[0]++;
                                     });
-
+                                    tokensBox.setOnMouseClicked(event -> {clickTile(coordinates);});
                                     shipboardGrid.add(tokensBox, coordinates.x - 4, coordinates.y - 5);
                                     getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().put("tokens", tokensBox);
 
@@ -374,7 +379,7 @@ public class AdventureController extends GenericSceneController {
                                         }
                                         ind[0]++;
                                     });
-
+                                    tokensBox.setOnMouseClicked(event -> {clickTile(coordinates);});
                                     shipboardGrid.add(tokensBox, coordinates.x - 4, coordinates.y - 5);
 
                                 });
@@ -606,6 +611,7 @@ public class AdventureController extends GenericSceneController {
 
         HBox buttonsBox = new HBox(10);
         buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.getChildren().add(throwButton);
 
         VBox container = new VBox(20, labelString, buttonsBox);
         container.setAlignment(Pos.CENTER);
@@ -628,18 +634,51 @@ public class AdventureController extends GenericSceneController {
         cardEffect.getChildren().add(message);
     }
 
+    public void configureEffectPaneGoods(int red, int green, int blue, int yellow) {
+        goodsNumbers[0] = red;
+        goodsNumbers[1] = green;
+        goodsNumbers[2] = blue;
+        goodsNumbers[3] = yellow;
+        configureEffectPaneShowNextGood();
+
+    }
+
     public void configureEffectPaneShowNextGood() {
         String style = "-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);";
-        Label labelString = new Label("Click here to throw the dices");
+        Label labelString = new Label("You are placing the good above");
         labelString.setStyle(style);
+        Button placeButton = new Button("Place");
+        placeButton.setStyle(style);
 
-        ImageView currentGood = new ImageView();
 
-        VBox container = new VBox(20, labelString, currentGood);
-        container.setAlignment(Pos.CENTER);
-
-        cardEffect.getChildren().clear();
-        cardEffect.getChildren().add(container);
+        int i;
+        for(i=0; i<goodsNumbers.length; i++){
+            if(goodsNumbers[i] > 0){
+                tokens.setDisable(false);
+                tokens.setVisible(true);
+                tokens.getChildren().clear();
+                ImageView imView = new ImageView(goodsMap.get(i));
+                tokens.getChildren().add(imView);
+                goodsNumbers[i]--;
+//                placeButton.setOnAction(event -> {
+//                    if (isPresentInTokenList(coordinates, Token.ASTRONAUT) || isPresentInTokenList(coordinates, Token.PURPLE_ALIENS) || isPresentInTokenList(coordinates, Token.BROWN_ALIENS)) {
+//                        tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
+//                        imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+//                    } else {
+//                        tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
+//                        imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
+//                    }
+//                });
+                VBox container = new VBox(20, labelString, placeButton);
+                container.setAlignment(Pos.CENTER);
+                cardEffect.getChildren().clear();
+                cardEffect.getChildren().add(container);
+                return;
+            }
+        }
+        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+        tokens.setDisable(true);
+        tokens.setVisible(false);
     }
 
     public void updateCardMessageBox(String messageText) {
@@ -679,47 +718,8 @@ public class AdventureController extends GenericSceneController {
         destroyedTiles.forEach(coordinates -> playerShipboard.destroyTile(coordinates));
     }
 
-    private void updateViewForSpecificCard() {
-        switch (currentAdventureCard.getCardId()) {
-            case "SpazioAperto" -> {
-
-            }
-            case "PlanetCard" -> {
-
-            }
-            case "SmugglerCard" -> {
-
-            }
-            case "MeteorRainCard" -> {
-
-            }
-            case "AbandonedShipCard" -> {
-
-            }
-            case "StarDustCard" -> {
-
-            }
-            case "AbandonedStationCard" -> {
-
-            }
-            case "WarZoneCard" -> {
-
-            }
-            case "PiratesCard" -> {
-
-            }
-            case "SlaverCard" -> {
-
-            }
-            case "EpidemicCard" -> {
-
-            }
-        }
-    }
-
     public void updateCardState(AdventureStatesTypes state) {
         currentAdventureState = state;
-        dbg();
         switch (currentAdventureState) {
             case DRAW -> {
                 drawButton.setDisable(false);
@@ -800,13 +800,15 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_CANNON -> {
+                dbg();
                 if (isTheComponentOfThisType(ComponentType.DOUBLE_CANNON, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
                         coordinatesSet.remove(coordinates);
+                        dbg();
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
                     }
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Cannons.");
@@ -825,39 +827,45 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_SHIELDS -> {
+                dbg();
                 if (isTheComponentOfThisType(ComponentType.SHIELD, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
+                        dbg();
                         coordinatesSet.remove(coordinates);
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
                     }
                 } else {
-                    guiApplication.printUpdateMessage(error + "You can only select shields.");
+                    guiApplication.printUpdateMessage(error + "You can only select Shields.");
                 }
             }
             case AdventureStatesTypes.DECISION_GOODS -> {
+                dbg();
                 if (isTheComponentOfThisType(ComponentType.SPECIAL_STORAGE, coordinates) || isTheComponentOfThisType(ComponentType.STORAGE, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
+                        dbg();
                         coordinatesSet.remove(coordinates);
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
                     }
                 } else {
-                    guiApplication.printUpdateMessage(error + "You can only select Engines.");
+                    guiApplication.printUpdateMessage(error + "You can only select Storage.");
                 }
             }
             case AdventureStatesTypes.DECISION_MOTOR -> {
+                dbg();
                 if (isTheComponentOfThisType(ComponentType.DOUBLE_ENGINE, coordinates)) {
+                    dbg();
                     if (coordinatesSet.contains(coordinates)) {
                         coordinatesSet.remove(coordinates);
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
                     }
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Engines.");
@@ -908,11 +916,11 @@ public class AdventureController extends GenericSceneController {
     }
 
     private void dbg() {
-        System.out.println("Debug" + counterStampe++ + " " + currentAdventureState.toString() + " " + currentAdventureCard.getCardId());
+        System.out.println("Debug" + counterStampe++ + " " + currentAdventureState.toString());
     }
 
     private boolean isTheComponentOfThisType(ComponentType type, Point coordinates) {
-        return playerShipboard.getTile(coordinates).getComponent().getType().equals(type);
+        return playerShipboard.getTile(coordinates).getComponentType().equals(type);
     }
 
     public Node getNodeFromGridPane(int col, int row) {
@@ -993,16 +1001,16 @@ public class AdventureController extends GenericSceneController {
                             imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                         } else {
                             tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-                            imageView.setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
                         }
                     });
                     case BATTERY_CELLS -> imageView.setOnMouseClicked(event -> {
                         if (isPresentInTokenList(coordinates, Token.BATTERY_CELLS)) {
                             tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
-                            getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                         } else {
                             tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-                            getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
                         }
                     });
                 }
@@ -1127,8 +1135,9 @@ public class AdventureController extends GenericSceneController {
                 imView.setLayoutX(shipboard.getLayoutX() - 10);
             }
         }
+        imView.setVisible(true);
         adventureContainer.getChildren().add(imView);
-        getNodeFromGridPane(coord.x  - 4, coord.y - 5).setStyle("-fx-border-color: white; -fx-border-width: 3; -fx-border-radius: 5;");
+        getNodeFromGridPane(coord.x  - 4, coord.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
         timerForAnimation(imView, coord);
     }
     private void timerForAnimation(ImageView imv, Point coord) {
