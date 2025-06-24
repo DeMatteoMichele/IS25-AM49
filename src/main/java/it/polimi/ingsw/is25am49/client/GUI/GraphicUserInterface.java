@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
     private GameSession gameSession;
-    private final String serverIP = "192.168.231.154";
+    private final String serverIP = "localhost";
     private final int serverPortRMI = 1099;
     private  String username;
     private Map<ScenesName,Scene> scenesList;
@@ -618,7 +618,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateEndGame(int playerId) {
-
+        finishController finishController = (finishController) controllerList.get(ScenesName.FINISH);
+        Platform.runLater(finishController::printEndGame);
     }
 
     @Override
