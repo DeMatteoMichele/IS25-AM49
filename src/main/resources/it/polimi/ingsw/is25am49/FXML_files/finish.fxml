@@ -4,23 +4,36 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.finishController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.is25am49.client.GUI.finishController">
    <children>
       <ImageView fx:id="backgroundImage" pickOnBounds="true" />
-      <Button layoutX="61.0" layoutY="28.0" mnemonicParsing="false" onAction="#endGame" text="EndGame" />
-      <Button fx:id="calculateScore" layoutX="178.0" layoutY="28.0" mnemonicParsing="false" onAction="#calculateScore" prefHeight="25.0" prefWidth="104.0" text="Calculate Score" />
-<!--      <Label layoutX="279.0" layoutY="139.0" text="1" />-->
-      <Label fx:id="firstPosition" layoutX="269.0" layoutY="164.0" />
-<!--      <Label layoutX="95.0" layoutY="164.0" text="2" />-->
-<!--      <Label layoutX="405.0" layoutY="192.0" text="3" />-->
-<!--      <Label layoutX="474.0" layoutY="271.0" text="4" />-->
-      <Label fx:id="secondPosition" layoutX="81.0" layoutY="184.0"  />
-      <Label fx:id="thirdPosition" layoutX="395.0" layoutY="217.0"  />
-      <Label fx:id="fourthPosition" layoutX="467.0" layoutY="288.0"  />
-   <ImageView fx:id="podio" fitHeight="234.0" fitWidth="447.0" layoutX="97.0" layoutY="107.0" pickOnBounds="true" preserveRatio="true">
 
-      </ImageView>
+ <!-- Podio con posizioni -->
+      <StackPane maxHeight="830.0" maxWidth="1200.0" minHeight="830.0" minWidth="1200.0">
+    <children>
+       <ImageView fx:id="podio" fitHeight="830.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+             <Image url="@/podium.png" />
+          </image>
+       </ImageView>
 
+       <AnchorPane fx:id="podioAnchorPane" prefHeight="830.0" prefWidth="1200.0">
+          <children>
+           <Label fx:id="firstPosition" prefHeight="69.0" prefWidth="172.0" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #ffd700; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 3, 0, 0, 2); -fx-font-family: 'Impact';" AnchorPane.leftAnchor="520.0" AnchorPane.topAnchor="200.0" />
+             <Label fx:id="secondPosition" prefHeight="30.0" prefWidth="195.0" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #c0c0c0; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 3, 0, 0, 2); -fx-font-family: 'Impact';" AnchorPane.leftAnchor="390.0" AnchorPane.topAnchor="235.0" />
+             <Label fx:id="thirdPosition" prefHeight="30.0" prefWidth="100.0" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #cd7f32; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 3, 0, 0, 2); -fx-font-family: 'Impact';" AnchorPane.leftAnchor="690.0" AnchorPane.topAnchor="285.0" />
+             <Label fx:id="fourthPosition" prefHeight="30.0" prefWidth="100.0" rotate="-25" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #4169e1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 3, 0, 0, 2); -fx-font-family: 'Impact';" AnchorPane.leftAnchor="830.0" AnchorPane.topAnchor="150.0" />
+          </children>
+       </AnchorPane>
+    </children>
+ </StackPane>
 
+      <HBox alignment="TOP_CENTER" spacing="40.0" style="-fx-padding: 20px 0 0 0;">
+         <children>
+           <Button fx:id="endGame" mnemonicParsing="false" onAction="#endGame" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: rgba(0,20,40,0.7); -fx-background-radius: 10; -fx-border-color: linear-gradient(to right, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-text-fill: #ffffff; -fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 5 10 5 10; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="END GAME" />
+             <Label fx:id="gameFinished" style="-fx-background-color: rgba(0,20,40,0.7); -fx-background-radius: 10; -fx-border-color: linear-gradient(to right, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-text-fill: #ffffff; -fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 5 10 5 10; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="GAME FINISHED! THANKS FOR PLAYING" />
+           <Button fx:id="calculateScore" mnemonicParsing="false" onAction="#calculateScore" prefHeight="31.0" prefWidth="194.0" style="-fx-background-color: rgba(0,20,40,0.7); -fx-background-radius: 10; -fx-border-color: linear-gradient(to right, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-text-fill: #ffffff; -fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 5 10 5 10; -fx-alignment: center; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="CALCULATE SCORE" />
+         </children>
+      </HBox>
    </children>
-</AnchorPane>
+</StackPane>

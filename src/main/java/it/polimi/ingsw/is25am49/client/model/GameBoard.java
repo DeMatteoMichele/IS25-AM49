@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameBoard {
     private LeaderBoard leaderBoard;
@@ -796,7 +797,13 @@ public class GameBoard {
         String border = "+" + "-".repeat(width - 2) + "+\n";
         str.append(border);
         int i = 1;
-        List<Player> finalRanking = leaderBoard.stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
+       List<Player> finalRanking = Stream.concat(
+               leaderBoard.stream().map(Map.Entry::getKey),
+               landedPlayers.stream()
+           )
+           .sorted(Comparator.comparingInt(Player::getCredits).reversed())
+           .toList();
+
         for (Player player : finalRanking) {
             str.append("|      POSITION: ").append(i).append("----->   ");
             str.append(player.getUsername()).append("\tTOTAL CREDIT SCORE: ").append(player.getCredits())
