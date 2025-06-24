@@ -34,25 +34,25 @@ public class EffectCannonata extends CardEffect {
             Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
             if (target.isPresent()) {
                 player.getShipBoard().destroyTile(target.get());
-                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get());
-                player.getShipBoard().destroyDisconnectedTiles();
+                userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
+                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get(), direction);
             }
             else {
-                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big cannonade coming from " + direction+" pointing at " + position + "  missed you!");
+                userInterface.updateGenericCardMessage(-99, "Big cannonade coming from " + direction+" pointing at " + position + "  missed "+ player.getUsername() + "!");
             }
         } else if(level==0) {
             //cannonata di livello zero, si può prevenire con attivazione di scudi
             //controllo se ci sono scudi che proteggono dalle direioni da cui colpisce la cannoanata
             if (player.getShipBoard().getProtectedSides().contains(direction)) {
-                userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, shield activated");
+                userInterface.updateGenericCardMessage(-99, "No damage for " +player.getUsername() +", shield activated");
             } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
+                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get(), direction);
                     userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
-                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Small cannonade coming from " + direction+" pointing at " + position + "  missed you!");
+                else userInterface.updateGenericCardMessage(-99, "Small cannonade coming from " + direction+" pointing at " + position + "  missed "+ player.getUsername() + "!");
             }
         }
     }

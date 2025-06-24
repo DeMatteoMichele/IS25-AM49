@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class LeaderBoard {
     private final HashMap<Player, Integer> mapLeaderboard;
@@ -141,7 +143,7 @@ public class LeaderBoard {
             arrayLeaderboard.remove(Map.entry(player, tmpDays));
             showableLeaderBoard.set(findIndexOfPlayerInShowableLeaderBoard(player), Optional.empty());
             sort();
-            if(mapLeaderboard.size() <2) throw new NotEnoughPlayerException("the leaderboard has one player left, going in finish state");
+            if(mapLeaderboard.isEmpty()) throw new NotEnoughPlayerException("the leaderboard has zero player left, going in finish state");
         } else
             throw new GameSettingsException("This player is not in the leaderboard");
     }
@@ -262,6 +264,9 @@ public class LeaderBoard {
 
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
+        if(arrayLeaderboard.size()- disconnectedPlayers.size() <= 1) {
+            throw new NotEnoughPlayerException("The leaderboard has only one player left, going in finish state");
+        }
     }
 
     public boolean isDisconnected(Player player) {
@@ -278,6 +283,10 @@ public class LeaderBoard {
 
     public int sizeOfConnected() {
         return (size() - disconnectedPlayers.size());
+    }
+
+    public int sizeOfDisconnected() {
+        return disconnectedPlayers.size();
     }
 
     @Override

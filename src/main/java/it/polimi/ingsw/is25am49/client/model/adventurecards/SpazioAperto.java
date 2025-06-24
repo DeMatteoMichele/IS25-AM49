@@ -124,7 +124,7 @@ public class SpazioAperto extends AdventureCard {
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
         userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
-        declaredEnginePower.forEach((player, power) -> { if (power == 0) gameBoard.playerNoMoreInFlight(player); });
+        declaredEnginePower.forEach((player, power) -> { if (power == 0) gameBoard.userStopFlight(player); });
         super.update();
     }
 

@@ -4,6 +4,7 @@ package it.polimi.ingsw.is25am49.client.GUI;
 public enum ScenesName {
     HOME("/it/polimi/ingsw/is25am49/FXML_files/home.fxml"),
     SETTINGS("/it/polimi/ingsw/is25am49/FXML_files/settings.fxml"),
+    ERROR("/it/polimi/ingsw/is25am49/FXML_files/settings_error.fxml"),
     INIT("/it/polimi/ingsw/is25am49/FXML_files/init.fxml"),
     BUILD("/it/polimi/ingsw/is25am49/FXML_files/build.fxml"),
     ADVENTURE("/it/polimi/ingsw/is25am49/FXML_files/adventure.fxml"),

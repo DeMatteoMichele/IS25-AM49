@@ -60,7 +60,7 @@ public class ServerHandler {
         scheduler.scheduleWithFixedDelay(() -> listenToServer(), 0, 25, TimeUnit.MILLISECONDS);
         scheduler.scheduleAtFixedRate(() -> processStringQueueToSerializer(), 512, 25, TimeUnit.MILLISECONDS);
         scheduler.scheduleAtFixedRate(() -> processOutGoingQueue(), 512, 25, TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(() -> connectionHealthControl(), 0, 500, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> connectionHealthControl(), 0, 2000, TimeUnit.MILLISECONDS);
         heartBeatTask = scheduler.scheduleWithFixedDelay(this::heartBeat, 10, 5, TimeUnit.SECONDS);
     }
 
@@ -128,7 +128,7 @@ public class ServerHandler {
                     objectOutputStream.close();
                     clientSocket.close();
                 }
-                stopHeartBeat();
+//                stopHeartBeat();
             } catch (IOException e) {
                 System.err.println("Errore durante la chiusura delle risorse per la disconnesione: " + e.getMessage());
             }

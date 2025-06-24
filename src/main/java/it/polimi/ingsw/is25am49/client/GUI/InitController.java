@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.GUI;
 
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -190,8 +191,12 @@ public void setupLobbyListView() {
             guiApplication.getController().playerJoin(guiApplication.getUsername());
             System.out.println("Player joined the lobby: " + guiApplication.getUsername());
             joinLobby.setDisable(true);
-        }catch (Exception e) {
-            guiApplication.printUpdateMessage( error+ e.getMessage());
+        }catch (IllegalUsernameException e){
+            guiApplication.printUpdateMessage(error + e.getMessage());
+            guiApplication.showScene(ScenesName.ERROR);
+        }catch (Exception e){
+            e.printStackTrace();
+            guiApplication.printUpdateMessage(error+ e.getMessage());
         }
     }
 

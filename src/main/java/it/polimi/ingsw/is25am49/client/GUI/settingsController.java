@@ -134,6 +134,7 @@ public class settingsController extends GenericSceneController {
             System.out.println("Username set to: " + username);
             guiApplication.setUsername(username);
             guiApplication.getController().setUsername(username);
+
             if (!isAlreadyConnected) {
                 System.out.println("entrato");
                 guiApplication.getController().createMyIdJson();
@@ -211,4 +212,5 @@ public class settingsController extends GenericSceneController {
         disableRetryVisibility();
         enableConnectionButtons();
     }
+
 }

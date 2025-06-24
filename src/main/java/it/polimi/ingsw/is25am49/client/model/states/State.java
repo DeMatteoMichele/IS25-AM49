@@ -32,6 +32,11 @@ public abstract class State {
         userInterface.updateStateTransition(stateIndex+1);
     }
 
+    public void transitionToFinish(State nextState) {
+        gameSession.setState(nextState);
+        userInterface.updateStateTransition(3);
+    }
+
     public int getStateIndex() {
         return stateIndex;
     }
@@ -89,11 +94,6 @@ public abstract class State {
     public abstract void userLandOnPlanet(int playerId, boolean isLanded, int planetId);
     public abstract void userLandOnStationOrShip(int playerId, boolean isLanded);
     public abstract void userAcceptPrizes(int playerId, boolean isAccepted);
-
-    public void userQuitGame(int playerId) {
-        Player player = getPlayerById(playerId);
-        gameSession.userQuitGame(player);
-    }
 
     public abstract void userStopFlight(int playerId);
     public abstract void adminCalculateScore(int playerId);

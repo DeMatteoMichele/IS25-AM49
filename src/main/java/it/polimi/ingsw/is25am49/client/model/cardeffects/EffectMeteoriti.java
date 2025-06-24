@@ -36,31 +36,31 @@ public class EffectMeteoriti extends CardEffect {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     if (player.getShipBoard().getTile(target.get()).getConnector(direction) == ConnectorType.FLAT) {
-                        userInterface.updateGenericCardMessage(player.getIdPlayer(), "No damage, the meteor coming from " + direction+ " pointing at " + position +" bounces ");
+                        userInterface.updateGenericCardMessage(-99, "No damage for " + player.getUsername() +", the meteor coming from " + direction+ " pointing at " + position +" bounces on his flat connector! ");
                     } else {
                         player.getShipBoard().destroyTile(target.get());
-                        userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
-                        player.getShipBoard().destroyDisconnectedTiles();
+                        userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get(), direction);
+                        userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                     }
                 }
                 else {
-                    userInterface.updateGenericCardMessage(player.getIdPlayer(), "Meteora coming from " + direction+" pointing at " + position + "  missed you!");
+                    userInterface.updateGenericCardMessage(-99, "Small meteora coming from " + direction+" pointing at " + position + "  missed "+ player.getUsername() + "!");
                 }
             }
         } else {
             //meteorite grande
             //unica possibilità è sparargli contro con un cannone
             if (defendAgainstMeteor(player)) {
-                userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big Meteora destroyed by cannons!");
+                userInterface.updateGenericCardMessage(-99, "Big Meteora destroyed by " + player.getUsername()+ " cannons!");
             } else {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if(target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
-                    player.getShipBoard().destroyDisconnectedTiles();
+                    userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get(), direction);
+                    userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
                 else {
-                    userInterface.updateGenericCardMessage(player.getIdPlayer(), "Big meteora coming from " + direction+" pointing at " + position + "  missed you!");
+                    userInterface.updateGenericCardMessage(-99, "Big meteora coming from " + direction+" pointing at " + position + "  missed "+ player.getUsername() + "!");
                 }
             }
         }
