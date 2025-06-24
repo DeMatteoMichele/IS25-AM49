@@ -285,16 +285,15 @@ public class ClientController {
         }
     }
 
-    public void changeState(String state) {
-        State currentState;
+    public void changeStateCallback(String state) {
         if (state.equals("InitState")) {
-            currentState = new InitState(gameSession, ui);
+            gameSession.getState().transition(new InitState(gameSession, ui));
         } else if (state.equals("BuildState")) {
-            currentState = new BuildState(gameSession, ui);
+            gameSession.getState().transition(new BuildState(gameSession, ui));
         } else if (state.equals("AdventureState")) {
-            currentState = new AdventureState(gameSession, ui);
+            gameSession.getState().transition(new AdventureState(gameSession, ui));
         } else if (state.equals("FinishScoreState")) {
-            currentState = new FinishScoreState(gameSession, ui);
+            gameSession.getState().transitionToFinish(new FinishScoreState(gameSession, ui));
         } else {
             throw new IllegalArgumentException("Invalid state: " + state);
         }

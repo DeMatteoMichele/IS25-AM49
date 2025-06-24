@@ -473,11 +473,11 @@ public class Command implements Serializable {
                     e.printStackTrace();
                 }
             }
-            case "changeState" -> {
+            case "changeStateCallback" -> {
                 try {
-                    clientController.changeState((String) parameters.get(0));
+                    clientController.changeStateCallback((String) parameters.get(0));
                 } catch (Exception e) {
-                    System.err.println("Errore in changeState: " + e.getMessage());
+                    System.err.println("Errore in changeStateCallback: " + e.getMessage());
                     e.printStackTrace();
                 }
             }

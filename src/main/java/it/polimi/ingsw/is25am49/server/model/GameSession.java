@@ -105,7 +105,7 @@ public class GameSession {
     }
 
     public void userJoinLobby(String username, int playerID) throws GameSettingsException {
-        checkJoinLobby(playerID,username);
+        checkJoinLobby(playerID, username);
         Player tempPlayer = new Player(username, getColor(), playerID);
         if (admin.isEmpty()) {
             admin = Optional.of(tempPlayer);
@@ -116,14 +116,15 @@ public class GameSession {
         } else throw new GameSettingsException("Game is not ready yet");
     }
 
-    public void checkJoinLobby(int playerId,String username) throws GameSettingsException {
+    public void checkJoinLobby(int playerId, String username) throws GameSettingsException {
         if (admin.isPresent()) {
             if (game.isPresent()) {
                 if (checkPlayers()) {
-                    if(checkIsInLobby(playerId))throw new GameSettingsException("you already joined the lobby");
-                    if(checkUsernameAlreadyTaken(username))throw new IllegalUsernameException("username already taken");
+                    if (checkIsInLobby(playerId)) throw new GameSettingsException("you already joined the lobby");
+                    if (checkUsernameAlreadyTaken(username))
+                        throw new IllegalUsernameException("username already taken");
                 } else throw new GameSettingsException("too many players");
-            }else throw new GameSettingsException("game is not ready yet");
+            } else throw new GameSettingsException("game is not ready yet");
         }
     }
 
@@ -228,6 +229,7 @@ public class GameSession {
     public void signalToControllerThatGameStarted() {
         serverController.signalThatGameStarted();
     }
+
     public void userStopFlight(Player player) {
         game.ifPresent(g -> g.userStopFlight(player));
     }
@@ -242,5 +244,10 @@ public class GameSession {
 
     public void finishGame() {
         setState(new FinishScoreState(this));
+    }
+
+    public void finishGameDueToDisconnection() {
+        setState(new FinishScoreState(this));
+        serverController.changeState("FinishScoreState");
     }
 }

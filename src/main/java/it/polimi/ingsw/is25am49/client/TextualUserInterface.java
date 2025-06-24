@@ -527,7 +527,6 @@ public class TextualUserInterface implements UserInterface {
                 graphicsQueue.add(stringBuilder.toString());
             }
             default -> {
-                printUpdateMessage("stateIndex: " + stateIndex);
             }
         }
     }

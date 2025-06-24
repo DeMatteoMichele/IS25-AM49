@@ -32,6 +32,11 @@ public abstract class State {
         userInterface.updateStateTransition(stateIndex+1);
     }
 
+    public void transitionToFinish(State nextState) {
+        gameSession.setState(nextState);
+        userInterface.updateStateTransition(3);
+    }
+
     public int getStateIndex() {
         return stateIndex;
     }

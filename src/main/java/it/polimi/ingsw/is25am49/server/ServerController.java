@@ -486,6 +486,19 @@ public class ServerController {
 //        }
 //    }
 
+    public void changeState(String state) {
+        try {
+            Command command = new Command("changeStateCallback", -1);
+            command.addParameter(state);
+            serverSerializer.command_FromServerToClient(command);
+            serverRMI.command_FromServerToClient(command);
+        } catch (RemoteException e) {
+            System.out.println("Error due to RemoteException in Server  in changeState ->   " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void adminCalculateScore(int playerId) {
         try {
             try {
@@ -533,4 +546,5 @@ public class ServerController {
     public void signalThatGameStarted() {
         gameStarted = true;
     }
+
 }

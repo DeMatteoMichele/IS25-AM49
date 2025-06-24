@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.client.model;
 
+import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -10,6 +11,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class Game {
     private GameSession session;
@@ -22,6 +25,8 @@ public class Game {
     private int numPlayers;
     private boolean isFinished;
     private int seedForGeneration;
+    private final ScheduledExecutorService scheduler;
+
 
     public Game(Player admin, GameSession session, GameMode mode, int maxPlayers, int seedForGeneration) {
         this.session = session;
@@ -34,7 +39,7 @@ public class Game {
         winner = Optional.empty();
         timer = null;
         isFinished = false;
-
+        scheduler= Executors.newScheduledThreadPool(1);
         players.add(admin);
         numPlayers = 1;
         this.maxPlayers = Math.max(Math.min(4, maxPlayers), 2);
@@ -56,7 +61,15 @@ public class Game {
         try {
             player = getPlayer(playerId);
             player.setConnectionFlag(false);
-            board.getLeaderBoard().disconnectPlayer(player);
+            try {
+                board.getLeaderBoard().disconnectPlayer(player);
+            } catch (NotEnoughPlayerException e) {
+                scheduler.schedule(() -> {
+                    if (board.getLeaderBoard().size()- board.getLeaderBoard().sizeOfDisconnected() <= 1) {
+                        finishGame();
+                    }
+                }, 30, java.util.concurrent.TimeUnit.SECONDS);
+            }
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found
