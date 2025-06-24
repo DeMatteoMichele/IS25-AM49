@@ -9,15 +9,37 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an effect causing the player to lose a specified number of goods
+ * in decreasing order of importance (red, yellow, green, blue, battery cells).
+ */
 public class EffectLoseGoods extends CardEffect {
     private int numberOfTokensToLose;
 
+    /**
+     * A list of points representing coordinates where the effect is applied.
+     * These coordinates may be used to determine specific positions related to the effect's functionality.
+     */
     List<Point> coordinates = new ArrayList<>();
+    /**
+     * Constructor for EffectLoseGoods. Sets the name of the effect
+     * and the number of tokens the player must lose.
+     *
+     * @param name_effect the name of the effect
+     * @param numberOfTokensToLose the number of tokens to be lost
+     */
     public EffectLoseGoods(String name_effect, int numberOfTokensToLose) {
 
         super(name_effect);
         this.numberOfTokensToLose = numberOfTokensToLose;
     }
+    /**
+     * Removes a specified number of tokens from the player's ship board, prioritizing
+     * red goods, followed by yellow, green, blue goods, and battery cells, until no more
+     * tokens of each type are available or until the required number has been removed.
+     *
+     * @param player the player whose ship board will have tokens removed
+     */
     public void action(Player player) {
         //rimuovo in ordine di importanza dal rosso finchè non sono finiti tutte le merci da rimuovere
         //oppure finchè non ci sono più merci di quel colore nella nave

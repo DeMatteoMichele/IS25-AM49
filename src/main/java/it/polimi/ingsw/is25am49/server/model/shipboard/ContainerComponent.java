@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
+/**
+ * Represents a specialized component designed to hold and manage tokens within a predefined capacity.
+ * The type and level of the component influence its behavior and token management rules.
+ * This class is final and cannot be extended.
+ */
 public final class ContainerComponent extends Component {
     private final ArrayList<Token> tokens;
 

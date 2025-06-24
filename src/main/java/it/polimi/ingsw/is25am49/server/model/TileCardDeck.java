@@ -8,11 +8,20 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+/**
+ * Represents a deck of Tile cards that can be managed and drawn by players.
+ */
 public class TileCardDeck {
     private final ConcurrentHashMap<Integer, Tile> tileDeck;
     private final ConcurrentHashMap<Player, Integer> lastRemovedTile;
     private final int numOfTiles;
 
+    /**
+     * Constructs a TileCardDeck with a specified seed for random generation.
+     * Initializes the deck with 152 tiles, excluding specific tiles.
+     *
+     * @param seedForGeneration the seed used for shuffling the tiles
+     */
     public TileCardDeck(int seedForGeneration) {
         lastRemovedTile = new ConcurrentHashMap<>();
         numOfTiles = 152;
@@ -28,11 +37,26 @@ public class TileCardDeck {
         Collections.shuffle(trackingRandoms,new Random(seedForGeneration));
         temporaryTileDeck.forEach((key, value) -> tileDeck.put(trackingRandoms.get(tileDeck.size()), value));
     }
+
+    /**
+     * Discard a tile from the deck at the specified index for the given player.
+     *
+     * @param player the player drawing the tile
+     * @return the drawn Tile
+     */
     public void addDiscardTile(Tile tile, Player player) {
         tile.uncoverTile();
         tileDeck.put(lastRemovedTile.get(player),tile);
     }
 
+    /**
+     * Draws a tile from the deck at the specified index for the given player.
+     *
+     * @param index  the index of the tile to draw
+     * @param player the player drawing the tile
+     * @return the drawn Tile
+     * @throws OutOfDeckExceptions if the tile at the specified index is not found in the deck
+     */
     private Tile draw(int index, Player player) {
         synchronized (tileDeck.get(index)) {
             if(tileDeck.containsKey(index)) {
@@ -46,6 +70,15 @@ public class TileCardDeck {
                 throw new OutOfDeckExceptions("Tile not found in the deck");
         }
     }
+
+    /**
+     * Draws a tile from the deck by its id
+     *
+     * @param player the player drawing the tile
+     * @param tileId the id of the tile to draw
+     * @return the drawn Tile
+     * @throws OutOfDeckExceptions if there are no tiles left in the deck
+     */
     public Tile drawByTileId(int tileId, Player player) {
         // cerco l'indice della carta nel mazzo che ha l'id specificato
         Optional<Map.Entry<Integer, Tile>> entry = tileDeck.entrySet().stream()
@@ -59,6 +92,13 @@ public class TileCardDeck {
             throw new OutOfDeckExceptions("Tessera non disponibile o già pescata");
         }
     }
+
+    /**
+     * Draws a tile from the deck for the specified player.
+     *
+     * @return the drawn Tile
+     * @throws OutOfDeckExceptions if there are no tiles left in the deck
+     */
     public int getPositionOfATile(Tile tile) {
         return tileDeck.entrySet().stream()
                 .filter(e -> e.getValue().equals(tile))

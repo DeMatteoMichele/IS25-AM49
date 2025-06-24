@@ -389,25 +389,55 @@ public class GameBoard {
         currentCard.rollDices();
     }
 
+    /**
+     * Completes the activation phase for a player's decision with the specified coordinates.
+     *
+     * @param player the player finalizing their decision
+     * @param coordinates the set of points affected by the player's decision
+     */
     public void userFinishDecisionActivating(Player player, Set<Point> coordinates) {
         isYourTurn(player);
         currentCard.finishDecision(coordinates);
     }
 
+    /**
+     * Completes the player's decision phase related to token placement on the current card.
+     *
+     * @param player        the player who is finalizing their decision
+     * @param listOfTokens  a list of pairs containing the token and the point of placement on the card
+     */
     public void userFinishDecisionToken(Player player, ArrayList<Pair<Point, Token>> listOfTokens) {
         isYourTurn(player);
         currentCard.finishDecision(listOfTokens);
     }
 
+    /**
+     * Method that allows a player to land on a planet.
+     *
+     * @param player the player attempting to land on the planet
+     */
     public void userLandOnPlanet(Player player) {
         isYourTurn(player);
     }
 
+    /**
+     * This method is used when the player lands on a station or ship.
+     * It verifies if it is the player's turn.
+     *
+     * @param player the player attempting to land on a station or ship
+     */
     public void userLandOnStationOrShip(Player player) {
         isYourTurn(player);
 
     }
 
+    /**
+     * Handles the event where a player decides to stop their flight.
+     * If it is the first card or the current card is finished, the player is removed from flight.
+     * Otherwise, the player is added to the list of players who stopped flight.
+     *
+     * @param player the player who is stopping their flight
+     */
     public void userStopFlight(Player player) {
         if(isFirstCard ||currentCard.getIsFinished()){
             playerNoMoreInFlight(player);
@@ -416,6 +446,11 @@ public class GameBoard {
             stopFlightPlayers.add(player);
         }
     }
+    /**
+     * Retrieves the list of players who have stopped their flight.
+     *
+     * @return a list of players who have stopped their flight.
+     */
     public List<Player> getStopFlightPlayers() {
         return stopFlightPlayers;
     }

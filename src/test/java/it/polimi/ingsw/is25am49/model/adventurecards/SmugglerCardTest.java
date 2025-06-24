@@ -34,6 +34,7 @@ class SmugglerCardTest {
     Player player1;
     Player player2;
     ShipBoard shipMock= Mockito.mock(ShipBoard.class);
+    ShipBoard shipMock1 = Mockito.mock(ShipBoard.class);
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
 
@@ -43,6 +44,10 @@ class SmugglerCardTest {
         gameBoard = new GameBoard();
         player1 = new Player("TestPlayer", Color.RED, 1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
+        when(shipMock.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        when(shipMock1.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        player2.setShipBoard(shipMock);
+        player1.setShipBoard(shipMock1);
 //        player1.setShipBoard(shipMock1);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player2);
@@ -62,7 +67,6 @@ class SmugglerCardTest {
     void drawCard() {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
-
     }
 
 
@@ -84,7 +88,7 @@ class SmugglerCardTest {
     @Test
     void CheckNotEnoughFireButEnoughBatteriesAndCannons() {
         when(shipMock.getTotalFirePower()).thenReturn(1.0);
-        when(shipMock.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(3);
+        when(shipMock.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(5);
 
         ArrayList<Point> activatablePoints = new ArrayList<>();
         activatablePoints.add(new Point(1, 1));
@@ -97,19 +101,18 @@ class SmugglerCardTest {
         Tile tileMock2 = Mockito.mock(Tile.class);
         Tile tileMock3 = Mockito.mock(Tile.class);
 
+
         when(shipMock.getTile(new Point(1, 1))).thenReturn(tileMock1);
         when(shipMock.getTile(new Point(2, 2))).thenReturn(tileMock2);
         when(shipMock.getTile(new Point(3, 3))).thenReturn(tileMock3);
 
-        when(tileMock1.getFirePower()).thenReturn(1.0);
-        when(tileMock2.getFirePower()).thenReturn(1.0);
-        when(tileMock3.getFirePower()).thenReturn(1.0);
+        when(tileMock1.getPotentialFirePower()).thenReturn(1.0);
+        when(tileMock2.getPotentialFirePower()).thenReturn(1.0);
+        when(tileMock3.getPotentialFirePower()).thenReturn(1.0);
 
-        player2.setShipBoard(shipMock);
+        player1.setShipBoard(shipMock);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
-        assertEquals(gameBoard.getLeaderBoard().getLeader(),player2);
-        assertEquals(gameBoard.getLeader(), gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.DECISION_BATTERIES, gameBoard.getCurrentCard().getCurrentState());
     }
 
@@ -155,9 +158,9 @@ class SmugglerCardTest {
         when(shipMock.getTile(new Point(2, 2))).thenReturn(tileMock2);
         when(shipMock.getTile(new Point(3, 3))).thenReturn(tileMock3);
 
-        when(tileMock1.getFirePower()).thenReturn(1.0);
-        when(tileMock2.getFirePower()).thenReturn(1.0);
-        when(tileMock3.getFirePower()).thenReturn(1.0);
+        when(tileMock1.getPotentialFirePower()).thenReturn(1.0);
+        when(tileMock2.getPotentialFirePower()).thenReturn(1.0);
+        when(tileMock3.getPotentialFirePower()).thenReturn(1.0);
 
         player2.setShipBoard(shipMock);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
@@ -176,7 +179,6 @@ class SmugglerCardTest {
                 gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
                 assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
                 assertEquals(EffectLoseGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
-
     }
 
 

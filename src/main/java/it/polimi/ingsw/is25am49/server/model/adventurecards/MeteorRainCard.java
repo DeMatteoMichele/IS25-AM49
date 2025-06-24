@@ -18,20 +18,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Represents the "Meteor Rain" adventure card in the game that triggers a sequence of effects
+ * where players must defend their ship against falling meteors using available batteries, shields, or cannons.
+ */
 public class MeteorRainCard extends AdventureCard {
 
+    /**
+     * A list containing all the card effects associated with the MeteorRainCard.
+     * Each effect defines specific actions impacting the game state or player behavior.
+     */
     List<CardEffect> listEffects = new ArrayList<>();
 
+    /**
+     * Constructs a MeteorRainCard with the specified parameters.
+     *
+     * @param gameBoard the game board associated with this card
+     * @param description the description of the card
+     * @param level the level of the card
+     * @param name the name of the card
+     * @param ListEffects the list of card effects to be added to this card
+     */
     public MeteorRainCard(GameBoard gameBoard, String description, int level,String name, List<CardEffect> ListEffects) {
         super(gameBoard, description, level,name);
         listEffects.addAll(ListEffects);
     }
 
+    /**
+     * Represents the base level for the "Big Meteora" effect in the MeteorRainCard.
+     * Used to determine the impact or size of the meteora during gameplay.
+     */
     private static final int BIG_METEORA_LEVEL = 1;
+    /**
+     * Represents a list of pairs that associates a specific point on the game board
+     * with a token, particularly used to track battery positions and their related tokens.
+     */
     private List<Pair<Point, Token>> coordinatesOfBatteries = new ArrayList<>();
+    /**
+     * Stores the coordinates of activable points during the game's meteor rain card effect execution.
+     * Used to track positions that can trigger actions or effects following specific conditions.
+     */
     private List<Point> coordinatesOfActivable = new ArrayList<>();
+    /**
+     * Represents the list of players participating in the game.
+     * This collection maintains the state of all players interacting with the card.
+     * Immutable and final to ensure thread safety and consistency.
+     */
     private final List<Player> listOfPlayers = new ArrayList<>();
 
+    /**
+     * Executes the "draw card" action for the MeteorRainCard. Triggers the meteor rain effect,
+     * requiring the leader to roll dices. Updates the game state and handles connected players.
+     * Removes the first effect from the effect list to apply it, changes the current state,
+     * and ensures proper handling if a player is disconnected.
+     */
     @Override
     public void drawCard() {
         super.drawCard();
@@ -42,12 +82,24 @@ public class MeteorRainCard extends AdventureCard {
         checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
     }
 
+    /**
+     * Overrides the rollDices method to roll two dice and handle additional logic specific to the MeteorRainCard.
+     * After invoking the superclass's rollDices, it checks if batteries are available to influence the outcome.
+     */
     @Override
     public void rollDices() {
         super.rollDices();
         checkForBatteriesToUse();
     }
 
+    /**
+     * Checks if the current player has battery cells available to counteract
+     * a potential threat (e.g., a meteor impact).
+     * If batteries are available, it proceeds to further evaluation by checking
+     * the dimension of the meteor. If not, the effect of the meteor is directly applied.
+     *
+     * Updates the state of the game based on the player's resources.
+     */
     private void checkForBatteriesToUse() {
         coordinatesOfActivable = new ArrayList<>();
         coordinatesOfBatteries = new ArrayList<>();
@@ -60,6 +112,18 @@ public class MeteorRainCard extends AdventureCard {
         }
     }
 
+    /**
+     * Evaluates the size of the meteor and determines the player's defensive options.
+     *
+     * If the meteor is classified as "big" (BIG_METEORA_LEVEL), the player cannot use shields
+     * and must rely on cannons to defend. If cannons are available, prompts the player to choose
+     * batteries to activate. Otherwise, applies the meteor's effect.
+     *
+     * If the meteor is not "big", the player can defend using shields if available. Prompts the
+     * player to activate shields or applies the meteor's effect if no shields are present.
+     *
+     * Updates the game's current state based on the player's options and system's responses.
+     */
     private void checkDimensionOfMeteora() {
         ShipBoard currentShipBoard = gameBoard.getCurrentPlayer().getShipBoard();
         if (currentEffect.getLevel() == BIG_METEORA_LEVEL) {//big meteora, player cant defend himself
@@ -88,6 +152,13 @@ public class MeteorRainCard extends AdventureCard {
         }
     }
 
+    /**
+     * Executes the final steps of the decision-making process based on the current game state
+     * and provided coordinates. Handles specific logic for the DECISION_BATTERIES state.
+     *
+     * @param coordinates the list of pairs where each pair contains a point and a token,
+     *                    representing the chosen tokens and their corresponding board positions.
+     */
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
@@ -110,6 +181,15 @@ public class MeteorRainCard extends AdventureCard {
         }
     }
 
+    /**
+     * Finalizes the decision for activating components based on the current state.
+     * Handles specific actions for the DECISION_CANNON or DECISION_SHIELDS states
+     * and transitions to the EFFECT state after activating components.
+     *
+     * @param coordinates the set of coordinates indicating the components to be activated
+     * @throws IllegalNumOfActivableException if the number of activable components is not valid
+     *        for the current state
+     */
     @Override
     public void finishDecision(Set<Point> coordinates) throws IllegalNumOfActivableException {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
@@ -131,6 +211,13 @@ public class MeteorRainCard extends AdventureCard {
         }
     }
 
+    /**
+     * Determines the next state of the adventure based on the current effect's level.
+     * If the level corresponds to a big meteora, the state changes to DECISION_CANNON.
+     * Otherwise, the state changes to DECISION_SHIELDS.
+     *
+     * @return the next adventure state as an AdventureStatesTypes enum value
+     */
     private AdventureStatesTypes determineStateAfterBatteries() {
         if (currentEffect.getLevel() == BIG_METEORA_LEVEL) {
             return AdventureStatesTypes.DECISION_CANNON;
@@ -139,6 +226,14 @@ public class MeteorRainCard extends AdventureCard {
         }
     }
 
+    /**
+     * Manages the transition to the next player or effect during the gameplay.
+     * If the current player is not the last in the list, it proceeds to the next player.
+     * Otherwise, checks the status of remaining effects:
+     * - If no effects remain, triggers the update phase.
+     * - If effects remain, sets the first player as the current player and initializes the next effect.
+     * Adjusts the game state accordingly and may trigger dice rolls or battery checks.
+     */
     private void tryNextPlayer() {
         int currentIndexPlayer = listOfPlayers.indexOf(gameBoard.getCurrentPlayer());
         if (currentIndexPlayer >= 0 && currentIndexPlayer < listOfPlayers.size() - 1) { //i have to apply the currenteffect on all the players
@@ -159,6 +254,10 @@ public class MeteorRainCard extends AdventureCard {
         }
     }
 
+    /**
+     * Applies the current card effect to the current player, deactivates specified components
+     * on their ship board, and progresses the game to the next player or effect.
+     */
     @Override
     public void applyEffect() {
         currentEffect.action(gameBoard.getCurrentPlayer());
@@ -167,6 +266,13 @@ public class MeteorRainCard extends AdventureCard {
     }
 
 
+    /**
+     * Builds and returns a string representation of the MeteorRainCard object, formatted as a
+     * structured box with aligned fields and optional wrapped text. Includes details
+     * of the name, description, level, current effect, and additional card effects.
+     *
+     * @return a formatted string representing the state and attributes of the card
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

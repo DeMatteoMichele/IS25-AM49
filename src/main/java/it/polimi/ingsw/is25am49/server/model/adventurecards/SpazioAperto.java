@@ -12,20 +12,58 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * A class representing the SpazioAperto adventure card.
+ * Provides specific mechanics for processing the card's actions,
+ * decision-making, and effects within the game.
+ */
 public class SpazioAperto extends AdventureCard {
 
+    /**
+     * Constructs a SpazioAperto object with the specified parameters.
+     *
+     * @param gameBoard the game board associated with the SpazioAperto instance
+     * @param description a brief description of the SpazioAperto card
+     * @param level the level of the SpazioAperto card
+     * @param name the name of the SpazioAperto card
+     */
     public SpazioAperto(GameBoard gameBoard, String description, int level, String name) {
         super(gameBoard, description, level, name);
 
     }
 
+    /**
+     * Represents a list of pairs, where each pair associates a specific point on the game board
+     * with a token. In this context, it is used to track battery cell placements or related data.
+     */
     private List<Pair<Point, Token>> batteries;
+    /**
+     * Represents a collection of motor positions on the game board.
+     * Each motor is identified by a specific point.
+     */
     private List<Point> motors;
+    /**
+     * Represents the process of handling or managing a list of players
+     * within the SpazioAperto class context.
+     */
     private List<Player> playersProcess;
+    /**
+     * Tracks the index of the current player in the game sequence.
+     * Used to determine which player's turn it currently is.
+     */
     private int currentPlayerIndex;
+    /**
+     * Maps each Player to their declared engine power.
+     * Key: Player instance.
+     * Value: Declared engine power as an Integer.
+     * Used to track the engine power declared by each player during the game.
+     */
     private Map<Player, Integer> declaredEnginePower=new HashMap<>();
 
 
+    /**
+     * Executes the process of drawing the card and handles the associated actions.
+     */
     @Override
     public void drawCard() {
         super.drawCard();
@@ -37,6 +75,11 @@ public class SpazioAperto extends AdventureCard {
 
     }
 
+    /**
+     * Checks whether the current player's ship meets the requirements to activate double motors.
+     * If sufficient batteries and double motors are available, allows the player to decide their usage.
+     * Otherwise, processes travel days as a fallback.
+     */
     @Override
     public void checkRequirements() {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
@@ -54,6 +97,12 @@ public class SpazioAperto extends AdventureCard {
         }
     }
 
+    /**
+     * Processes the number of travel days for the current player based on the ship's engine power.
+     * Updates the leaderboard and advances to the next player or concludes the round if the last player has been processed.
+     *
+     * @param ship the ship whose engine power determines the travel days earned by the player
+     */
     private void processTravelDays(ShipBoard ship) {
         int daysEarned = ship.getTotalEnginePower();
         declaredEnginePower.put(gameBoard.getCurrentPlayer(), daysEarned);
@@ -73,6 +122,12 @@ public class SpazioAperto extends AdventureCard {
         }
     }
 
+    /**
+     * Completes the decision process based on the current adventure state and the provided coordinates.
+     *
+     * @param coordinates the list of pairs containing points and corresponding tokens chosen by the player.
+     *                    This input is used to determine the progression of the decision-making workflow.
+     */
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
@@ -93,6 +148,12 @@ public class SpazioAperto extends AdventureCard {
         }
     }
 
+    /**
+     * Completes the decision process for activating motors based on the provided coordinates.
+     *
+     * @param coordinates a set of points representing the coordinates of the motors to be activated
+     * @throws IllegalArgumentException if the state is invalid or the number of motors exceeds the available batteries
+     */
     @Override
     public void finishDecision(Set<Point> coordinates) {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
@@ -112,6 +173,13 @@ public class SpazioAperto extends AdventureCard {
         }
     }
 
+    /**
+     * Applies the effect specific to the SpazioAperto adventure card.
+     *
+     * This implementation calculates the travel days earned based on the power
+     * of activated motors and deactivates the relevant components of the ship.
+     * Calls the superclass applyEffect method to ensure proper state handling.
+     */
     @Override
     public void applyEffect() {
         super.applyEffect();
@@ -122,6 +190,11 @@ public class SpazioAperto extends AdventureCard {
         deactivateComponents(ship, motors);
     }
 
+    /**
+     * Updates the current state of the adventure card to {@code AdventureStatesTypes.UPDATE}.
+     * Stops the flight for players with zero declared engine power.
+     * Delegates additional update logic to the superclass implementation.
+     */
     @Override
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
