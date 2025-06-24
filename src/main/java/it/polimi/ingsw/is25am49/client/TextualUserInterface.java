@@ -1218,7 +1218,7 @@ public class TextualUserInterface implements UserInterface {
 
                 }
                 case "4:2" -> {//handleDecisionToken
-                    lineReader.printAbove("do you want to handle the decision token? (y/n) >> ");
+                    lineReader.printAbove("do you want to decide for your tokens? (y/n) >> ");
                     String s = lineReader.readLine().trim();
                     if (s.equalsIgnoreCase("y")) {
                         ArrayList<Pair<Point, Token>> tokens = decisionToken();
