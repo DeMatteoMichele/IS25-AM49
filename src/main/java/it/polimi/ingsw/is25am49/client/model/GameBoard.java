@@ -75,6 +75,7 @@ public class GameBoard {
 
     /**
      * This method is used to check if the player is the current player
+     *
      * @param player the player to check
      * @throws IllegalMethodOnThisStateException if the player is not the current player
      */
@@ -86,6 +87,7 @@ public class GameBoard {
 
     /**
      * This method is used to configurate the flight of the game
+     *
      * @param gameMode the game mode
      * @param players  the players of the game
      */
@@ -104,6 +106,7 @@ public class GameBoard {
 
     /**
      * This method is used to initialize the game
+     *
      * @param gameMode the game mode
      */
     public void initialize(GameMode gameMode) {
@@ -113,6 +116,7 @@ public class GameBoard {
 
     /**
      * This method is used to get the main adventure deck
+     *
      * @return the main adventure deck
      */
     public AdventureCardDeck getMainAdventureDeck() {
@@ -443,7 +447,7 @@ public class GameBoard {
     }
 
     public void userStopFlight(Player player) {
-        if (isFirstCard ||currentCard.getIsFinished()) {
+        if (isFirstCard || currentCard.getIsFinished()) {
             playerNoMoreInFlight(player);
         } else {
             stopFlightPlayers.add(player);
@@ -533,7 +537,7 @@ public class GameBoard {
         landedPlayers.forEach(player -> {
             int credits = 0;
             credits -= player.getShipBoard().getDestroyedTiles();
-            credits += player.scoreOfGoods()/2;
+            credits += player.scoreOfGoods() / 2;
             player.addCredits(credits);
         });
     }
@@ -627,7 +631,7 @@ public class GameBoard {
                 }
             }
         }
-        ui.updateLeaderBoard(leaderBoard);
+        if (!game.gameIsFinished()) ui.updateLeaderBoard(leaderBoard);
     }
 
     /**
@@ -804,9 +808,11 @@ public class GameBoard {
         }
         return str.toString();
     }
+
     public void setGame(Game game) {
-        this.game=game;
+        this.game = game;
     }
+
     public void disconnectionWarningToCard(Player player) {
         if (currentCard != null) {
             currentCard.disconnectionHandling(player);

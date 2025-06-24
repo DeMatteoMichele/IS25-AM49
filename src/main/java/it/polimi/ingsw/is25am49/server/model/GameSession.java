@@ -209,11 +209,6 @@ public class GameSession {
             throw new GameSettingsException("The game is not finished yet");
     }
 
-    public Optional<Player> userShowWinner(int playerId) throws GameSettingsException {
-        checkIsAdmin(playerId);
-        return game.flatMap(Game::userShowWinner);
-    }
-
     public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
         return game.map(game -> game.userSelectTypeOfToken(player, token, coordinates)).orElse(false);
     }

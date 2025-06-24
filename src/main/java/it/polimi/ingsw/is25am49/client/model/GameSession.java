@@ -192,11 +192,6 @@ public class GameSession {
     public void userActivateDaysUpdate() {
     }
 
-
-    public void checkCalculateScore(int playerId) {
-        //checkIsAdmin(playerId);
-        game.ifPresent(g -> g.checkCalculateScore(game.get().getPlayer(playerId)));
-    }
     public void calculateScore(int playerId) {
         //checkIsAdmin(playerId);
         game.ifPresent(g -> g.calculateScore(game.get().getPlayer(playerId)));
@@ -213,11 +208,6 @@ public class GameSession {
             setState(new InitState(this, ui));
         } else
             throw new GameSettingsException("The game is not finished yet");
-    }
-
-    public Optional<Player> userShowWinner(int playerId) {
-        checkIsAdmin(playerId);
-        return game.flatMap(Game::userShowWinner);
     }
 
     public void addPlayersToLeaderBoard() {

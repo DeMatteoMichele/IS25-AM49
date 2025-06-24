@@ -130,11 +130,6 @@ public class Game {
         session.finishGame();
     }
 
-    public Optional<Player> userShowWinner() {
-        isFinished = true;
-        return winner;
-    }
-
     public boolean isTestFlight() {
         return mode == GameMode.FLIGHT_MODE;
     }

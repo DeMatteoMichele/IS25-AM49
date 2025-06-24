@@ -939,7 +939,7 @@ public class TextualUserInterface implements UserInterface {
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
-        updateGenericCardMessage(playerId,"you have selected a battery from coordinates: <" +coordinate.x +","+coordinate.y +">");
+        updateGenericCardMessage(playerId,"battery from coordinates: <" +coordinate.x +","+coordinate.y +"> have been removed");
     }
 
     @Override

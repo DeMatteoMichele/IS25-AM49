@@ -108,11 +108,6 @@ public class Game {
         return players;
     }
 
-    public void checkCalculateScore(Player player) {
-        if (winner.isEmpty()) {
-        } else throw new GameSettingsException("Final score already calculated");
-    }
-
     public void calculateScore(Player player) {
         if (winner.isEmpty()) {
             board.calculateFinalCredits();
@@ -134,10 +129,7 @@ public class Game {
         session.finishGame();
     }
 
-    public Optional<Player> userShowWinner() {
-        isFinished = true;
-        return winner;
-    }
+
 
     public boolean isTestFlight() {
         return mode == GameMode.FLIGHT_MODE;
