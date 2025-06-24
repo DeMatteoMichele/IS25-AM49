@@ -27,21 +27,21 @@ public class ShipBoard {
     private Point lastPlacedPoint;
     private boolean isCompleted;
     private int destroyedTiles;
-    private boolean isDestroyed;
+    private boolean isFullOfAliens;
 
     public ShipBoard() {
         grid = new HashMap<>();
         lastPlacedPoint = new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
-        isDestroyed = false;
+        isFullOfAliens = false;
     }
     public ShipBoard(int level, int playerID, Color color){
         grid = new HashMap<>();
         lastPlacedPoint =  new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
-        isDestroyed = false;
+        isFullOfAliens = false;
 
         HashMap<Integer,Tile> tiles = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
         var centerCabinTile = switch (color){
@@ -90,6 +90,8 @@ public class ShipBoard {
                 break ;
         }
     }
+
+    public Map<Point, Optional<Tile>> getGrid() {return grid;}
 
     /**
      * Locks the last tile placed in the shipboard
@@ -475,9 +477,22 @@ public class ShipBoard {
     public Optional<Point> getAlienPoint(){
         ArrayList<Point> aliens = new ArrayList<>(getComponentsPositions(ComponentType.CABINE));
         aliens.remove(new Point(7,7)); //remove the center cabin
-        return aliens.stream()
+        Optional<Point> alien= aliens.stream()
                 .filter(p -> checkIfAlienArePossible(p).size() > 1 && getTile(p).getComponent().getNumberOfTokens() == 0)
                 .findFirst();
+        if(alien.isEmpty())isFullOfAliens= true;
+        return alien;
+    }
+    public void disconnectedWhileChoosingAliens(){
+        getAlienPoint();
+        if(!isFullOfAliens){
+            //completeShipBoard();
+            for(Point p: grid.keySet()){
+                try{
+                    fillTileComponent(p, Token.ASTRONAUT);
+                } catch(Exception _) {}
+            }
+        }
     }
 
     /**

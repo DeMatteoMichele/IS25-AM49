@@ -39,7 +39,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "localhost";
+    private String serverIP = "localhost"; //default IP
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -96,8 +96,9 @@ public class TextualUserInterface implements UserInterface {
     /**
      * IL MAIN DI GALAXY TRUCKER TUI
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]){
         TextualUserInterface ui = new TextualUserInterface();
+        if(args.length != 0)ui.serverIP=args[0];
         ui.controller = new ClientController(ui.gameSession, ui);
         Terminal terminal = ui.terminal;
 
@@ -355,6 +356,8 @@ public class TextualUserInterface implements UserInterface {
                         "y --> yellow goods\n" +
                         "r --> red goods\n" +
                         "c --> battery cells\n" +
+                        "br --> brown aliens\n" +
+                        "pu --> purple aliens\n" +
                         ">> "
                 ).trim();
                 switch (selection.toLowerCase()) {
@@ -375,6 +378,12 @@ public class TextualUserInterface implements UserInterface {
                         break;
                     case "c":
                         token = Token.BATTERY_CELLS;
+                        break;
+                    case "br":
+                        token = Token.BROWN_ALIENS;
+                        break;
+                    case "pu":
+                        token = Token.PURPLE_ALIENS;
                         break;
                     case "s":
                         return tokens; //se l'utente vuole fermarsi
@@ -909,7 +918,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateEffectCannonade(int playerId, Point coordinate) {
+    public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         updateShipBoard(playerId);
     }
@@ -942,7 +951,7 @@ public class TextualUserInterface implements UserInterface {
     }
 
     @Override
-    public void updateEffectMeteorite(int playerId, Point coordinate) {
+    public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         updateShipBoard(playerId);
     }
@@ -1169,8 +1178,8 @@ public class TextualUserInterface implements UserInterface {
                         lineReader.printAbove("which ship do you want to load:\n " +
                                 "1 --> ship_layout_1.json\n " +
                                 "2 --> ship_layout_2.json\n " +
-                                "3 --> ship_layout_3.json\n"  +
-                                "4 --> ship_layout_4.json\n" );
+                                "3 --> ship_layout_3.json\n " +
+                                "4 --> ship_layout_4.json\n " );
 
                         String s = lineReader.readLine(prompt).trim();
                         switch (s){

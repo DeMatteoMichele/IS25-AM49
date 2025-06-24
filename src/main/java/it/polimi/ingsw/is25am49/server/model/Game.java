@@ -138,6 +138,12 @@ public class Game {
         try {
             player = getPlayer(playerId);
             player.setConnectionFlag(false);
+
+            player.getShipBoard().disconnectedWhileChoosingAliens();
+            try {
+                session.getState().userFinishShipboard(playerId);
+            } catch (Exception _) {}
+
             try {
                 board.getLeaderBoard().disconnectPlayer(player);
             } catch (NotEnoughPlayerException e) {

@@ -23,10 +23,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Button;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.util.Duration;
 
 import java.awt.*;
@@ -43,8 +46,6 @@ public class BuildController extends GenericSceneController {
     private FlowPane buildContainer;
     @FXML
     private GridPane shipBoard;
-    @FXML
-    private TextField textFieldLookAtShipboard;
     @FXML
     private ListView<String> listViewPlayers;
     @FXML
@@ -117,7 +118,6 @@ public class BuildController extends GenericSceneController {
         });
 
     }
-
     public void init(){
         loadTilesMap();
         updateListView();
@@ -774,22 +774,22 @@ public class BuildController extends GenericSceneController {
         }
     }
 
-    public void handleLookAtShipboard(ActionEvent event) {
-        try {
-            int idPlayer = Integer.parseInt(textFieldLookAtShipboard.getText());
-            if(idPlayer<0 || idPlayer > 3 || idPlayer == guiApplication.getMyId() || gameSession.getPlayer(idPlayer).isEmpty()) {
-                guiApplication.printUpdateMessage(error + "Giocatore con ID " + idPlayer + " non trovato");
-
-            }
-            else{
-                System.out.println("Visualizzazione shipboard del giocatore con ID: " + idPlayer);
-                guiApplication.lookAtShipboard(idPlayer);
-            }
-
-        } catch (NumberFormatException e) {
-            guiApplication.printUpdateMessage(error + "Inserisci un ID giocatore valido");
-        }
-    }
+//    public void handleLookAtShipboard(ActionEvent event) {
+//        try {
+//            int idPlayer = Integer.parseInt(textFieldLookAtShipboard.getText());
+//            if(idPlayer<0 || idPlayer > 3 || idPlayer == guiApplication.getMyId() || gameSession.getPlayer(idPlayer).isEmpty()) {
+//                guiApplication.printUpdateMessage(error + "Giocatore con ID " + idPlayer + " non trovato");
+//
+//            }
+//            else{
+//                System.out.println("Visualizzazione shipboard del giocatore con ID: " + idPlayer);
+//                guiApplication.lookAtShipboard(idPlayer);
+//            }
+//
+//        } catch (NumberFormatException e) {
+//            guiApplication.printUpdateMessage(error + "Inserisci un ID giocatore valido");
+//        }
+//    }
 
     public void returnBackToShipboard(ActionEvent event) {
         clearShipBoard();
@@ -1046,6 +1046,8 @@ public class BuildController extends GenericSceneController {
         cardContainer.setDisable(true);
         buildContainer.setVisible(false);
         buildContainer.setDisable(true);
+        timerLabel.setVisible(false);
+        timerLabel.setDisable(true);
         smallAdventureDeckContainer.setVisible(false);
         smallAdventureDeckContainer.setDisable(true);
         smallAdventureDeck.setVisible(false);
@@ -1056,6 +1058,8 @@ public class BuildController extends GenericSceneController {
         discardTile.setDisable(true);
         rotateTile.setVisible(false);
         rotateTile.setDisable(true);
+        timer.setVisible(false);
+        timer.setDisable(true);
         finish.setVisible(false);
         finish.setDisable(true);
         timer.setLayoutX(155);

@@ -39,7 +39,7 @@ public class EffectMeteoriti extends CardEffect {
                         userInterface.updateGenericCardMessage(-99, "No damage for " + player.getUsername() +", the meteor coming from " + direction+ " pointing at " + position +" bounces on his flat connector! ");
                     } else {
                         player.getShipBoard().destroyTile(target.get());
-                        userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
+                        userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get(), direction);
                         userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                     }
                 }
@@ -56,7 +56,7 @@ public class EffectMeteoriti extends CardEffect {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if(target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get());
+                    userInterface.updateEffectMeteorite(player.getIdPlayer(), target.get(), direction);
                     userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
                 else {

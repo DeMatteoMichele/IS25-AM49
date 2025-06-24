@@ -34,8 +34,8 @@ public class EffectCannonata extends CardEffect {
             Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
             if (target.isPresent()) {
                 player.getShipBoard().destroyTile(target.get());
-                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get());
                 userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
+                userInterface.updateEffectCannonade(player.getIdPlayer(),  target.get(), direction);
             }
             else {
                 userInterface.updateGenericCardMessage(-99, "Big cannonade coming from " + direction+" pointing at " + position + "  missed "+ player.getUsername() + "!");
@@ -49,7 +49,7 @@ public class EffectCannonata extends CardEffect {
                 Optional<Point> target = player.getShipBoard().getExposedPoint(position, direction);
                 if (target.isPresent()) {
                     player.getShipBoard().destroyTile(target.get());
-                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get());
+                    userInterface.updateEffectCannonade(player.getIdPlayer(), target.get(), direction);
                     userInterface.updateDestroyedTiles(player.getIdPlayer(),player.getShipBoard().destroyDisconnectedTiles());
                 }
                 else userInterface.updateGenericCardMessage(-99, "Small cannonade coming from " + direction+" pointing at " + position + "  missed "+ player.getUsername() + "!");

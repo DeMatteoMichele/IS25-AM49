@@ -1,0 +1,134 @@
+package it.polimi.ingsw.is25am49.server.model.shipboard;
+
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
+import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisComponentException;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokenInComponentEcxeption;
+import it.polimi.ingsw.is25am49.server.model.shipboard.BasicComponent;
+import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ContainerComponentTest {
+
+    ContainerComponent storage;
+    ContainerComponent specialStorage;
+    ContainerComponent battery;
+    BasicComponent alienModule;
+    ContainerComponent cabin;
+
+    @BeforeEach
+    void setUpClass() {
+        storage= new ContainerComponent(ComponentType.STORAGE,3);
+        specialStorage= new ContainerComponent(ComponentType.SPECIAL_STORAGE,2);
+        battery= new ContainerComponent(ComponentType.BATTERY,5);
+        alienModule= new BasicComponent(ComponentType.BROWN_ALIEN_MODULE,1);
+        cabin= new ContainerComponent(ComponentType.CABINE,2);
+
+        battery.fillComponent(Token.BATTERY_CELLS);
+    }
+
+    @Test
+    void testGetNumberOfaToken(){
+        assertEquals(battery.getLevel(),battery.getNumberOfaToken(Token.BATTERY_CELLS));
+        specialStorage.addToken(Token.RED_GOODS);
+        assertEquals(1,specialStorage.getNumberOfaToken(Token.RED_GOODS));
+        specialStorage.addToken(Token.BLUE_GOODS);
+        assertEquals(1,specialStorage.getNumberOfaToken(Token.RED_GOODS));
+    }
+
+    @Test //test per fillComponent
+    void testNumberOfTokensEqualLevelInAFilledComponent() {
+        assertEquals(battery.getLevel(),battery.getNumberOfTokens());
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> cabin.fillComponent(Token.BLUE_GOODS));
+        assertNotEquals(cabin.getLevel(),cabin.getNumberOfTokens());
+    }
+    @Test
+    void testInsertWrongTokenToComponent(){
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> storage.addToken(Token.ASTRONAUT));
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> cabin.addToken(Token.BATTERY_CELLS));
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> storage.addToken(Token.RED_GOODS));
+    }
+    @Test
+    void testInsertCorrectTokenToComponent(){
+        cabin.addToken(Token.ASTRONAUT);
+        assertEquals(Token.ASTRONAUT, cabin.getTokenList().getFirst());
+        storage.fillComponent(Token.BLUE_GOODS);
+        storage.addToken(Token.GREEN_GOODS);
+        storage.addToken(Token.YELLOW_GOODS);
+        assertEquals(Token.BLUE_GOODS,storage.getTokenList().get(0));
+        assertEquals(Token.YELLOW_GOODS,storage.getTokenList().get(2));
+        assertEquals(3,storage.getNumberOfTokens());
+        specialStorage.addToken(Token.RED_GOODS);
+        specialStorage.addToken(Token.GREEN_GOODS);
+        assertEquals(Token.RED_GOODS, specialStorage.getTokenList().getFirst());
+        assertEquals(Token.GREEN_GOODS, specialStorage.getTokenList().get(1));
+    }
+    @Test
+    void testInsertTokenWhenFullComponent(){
+        assertThrows(ArrayIndexOutOfBoundsException.class, ()-> battery.addToken(Token.BATTERY_CELLS));
+    }
+    @Test
+    void testAddToken(){
+        testInsertCorrectTokenToComponent();
+        testInsertWrongTokenToComponent();
+        testInsertTokenWhenFullComponent();
+    }
+
+    @Test
+    void testAfterRemoveSizeDecrease(){
+        int oldSize = battery.getTokenList().size();
+        battery.removeToken(Token.BATTERY_CELLS);
+        assertEquals(oldSize-1,battery.getTokenList().size());
+        assertEquals(oldSize-1,battery.getNumberOfTokens());
+        assertThrows(IllegalMethodOnThisComponentException.class, ()->alienModule.addToken(Token.BROWN_ALIENS));
+        cabin.fillComponent(Token.BROWN_ALIENS);
+        assertEquals(2,cabin.getTokenList().size());
+        cabin.clearComponent();
+        assertEquals(0, cabin.getNumberOfTokens());
+    }
+    @Test
+    void testRemoveWrongToken(){
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> battery.removeToken(Token.ASTRONAUT));
+        assertThrows(IllegalMethodOnThisComponentException.class, ()-> alienModule.removeToken(Token.ASTRONAUT));
+        assertThrows(IndexOutOfBoundsException.class, ()-> cabin.removeToken());
+        assertThrows(IndexOutOfBoundsException.class, ()-> cabin.removeToken(Token.BROWN_ALIENS));
+        assertThrows(IllegalTokenInComponentEcxeption.class, ()-> battery.removeToken(Token.BLUE_GOODS));
+    }
+    @Test
+    void testRemoveToken() {
+        testAfterRemoveSizeDecrease();
+        testRemoveWrongToken();
+    }
+
+    @Test
+    void testGetNumberOfToken() {
+        assertEquals(battery.getNumberOfTokens(),battery.getTokenList().size());
+        assertEquals(cabin.getNumberOfTokens(),cabin.getTokenList().size());
+    }
+
+    @Test
+    void clearComponent() {
+        battery.clearComponent();
+        assertEquals (0,battery.getNumberOfTokens());
+    }
+
+    @Test
+    void checkIfTokenIsValid() {
+        assertTrue(battery.checkIfTokenIsValid(Token.BATTERY_CELLS));
+        assertTrue(cabin.checkIfTokenIsValid(Token.BROWN_ALIENS));
+        assertTrue(cabin.checkIfTokenIsValid(Token.PURPLE_ALIENS));
+        assertTrue(cabin.checkIfTokenIsValid(Token.ASTRONAUT));
+        assertTrue(specialStorage.checkIfTokenIsValid(Token.RED_GOODS));
+        assertTrue(specialStorage.checkIfTokenIsValid(Token.YELLOW_GOODS));
+        assertTrue(storage.checkIfTokenIsValid(Token.GREEN_GOODS));
+        assertTrue(storage.checkIfTokenIsValid(Token.BLUE_GOODS));
+        assertTrue(storage.checkIfTokenIsValid(Token.YELLOW_GOODS));
+        assertFalse(cabin.checkIfTokenIsValid(Token.YELLOW_GOODS));
+        assertFalse(storage.checkIfTokenIsValid(Token.RED_GOODS));
+        assertThrows(IllegalMethodOnThisComponentException.class, ()-> alienModule.checkIfTokenIsValid(Token.BROWN_ALIENS));
+    }
+}
+
