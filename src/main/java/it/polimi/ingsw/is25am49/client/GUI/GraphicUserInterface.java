@@ -668,6 +668,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         Platform.runLater(() -> {
             if (myId == playerId) {
+                System.out.println("updateEffectMeteorite");
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateAttack(coordinate, or, true);
             }

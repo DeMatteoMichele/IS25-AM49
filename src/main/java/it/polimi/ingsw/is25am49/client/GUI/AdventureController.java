@@ -11,6 +11,7 @@ import it.polimi.ingsw.is25am49.client.model.adventurecards.PlanetCard;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.shared.enums.*;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -24,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.awt.Point;
@@ -135,6 +137,7 @@ public class AdventureController extends GenericSceneController {
         updatePlayerStats(0, 0, 0, 0, 0);
         cardEffect.setVisible(true);
         cardMessages.setVisible(true);
+        highlightPane.setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
     }
 
     private void loadLeaderBoard() {
@@ -269,6 +272,7 @@ public class AdventureController extends GenericSceneController {
     }
 
     public void printShipboard() {
+        playerShipboard = Objects.requireNonNull(getPlayer()).getShipBoard();
         playerShipboard.getGrid().forEach((coordinates, tile) -> {
             if (tile.isPresent()) {
                 int idTile = tile.get().getIdTile();
@@ -448,8 +452,8 @@ public class AdventureController extends GenericSceneController {
     }
 
     public void configureEffectPaneYesNo(InputActions inputCommand) {
-        String style = "-fx-border-color: #00cc ff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);";
-        Label labelString = new Label("Do you want to " + inputCommand + "?");
+        String style = "-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);";
+        Label labelString = new Label("Do you want to " + inputCommand.toString() + "?");
         labelString.setStyle(style);
         Button yesButton = new Button("Yes");
         Button noButton = new Button("No");
@@ -715,7 +719,7 @@ public class AdventureController extends GenericSceneController {
     }
 
     public void updateShipboardDestroyedTiles(Set<Point> destroyedTiles) {
-        destroyedTiles.forEach(coordinates -> playerShipboard.destroyTile(coordinates));
+        printShipboard();
     }
 
     public void updateCardState(AdventureStatesTypes state) {
@@ -788,11 +792,9 @@ public class AdventureController extends GenericSceneController {
     private void clickTile(Point coordinates) {
         switch (currentAdventureState) {
             case AdventureStatesTypes.DECISION_BATTERIES -> {
-                dbg();
                 if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
                     tokens.setDisable(false);
                     tokens.setVisible(true);
-                    dbg();
                     tokens.getChildren().clear();
                     tokens.getChildren().add(setUpTokensBox(coordinates, Token.BATTERY_CELLS));
                 } else {
@@ -800,12 +802,10 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_CANNON -> {
-                dbg();
                 if (isTheComponentOfThisType(ComponentType.DOUBLE_CANNON, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
                         coordinatesSet.remove(coordinates);
-                        dbg();
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5);
                     } else {
                         coordinatesSet.add(coordinates);
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
@@ -815,9 +815,8 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS -> {
-                dbg();
                 if (isTheComponentOfThisType(ComponentType.CABINE, coordinates)) {
-                    dbg();
+
                     tokens.setDisable(false);
                     tokens.setVisible(true);
                     tokens.getChildren().clear();
@@ -827,10 +826,10 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_SHIELDS -> {
-                dbg();
+
                 if (isTheComponentOfThisType(ComponentType.SHIELD, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
-                        dbg();
+
                         coordinatesSet.remove(coordinates);
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
@@ -842,10 +841,10 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_GOODS -> {
-                dbg();
+
                 if (isTheComponentOfThisType(ComponentType.SPECIAL_STORAGE, coordinates) || isTheComponentOfThisType(ComponentType.STORAGE, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
-                        dbg();
+
                         coordinatesSet.remove(coordinates);
                         getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
@@ -857,15 +856,15 @@ public class AdventureController extends GenericSceneController {
                 }
             }
             case AdventureStatesTypes.DECISION_MOTOR -> {
-                dbg();
+
                 if (isTheComponentOfThisType(ComponentType.DOUBLE_ENGINE, coordinates)) {
-                    dbg();
+
                     if (coordinatesSet.contains(coordinates)) {
                         coordinatesSet.remove(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+                        highlightPane.getChildren().clear();
                     } else {
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
+                        shipboardGrid.add(highlightPane, coordinates.x - 4, coordinates.y - 5);
                     }
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Engines.");
@@ -980,44 +979,90 @@ public class AdventureController extends GenericSceneController {
         };
     }
 
-    private boolean isPresentInTokenList(Point coordinates, Token token) {
-        return tokensPointsList.stream().anyMatch(pair -> pair.getKey().equals(coordinates) && pair.getValue().contains(token.toString()));
+    private boolean isPresentInTokenList(Point coordinates, Token token, int key) {
+        return tokensPointsList.stream().anyMatch(pair -> pair.getKey().equals(coordinates) && pair.getValue().equals(token.toString() + key));
     }
 
-    private HBox setUpTokensBox(Point coordinates, Token tok) {
-        HBox temporaryToken = (HBox) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
-        HBox newHBox = new HBox(1);
-        newHBox.setAlignment(Pos.CENTER);
-        dbg();
+//    private HBox setUpTokensBox(Point coordinates, Token tok) {
+//        HBox temporaryToken = (HBox) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
+//        HBox newHBox = new HBox(1);
+//        newHBox.setAlignment(Pos.CENTER);
+//
+//        temporaryToken.getProperties().forEach((key, value) -> {
+//            if (value instanceof ImageView imgV) {
+//                Image im = imgV.getImage();
+//                ImageView imageView = new ImageView(im);
+//
+//                switch (tok) {
+//                    case ASTRONAUT -> imageView.setOnMouseClicked(event -> {
+//                        if (isPresentInTokenList(coordinates, Token.ASTRONAUT, (int)key) || isPresentInTokenList(coordinates, Token.PURPLE_ALIENS, (int) key) || isPresentInTokenList(coordinates, Token.BROWN_ALIENS, (int) key)) {
+//                            tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
+//                            System.out.println("Removing token: " + imgV.getUserData().toString() + key);
+//                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+//                        } else {
+//                            tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
+//                            System.out.println("Adding token: " + imgV.getUserData().toString() + key);
+//                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 10; -fx-border-radius: 10;");
+//                        }
+//                    });
+//                    case BATTERY_CELLS -> imageView.setOnMouseClicked(event -> {
+//                        if (isPresentInTokenList(coordinates, Token.BATTERY_CELLS, (int) key)) {
+//                            tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
+//                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+//                        } else {
+//                            tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
+//                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
+//                        }
+//                    });
+//                }
+//                newHBox.getChildren().add(imageView);
+//            }
+//        });
+//        return newHBox;
+//    }
+    private Pane setUpTokensBox(Point coordinates, Token tok) {
+        Node containerNode = (Node) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
+        Pane temporaryToken;
+        if (containerNode instanceof HBox) {
+            temporaryToken = (HBox) containerNode;
+        } else if (containerNode instanceof VBox) {
+            temporaryToken = (VBox) containerNode;
+        } else {
+            temporaryToken = new HBox(1);
+            ((HBox) temporaryToken).setAlignment(Pos.CENTER);
+        }
+        // Crea un nuovo contenitore dello stesso tipo
+        Pane newContainer;
+        if (temporaryToken instanceof HBox) {
+            newContainer = new HBox(1);
+            ((HBox) temporaryToken).setAlignment(Pos.CENTER);
+        } else {
+            newContainer = new VBox(1);
+            ((VBox) temporaryToken).setAlignment(Pos.CENTER);
+        }
+        // Itera sulle proprietà del contenitore per ricostruire le ImageView con eventi di selezione multipla
         temporaryToken.getProperties().forEach((key, value) -> {
             if (value instanceof ImageView imgV) {
                 Image im = imgV.getImage();
                 ImageView imageView = new ImageView(im);
-                dbg();
-                switch (tok) {
-                    case ASTRONAUT -> imageView.setOnMouseClicked(event -> {
-                        if (isPresentInTokenList(coordinates, Token.ASTRONAUT) || isPresentInTokenList(coordinates, Token.PURPLE_ALIENS) || isPresentInTokenList(coordinates, Token.BROWN_ALIENS)) {
-                            tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
-                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-                        } else {
-                            tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
-                        }
-                    });
-                    case BATTERY_CELLS -> imageView.setOnMouseClicked(event -> {
-                        if (isPresentInTokenList(coordinates, Token.BATTERY_CELLS)) {
-                            tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
-                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-                        } else {
-                            tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
-                        }
-                    });
-                }
-                newHBox.getChildren().add(imageView);
+                imageView.setUserData(imgV.getUserData());
+                // Gestione del click per il toggle della selezione sul token
+                imageView.setOnMouseClicked(event -> {
+                    String tokenKey = imageView.getUserData().toString() + key;
+                    if (isPresentInTokenList(coordinates, tok, (int) key)) {
+                        tokensPointsList.removeIf(pair ->
+                                pair.getKey().equals(coordinates) && pair.getValue().equals(tokenKey)
+                        );
+                        imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+                    } else {
+                        tokensPointsList.add(new Pair<>(coordinates, tokenKey));
+                        imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
+                    }
+                });
+                newContainer.getChildren().add(imageView);
             }
         });
-        return newHBox;
+        return newContainer;
     }
 
     private Token convertName(String name) {
@@ -1097,8 +1142,9 @@ public class AdventureController extends GenericSceneController {
 
     }
     public void updateAttack(Point coord, Orientation or, boolean isMeteor){
+        System.out.println("Updating attack animation at " + coord + " with orientation " + or + " and isMeteor: " + isMeteor);
         ImageView imView;
-        String path = "it/polimi/ingsw/is25am49/animations/";
+        String path = "/it/polimi/ingsw/is25am49/animations/";
         if(isMeteor) {
             imView = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(path +"cannonade_BIG.jpg")).toExternalForm()));
         }
@@ -1135,28 +1181,24 @@ public class AdventureController extends GenericSceneController {
                 imView.setLayoutX(shipboard.getLayoutX() - 10);
             }
         }
+        System.out.println("ImageView position: " + imView.getLayoutX() + ", " + imView.getLayoutY());
         imView.setVisible(true);
         adventureContainer.getChildren().add(imView);
-        getNodeFromGridPane(coord.x  - 4, coord.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
+        shipboardGrid.getChildren().add(highlightPane);
         timerForAnimation(imView, coord);
     }
     private void timerForAnimation(ImageView imv, Point coord) {
-        timeIsDone = true;
-        scheduler.schedule(() -> {
-            timeIsDone = false;
-        }, 1, TimeUnit.SECONDS);
-        while (timeIsDone) {
-            Thread.onSpinWait();
-        }
-        animationFinishAttack(imv, coord);
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(e -> animationFinishAttack(imv, coord));
+        pause.play();
     }
     private void animationFinishAttack(ImageView imv, Point coord) {
-        Node node = getNodeFromGridPane(coord.x - 4, coord.y - 5);
-        node.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+        System.out.println("Finishing attack animation at " + coord);
+        highlightPane.getChildren().clear();
         imv.setVisible(false);
         imv.setManaged(false);
         adventureContainer.getChildren().remove(imv);
-        shipboardGrid.getChildren().remove(node);
+        printShipboard();
     }
     private void enableAllCellsShipboard() {
         for (Node node : shipboardGrid.getChildren()) {
@@ -1172,12 +1214,12 @@ public class AdventureController extends GenericSceneController {
             }
         }
     }
-    private void removeCellFromShipboard(Point coordinates) {
-        Node node = getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5);
-        if (node != null) {
-            shipboardGrid.getChildren().remove(node);
-        } else {
-            guiApplication.printUpdateMessage(error + "No tile found at " + coordinates);
-        }
-    }
+//    private void removeCellFromShipboard(Point coordinates) {
+//        Node node = getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5);
+//        if (node != null) {
+//            shipboardGrid.getChildren().remove(node);
+//        } else {
+//            guiApplication.printUpdateMessage(error + "No tile found at " + coordinates);
+//        }
+//    }
 }
