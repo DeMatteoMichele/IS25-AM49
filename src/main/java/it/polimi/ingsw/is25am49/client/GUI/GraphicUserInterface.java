@@ -37,7 +37,7 @@ import java.util.concurrent.Executors;
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
     private GameSession gameSession;
-    private final String serverIP = "localhost";
+    private static String serverIP = "localhost"; // Default server IP
     private final int serverPortRMI = 1099;
     private String username;
     private Map<ScenesName, Scene> scenesList;
@@ -148,6 +148,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     public static void main(String args[]) {
+        if (args.length > 0) {serverIP = args[0];}
         launch(args);
     }
 

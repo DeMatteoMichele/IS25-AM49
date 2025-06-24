@@ -61,7 +61,6 @@ public class Game {
         try {
             player = getPlayer(playerId);
             player.setConnectionFlag(false);
-            board.getLeaderBoard().disconnectPlayer(player);
 
             player.getShipBoard().disconnectedWhileChoosingAliens();
             try {

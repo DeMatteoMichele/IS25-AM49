@@ -18,5 +18,7 @@ module it.polimi.ingsw.is25am49 {
     opens it.polimi.ingsw.is25am49.shared to javafx.fxml;
     exports it.polimi.ingsw.is25am49.client.GUI to javafx.graphics;
     opens it.polimi.ingsw.is25am49.client.GUI to javafx.fxml;
+    exports it.polimi.ingsw.is25am49;
+    opens it.polimi.ingsw.is25am49 to javafx.fxml;
 
 }

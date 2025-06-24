@@ -39,7 +39,7 @@ import org.jline.utils.AttributedStyle;
 
 public class TextualUserInterface implements UserInterface {
     //Server settings:
-    private final String serverIP = "localhost";
+    private String serverIP = "localhost"; //default IP
     private final int serverPortSocket = 8081;
     private final int serverPortRMI = 1099;
 
@@ -96,8 +96,9 @@ public class TextualUserInterface implements UserInterface {
     /**
      * IL MAIN DI GALAXY TRUCKER TUI
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]){
         TextualUserInterface ui = new TextualUserInterface();
+        if(args.length != 0)ui.serverIP=args[0];
         ui.controller = new ClientController(ui.gameSession, ui);
         Terminal terminal = ui.terminal;
 
