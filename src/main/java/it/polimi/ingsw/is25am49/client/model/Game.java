@@ -128,7 +128,11 @@ public class Game {
     public boolean gameIsFinished() {
         return isFinished;
     }
-    public void finishGame() {isFinished = true;}
+
+    public void finishGame() {
+        isFinished = true;
+        session.finishGame();
+    }
 
     public Optional<Player> userShowWinner() {
         isFinished = true;
@@ -221,9 +225,6 @@ public class Game {
         board.getCurrentCard().acceptPrizes(isAccepted);
     }
 
-    public void userQuitGame(Player player) {
-        board.userQuitGame(player);
-    }
 
     public boolean userSelectTypeOfToken(Player player, Token token, Point coordinates) {
         if (player.getShipBoard().getTile(coordinates).getComponentType().equals(ComponentType.CABINE)) {

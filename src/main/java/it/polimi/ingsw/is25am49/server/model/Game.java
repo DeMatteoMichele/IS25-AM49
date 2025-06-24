@@ -124,7 +124,11 @@ public class Game {
     public boolean gameIsFinished() {
         return isFinished;
     }
-    public void finishGame() {isFinished = true;}
+
+    public void finishGame() {
+        isFinished = true;
+        session.finishGame();
+    }
 
     public Optional<Player> userShowWinner() {
         isFinished = true;
@@ -193,9 +197,6 @@ public class Game {
         board.getCurrentCard().finishDecision(coordinates);
     }
 
-    public void userQuitGame(Player player) throws GameSettingsException {
-        board.userQuitGame(player);
-    }
 
     public void userStopFlight(Player player) {
         board.userStopFlight(player);

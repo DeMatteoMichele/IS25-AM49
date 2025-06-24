@@ -6,10 +6,10 @@ import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalUsernameException;
 import it.polimi.ingsw.is25am49.client.model.states.BuildState;
+import it.polimi.ingsw.is25am49.client.model.states.FinishScoreState;
 import it.polimi.ingsw.is25am49.client.model.states.InitState;
 import it.polimi.ingsw.is25am49.client.model.states.State;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
-import it.polimi.ingsw.is25am49.client.model.Timer;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -192,11 +192,9 @@ public class GameSession {
     public void userActivateDaysUpdate() {
     }
 
-    public void userQuitGame(Player player) {
-        game.ifPresent(game->game.userQuitGame(player));
-    }
+
     public void checkCalculateScore(int playerId) {
-        checkIsAdmin(playerId);
+        //checkIsAdmin(playerId);
         game.ifPresent(g -> g.checkCalculateScore(game.get().getPlayer(playerId)));
     }
     public void calculateScore(int playerId) {
@@ -208,15 +206,9 @@ public class GameSession {
         game.ifPresent(Game::configurateFlight);
         currentState.transition(new BuildState(this, ui));
     }
-    public void checkAdminEndGame(int playerId) throws GameSettingsException {
+
+    public void userEndGame(int playerId) throws GameSettingsException {
         if (game.map(Game::gameIsFinished).orElse(false)) {
-            checkIsAdmin(playerId);
-        } else
-            throw new GameSettingsException("The game is not finished yet");
-    }
-    public void adminEndGame(int playerId) throws GameSettingsException {
-        if (game.map(Game::gameIsFinished).orElse(false)) {
-            checkIsAdmin(playerId);
             game = Optional.empty();
             setState(new InitState(this, ui));
         } else
@@ -312,5 +304,9 @@ public class GameSession {
 
     public void disconnectPlayer(int playerId) {
         game.ifPresent(g -> g.disconnectPlayer(playerId));
+    }
+
+    public void finishGame() {
+        currentState.transition(new FinishScoreState(this,ui));
     }
 }

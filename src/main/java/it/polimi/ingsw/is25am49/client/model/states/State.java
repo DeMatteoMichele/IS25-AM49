@@ -90,11 +90,6 @@ public abstract class State {
     public abstract void userLandOnStationOrShip(int playerId, boolean isLanded);
     public abstract void userAcceptPrizes(int playerId, boolean isAccepted);
 
-    public void userQuitGame(int playerId) {
-        Player player = getPlayerById(playerId);
-        gameSession.userQuitGame(player);
-    }
-
     public abstract void userStopFlight(int playerId);
     public abstract void adminCalculateScore(int playerId);
     public abstract void adminEndGame(int playerId);

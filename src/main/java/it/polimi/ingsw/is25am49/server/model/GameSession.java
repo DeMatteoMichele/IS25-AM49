@@ -1,5 +1,6 @@
 package it.polimi.ingsw.is25am49.server.model;
 
+import it.polimi.ingsw.is25am49.server.model.states.FinishScoreState;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.server.ServerController;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
@@ -188,9 +189,6 @@ public class GameSession {
         game.ifPresent(game -> game.userAcceptPrizes(isAccepted));
     }
 
-    public void userQuitGame(Player player) {
-        game.ifPresent(game -> game.userQuitGame(player));
-    }
 
     public void calculateScore(int playerId) throws GameSettingsException {
         //checkIsAdmin(playerId);
@@ -204,7 +202,7 @@ public class GameSession {
 
     public void userEndGame(int playerId) throws GameSettingsException {
         if (game.map(Game::gameIsFinished).orElse(false)) {
-            checkIsAdmin(playerId);
+            //checkIsAdmin(playerId);
             game = Optional.empty();
             setState(new InitState(this));
         } else
@@ -247,4 +245,7 @@ public class GameSession {
         game.ifPresent(g -> g.disconnectPlayer(playerId));
     }
 
+    public void finishGame() {
+        setState(new FinishScoreState(this));
+    }
 }

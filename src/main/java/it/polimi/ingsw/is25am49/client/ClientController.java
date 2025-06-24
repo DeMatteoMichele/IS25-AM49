@@ -574,7 +574,7 @@ public class ClientController {
     }
 
     public void adminCalculateScore(int playerId) {
-        gameSession.getState().checkAdminCalculateScore(playerId);
+//        gameSession.getState().checkAdminCalculateScore(playerId); everyone can calculate the score
         Command command = new Command("adminCalculateScore", myId);
         command.addParameter(playerId);
         try {
@@ -585,7 +585,7 @@ public class ClientController {
     }
 
     public void adminEndGame(int playerId) {
-        gameSession.getState().checkAdminEndGame(playerId);
+//        gameSession.getState().checkAdminEndGame(playerId); everyone can end the game
         Command command = new Command("adminEndGame", myId);
         command.addParameter(playerId);
         try {

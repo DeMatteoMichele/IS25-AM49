@@ -345,9 +345,11 @@ public class ClientHandler {
         Pattern pattern = Pattern.compile(ipPattern);
         String serverIP;
         do {
-            System.out.print("Inserisci l'IP del server: ");
-            serverIP = scanner.nextLine();
-            serverIP = serverIP.trim();
+            System.out.print("Inserisci l'IP del server (lettera qualsiasi per localhost): ");
+            serverIP = scanner.nextLine().trim();
+            if (serverIP.matches("[a-zA-Z]")) {
+                serverIP = "localhost";
+            }
             if (!pattern.matcher(serverIP).matches()) {
                 System.out.println("IP non valido. Riprova.");
             }

@@ -466,25 +466,25 @@ public class ServerController {
         }
     }
 
-    public void userQuitGame(int playerId) {
-        try {
-            try {
-                gameSession.getState().userQuitGame(playerId);
-                Command command = new Command("userQuitGameCallback", playerId);
-                command.addParameter(playerId);
-                serverSerializer.command_FromServerToClient(command);
-                serverRMI.command_FromServerToClient(command);
-            } catch (Exception e) {
-                Command command = new Command("errorCallback", playerId);
-                command.addParameter(playerId);
-                command.addParameter("Quit game hasn't worked in Server ->   " + e.getMessage());
-                serverSerializer.command_FromServerToClient(command);
-                serverRMI.command_FromServerToClient(command);
-            }
-        } catch (RemoteException e) {
-            System.out.println("Error due to RemoteException in Server  in quitGame ->   " + e.getMessage());
-        }
-    }
+//    public void userQuitGame(int playerId) {
+//        try {
+//            try {
+//                gameSession.getState().userQuitGame(playerId);
+//                Command command = new Command("userQuitGameCallback", playerId);
+//                command.addParameter(playerId);
+//                serverSerializer.command_FromServerToClient(command);
+//                serverRMI.command_FromServerToClient(command);
+//            } catch (Exception e) {
+//                Command command = new Command("errorCallback", playerId);
+//                command.addParameter(playerId);
+//                command.addParameter("Quit game hasn't worked in Server ->   " + e.getMessage());
+//                serverSerializer.command_FromServerToClient(command);
+//                serverRMI.command_FromServerToClient(command);
+//            }
+//        } catch (RemoteException e) {
+//            System.out.println("Error due to RemoteException in Server  in quitGame ->   " + e.getMessage());
+//        }
+//    }
 
     public void adminCalculateScore(int playerId) {
         try {

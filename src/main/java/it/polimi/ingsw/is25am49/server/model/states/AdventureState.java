@@ -95,7 +95,6 @@ public class AdventureState extends State {
             gameSession.userDrawAdventureCard(player);
         }catch (OutOfDeckExceptions _){
             gameSession.getGame().ifPresent(Game::finishGame);
-            transition(new FinishScoreState(gameSession));
         }
 
     }
@@ -155,12 +154,12 @@ public class AdventureState extends State {
 
     public void userStopFlight(int playerId) {
         Player player = getPlayerById(playerId);
-        try {
+//        try {
             gameSession.userStopFlight(player);
-        }catch (NotEnoughPlayerException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
-            gameSession.getGame().ifPresent(Game::finishGame);
-            transition(new FinishScoreState(gameSession));
-        }
+//        }catch (NotEnoughPlayerException _){//lanciata in remove player della leaderboard (se ho un giocatore solo finish)
+//            gameSession.getGame().ifPresent(Game::finishGame);
+//            transition(new FinishScoreState(gameSession));
+//        }
     }
 
     public void adminCalculateScore(int playerId) {

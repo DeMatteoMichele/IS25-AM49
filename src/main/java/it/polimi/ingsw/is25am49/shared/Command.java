@@ -249,14 +249,14 @@ public class Command implements Serializable {
                     e.printStackTrace();
                 }
             }
-            case "userQuitGame" -> {
-                try {
-                    serverController.userQuitGame((int) parameters.get(0));
-                } catch (Exception e) {
-                    System.err.println("Errore in userQuitGame: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+//            case "userQuitGame" -> {
+//                try {
+//                    serverController.userQuitGame((int) parameters.get(0));
+//                } catch (Exception e) {
+//                    System.err.println("Errore in userQuitGame: " + e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            }
             case "adminCalculateScore" -> {
                 try {
                     serverController.adminCalculateScore((int) parameters.get(0));

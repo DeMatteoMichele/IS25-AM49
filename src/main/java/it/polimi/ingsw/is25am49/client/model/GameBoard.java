@@ -8,6 +8,7 @@ import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectCannonata;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.EffectMeteoriti;
 import it.polimi.ingsw.is25am49.client.model.Game;
+import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.shared.enums.Orientation;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
@@ -74,7 +75,6 @@ public class GameBoard {
 
     /**
      * This method is used to check if the player is the current player
-     *
      * @param player the player to check
      * @throws IllegalMethodOnThisStateException if the player is not the current player
      */
@@ -86,7 +86,6 @@ public class GameBoard {
 
     /**
      * This method is used to configurate the flight of the game
-     *
      * @param gameMode the game mode
      * @param players  the players of the game
      */
@@ -105,7 +104,6 @@ public class GameBoard {
 
     /**
      * This method is used to initialize the game
-     *
      * @param gameMode the game mode
      */
     public void initialize(GameMode gameMode) {
@@ -115,7 +113,6 @@ public class GameBoard {
 
     /**
      * This method is used to get the main adventure deck
-     *
      * @return the main adventure deck
      */
     public AdventureCardDeck getMainAdventureDeck() {
@@ -339,10 +336,6 @@ public class GameBoard {
     }
 
 
-//    public void setCurrentCard(AdventureCard card) {
-//        currentCard = card;
-//    }
-
     /**
      * This method is used to get the current card
      *
@@ -370,8 +363,12 @@ public class GameBoard {
             throw new GameSettingsException("This player is already landed");
         else {
             landedPlayers.add(player);
-            leaderBoard.remove(player);
-            ui.updateStopFlight(player.getIdPlayer());
+            try {
+                leaderBoard.remove(player);
+                ui.updateStopFlight(player.getIdPlayer());
+            } catch (NotEnoughPlayerException e) {
+                game.finishGame();
+            }
         }
     }
 
@@ -445,12 +442,8 @@ public class GameBoard {
 
     }
 
-    public void userQuitGame(Player player) throws GameSettingsException {
-
-    }
-
     public void userStopFlight(Player player) {
-        if (currentCard.getIsFinished()) {
+        if (isFirstCard ||currentCard.getIsFinished()) {
             playerNoMoreInFlight(player);
         } else {
             stopFlightPlayers.add(player);
@@ -585,7 +578,7 @@ public class GameBoard {
         else {
             try {
                 return leaderBoard.getPlayerConnectedStartingFromThisPosition(currentPos + 1);
-            } catch (Exception e) {
+            } catch (IllegalSetOfNextPlayerException e) {
                 throw new IllegalSetOfNextPlayerException(e.getMessage());
             }
         }
@@ -681,7 +674,7 @@ public class GameBoard {
                     }
                 });
         //per ogni player della lista lappedPlayers, lo rimuovo dalla leaderboard e lo aggiungo a landedPlayers
-        lappedPlayers.forEach(this::playerNoMoreInFlight);
+        lappedPlayers.forEach(this::userStopFlight);
     }
 
     /**
@@ -760,10 +753,10 @@ public class GameBoard {
                 .forEach(player -> {
                     if (player.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT) == 0) {
                         playersWithZeroAstronauts.add(player);
-                        ui.updateGenericCardMessage(player.getIdPlayer(), player.getUsername() + " has no more astronauts in his ship, he has to land now!");
+                        ui.updateGenericCardMessage(player.getIdPlayer(), player.getUsername() + " has no more astronauts in his ship, he will now land!");
                     }
                 });
-        playersWithZeroAstronauts.forEach(this::playerNoMoreInFlight);
+        playersWithZeroAstronauts.forEach(this::userStopFlight);
     }
 
     public void setSeedForGeneration(int seed) {
