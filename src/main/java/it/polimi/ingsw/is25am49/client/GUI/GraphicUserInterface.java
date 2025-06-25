@@ -656,7 +656,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.removeTokenFromTile(coordinate, token);
+                adventureController.printShipboard();
             }
         });
     }
