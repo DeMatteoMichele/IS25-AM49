@@ -16,17 +16,46 @@ import java.util.List;
 
 public class PlanetCard extends AdventureCard {
 
+    /**
+     * A list of planets associated with the card.
+     * Each planet contains specific properties such as
+     * effects, occupation status, and unique identifiers.
+     * This list is immutable and cannot be reassigned.
+     */
     protected final List<Planet> planets = new ArrayList<Planet>();
+    /**
+     * The planet associated with the current PlanetCard.
+     * Represents a celestial body with specific effects,
+     * occupation state, and a unique identifier in the game.
+     */
     protected Planet planet;
 
+    /**
+     * Represents the number of days lost, typically due to an in-game event or effect.
+     */
     private final int daysLost;
 
+    /**
+     * Constructs a PlanetCard with the specified parameters.
+     *
+     * @param gameBoard the game board associated with the card
+     * @param description a brief description of the card
+     * @param level the difficulty level of the card
+     * @param name the name of the card
+     * @param daysLost the number of days lost when the card is triggered
+     * @param planets a list of planets associated with the card
+     */
     public PlanetCard(GameBoard gameBoard, String description, int level, String name, int daysLost, List<Planet> planets) {
         super(gameBoard, description, level, name);
         this.daysLost = daysLost;
         this.planets.addAll(planets);
     }
 
+    /**
+     * Overrides the drawCard method to display a unique message and initiate a planetary event.
+     * Calls the superclass's drawCard implementation to update game state and current player.
+     * Triggers additional steps by invoking checkRequirements to determine further actions.
+     */
     @Override
     public void drawCard() {
         super.drawCard();
@@ -35,6 +64,12 @@ public class PlanetCard extends AdventureCard {
     }
 
 
+    /**
+     * Checks the requirements for proceeding in the adventure.
+     * Updates the current state to prompt a decision about landing on a planet.
+     * Invokes a connection check or applies a default effect
+     * based on the DECISION_LAND_PLANET state.
+     */
     @Override
     public void checkRequirements() {
         System.out.println("Do you wanna land on the planet for some goods?");
@@ -42,6 +77,14 @@ public class PlanetCard extends AdventureCard {
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_LAND_PLANET);
     }
 
+    /**
+     * Handles the action of landing on a planet, updating the game state
+     * depending on whether the player lands or decides not to land.
+     *
+     * @param isLanded Indicates whether the player has chosen to land on the planet.
+     * @param planetId The unique identifier of the planet being landed on.
+     * @throws IllegalPlanetToLand If the planet does not exist or is already occupied.
+     */
     @Override
     public void landingOnPlanet(boolean isLanded, int planetId) {
         super.landingOnPlanet(isLanded, planetId);
@@ -67,6 +110,13 @@ public class PlanetCard extends AdventureCard {
         }
     }
 
+    /**
+     * Retrieves a planet from the list of planets by its unique identifier.
+     *
+     * @param planetId the unique identifier of the planet to be retrieved
+     * @return the Planet object matching the given identifier
+     * @throws IllegalPlanetToLand if no planet with the specified identifier exists
+     */
     public Planet getPlanetById(int planetId) {
         for (Planet planet : planets) {
             if (planet.getPlanetId() == planetId) {
@@ -76,6 +126,13 @@ public class PlanetCard extends AdventureCard {
         throw new IllegalPlanetToLand("You cannot land on this planet the id is not valid");
     }
 
+    /**
+     * Checks and transitions to the next player in the game.
+     * If there are remaining players, continues the turn and validates requirements.
+     * If the last player has acted, transitions to the update phase.
+     *
+     * Handles potential exceptions when setting the next player.
+     */
     private void checkNextPlayer() {
         try {
             gameBoard.nextPlayer();
@@ -88,6 +145,14 @@ public class PlanetCard extends AdventureCard {
         }
     }
 
+    /**
+     * Handles the decision-making process for goods placement during the game.
+     * This method validates the provided coordinates and updates the game state accordingly.
+     *
+     * @param coordinates a list of pairs, where each pair consists of a Point indicating
+     *                    the position and a Token representing the associated item or entity.
+     * @throws IllegalMethodOnThisStateException if the method is called while in an invalid state.
+     */
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
@@ -103,6 +168,10 @@ public class PlanetCard extends AdventureCard {
     }
 
 
+    /**
+     * Applies the effect specific to the PlanetCard for the current player.
+
+     */
     @Override
     public void applyEffect() {
         super.applyEffect();
@@ -119,6 +188,13 @@ public class PlanetCard extends AdventureCard {
     }
 
 
+    /**
+     * Constructs and returns a formatted string representation of the PlanetCard.
+     * Includes details such as name, description, level, days lost, and
+     * information about associated planets and their effects.
+     *
+     * @return a string representation of the PlanetCard with formatted details.
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

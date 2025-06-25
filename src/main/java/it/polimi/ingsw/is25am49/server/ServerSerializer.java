@@ -9,6 +9,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The ServerSerializer class handles serialization and deserialization of commands
+ * between the server and clients. It manages queues for processing commands and
+ * facilitates communication with the ClientHandler and NetworkController.
+ */
 public class ServerSerializer implements RemoteClient {
     private final ServerController serverController;
     private NetworkController networkController;
@@ -19,6 +24,12 @@ public class ServerSerializer implements RemoteClient {
     private boolean gameStarted;
 
 
+    /**
+     * Constructs a ServerSerializer instance and initializes its components.
+     * Starts a thread for processing commands from the socket queue.
+     *
+     * @param serverController
+     */
     public ServerSerializer(ServerController serverController) {
         this.serverController = serverController;
         this.tempId = -1;
@@ -43,15 +54,31 @@ public class ServerSerializer implements RemoteClient {
             }
         }
     }
-
+    /**
+     * Sets the NetworkController instance for managing network-related operations.
+     *
+     * @param networkController The NetworkController instance.
+     */
     public void setNetworkController(NetworkController networkController) {
         this.networkController = networkController;
     }
 
+    /**
+     * Sets the ClientHandler instance for managing client-related operations.
+     *
+     * @param clientHandler The ClientHandler instance.
+     */
     public void setClientHandler(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
     }
 
+    /**
+     * Deserializes a command received from a client and updates its parameters.
+     * Handles handshake commands.
+     *
+     * @param command The command to deserialize.
+     * @return The updated command.
+     */
     public Command deSerializeCommandFromClient(Command command) {
         command.setServerController(serverController);
         if (command.getTypeOfMessage().equals("MSG")) {
@@ -77,6 +104,15 @@ public class ServerSerializer implements RemoteClient {
         return command;
     }
 
+    /**
+     * Serializes a command from the server and sends it to clients.
+     * Handles broadcasting and unicast scenarios based on the parameters.
+     *
+     * @param command The command to serialize.
+     * @param toSpecificClient Whether the command is for a specific client.
+     * @param clientId The ID of the target client (if applicable).
+     * @return The serialized command.
+     */
     public Command serializeObjectFromServer(Command command, boolean toSpecificClient, int clientId) {
         if (!toSpecificClient) {    //broadcast
             if (!gameStarted) {
@@ -97,7 +133,11 @@ public class ServerSerializer implements RemoteClient {
         }
         return command;
     }
-
+    /**
+     * Adds a command received from a client socket to the processing queue.
+     *
+     * @param command The command to add to the queue.
+     */
     public void putFileFromClientSocketInQueue(Command command) {
         try {
             filesFromSocketQueue.put(command);
@@ -106,6 +146,13 @@ public class ServerSerializer implements RemoteClient {
         }
     }
 
+    /**
+     * Deserializes a handshake command and sends a response to the client.
+     * Updates the client ID and adds the command to the outgoing queue.
+     *
+     * @param command The handshake command to deserialize.
+     * @return The client ID extracted from the command.
+     */
     public int deserializeHandshake(Command command) {
         // ritorna id del client e mette il pacchetto nella coda outgoing unicast
             Command commandTemp = deSerializeCommandFromClient(command);

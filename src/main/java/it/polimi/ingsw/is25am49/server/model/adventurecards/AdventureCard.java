@@ -17,6 +17,12 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * The AdventureCard class represents an abstract base class for specialized adventure cards
+ * in the game. It provides a framework for the card's description, level, name, and state.
+ * Various methods are defined to handle specific actions and behaviors related to the card's
+ * effects, states, and interactions with the game board and players.
+ */
 public abstract class AdventureCard {
 
     protected String description;
@@ -30,6 +36,14 @@ public abstract class AdventureCard {
     protected Random random;
 
 
+    /**
+     * Constructs an AdventureCard object with the specified parameters.
+     *
+     * @param gameBoard    the game board associated with the adventure card
+     * @param description  the text description of the adventure card
+     * @param level        the difficulty level of the adventure card
+     * @param name         the name of the adventure card
+     */
     public AdventureCard(GameBoard gameBoard, String description, int level, String name) {
         this.gameBoard = gameBoard;
         this.description = description;
@@ -40,39 +54,90 @@ public abstract class AdventureCard {
     }
 
 
+    /**
+     * Returns the description of the AdventureCard.
+     *
+     * @return the description of the card as a String
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Verifies if the current adventure card meets specific preconditions for its use or progression.
+     * Checks the state, effects, or other requirements necessary for the card's operation.
+     */
     public void checkRequirements() {
     }
 
+    /**
+     * Returns a string representation of the AdventureCard object, typically including
+     * details such as its name, description, level, current state, or other relevant properties.
+     *
+     * @return a string describing the current state and attributes of the AdventureCard object
+     */
     public abstract String toString();
 
+    /**
+     * Changes the current state of the adventure to the "DRAW" state, simulating the action of drawing a card.
+     * Updates the current player to the first connected player on the game board and prints a message indicating
+     * the name of the card that has been drawn.
+     */
     public void drawCard() {
         currentState = AdventureStatesTypes.DRAW;
         System.out.println("Hai pescato la carta: " + getClass().getSimpleName());
         gameBoard.setCurrentPlayer(gameBoard.getFirstPlayerConnected());
     }
 
+    /**
+     * Handles the landing process either on a station or a ship, depending on the current state.
+     * Throws an exception if the method is invoked in an incorrect state.
+     *
+     * @param isLanded a boolean value indicating if the landing action is completed (true if landed, otherwise false)
+     * @throws IllegalMethodOnThisStateException if the current state is not DECISION_LAND_STATION_OR_SHIP
+     */
     public void landingOnStationOrShip(boolean isLanded) throws IllegalMethodOnThisStateException {
         if (currentState != AdventureStatesTypes.DECISION_LAND_STATION_OR_SHIP)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
+    /**
+     * Handles the action of landing on a planet. This method ensures that the current state
+     * of the game allows for landing on a planet and throws an exception if the operation
+     * is not valid in the current state.
+     *
+     * @param isLanded Indicates whether the landing action is successful or not.
+     * @param planetId The unique identifier of the planet being landed on.
+     * @throws IllegalMethodOnThisStateException If the method is invoked in an invalid state.
+     */
     public void landingOnPlanet(boolean isLanded, int planetId) throws IllegalMethodOnThisStateException {
         if (currentState != AdventureStatesTypes.DECISION_LAND_PLANET)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
+    /**
+     * Retrieves the current effect associated with this adventure card.
+     *
+     * @return the current CardEffect associated with the adventure card
+     */
     public CardEffect getCurrentEffect() {
         return currentEffect;
     }
 
+    /**
+     * Retrieves the current state of the adventure card.
+     *
+     * @return the current state of the adventure card as an {@code AdventureStatesTypes} enum value.
+     */
     public AdventureStatesTypes getCurrentState() {
         return currentState;
     }
 
+    /**
+     * Rolls two six-sided dices, calculates their sum, and applies the result to the current effect.
+     * Throws:
+     * - IllegalMethodOnThisStateException if the method is invoked in a state other than ROLL_DICES.
+     */
     public void rollDices() throws IllegalMethodOnThisStateException {
         if (currentState != AdventureStatesTypes.ROLL_DICES)
             throw new IllegalMethodOnThisStateException("Wrong state");
@@ -83,47 +148,118 @@ public abstract class AdventureCard {
         currentEffect.setPosition(dicesResult);
     }
 
+    /**
+     * Applies the effect associated with the current AdventureCard.
+     *
+     * This method checks the current state of the AdventureCard to ensure it is in
+     * the EFFECT state. If the current state is not EFFECT, an IllegalMethodOnThisStateException
+     * is thrown to indicate that the method is being called in an invalid state.
+     *
+     * @throws IllegalMethodOnThisStateException if the current state is not EFFECT
+     */
     public void applyEffect() {
         if (currentState != AdventureStatesTypes.EFFECT)
             throw new IllegalMethodOnThisStateException("Wrong state");
     }
 
+    /**
+     * Retrieves the level of the AdventureCard.
+     *
+     * @return the current level of the AdventureCard.
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Completes the decision-making process by validating and applying the provided
+     * coordinates and their associated tokens.
+     *
+     * @param coordinates a list of pairs where each pair consists of a coordinate
+     *                     represented by a Point and its associated Token.
+     */
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
     }
 
+    /**
+     * Finalizes the decision-making process based on the provided set of coordinates.
+     *
+     * @param coordinates a set of coordinates representing the points involved in the decision process
+     */
     public void finishDecision(Set<Point> coordinates) {
     }
 
+    /**
+     * Processes the acceptance of prizes for the player based on their decision to receive rewards.
+     *
+     * @param wantsRewards indicates if the player desires to accept the prizes or rewards.
+     *                     If true, rewards will be granted; otherwise, they will be declined.
+     */
     public void acceptPrizes(boolean wantsRewards) {
     }
 
+    /**
+     * Retrieves a list of players who have been defeated in the adventure.
+     *
+     * @return a list of defeated players, or an empty list if no players have been defeated.
+     */
     public List<Player> getDefeatedPlayers() {
         return null;
     }
 
+    /**
+     * Checks if the adventure card has been marked as finished.
+     *
+     * @return {@code true} if the adventure card is finished, {@code false} otherwise.
+     */
     public boolean getIsFinished() {
         return isFinished;
     }
 
+    /**
+     * Sets the completion status of the adventure card.
+     * This method updates the `isFinished` field to indicate whether the card's associated actions or events
+     * have been finalized.
+     *
+     * @param finished a boolean value indicating whether the adventure card is finished (true) or not (false)
+     */
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
 
+    /**
+     * Updates the state of the adventure card to reflect the completion of an update phase.
+     *
+     * This method sets the current state of the card to {@code AdventureStatesTypes.UPDATE},
+     * performs necessary leaderboard updates via the associated {@code GameBoard} object,
+     * and marks the card as finished by setting the {@code isFinished} field to {@code true}.
+     */
     protected void update() {
         currentState = AdventureStatesTypes.UPDATE;
         gameBoard.finishUpdateLeaderboard();
         isFinished = true;
     }
 
+    /**
+     * Deactivates the specified components on the provided ship board and clears the list of activable coordinates.
+     *
+     * @param shipBoard the ship board on which components will be deactivated
+     * @param coordinatesOfActivable the list of coordinates representing activable components to be deactivated
+     */
     protected void deactivateComponents(ShipBoard shipBoard,List<Point> coordinatesOfActivable) {
         coordinatesOfActivable.forEach(shipBoard::turnOff);
         coordinatesOfActivable.clear();
     }
 
+    /**
+     * Activates specified components on the ship board using the provided batteries.
+     * Ensures the number of components to be activated does not exceed the number of available batteries.
+     *
+     * @param shipBoard the ship's main board where components are located
+     * @param coordinatesOfActivable a list of coordinates representing the components to be activated
+     * @param coordinatesOfBatteries a list of pairs containing battery coordinates and their corresponding tokens
+     * @throws IllegalNumOfActivableException if the number of components exceeds the number of batteries
+     */
     protected void activateComponentsWithBatteries(ShipBoard shipBoard, List<Point> coordinatesOfActivable, List<Pair<Point, Token>> coordinatesOfBatteries) {
         if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
@@ -135,13 +271,13 @@ public abstract class AdventureCard {
     }
 
     /**
-     * This method ensures that the user selected the correct points, the correct type of token and number of tokens
-     * in accordance with the internal state of the adventurecard and the characteristics of the currenteffect.
-     * Otherwise, an IllegalTokensException is thrown that must be catched in servercontroller.
+     * Validates the correctness of tokens and their associated positions based on the current adventure state and ship board configuration.
      *
-     * @param state
-     * @param coordinates
-     * @param shipBoard
+     * @param state        The current state of the adventure, which determines the validation rules.
+     * @param coordinates  A list of pairs, each containing a position (Point) and a token (Token), for verification.
+     * @param shipBoard    The ship board containing tiles and components to validate tokens and positions against.
+     * @throws IllegalTokensException If the tokens or positions do not adhere to the rules of the current state.
+     * @throws IllegalSizeToRemove   If the number of selected coordinates exceeds or does not match the required amount to be removed in the current state.
      */
     protected void checkCorrectnessOfTokensAndPoints(AdventureStatesTypes state, List<Pair<Point, Token>> coordinates, ShipBoard shipBoard) {
         switch (state) {
@@ -202,13 +338,14 @@ public abstract class AdventureCard {
 
 
     /**
-     * This method ensures that the user selected the correct type and number of activable component in accordance with the internal state
-     * of the card and with the structure of the shipboard.
-     * Otherwise, an IllegalTokensException is thrown that must be catched in servercontroller.
+     * Validates the correctness of selected activable components based on the current state
+     * and prevents invalid actions by throwing appropriate exceptions.
      *
-     * @param state
-     * @param coordinates
-     * @param shipBoard
+     * @param state the current state of the game, dictating which components can be activated
+     * @param coordinates the set of positions on the shipboard representing components to be activated
+     * @param shipBoard the ship board instance containing the layout and activable components
+     * @throws IllegalTokensException if the number of components selected exceeds the activable limit
+     *                                or if the selected components do not match the expected type for the state
      */
     protected void checkCorrectnessOfActivable(AdventureStatesTypes state, Set<Point> coordinates, ShipBoard shipBoard) {
         switch (state) {
@@ -245,17 +382,42 @@ public abstract class AdventureCard {
         }
     }
 
+    /**
+     * Verifies if the number of batteries provided does not exceed the total number
+     * of available battery cells in the shipboard. Throws an exception if the count is
+     * exceeded.
+     *
+     * @param batteries the list of pairs containing points and tokens representing batteries
+     * @param shipBoard the shipboard object used to retrieve the total number of available battery cells
+     * @throws IllegalArgumentException if the number of batteries provided exceeds the available battery cells
+     */
     protected void checkNumberOfBatteries(List<Pair<Point, Token>> batteries, ShipBoard shipBoard) {
         if (batteries.size() > shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
             throw new IllegalArgumentException("you have chosen more batteries than you have");
         }
     }
 
+    /**
+     * Checks whether the current player is connected. If not, applies a default effect
+     * based on the provided current state.
+     *
+     * @param currState the current state of the adventure, representing the context in which
+     *                  the connection check is performed and determining the default effect
+     *                  to be applied if the player is not connected
+     */
     protected void checkConnectionOrDefaultEffect(AdventureStatesTypes currState) {
         if (!gameBoard.getCurrentPlayer().isConnected())
             applyDefaultEffect(currState);
     }
 
+    /**
+     * Applies the default effect based on the given adventure state. This method handles different game
+     * states and applies predefined behaviors for each state, such as rolling dices, decision-making
+     * involving crew, goods, batteries, cannons, shields, motors, and landing on stations or planets.
+     *
+     * @param currState The current state of the adventure. Determines the specific default effect
+     *                  to apply. The state must correspond to a valid enum value from AdventureStatesTypes.
+     */
     protected void applyDefaultEffect(AdventureStatesTypes currState) {
         switch (currState) {
             case ROLL_DICES -> {
@@ -320,11 +482,11 @@ public abstract class AdventureCard {
     }
 
     /**
-     * This method counts how many times a chosen targetPair appears in List<Pair<Point, Token>>
+     * Counts the number of occurrences of a specific pair within a list of pairs.
      *
-     * @param targetPair
-     * @param coordinates
-     * @return
+     * @param targetPair the pair to be compared against elements in the list
+     * @param coordinates the list of pairs to search through
+     * @return the number of times the targetPair appears in the list
      */
     private int countSamePair(Pair<Point, Token> targetPair, List<Pair<Point, Token>> coordinates) {
         int count = 0;
@@ -336,16 +498,23 @@ public abstract class AdventureCard {
         return count;
     }
 
+    /**
+     * Retrieves the name associated with this object.
+     *
+     * @return the name as a String
+     */
     public String getName() {
         return name;
     }
 
     /**
-     * If description is longer than the width, it will be split into multiple lines
+     * Appends the provided text to the given StringBuilder, formatting it with line wrapping to fit within a specified width.
+     * If the text contains a prefix (e.g., before a colon), it preserves the prefix for the initial line
+     * and wraps the remaining content to subsequent lines with a continuation prefix.
      *
-     * @param sb    the StringBuilder to append the text to
-     * @param text  the text to append
-     * @param width the width of the box
+     * @param sb the StringBuilder to append the formatted text to
+     * @param text the text to be appended, formatted with wrapping
+     * @param width the maximum line width, including any prefixes and margin
      */
     public void appendTextWithWrapping(StringBuilder sb, String text, int width) {
         if (text.length() <= width - 1) {
@@ -375,6 +544,13 @@ public abstract class AdventureCard {
         }
     }
 
+    /**
+     * Handles the case where a player disconnects during specific game states. If the current game state matches
+     * one where player input is required and the disconnected player is the current player, a default effect is applied.
+     * Otherwise, no action is taken.
+     *
+     * @param player the player whose disconnection is being handled
+     */
     public void disconnectionHandling(Player player) {
         if (gameBoard.getCurrentPlayer().equals(player) &&
                 (currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||

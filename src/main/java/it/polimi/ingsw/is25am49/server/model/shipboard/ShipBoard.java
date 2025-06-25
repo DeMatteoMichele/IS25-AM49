@@ -17,26 +17,31 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 
+/**
+ * Represents a ShipBoard object that manages the placement, interaction, and logic of tiles
+ * and tokens within a grid-based structure. It supports various operations such as tile
+ * placement, connectivity checks, destruction, activation, and visualization.
+ */
 public class ShipBoard {
     private final HashMap<Point,Optional<Tile>> grid;
     private Point lastPlacedPoint;
     private boolean isCompleted;
     private int destroyedTiles;
-    private boolean isDestroyed;
+    private boolean isFullOfAliens;
 
     public ShipBoard() {
         grid = new HashMap<>();
         lastPlacedPoint = new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
-        isDestroyed = false;
+        isFullOfAliens = false;
     }
     public ShipBoard(int level, int playerID, Color color){
         grid = new HashMap<>();
         lastPlacedPoint =  new Point(7,7);
         isCompleted = false;
         destroyedTiles = 0;
-        isDestroyed = false;
+        isFullOfAliens = false;
 
         HashMap<Integer,Tile> tiles = new HashMap<>(Objects.requireNonNull(Tile.generateTiles()));
         var centerCabinTile = switch (color){
@@ -85,6 +90,8 @@ public class ShipBoard {
                 break ;
         }
     }
+
+    public Map<Point, Optional<Tile>> getGrid() {return grid;}
 
     /**
      * Locks the last tile placed in the shipboard
@@ -470,9 +477,22 @@ public class ShipBoard {
     public Optional<Point> getAlienPoint(){
         ArrayList<Point> aliens = new ArrayList<>(getComponentsPositions(ComponentType.CABINE));
         aliens.remove(new Point(7,7)); //remove the center cabin
-        return aliens.stream()
+        Optional<Point> alien= aliens.stream()
                 .filter(p -> checkIfAlienArePossible(p).size() > 1 && getTile(p).getComponent().getNumberOfTokens() == 0)
                 .findFirst();
+        if(alien.isEmpty())isFullOfAliens= true;
+        return alien;
+    }
+    public void disconnectedWhileChoosingAliens(){
+        getAlienPoint();
+        if(!isFullOfAliens){
+            //completeShipBoard();
+            for(Point p: grid.keySet()){
+                try{
+                    fillTileComponent(p, Token.ASTRONAUT);
+                } catch(Exception _) {}
+            }
+        }
     }
 
     /**
@@ -704,9 +724,21 @@ public class ShipBoard {
         return n;
     }
 
+    /**
+     * Calculates the total number of occurrences of the specified token on the shipboard.
+     *
+     * @param token the token type to count on the shipboard
+     * @return the total count of the specified token present on the shipboard
+     */
     public int getTotalNumberOfaToken (Token token){
         return getPositionsOfaToken(token).size();
     }
+    /**
+     * Retrieves all positions on the grid where the specified token is located.
+     *
+     * @param token the Token whose positions need to be identified
+     * @return an ArrayList of Points where the given token is present
+     */
     public ArrayList<Point> getPositionsOfaToken(Token token){
         return grid.entrySet().stream()
                 .filter(entry -> entry.getValue()
@@ -716,6 +748,12 @@ public class ShipBoard {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Calculates the available space for a specific token type in the ShipBoard.
+     *
+     * @param token the token to check for available space.
+     * @return the total available space for the specified token as an integer.
+     */
     public int getAvailableSpaceForAToken(Token token){
         return grid.values().stream().filter(tile -> {
             try {
@@ -726,6 +764,11 @@ public class ShipBoard {
         }).mapToInt(tile -> tile.get().getComponent().getLevel()- tile.get().getComponent().getNumberOfTokens())
                 .sum();
     }
+    /**
+     * Removes all tokens from the tiles in the shipboard grid.
+     * Invokes the clearComponent method on each tile if present.
+     * Catches and handles IllegalMethodOnThisComponentException if thrown.
+     */
     public void removeAllTokens(){
         for (Optional<Tile> t: grid.values()){
             try{t.ifPresent(Tile::clearComponent);}
@@ -733,6 +776,11 @@ public class ShipBoard {
         }
     }
 
+    /**
+     * Retrieves the set of orientations where the ship is protected by active shields.
+     *
+     * @return a Set of Orientation values representing the protected sides of the ship.
+     */
     //metodo che restituisce un set di orientation che indica dove la nave è protetta
     public Set<Orientation> getProtectedSides(){
         Set<Orientation> sides= new HashSet<>();
@@ -765,7 +813,14 @@ public class ShipBoard {
     }
 
     /**
-     * destroys all the tiles that are wrong positioned following the rules
+     * Performs a series of checks and modifications on the shipboard after its construction.
+     *
+     * - Destroys reserved tiles at specific positions.
+     * - Removes disconnected and empty tiles.
+     * - Removes incorrect or misplaced tiles.
+     * - Validates and removes improperly placed cannon tiles based on their orientation.
+     * - Validates and removes improperly placed engine tiles based on their orientation.
+     * - Cleans up any additional disconnected tiles after removals.
      */
     private void afterBuildCheckShipboard(){
         //distruggo le tessere prenotate
@@ -847,6 +902,11 @@ public class ShipBoard {
         destroyDisconnectedTiles();
     }
 
+    /**
+     * Prints the shipboard grid, displaying Tile IDs in their respective positions,
+     * and marking empty spots with a "•" symbol.
+     * Rows and columns are labeled with their corresponding indices for clarity.
+     */
     public void printShipboard(){
         for (int i = 5; i <= 9; i++) {
             if(i==5) System.out.println("\t4\t5\t6\t7\t8\t9\t10");
@@ -860,6 +920,26 @@ public class ShipBoard {
         }
         System.out.println("\t4\t5\t6\t7\t8\t9\t10\n");
     }
+    /**
+     * Prints a formatted representation of a shipboard system displaying components,
+     * their connectors, and the grid structure.
+     *
+     * The method iterates through predefined rows and columns, generating a visual
+     * output based on the presence and placement of components in the `grid`.
+     *
+     * Components are represented by their type and connectors with their
+     * respective orientation. Empty spaces are filled with placeholder
+     * characters for visualization.
+     *
+     * Dependencies:
+     * - `grid`: A map containing points associated with optional component objects.
+     * - `printConnector(Connector)`: Outputs the representation of a connector.
+     * - `printComponent(String)`: Outputs the representation of a component type.
+     *
+     * Notes:
+     * - Orientation values (NORTH, SOUTH, EAST, WEST) are used to determine connection points.
+     * - Special Unicode characters are used for visualization.
+     */
     public void printShipboardSpecial(){
         int row;
         for (int i = 5; i <= 9; i++) {
@@ -906,6 +986,12 @@ public class ShipBoard {
         }
         System.out.println("\t\t4\t\t\t5\t\t\t6\t\t\t7\t\t\t8\t\t\t9\t\t\t10\t\t\t\n");
     }
+    /**
+     * Prints a visual representation of the provided connector type.
+     *
+     * @param c the connector type to be printed. It can be one of the following:
+     *          FLAT, SINGLE, DOUBLE, or UNIVERSAL.
+     */
     private void printConnector(ConnectorType c){
         switch (c){
             case FLAT -> System.out.print("\uD83D\uDFE6\t");
@@ -914,6 +1000,11 @@ public class ShipBoard {
             case SINGLE ->   System.out.print("⚀\t");
         }
     }
+    /**
+     * Prints a visual representation of the specified component type to the console.
+     *
+     * @param c the component type to be printed
+     */
     private void printComponent(ComponentType c){
         switch (c){
             case CABINE -> System.out.print("\uD83D\uDEDE\t");
@@ -933,6 +1024,14 @@ public class ShipBoard {
         }
     }
 
+    /**
+     * Generates and initializes a shipboard with a specified level and number of tiles.
+     * Tiles are randomly placed and oriented on the shipboard within constraints.
+     *
+     * @param level the level of the shipboard, influencing its size and structure
+     * @param nTiles the number of tiles to be placed on the shipboard
+     * @return a new ShipBoard instance with tiles added based on the specified number and level
+     */
     public static ShipBoard generateShipboard(int level, int nTiles){
         int n=level==1?19:28;
         if(nTiles>n)nTiles=n;
@@ -956,6 +1055,11 @@ public class ShipBoard {
         }
         return ship;
     }
+    /**
+     * Checks if all cabins in the shipboard are full of tokens.
+     *
+     * @return true if all cabins contain at least one token, false otherwise
+     */
     public boolean cabineAreFullOfToken(){
         ArrayList<Point> listOfCabins = getComponentsPositions(ComponentType.CABINE);
         return listOfCabins.stream().noneMatch(point -> getTile(point).getComponent().getNumberOfTokens()==0);
@@ -967,6 +1071,15 @@ public class ShipBoard {
 //
 // ------------------------------------------------------------------------------------
 
+    /**
+     * Converts a given tile or an empty slot into a visual representation
+     * formatted as a list of strings.
+     *
+     * @param tile an Optional containing the Tile to be converted; if empty,
+     *             represents an empty slot.
+     * @return an ArrayList of strings representing the visual layout of the tile
+     *         or empty slot.
+     */
     public ArrayList<String> tileToStringList(Optional<Tile> tile) {
         ArrayList<String> rows = new ArrayList<>(9);
         if (tile.isEmpty()) {
@@ -996,6 +1109,12 @@ public class ShipBoard {
         return rows;
     }
 
+    /**
+     * Converts a given ConnectorType to its string representation.
+     *
+     * @param c the connector type to convert
+     * @return the string representation of the connector type
+     */
     private String hConnToStr(ConnectorType c) {
         return switch (c) {
             case FLAT -> "─ ─ ─";
@@ -1005,6 +1124,13 @@ public class ShipBoard {
         };
     }
 
+    /**
+     * Converts a vertical connector defined by its type and row number into a string representation.
+     *
+     * @param c the type of the connector (e.g. FLAT, SINGLE, DOUBLE, UNIVERSAL)
+     * @param row the row number of the connector
+     * @return a string symbol representing the vertical connector based on the type and row
+     */
     private String vConnToStr(ConnectorType c, int row) {
         return switch (c.ordinal() + ":" + row) {
             case "0:1" -> "│";
@@ -1027,6 +1153,12 @@ public class ShipBoard {
         };
     }
 
+    /**
+     * Converts a given ComponentType to a specific string representation.
+     *
+     * @param c the ComponentType to be converted
+     * @return a string representation of the provided ComponentType
+     */
     private String compToStr(ComponentType c) {
         return switch (c) {
             case CABINE -> " cab ";
@@ -1045,6 +1177,13 @@ public class ShipBoard {
         };
     }
 
+    /**
+     * Converts the given Tile's center representation to a corresponding string based
+     * on its ID, applying color encoding for specific IDs.
+     *
+     * @param t the Tile whose center representation is to be converted
+     * @return a string representing the Tile's center with possible color encoding
+     */
     private String centerToStr(Tile t) {
         switch (t.getIdTile()) {
             case 52 -> {
@@ -1065,6 +1204,15 @@ public class ShipBoard {
         }
     }
 
+    /**
+     * Converts an orientation to its corresponding arrow symbol if it matches the specified direction.
+     * If not, returns an empty space.
+     *
+     * @param o the orientation to be converted
+     * @param dir the direction to check against the orientation
+     * @return the arrow symbol ("↑", "→", "↓", "←") representing the orientation if it matches the direction,
+     *         otherwise a single space (" ")
+     */
     private String orientToStr(Orientation o, int dir) {
         if (o.ordinal() == dir) {
             return switch (o) {
@@ -1076,6 +1224,12 @@ public class ShipBoard {
         } else return " ";
     }
 
+    /**
+     * Converts the description of the component in a given tile to a string representation.
+     *
+     * @param t the tile containing the component to describe
+     * @return a string representation of the tile's component description
+     */
     private String compDescToStr(Tile t) {
         switch (t.getComponent()) {
             case BasicComponent ignored -> {
@@ -1109,10 +1263,21 @@ public class ShipBoard {
         }
     }
 
+    /**
+     * Converts the lock status of a Tile into a string representation.
+     * @param t the Tile to check
+     * @return "L" if the Tile is locked, "U" if it is unlocked
+     */
     private String lockedToStr(Tile t) {
         return t.isLocked() ? "L" : "U";
     }
 
+    /**
+     * Converts a given token into its corresponding string representation.
+     *
+     * @param t the token to convert
+     * @return the string representation of the token
+     */
     private String tokenToStr(Token t) {
         return switch (t) {
             case ASTRONAUT -> "A";
@@ -1126,6 +1291,11 @@ public class ShipBoard {
         };
     }
 
+    /**
+     * Generates a string representation of the shipboard, including tile configuration and grid layout, in a formatted multi-line text display.
+     *
+     * @return a string representation of the current state of the shipboard.
+     */
     @Override
     public String toString() {
         int dim = 7; //numero di righe per tessera

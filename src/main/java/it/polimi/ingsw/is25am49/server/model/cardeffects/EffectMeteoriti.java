@@ -14,18 +14,40 @@ import java.util.List;
 import java.awt.*;
 import java.util.Optional;
 
+/**
+ * Represents the effect of a meteorite in the game.
+ * A meteorite may have different levels and orientations, impacting the player's ship accordingly.
+ * Level 0 meteors can be blocked by shields, while larger meteors require cannons to destroy.
+ */
 public class EffectMeteoriti extends CardEffect {
     private final int level;
     private final Orientation direction;
     private int position;
 
 
+    /**
+     * Creates an instance of the EffectMeteoriti class, representing an effect associated
+     * with meteorit impacts, setting its level and orientation.
+     *
+     * @param name_effect the name of the effect
+     * @param level the intensity or level of the effect
+     * @param direction the orientation associated with the effect
+     */
     public EffectMeteoriti(String name_effect, int level, Orientation direction) {
         super(name_effect);
         this.level = level;
         this.direction = direction;
     }
 
+    /**
+     * Applies the meteorite effect to the specified player's ship board.
+     * The action varies depending on the meteorite's level. At level 0,
+     * it checks for shields or exposed connectors to determine damage. For higher levels,
+     * the player may attempt to destroy the meteorite with a cannon; otherwise,
+     * components are damaged on impact.
+     *
+     * @param player the player whose ship board is affected by the meteorite.
+     */
     public void action(Player player) {
         //meteorite piccolo
         // posso attivare gli scudi, se non li attivo subisco effetto
@@ -62,6 +84,14 @@ public class EffectMeteoriti extends CardEffect {
         }
     }
 
+    /**
+     * Retrieves a list of usable cannon positions for a player. Filters cannons
+     * based on their type and ensures they are oriented and positioned correctly
+     * to be used against a meteor.
+     *
+     * @param player the player for whom the cannon positions are being retrieved
+     * @return a list of points representing the usable cannon positions
+     */
     private List<Point> getAvailableCannons(Player player) {
         //ottengo tutti i cannoni singoli e doppi
         List<Point> cannons = new ArrayList<>(player.getShipBoard().getComponentsPositions(ComponentType.CANNON));
@@ -73,6 +103,13 @@ public class EffectMeteoriti extends CardEffect {
                 .collect(java.util.stream.Collectors.toList());
     }
 
+    /**
+     * Checks if a cannon is usable against a meteor based on its direction and position.
+     *
+     * @param player the player whose cannon is being checked
+     * @param point the coordinates of the cannon to check
+     * @return true if the cannon is in the correct direction and position to be usable, false otherwise
+     */
     //verifica se il cannone è nella giusta direzione e posizione
     private boolean isCannonUsableAgainstMeteor(Player player, Point point) {
         // è nella giusta direzione?
@@ -90,6 +127,12 @@ public class EffectMeteoriti extends CardEffect {
         return true;
     }
 
+    /**
+     * Determines whether the player can defend against a meteor using available cannons on their ship.
+     *
+     * @param player the player attempting to defend against the meteor event
+     * @return true if the meteor is successfully defended against; false otherwise
+     */
     private boolean defendAgainstMeteor(Player player) {
         //ottengo tutti i cannoni utilizzabili contro il meteorite
         List<Point> cannons = getAvailableCannons(player);
@@ -119,34 +162,77 @@ public class EffectMeteoriti extends CardEffect {
         return false;
     }
 
+    /**
+     * Sets the position associated with the meteor effect.
+     * Updates the row or column affected by the meteor based on the given position.
+     *
+     * @param position the position of the effect, indicating the specific row or column hit
+     */
     public void setPosition(int position) {
         this.position = position;
         //serve per i meteoriti per selezionare la riga in cui viene colpito, rollando i dadi aggiorni set position
     }
 
+    /**
+     * Sets the list of coordinates and associated tokens where the effect is applied.
+     * This method is not applicable for this effect and will throw an exception if called.
+     *
+     * @param listOfCoordinates the list of pairs containing Points and Tokens to set
+     * @throws IllegalMethodOnThisCardException if the method is called
+     */
     public void setListOfCoordinates(List<Pair<Point, Token>> listOfCoordinates) {
         throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
     }
 
+    /**
+     * Sets the coordinate for the effect. This method is not applicable for this effect
+     * and will always throw an exception.
+     *
+     * @param coordinate the coordinate to be set
+     * @throws IllegalMethodOnThisCardException if the method is invoked
+     */
     public void setCoordinate(Point coordinate) {
         throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
     }
 
+    /**
+     * Retrieves the level of the effect.
+     * @return the level of the effect.
+     */
     @Override
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Retrieves the number of crew members lost.
+     * This method is not applicable for this effect and will always throw an exception.
+     *
+     * @return This method does not return a value as it always throws an exception.
+     * @throws IllegalMethodOnThisCardException always thrown as this method is not applicable.
+     */
     @Override
     public int getLostCrew() {
         throw new IllegalMethodOnThisCardException("This method is not applicable for this effect");
     }
 
+    /**
+     * Retrieves the list of goods associated with the card effect.
+     * Throws an exception if the method is not applicable to the current card.
+     *
+     * @return a list of integers representing the quantities of different types of goods.
+     * @throws IllegalMethodOnThisCardException if the method is invoked on an unsupported card.
+     */
     @Override
     public List<Integer> getGoods() {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
     }
 
+    /**
+     * Retrieves the orientation of the effect.
+     *
+     * @return the current orientation (NORTH, EAST, SOUTH, or WEST)
+     */
     public Orientation getOrientation() {
         return direction;
     }

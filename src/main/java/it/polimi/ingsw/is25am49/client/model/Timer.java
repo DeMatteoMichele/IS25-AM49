@@ -58,6 +58,11 @@ public class Timer {
     public void placeNoTime(Player player) {
         if(usageCounter < level) {
             usageCounter++;
+            if(usageCounter==level-1){
+                gameSession.getGame().ifPresent(game->{
+
+                });
+            }
         } else {
             throw new IllegalTimerMoveException("Illegal timer move");
         }

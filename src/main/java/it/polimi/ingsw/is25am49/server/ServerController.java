@@ -13,20 +13,46 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class ServerController {
+    /**
+     * Represents the active instance of the game session managed by the server.
+     */
     private final GameSession gameSession;
+    /**
+     * Handles serialization and deserialization of commands between the server and connected clients.
+     */
     private ServerSerializer serverSerializer;
+    /**
+     * Manages Remote Method Invocation (RMI) communication for the server.
+     */
     private ServerRMI serverRMI;
+    /**
+     * Indicates whether the game has started.
+     */
     private boolean gameStarted = false;
 
 
+    /**
+     * Initializes the ServerController with the provided game session.
+     * @param gameSession the game session to be controlled
+     */
     public ServerController(GameSession gameSession) {
         this.gameSession = gameSession;
     }
 
+    /**
+     *
+     */
     public void setSerializer(ServerSerializer serverSerializer) {
         this.serverSerializer = serverSerializer;
     }
 
+    /**
+     * Sets up a new game by the administrator with specified parameters.
+     *
+     * @param playerId the ID of the player initiating the setup.
+     * @param numberOfPlayers the maximum number of players for the game.
+     * @param mode the game mode to be set (e.g., FLIGHT_MODE, LEVEL_1, etc.).
+     */
     public void adminSetup(int playerId, int numberOfPlayers, GameMode mode) {
         try {
             try {
@@ -49,6 +75,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Allows a player to join the game session with the provided ID and username.
+     *
+     * @param playerId the unique identifier of the player joining
+     * @param username the username of the player joining
+     */
     public void playerJoin(int playerId, String username) {
         try {
             try {
@@ -76,6 +108,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the logic for when a player connects to the game.
+     *
+     * @param playerId the unique identifier of the player connecting to the game
+     */
     public void playerConnected(int playerId) {
         try {
             gameSession.getState().connectPlayer(playerId);
@@ -90,6 +127,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the disconnection of a player from the game session and notifies clients.
+     *
+     * @param playerId the unique identifier of the player being disconnected.
+     */
     public void playerDisconnected(int playerId) {
         try {
             gameSession.getState().disconnectPlayer(playerId);
@@ -104,6 +146,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Allows a player to draw a tile from the game session.
+     *
+     * @param playerId the unique identifier of the player performing the action
+     * @param tileId the unique identifier of the tile to be drawn
+     */
     public void userDrawTile(int playerId, int tileId) {
         try {
             try {
@@ -126,6 +174,13 @@ public class ServerController {
 
     }
 
+    /**
+     * Allows a player to place a tile with a specific orientation at the given coordinates.
+     *
+     * @param playerId the ID of the player performing the action
+     * @param coordinates the coordinates where the tile is to be placed
+     * @param orientation the orientation of the tile being placed
+     */
     public void userPlaceTile(int playerId, Point coordinates, Orientation orientation) {
         try {
             try {
@@ -150,6 +205,12 @@ public class ServerController {
     }
 
 
+    /**
+     * Handles the action of a user picking a tile at specified coordinates.
+     *
+     * @param playerId        the ID of the player performing the action.
+     * @param coordinates     the coordinates of the tile being picked.
+     */
     public void userPickTile(int playerId, Point coordinates) {
         try {
             try {
@@ -171,6 +232,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the action of a player discarding a tile in the game.
+     *
+     * @param playerId the unique ID of the player performing the discard action
+     */
     public void userDiscardTile(int playerId) {
         try {
             try {
@@ -191,6 +257,9 @@ public class ServerController {
         }
     }
 
+    /**
+     *
+     */
     public void userFinishShipboard(int playerId) {
         try {
             try {
@@ -211,6 +280,9 @@ public class ServerController {
         }
     }
 
+    /**
+     *
+     */
     public void userLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         try {
             try {
@@ -232,6 +304,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the user action for stopping the view of a small adventure card deck.
+     *
+     * @param playerId the unique identifier of the player performing this action
+     * @param smallDeckIndex the index of the small adventure card deck being viewed
+     */
     public void userStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         try {
             try {
@@ -253,6 +331,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the initiation of a user-specific place timer for in-game actions and communicates results.
+     *
+     * @param playerId the unique identifier of the player initiating the timer.
+     */
     public void userPlaceTimer(int playerId) {
         try {
             try {
@@ -273,6 +356,13 @@ public class ServerController {
         }
     }
 
+    /**
+     * Allows a user to select a specific type of token in the game.
+     *
+     * @param playerId the ID of the player making the selection
+     * @param token the type of token selected
+     * @param coordinates the coordinates of the token on the game board
+     */
     public void userSelectTypeOfToken(int playerId, Token token, Point coordinates) {
 
         try {
@@ -296,6 +386,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the dice-throwing action performed by a user in the game session.
+     *
+     * @param playerId the ID of the player initiating the dice throw.
+     */
     public void userThrowDices(int playerId) {
         try {
             try {
@@ -317,6 +412,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Allows a player to draw an adventure card in the game.
+     *
+     * @param playerId the unique identifier of the player performing the action
+     */
     public void userDrawAdventureCard(int playerId) {
         try {
             try {
@@ -338,6 +438,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the user's decision to finish activating specific points during the game session.
+     *
+     * @param playerId the ID of the player finishing the decision activating.
+     * @param coordinates the set of points associated with the user's decision.
+     */
     public void userFinishDecisionActivating(int playerId, HashSet<Point> coordinates) {
         try {
             try {
@@ -360,6 +466,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Finalizes the player's token decision during their turn.
+     *
+     * @param playerId the ID of the player finishing their token decision
+     * @param listOfTokens the list of token and point pairs chosen by the player
+     */
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         try {
             try {
@@ -382,6 +494,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the user's decision to accept or decline prizes in the game.
+     *
+     * @param playerId the unique identifier of the player making the decision.
+     * @param wantsRewards a boolean indicating whether the player accepts the prizes.
+     */
     public void userAcceptPrizes(int playerId, boolean wantsRewards) {
         try {
             try {
@@ -403,6 +521,13 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the event of a user landing on a planet during the game.
+     *
+     * @param playerId the ID of the player performing the action.
+     * @param isLanded indicates whether the player successfully landed on the planet.
+     * @param planetId the ID of the target planet.
+     */
     public void userLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         try {
             try {
@@ -425,6 +550,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the action of a user landing on a station or ship.
+     *
+     * @param playerId the unique identifier of the player performing the action
+     * @param isLanded a boolean indicating whether the user has successfully landed
+     */
     public void userLandOnStationOrShip(int playerId, boolean isLanded) {
         try {
             try {
@@ -446,6 +577,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Handles the action where a user stops their flight in the game.
+     *
+     * @param playerId the unique identifier of the player stopping the flight
+     */
     public void userStopFlight(int playerId) {
         try {
             try {
@@ -486,6 +622,10 @@ public class ServerController {
 //        }
 //    }
 
+    /**
+     * Sends a command to change the state of the server and informs connected clients.
+     * @param state the new state to be set for the server
+     */
     public void changeState(String state) {
         try {
             Command command = new Command("changeStateCallback", -1);
@@ -499,6 +639,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Calculates the score for a specific player by the admin and sends appropriate commands back to the client.
+     *
+     * @param playerId the unique identifier of the player whose score is to be calculated.
+     */
     public void adminCalculateScore(int playerId) {
         try {
             try {
@@ -519,6 +664,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Ends the game and notifies all clients.
+     * @param playerId the unique identifier of the player whose game is being ended.
+     *
+     */
     public void adminEndGame(int playerId) {
         try {
             try {
@@ -542,6 +692,7 @@ public class ServerController {
     public void setServerRMI(ServerRMI serverRMI) {
         this.serverRMI = serverRMI;
     }
+
 
     public void signalThatGameStarted() {
         gameStarted = true;

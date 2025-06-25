@@ -14,6 +14,10 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
+/**
+ * The ClientHandler class manages client connections, communication, and server-side operations.
+ * It handles incoming and outgoing messages, maintains client states, and provides methods for broadcasting and processing commands.
+ */
 public class ClientHandler {
     private final ServerSerializer serverSerializer;
     private ServerSocket serverSocket;
@@ -34,7 +38,13 @@ public class ClientHandler {
 
     private final Thread serverThread;
     private boolean gameStarted;
-
+    /**
+     * Constructs a ClientHandler instance.
+     * Initializes server components and starts the server thread.
+     *
+     * @param serverSerializer The serializer for server-side operations.
+     * @param port The port number for the server socket.
+     */
     public ClientHandler(ServerSerializer serverSerializer, int port) {
         this.serverSerializer = serverSerializer;
         scheduler = Executors.newScheduledThreadPool(20);
@@ -93,6 +103,12 @@ public class ClientHandler {
         }
     }
 
+    /**
+     * Handles the first message from a client to retrieve its ID.
+     *
+     * @param inputStream The input stream of the client.
+     * @return The client ID extracted from the handshake message.
+     */
     private int handleFirstMessage(ObjectInputStream inputStream) {
         try {
             Command command = (Command) inputStream.readObject();
@@ -122,6 +138,13 @@ public class ClientHandler {
         InGoingStringQueues.put(clientId, new ArrayBlockingQueue<>(1000, true));
     }
 
+    /**
+     * This method is used to submit the tasks to the scheduler for each client.
+     * It schedules the listenToClient method to be executed every 25 milliseconds.
+     * It also schedules the processStringQueueToServerSerializer and processOutGoingFileQueue methods to be executed every 25 milliseconds.
+     *
+     * @param clientId The int of the client being handled.
+     */
     private void submitToScheduler(int clientId) {
         scheduler.scheduleWithFixedDelay(() -> listenToClient(clientId), 0, 25, TimeUnit.MILLISECONDS);
         scheduler.scheduleAtFixedRate(() -> processStringQueueToServerSerializer(clientId), 512, 25, TimeUnit.MILLISECONDS);
@@ -218,7 +241,6 @@ public class ClientHandler {
 
     /**
      * This method is used to send a file to the client with id=clientId.
-     * It takes the file, converts it to a string and sends it to the client.
      * It uses the output stream of the client to send the file.
      *
      * @param clientId The int of the client which we want to send the file.
@@ -277,6 +299,12 @@ public class ClientHandler {
         }
     }
 
+    /**
+     * This method is used to ask for the previous commands from the historyQueue.
+     * It puts all the commands in the outGoingFileQueue of the client.
+     *
+     * @param clientId The int of the client which we want to send the history.
+     */
     private void askForPreviousCommands(int clientId) {
         for (Command command : historyQueue) {
             try {
@@ -337,6 +365,7 @@ public class ClientHandler {
             });
         }
     }
+
 
     private static String askForIp(){
         Scanner scanner = new Scanner(System.in);

@@ -37,7 +37,7 @@ import java.util.concurrent.Executors;
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
     private GameSession gameSession;
-    private final String serverIP = "localhost";
+    private static String serverIP = "localhost"; // Default server IP
     private final int serverPortRMI = 1099;
     private String username;
     private Map<ScenesName, Scene> scenesList;
@@ -148,6 +148,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     }
 
     public static void main(String args[]) {
+        if (args.length > 0) {serverIP = args[0];}
         launch(args);
     }
 
@@ -607,7 +608,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.removeTokenFromTile(coordinate, token);
+                adventureController.printShipboard();
             }
         });
     }
@@ -627,7 +628,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.removeTokenFromTile(coordinate, token);
+                adventureController.printShipboard();
             }
         });
     }
@@ -637,7 +638,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.addTokenToTile(coordinate, token);
+                adventureController.printShipboard();
             }
         });
     }
@@ -677,6 +678,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         Platform.runLater(() -> {
             if (myId == playerId) {
+                System.out.println("updateEffectMeteorite");
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.updateAttack(coordinate, or, true);
             }
