@@ -61,6 +61,11 @@ public class TextualUserInterface implements UserInterface {
 
     int smallDeckIndex = -1; //todo hardcoddato, non ho un modo per capire che deck sta guardando il player
 
+    /**
+     * Initializes a new instance of the TextualUserInterface class.
+     * Sets up the game session, terminal interface, and a thread pool executor.
+     * Prepares the graphics queue for managing user interface updates.
+     */
     public TextualUserInterface() {
         gameSession = new GameSession(this);
         try {
@@ -77,15 +82,19 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue = new LinkedBlockingDeque<>();
     }
 
+    /**
+     * Sets the identifier for the client.
+     * @param myId the unique identifier to assign to the client
+     */
     @Override
     public void setClientId(int myId) {
         this.myId = myId;
     }
 
     /**
-     * This method is used to set the game session if a diconnnection occurs
-     * During the reconnection phase, the game session is resetted to allow the player
-     * to reconnect to the game
+     * Sets the current game session for the TextualUserInterface.
+     *
+     * @param gameSession the GameSession object to set as the current session
      */
     public void setGameSession(GameSession gameSession) {
         this.gameSession = gameSession;
@@ -94,7 +103,10 @@ public class TextualUserInterface implements UserInterface {
 //----------------------------------------------------------------------------------------------------
 
     /**
-     * IL MAIN DI GALAXY TRUCKER TUI
+     * Main entry point for the TextualUserInterface application.
+     * Initializes the UI, sets up the connection, and starts the game.
+     *
+     * @param args Optional command-line arguments. If provided, the first argument is used as the server IP address.
      */
     public static void main(String args[]){
         TextualUserInterface ui = new TextualUserInterface();
@@ -125,7 +137,8 @@ public class TextualUserInterface implements UserInterface {
 //    ----------------------------------------------------------------------------------------------------------
 
     /**
-     * Method used from the TUI to register the client to the server via (Socket/RMI)
+     * Sets up the connection to the server by allowing the user to select
+     * the desired connection type and initiating the registration process.
      */
     public void setupConnection() {
         int n = 0;
@@ -150,8 +163,9 @@ public class TextualUserInterface implements UserInterface {
     }
 
     /**
-     * Method used from the setupConnection method to register the client to the server.
-     * To register you must insert your Username that has to be unique!
+     * Handles the user input for setting the username.
+     * Provides options for reconnecting to a previous game or creating a new username.
+     * Validates the input and invokes controller to set or initialize corresponding data.
      */
     public void userSettings() {
         //Utente inserisce Username
@@ -171,8 +185,8 @@ public class TextualUserInterface implements UserInterface {
     }
 
     /**
-     * Method used from the setupConnection method to register the client to the server.
-     * To register you must insert your Username that has to be unique!
+     * Establishes the client connection to the server using either RMI or Socket
+     * based on the connection type. Handles errors and retries as needed.
      */
     public void registerClient() {
         try {
@@ -217,6 +231,15 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Establishes a connection to the RMI server and handles the client login process
+     * with support for reconnection.
+     *
+     * @param isReconnecting specifies whether the client is attempting to reconnect to the server.
+     * @param clientRMI an instance of ClientRMI representing the RMI client logic to interact with the server.
+     * @throws NotBoundException if the requested binding is not found in the registry.
+     * @throws IOException if an error occurs during communication with the server.
+     */
     public void connectionRMI(boolean isReconnecting, ClientRMI clientRMI) throws NotBoundException, IOException {
         RemoteServer serverStub;
         Registry reg = LocateRegistry.getRegistry(serverIP, serverPortRMI);
@@ -255,6 +278,11 @@ public class TextualUserInterface implements UserInterface {
 
     }
 
+    /**
+     * Starts the game by handling user input and graphical updates asynchronously.
+     * Manages input commands like "quit" and "reconnect" while also rendering graphics.
+     * Utilizes multiple threads to maintain separate input processing and rendering tasks.
+     */
     public void startGame() {
         executor.submit(() -> {
             String inputString;
@@ -299,12 +327,20 @@ public class TextualUserInterface implements UserInterface {
         });
     }
 
+    /**
+     * Clears the console by printing empty lines.
+     * Used to improve readability of the terminal output.
+     */
     public void clearConsole() {
         for (int i = 0; i < 3; i++) {
             terminal.writer().println();
         }
     }
 
+    /**
+     * Inserts aliens onto the specified player's shipboard.
+     * @param playerId the ID of the player whose shipboard will have aliens inserted
+     */
     public void insertAliens(int playerId) {
         Player p = gameSession.getPlayer(playerId).get();
         if (p.getShipBoard().isCompleted()) {
@@ -336,6 +372,11 @@ public class TextualUserInterface implements UserInterface {
         } else throw new GameSettingsException("shipboard not completed yet");
     }
 
+    /**
+     * Allows the user to assign tokens to specific coordinates on the shipboard until the user decides to stop.
+     * Tokens are chosen interactively from a list of available options.
+     * @return A list of pairs representing the chosen coordinates and their corresponding tokens.
+     */
     public ArrayList<Pair<Point, Token>> decisionToken() {
         ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
         lineReader.printAbove("handle Tokens in the shipboard (s to stop):\n");
@@ -399,6 +440,13 @@ public class TextualUserInterface implements UserInterface {
         return tokens;
     }
 
+    /**
+     * Inserts a specified number of random tiles into the player's shipboard, adhering to game rules and constraints.
+     * Attempts to place, rotate, and draw tiles in randomized locations and orientations if allowed.
+     * Recursively continues until the specified number of tiles are placed or the shipboard is full.
+     *
+     * @param numberOfTiles the number of tiles to be randomly inserted onto the shipboard; must be a positive integer
+     */
     public void insertRandomTiles(int numberOfTiles) {
         Player player = gameSession.getPlayer(myId).get();
         ShipBoard shipboard = player.getShipBoard();
@@ -454,6 +502,12 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Reads shipboard data from a specified file and performs operations like
+     * drawing, rotating, and placing tiles based on the data.
+     *
+     * @param filename the name of the file containing shipboard information
+     */
     public void readShipboardFromFile(String filename) {
         filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
         int delay = 150; // delay in milliseconds
@@ -500,6 +554,10 @@ public class TextualUserInterface implements UserInterface {
 //    inizio metodi interfaccia UserInterface: stampa delle grafiche
 //    ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Prints an update message with a styled output depending on the content of the message.
+     * @param msg the message to be printed, where specific formatting is applied based on its content
+     */
     @Override
     public void printUpdateMessage(String msg) {
         AttributedString block;
@@ -510,6 +568,15 @@ public class TextualUserInterface implements UserInterface {
         lineReader.printAbove(block.toAnsi());
     }
 
+    /**
+     * Updates the graphical representation of the game's state transition based
+     * on the provided state index.
+     *
+     * @param stateIndex the index representing the current game state, where:
+     *                   1 corresponds to the Build State,
+     *                   2 corresponds to the Adventure State,
+     *                   3 corresponds to the Finish State.
+     */
     @Override
     public void updateStateTransition(int stateIndex) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -540,6 +607,12 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the game session for a new player by adding relevant information to the graphics queue
+     * if the player is not already in the game lobby.
+     *
+     * @param playerId the unique identifier of the player to be added to the game session
+     */
     @Override
     public void updateGameSessionNewPlayer(int playerId) {
         if (!gameSession.checkIsInLobby(myId)) {
@@ -553,11 +626,23 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the game session and creates a game based on the given parameters.
+     *
+     * @param playerId   the ID of the player initiating the game creation
+     * @param gameMode   the mode of the game to be created
+     * @param maxPlayers the maximum number of players allowed in the game
+     */
     @Override
     public void updateGameSessionCreateGame(int playerId, GameMode gameMode, int maxPlayers) {
         updateGameNewPlayer(playerId);
     }
 
+    /**
+     * Updates the game state when a new player joins the game session.
+     *
+     * @param playerId the ID of the newly joined player
+     */
     @Override
     public void updateGameNewPlayer(int playerId) {
         StringBuilder str = new StringBuilder();
@@ -581,6 +666,11 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Builds and returns the menu for the build state, listing available commands and their indices.
+     *
+     * @return A string representation of the build state menu with command options.
+     */
     public String buildStateMenu() {
         return """
                 BuildState - commands:\s
@@ -595,6 +685,12 @@ public class TextualUserInterface implements UserInterface {
                 """;
     }
 
+    /**
+     * Updates the UI and displays the build state menu when the player places a tile.
+     *
+     * @param playerId    the ID of the player triggering the action
+     * @param coordinates the coordinate where the tile is placed
+     */
     @Override
     public void updatePlaceTile(int playerId, Point coordinates) {
         if(playerId == myId){
@@ -608,6 +704,13 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the game state when a player picks a tile.
+     *
+     * @param playerId the ID of the player picking the tile
+     * @param coordinates the coordinates of the selected tile
+     * @param idTile the ID of the tile being picked
+     */
     @Override
     public void updatePickTile(int playerId, Point coordinates, int idTile) {
         if(playerId == myId){
@@ -621,6 +724,12 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the interface to reflect changes when a tile is rotated clockwise by a player.
+     * Displays the current game state, the player's details, and available menu options.
+     *
+     * @param playerId the identifier of the player rotating the tile
+     */
     @Override
     public void updateRotateTileClockWise(int playerId) {
         String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
@@ -632,6 +741,11 @@ public class TextualUserInterface implements UserInterface {
                 graphicsQueue.add(str);
     }
 
+    /**
+     * Updates the discard tile action for the specified player.
+     * @param playerId the ID of the player performing the discard action
+     * @param idTile the ID of the tile being discarded
+     */
     @Override
     public void updateDiscardTile(int playerId, int idTile) {
         if(playerId == myId){
@@ -645,6 +759,11 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the game state for a tile drawn by a player.
+     * @param playerId the ID of the player who drew the tile
+     * @param idTile the ID of the tile drawn
+     */
     @Override
     public void updateDrawTile(int playerId, int idTIle) {
         if(playerId == myId){
@@ -658,6 +777,12 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the finish shipboard state for the specified player and adds the
+     * corresponding information to the graphics queue for display.
+     *
+     * @param playerId the ID of the player finishing their shipboard setup
+     */
     @Override
     public void updateFinishShipboard(int playerId) {
         if(playerId == myId){
@@ -670,6 +795,12 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the view of the specified small adventure card deck for the player.
+     *
+     * @param playerId       The ID of the player who triggered the action.
+     * @param smallDeckIndex The index of the small adventure card deck to be displayed.
+     */
     @Override
     public void updateLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         if(playerId == myId) {
@@ -682,6 +813,12 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the state to stop looking at the small adventure card deck for a specified player.
+     *
+     * @param playerId the ID of the player who stops looking at the small adventure card deck
+     * @param smallDeckIndex the index of the small adventure card deck being accessed
+     */
     @Override
     public void updateStopLookSmallAdventureCardDeck(int playerId, int smallDeckIndex) {
         if(playerId == myId){
@@ -689,12 +826,21 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Updates the game state to reflect the placement of a timer on the board by the specified player.
+     *
+     * @param playerId the unique identifier of the player placing the timer
+     */
     @Override
     public void updatePlaceTimer(int playerId) {
         var p= gameSession.getPlayer(playerId).get();
         printUpdateMessage("user: "+p.getUsername() +" placed the timer on the board\n"+gameSession.getGame().get().getTimer());
     }
 
+    /**
+     * Displays a notification indicating that the timer has completed.
+     * Outputs a preformatted message to notify all users.
+     */
     @Override
     public void updateTimerIsDone() {
         printUpdateMessage("""
@@ -704,6 +850,13 @@ public class TextualUserInterface implements UserInterface {
                 """);
     }
 
+    /**
+     * Updates the selected type of token for a player at specified coordinates.
+     *
+     * @param playerId the unique identifier of the player
+     * @param token the token to be added or updated
+     * @param coordinates the location where the token will be updated
+     */
     @Override
     public void updateSelectTypeOfToken(int playerId, Token token, Point coordinates) {
         if(playerId == myId){
@@ -719,6 +872,10 @@ public class TextualUserInterface implements UserInterface {
         }
     }
 
+    /**
+     * Displays the shipboard of the specified player by generating and queuing a formatted string representation.
+     * @param playerId the unique identifier of the player whose shipboard is to be displayed
+     */
     @Override
     public void lookAtShipboard(int playerId) {
         String str = "BUILD STATE\n"+"_".repeat( 200) + "\n\n" +
@@ -731,8 +888,10 @@ public class TextualUserInterface implements UserInterface {
     }
 
     /**
-     * @param playerId
-     * @param cardState
+     * Updates the state of the card for a specific player.
+     *
+     * @param playerId the ID of the player whose card state is to be updated
+     * @param cardState the new state of the card to be applied
      */
     @Override
     public void updateCardState(int playerId, AdventureStatesTypes cardState) {
@@ -740,13 +899,20 @@ public class TextualUserInterface implements UserInterface {
     }
 
     /**
-     * @param playerId
+     * Updates the player's turn in the game.
+     *
+     * @param playerId the unique identifier of the player whose turn is being updated
      */
     @Override
     public void updateChangeTurn(int playerId) {
 
     }
 
+    /**
+     * Displays the menu options for the AdventureState, listing available commands.
+     *
+     * @return A string representing the AdventureState command menu.
+     */
     public String adventureStateMenu(){
         return """
                 AdventureState - commands:\s
@@ -757,6 +923,12 @@ public class TextualUserInterface implements UserInterface {
                 5.  LandOnPlanet                10. StopFlight
                 """;
     }
+    /**
+     * Updates the display message for a generic card action in the game, formatting it for the intended recipient(s).
+     *
+     * @param playerId  the ID of the player to whom the message should be displayed, or -99 for all players.
+     * @param message   the card-related information to be displayed.
+     */
     @Override
     public void updateGenericCardMessage(int playerId, String message) {
         StringBuilder str = new StringBuilder("\u001B[1m\u001B[32mCARD INFO: \u001B[0m\u001B[32m");
@@ -775,6 +947,11 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str.toString());
     }
 
+    /**
+     * A 2D array representing visual representations of dice faces.
+     * Each sub-array corresponds to dice faces ranging from 1 to 6.
+     * The contents of each sub-array are formatted as strings for graphical display.
+     */
     private static final String[][] DICE = {
             {
                     "+ - - - - +",
@@ -814,6 +991,13 @@ public class TextualUserInterface implements UserInterface {
                     "+ - - - - +"
             }
     };
+    /**
+     * Updates the visual representation of the dice throw for a specific player in the game session.
+     *
+     * @param playerId the identifier of the player who is throwing the dice
+     * @param firstDice the value of the first dice (1-6)
+     * @param secondDice the value of the second dice (1-6)
+     */
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
         printUpdateMessage("Player " + gameSession.getPlayer(playerId).get().getUsername() + " has thrown the dices:\n");
@@ -827,6 +1011,11 @@ public class TextualUserInterface implements UserInterface {
             lineReader.printAbove(str.toString());
     }
 
+    /**
+     * Updates the game state when a player draws an adventure card.
+     * @param playerId the unique identifier of the player drawing the card
+     * @param adventureCard the adventure card that was drawn by the player
+     */
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
         String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
@@ -838,6 +1027,12 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    /**
+     * Updates the decision to finish activating specific coordinates for a player's game session.
+     *
+     * @param playerId The unique identifier of the player.
+     * @param coordinates The set of coordinate points being activated.
+     */
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
         StringBuilder str = new StringBuilder();
@@ -852,6 +1047,14 @@ public class TextualUserInterface implements UserInterface {
         updateGenericCardMessage(myId,str.toString());
     }
 
+    /**
+     * Updates the finish decision token process for a player.
+     *
+     * @param playerId     the unique identifier of the player making the update
+     * @param listOfTokens the list of tokens with their corresponding positions
+     * @param numTokens    the number of tokens to process in the update
+     * @param removing     a flag indicating if tokens are being removed or inserted
+     */
     @Override
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
         StringBuilder str = new StringBuilder();
@@ -867,12 +1070,25 @@ public class TextualUserInterface implements UserInterface {
         if(playerId==myId)updateShipBoard(myId);
     }
 
+    /**
+     * Updates the game state by marking specific areas or actions as deactivating for a given player.
+     *
+     * @param playerId    the unique identifier of the player initiating the deactivation.
+     * @param coordinates the list of coordinates to deactivate within the game.
+     */
     @Override
     public void updateDeactivating(int playerId, List<Point> coordinates) {
         //non chiaro
     }
 
 
+    /**
+     * Updates the status of whether a player has landed on a specific planet.
+     *
+     * @param playerId the unique identifier of the player
+     * @param isLanded indicates if the player decided to land on the planet
+     * @param planetId the unique identifier of the planet
+     */
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         Player p = gameSession.getPlayer(playerId).get();
@@ -880,6 +1096,13 @@ public class TextualUserInterface implements UserInterface {
         else printUpdateMessage("Player " + p.getUsername() + " decided not to land");
     }
 
+    /**
+     * Updates the status of a player's decision regarding landing on a station or ship.
+     *
+     * @param playerId the ID of the player making the decision
+     * @param isLanded indicates whether the player decided to land
+     * @param cardId the ID of the card associated with the decision
+     */
     @Override
     public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
         Player p = gameSession.getPlayer(playerId).get();
@@ -887,22 +1110,45 @@ public class TextualUserInterface implements UserInterface {
         else printUpdateMessage("Player " + p.getUsername() + " decided not to land");
     }
 
+    /**
+     * Updates the acceptance status of prizes for a specified player.
+     *
+     * @param playerId the identifier of the player whose prize acceptance is being updated
+     * @param isAccepted a boolean indicating whether the player has accepted the prizes
+     */
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
 
     }
 
+    /**
+     * Updates the game session when a player stops flight.
+     *
+     * @param playerId the unique identifier of the player who has stopped flight.
+     */
     @Override
     public void updateStopFlight(int playerId) {
         Player p= gameSession.getPlayer(playerId).get();
         printUpdateMessage("!!!Player " + p.getUsername() + " has landed!!!\t-out of the game");
     }
 
+    /**
+     * Updates the game state after an enemy has been defeated by a player.
+     *
+     * @param playerIdWhoWon the ID of the player who defeated the enemy
+     * @param enemyName the name of the defeated enemy
+     * @param cardId the card ID associated with the defeated enemy
+     */
     @Override
     public void updateEnemyDefeated(int playerIdWhoWon, String enemyName, String cardId) {
 
     }
 
+    /**
+     * Updates the shipboard display for a given player, reflecting the current game state.
+     *
+     * @param playerId the ID of the player whose shipboard state will be updated
+     */
     public void updateShipBoard(int playerId) {
         String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
                 gameSession.getPlayer(playerId).get().shipToString()+
@@ -912,55 +1158,110 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    /**
+     * Updates the UI to indicate that a crew member has been lost at a specific location.
+     *
+     * @param playerId the ID of the player who lost the crew member
+     * @param coordinate the coordinates where the crew member was lost
+     * @param token the type of token affected
+     */
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
     }
 
+    /**
+     * Updates the user interface to reflect the effect of a cannonade on a player's shipboard.
+     *
+     * @param playerId the ID of the player whose shipboard is affected
+     * @param coordinate the coordinates of the tile hit on the shipboard
+     * @param or the orientation of the cannonade's impact
+     */
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
         updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         updateShipBoard(playerId);
     }
 
+    /**
+     * Updates the effect indicating the loss of goods for a player at specified coordinates with a given token.
+     * @param playerId the ID of the player experiencing the effect.
+     * @param coordinate the coordinates where the goods are lost.
+     * @param token the token representing the type of good lost.
+     */
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
     }
 
+    /**
+     * Updates the game state to reflect that the player has won a good at the specified coordinates with a specific token.
+     *
+     * @param playerId   the ID of the player who won the good
+     * @param coordinate the coordinates where the good was won
+     * @param token      the type of token associated with the won good
+     */
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
     }
 
     /**
-     * @param playerId
-     * @param redgoods
-     * @param yellowgoods
-     * @param greengoods
-     * @param bluegoods
+     * Updates the number of goods won by a player.
+     *
+     * @param playerId the identifier of the player
+     * @param redgoods the number of red goods won
+     * @param yellowgoods the number of yellow goods won
+     * @param greengoods the number of green goods won
+     * @param bluegoods the number of blue goods won
      */
     @Override
     public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
 
     }
 
+    /**
+     * Updates the state of the energy effect by modifying the specified token at a given coordinate for the player.
+     *
+     * @param playerId the ID of the player whose state is being updated
+     * @param coordinate the point on the board where the token is located
+     * @param token the token to be modified or affected
+     */
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
         updateGenericCardMessage(playerId,"battery from coordinates: <" +coordinate.x +","+coordinate.y +"> have been removed");
     }
 
+    /**
+     * Updates the effect of a meteorite impact, destroying a tile on the shipboard and updating the game state.
+     *
+     * @param playerId the identifier of the player affected by the meteorite.
+     * @param coordinate the x and y coordinates of the meteorite impact on the shipboard.
+     * @param or the orientation related to the meteorite effect.
+     */
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         updateShipBoard(playerId);
     }
 
+    /**
+     * Updates the earned credits for a specific player and notifies them.
+     *
+     * @param playerId the unique identifier of the player
+     * @param credits the amount of credits earned by the player
+     */
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
         updateGenericCardMessage(playerId, "you have earned " + credits + " credits");
     }
 
+    /**
+     * Updates the destroyed tiles for a player's ship board and broadcasts changes to the game session.
+     *
+     * @param idPlayer The ID of the player whose destroyed tiles are being updated.
+     * @param destroyedTiles A set of points representing the coordinates of the destroyed tiles.
+     */
     @Override
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
         StringBuilder str = new StringBuilder();
@@ -976,6 +1277,11 @@ public class TextualUserInterface implements UserInterface {
         if(idPlayer==myId)updateShipBoard(myId);
     }
 
+    /**
+     * Updates the leaderboard display with the current game session state.
+     *
+     * @param leaderBoard the current leaderboard state to be displayed
+     */
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
         String str = "ADVENTURE STATE\n"+"_".repeat( 200) + "\n\n" +
@@ -986,6 +1292,11 @@ public class TextualUserInterface implements UserInterface {
         graphicsQueue.add(str);
     }
 
+    /**
+     * Ends the game session and performs necessary cleanup operations.
+     *
+     * @param playerId the unique identifier of the player invoking the end-game process
+     */
     @Override
     public void updateEndGame(int playerId) {
         printUpdateMessage("""
@@ -1000,6 +1311,11 @@ public class TextualUserInterface implements UserInterface {
         System.exit(0);
     }
 
+    /**
+     * Updates and calculates the score for a given player.
+     *
+     * @param playerId the unique identifier of the player whose score is being calculated
+     */
     @Override
     public void updateCalculateScore(int playerId) {
         String str = "FINISH STATE\n"+"_".repeat( 200) + "\n\n" +
@@ -1018,10 +1334,9 @@ public class TextualUserInterface implements UserInterface {
 //    ----------------------------------------------------------------------------------------------------------
 
     /**
-     * Method that handles the input string written by the user,
-     * calling the methods on the ClientController
+     * Handles user input and manages game state transitions and actions based on the provided input.
      *
-     * @param input string
+     * @param input The command or action input provided by the user to interact with the game logic.
      */
     public void handleInput(String input) {
         try {

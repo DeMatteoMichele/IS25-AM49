@@ -263,7 +263,6 @@ public class BuildController extends GenericSceneController {
                                             tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
                                             break;
                                         default:
-                                            // Immagine predefinita in caso di colore non gestito
                                             tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
                                     }
                                 }
@@ -273,6 +272,7 @@ public class BuildController extends GenericSceneController {
                                 tokenImageView.setFitWidth(23);
                                 tokenImageView.setFitHeight(32);
                                 tokenContainer.getChildren().add(tokenImageView);
+//                                tokenContainer.setMouseTransparent(true);
 
                         });
 
@@ -966,6 +966,7 @@ public class BuildController extends GenericSceneController {
             if(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getAlienPoint().isPresent()) {
                 Point alienpoint = gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getAlienPoint().get();
 
+                // evidenzio casella
                 // evidenzio casella
 
                 highlightPane.setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");

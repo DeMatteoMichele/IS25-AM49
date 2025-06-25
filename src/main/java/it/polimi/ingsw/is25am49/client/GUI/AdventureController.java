@@ -21,6 +21,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -61,11 +62,14 @@ public class AdventureController extends GenericSceneController {
     private ImageView cardDeckImage;
     @FXML
     private AnchorPane adventureContainer;
+    @FXML
+    private VBox messageBox;
+    @FXML
+    private ScrollPane scrollPane;
 
 
     private volatile boolean timeIsDone;
     private final HashSet<Point> coordinatesSet;
-    private final ArrayList<Pair<Point, String>> tokensPointsList;
     private final ArrayList<Pair<Point, Token>> tokenPointsListDefenitive;
     private ShipBoard playerShipboard;
     private AdventureCard currentAdventureCard;
@@ -76,10 +80,12 @@ public class AdventureController extends GenericSceneController {
     private final double[] playerStatistics;
     private final int[] goodsNumbers;
     private final Map<Integer, Image> goodsMap;
+    private final ArrayList<Token> tokensArrayForGoodPosition;
+    private Point lastSelectedCoordinates;
+    private final String styleForHighlight;
 
     public AdventureController() {
         coordinatesSet = new HashSet<>();
-        tokensPointsList = new ArrayList<>();
         tokenPointsListDefenitive = new ArrayList<>();
         playerShipboard = null;
         currentAdventureCard = null;
@@ -90,6 +96,9 @@ public class AdventureController extends GenericSceneController {
         playerStatistics = new double[5];
         goodsNumbers = new int[5];
         goodsMap = new HashMap<>();
+        lastSelectedCoordinates = new Point(-1, -1);
+        tokensArrayForGoodPosition = new ArrayList<>();
+        styleForHighlight = "-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);";
     }
 
 
@@ -270,9 +279,32 @@ public class AdventureController extends GenericSceneController {
             currentAdventureCard = card;
         }
     }
+    public void removeImagesFromShipboardGrid() {
+        // Scorre ogni cella della GridPane
+        for (Node node : shipboardGrid.getChildren()) {
+            if (node instanceof StackPane) {
+                removeImagesRecursively((Pane) node);
+            }
+        }
+    }
+
+    private void removeImagesRecursively(Pane pane) {
+        // Crea una copia della lista per evitare errori di concurrent modification
+        List<Node> childrenCopy = new ArrayList<>(pane.getChildren());
+        for (Node child : childrenCopy) {
+            if (child instanceof ImageView) {
+                pane.getChildren().remove(child);
+            } else if (child instanceof Pane) {
+                // Richiama il metodo ricorsivamente sul contenitore
+                removeImagesRecursively((Pane) child);
+            }
+        }
+    }
 
     public void printShipboard() {
+        //shipboardGrid.getChildren().clear();
         playerShipboard = Objects.requireNonNull(getPlayer()).getShipBoard();
+        removeImagesFromShipboardGrid();
         playerShipboard.getGrid().forEach((coordinates, tile) -> {
             if (tile.isPresent()) {
                 int idTile = tile.get().getIdTile();
@@ -281,9 +313,7 @@ public class AdventureController extends GenericSceneController {
                     imageView.setFitWidth(60);
                     imageView.setFitHeight(60);
                     imageView.setUserData(idTile);
-                    imageView.setOnMouseClicked(event -> {
-                        clickTile(coordinates);
-                    });
+                    imageView.setMouseTransparent(true);
                     switch (tile.get().getTileOrientation()) {
                         case NORTH -> imageView.setRotate(0);
                         case EAST -> imageView.setRotate(90);
@@ -291,106 +321,146 @@ public class AdventureController extends GenericSceneController {
                         case WEST -> imageView.setRotate(270);
                     }
                     Image i = new Image(Objects.requireNonNull(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Graysquare.png")).toExternalForm());
-                    shipboardGrid.add(imageView, coordinates.x - 4, coordinates.y - 5);
+                    getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().add(imageView);
                     shipboard.getProperties().put(coordinates, imageView);
                     if (tile.get().getComponent() instanceof ContainerComponent) {
-                        switch (tile.get().getTileOrientation()) {
-                            case NORTH, SOUTH -> {
-                                HBox tokensBox = new HBox(1);
-                                tokensBox.setAlignment(Pos.CENTER);
-                                if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
-                                    BackgroundImage backgroundImageGray = new BackgroundImage(
-                                            i,
-                                            BackgroundRepeat.NO_REPEAT,
-                                            BackgroundRepeat.NO_REPEAT,
-                                            BackgroundPosition.CENTER,
-                                            new BackgroundSize(100, 100, true, true, true, false)
-                                    );
-                                    tokensBox.setBackground(new Background(backgroundImageGray));
-                                }
-                                final int[] ind = {0};
-                                tile.ifPresent(t -> {
-                                    t.getComponent().getTokenList().forEach(token -> {
-                                        final int tokenIndex = ind[0];
-                                        ImageView imgV = new ImageView(tokensMap.get(token).getImage());
-                                        if (token.equals(Token.BATTERY_CELLS)) {
-                                            switch (tile.get().getTileOrientation()) {
-                                                case NORTH -> imgV.setRotate(0);
-                                                case SOUTH -> imgV.setRotate(180);
-                                            }
-                                            imgV.setFitWidth(10);
-                                            imgV.setFitHeight(30);
-                                        } else if (token.equals(Token.ASTRONAUT) || token.equals(Token.PURPLE_ALIENS) || token.equals(Token.BROWN_ALIENS)) {
-                                            imgV.setFitWidth(20);
-                                            imgV.setFitHeight(30);
-                                        } else {
-                                            imgV.setFitWidth(30);
-                                            imgV.setFitHeight(30);
-                                        }
-                                        imgV.setUserData(token);
-                                        tokensBox.getChildren().add(imgV);
-                                        tokensBox.getProperties().put(tokenIndex, imgV);
-                                        ind[0]++;
-                                    });
-                                    tokensBox.setOnMouseClicked(event -> {clickTile(coordinates);});
-                                    shipboardGrid.add(tokensBox, coordinates.x - 4, coordinates.y - 5);
-                                    getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().put("tokens", tokensBox);
 
-                                });
-                            }
-                            case EAST, WEST -> {
-                                VBox tokensBox = new VBox(1);
-                                tokensBox.setAlignment(Pos.CENTER);
-                                if (tile.get().getComponent().getType().equals(ComponentType.BATTERY)) {
-                                    BackgroundImage backgroundImageGray = new BackgroundImage(
-                                            i,
-                                            BackgroundRepeat.NO_REPEAT,
-                                            BackgroundRepeat.NO_REPEAT,
-                                            BackgroundPosition.CENTER,
-                                            new BackgroundSize(100, 100, true, true, true, false)
-                                    );
-                                    tokensBox.setBackground(new Background(backgroundImageGray));
-                                }
-                                final int[] ind = {0};
-                                tile.ifPresent(t -> {
-                                    t.getComponent().getTokenList().forEach(token -> {
-                                        final int tokenIndex = ind[0];
-                                        ImageView imgV = new ImageView(tokensMap.get(token).getImage());
-                                        if (token.equals(Token.BATTERY_CELLS)) {
-                                            imgV.setFitWidth(10);
-                                            imgV.setFitHeight(30);
-                                            imgV.setPreserveRatio(false);
-                                            switch (tile.get().getTileOrientation()) {
-                                                case EAST -> imgV.setRotate(90);
-                                                case WEST -> imgV.setRotate(270);
+                        if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
+                            switch (tile.get().getTileOrientation()) {
+                                case NORTH, SOUTH -> {
+                                    HBox tokensBox = new HBox(1);
+                                    tokensBox.setAlignment(Pos.CENTER);
+                                    if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
+                                        BackgroundImage backgroundImageGray = new BackgroundImage(
+                                                i,
+                                                BackgroundRepeat.NO_REPEAT,
+                                                BackgroundRepeat.NO_REPEAT,
+                                                BackgroundPosition.CENTER,
+                                                new BackgroundSize(100, 100, true, true, true, false)
+                                        );
+                                        tokensBox.setBackground(new Background(backgroundImageGray));
+                                    }
+                                    final int[] ind = {0};
+                                    tile.ifPresent(t -> {
+                                        t.getComponent().getTokenList().forEach(token -> {
+                                            final int tokenIndex = ind[0];
+                                            ImageView imgV = new ImageView(tokensMap.get(token).getImage());
+                                            if (token.equals(Token.BATTERY_CELLS)) {
+                                                switch (tile.get().getTileOrientation()) {
+                                                    case NORTH -> imgV.setRotate(0);
+                                                    case SOUTH -> imgV.setRotate(180);
+                                                }
+                                                imgV.setFitWidth(10);
+                                                imgV.setFitHeight(30);
+                                            } else if (token.equals(Token.ASTRONAUT) || token.equals(Token.PURPLE_ALIENS) || token.equals(Token.BROWN_ALIENS)) {
+                                                imgV.setFitWidth(20);
+                                                imgV.setFitHeight(30);
+                                            } else {
+                                                imgV.setFitWidth(30);
+                                                imgV.setFitHeight(30);
                                             }
-                                            imgV.setUserData(token);
-                                            Group rotatedGroup = new Group(imgV);
-                                            tokensBox.getChildren().add(rotatedGroup);
-                                            tokensBox.getProperties().put(tokenIndex, imgV);
-                                        } else if (token.equals(Token.ASTRONAUT) || token.equals(Token.PURPLE_ALIENS) || token.equals(Token.BROWN_ALIENS)) {
-                                            imgV.setFitWidth(20);
-                                            imgV.setFitHeight(30);
                                             imgV.setUserData(token);
                                             tokensBox.getChildren().add(imgV);
                                             tokensBox.getProperties().put(tokenIndex, imgV);
-                                        } else {
-                                            imgV.setFitWidth(30);
-                                            imgV.setFitHeight(30);
-                                            imgV.setUserData(token);
-                                            tokensBox.getChildren().add(imgV);
-                                            tokensBox.getProperties().put(tokenIndex, imgV);
-                                        }
-                                        ind[0]++;
-                                    });
-                                    tokensBox.setOnMouseClicked(event -> {clickTile(coordinates);});
-                                    shipboardGrid.add(tokensBox, coordinates.x - 4, coordinates.y - 5);
+                                            ind[0]++;
+                                        });
+                                        tokensBox.setMouseTransparent(true);
+                                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().add(tokensBox);
+                                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().put("tokens", tokensBox);
 
+                                    });
+                                }
+                                case EAST, WEST -> {
+                                    VBox tokensBox = new VBox(1);
+                                    tokensBox.setAlignment(Pos.CENTER);
+                                    if (tile.get().getComponent().getType().equals(ComponentType.BATTERY)) {
+                                        BackgroundImage backgroundImageGray = new BackgroundImage(
+                                                i,
+                                                BackgroundRepeat.NO_REPEAT,
+                                                BackgroundRepeat.NO_REPEAT,
+                                                BackgroundPosition.CENTER,
+                                                new BackgroundSize(100, 100, true, true, true, false)
+                                        );
+                                        tokensBox.setBackground(new Background(backgroundImageGray));
+                                    }
+                                    final int[] ind = {0};
+                                    tile.ifPresent(t -> {
+                                        t.getComponent().getTokenList().forEach(token -> {
+                                            final int tokenIndex = ind[0];
+                                            ImageView imgV = new ImageView(tokensMap.get(token).getImage());
+                                            if (token.equals(Token.BATTERY_CELLS)) {
+                                                imgV.setFitWidth(10);
+                                                imgV.setFitHeight(30);
+                                                imgV.setPreserveRatio(false);
+                                                switch (tile.get().getTileOrientation()) {
+                                                    case EAST -> imgV.setRotate(90);
+                                                    case WEST -> imgV.setRotate(270);
+                                                }
+                                                imgV.setUserData(token);
+                                                Group rotatedGroup = new Group(imgV);
+                                                tokensBox.getChildren().add(rotatedGroup);
+                                                tokensBox.getProperties().put(tokenIndex, imgV);
+                                            } else if (token.equals(Token.ASTRONAUT) || token.equals(Token.PURPLE_ALIENS) || token.equals(Token.BROWN_ALIENS)) {
+                                                imgV.setFitWidth(20);
+                                                imgV.setFitHeight(30);
+                                                imgV.setUserData(token);
+                                                tokensBox.getChildren().add(imgV);
+                                                tokensBox.getProperties().put(tokenIndex, imgV);
+                                            } else {
+                                                imgV.setFitWidth(30);
+                                                imgV.setFitHeight(30);
+                                                imgV.setUserData(token);
+                                                tokensBox.getChildren().add(imgV);
+                                                tokensBox.getProperties().put(tokenIndex, imgV);
+                                            }
+                                            ind[0]++;
+                                        });
+                                        tokensBox.setMouseTransparent(true);
+                                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().add(tokensBox);
+                                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().put("tokens", tokensBox);
+                                    });
+                                }
+                                default -> {
+                                    guiApplication.printUpdateMessage(error + "Unknown tile orientation: " + tile.get().getTileOrientation());
+                                }
+                            }
+                        }
+                        else{
+                            HBox tokensBox = new HBox(1);
+                            tokensBox.setAlignment(Pos.CENTER);
+                            final int[] ind = {0};
+                            tile.ifPresent(t -> {
+                                t.getComponent().getTokenList().forEach(token -> {
+                                    final int tokenIndex = ind[0];
+                                    ImageView imgV = new ImageView(tokensMap.get(token).getImage());
+                                    if (token.equals(Token.BATTERY_CELLS)) {
+                                        switch (tile.get().getTileOrientation()) {
+                                            case NORTH -> imgV.setRotate(0);
+                                            case SOUTH -> imgV.setRotate(180);
+                                        }
+                                        imgV.setFitWidth(10);
+                                        imgV.setFitHeight(30);
+                                    } else if (token.equals(Token.ASTRONAUT) || token.equals(Token.PURPLE_ALIENS) || token.equals(Token.BROWN_ALIENS)) {
+                                        imgV.setFitWidth(20);
+                                        imgV.setFitHeight(30);
+                                    } else if(token.equals(Token.RED_GOODS) || token.equals(Token.GREEN_GOODS) || token.equals(Token.BLUE_GOODS) || token.equals(Token.YELLOW_GOODS)) {
+                                        imgV.setFitWidth(20);
+                                        imgV.setFitHeight(20);
+                                    }
+                                    else{
+                                        imgV.setFitWidth(30);
+                                        imgV.setFitHeight(30);
+                                    }
+                                    imgV.setUserData(token);
+                                    tokensBox.getChildren().add(imgV);
+                                    tokensBox.getProperties().put(tokenIndex, imgV);
+                                    ind[0]++;
                                 });
-                            }
-                            default -> {
-                                guiApplication.printUpdateMessage(error + "Unknown tile orientation: " + tile.get().getTileOrientation());
-                            }
+                                tokensBox.setMouseTransparent(true);
+                                getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().add(tokensBox);
+                                getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().put("tokens", tokensBox);
+
+                            });
                         }
 
 
@@ -418,6 +488,9 @@ public class AdventureController extends GenericSceneController {
                     StackPane cellContainer = new StackPane();
                     cellContainer.getProperties().put("coordinates", new Point(col + 4, row + 5));
                     cellContainer.setStyle("-fx-background-color: transparent;");
+                    cellContainer.setOnMouseClicked(event -> {
+                        clickTile((Point) cellContainer.getProperties().get("coordinates"));
+                    });
                     shipboardGrid.add(cellContainer, col, row);
                 }
             }
@@ -438,6 +511,9 @@ public class AdventureController extends GenericSceneController {
                     StackPane cellContainer = new StackPane();
                     cellContainer.getProperties().put("coordinates", new Point(col + 4, row + 5));
                     cellContainer.setStyle("-fx-background-color: transparent;");
+                    cellContainer.setOnMouseClicked(event -> {
+                        clickTile((Point) cellContainer.getProperties().get("coordinates"));
+                    });
                     shipboardGrid.add(cellContainer, col, row);
                 }
             }
@@ -448,7 +524,11 @@ public class AdventureController extends GenericSceneController {
         playerStatistics[2] = playerShipboard.getTotalCrewNumber();
         playerStatistics[3] = 0;
         playerStatistics[4] = playerShipboard.getDestroyedTiles();
-
+        shipboardGrid.setDisable(false);
+        tokensArrayForGoodPosition.add(Token.RED_GOODS);
+        tokensArrayForGoodPosition.add(Token.GREEN_GOODS);
+        tokensArrayForGoodPosition.add(Token.BLUE_GOODS);
+        tokensArrayForGoodPosition.add(Token.YELLOW_GOODS);
     }
 
     public void configureEffectPaneYesNo(InputActions inputCommand) {
@@ -462,19 +542,34 @@ public class AdventureController extends GenericSceneController {
         switch (inputCommand) {
             case InputActions.ACCEPT_PRIZES -> {
                 yesButton.setOnAction(event -> {
-                    guiApplication.getController().userAcceptPrizes(guiApplication.getMyId(), true);
+                    try {
+                        guiApplication.getController().userAcceptPrizes(guiApplication.getMyId(), true);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }
                 });
                 noButton.setOnAction(event -> {
-                    guiApplication.getController().userAcceptPrizes(guiApplication.getMyId(), false);
+                    try {
+                        guiApplication.getController().userAcceptPrizes(guiApplication.getMyId(), false);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }
                 });
             }
             case InputActions.REPAIR_SHIP, InputActions.LAND_ON_STATION -> {
                 yesButton.setOnAction(event -> {
-                    guiApplication.getController().userLandOnStationOrShip(guiApplication.getMyId(), true);
+                    try {
+                        guiApplication.getController().userLandOnStationOrShip(guiApplication.getMyId(), true);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }
                 });
                 noButton.setOnAction(event -> {
-                    guiApplication.getController().userLandOnStationOrShip(guiApplication.getMyId(), false);
-                });
+                    try {
+                        guiApplication.getController().userLandOnStationOrShip(guiApplication.getMyId(), false);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }                });
             }
         }
 
@@ -491,8 +586,6 @@ public class AdventureController extends GenericSceneController {
     public void stopFlight() {
         cardEffect.getChildren().clear();
         updateCardMessageBox("Your flight has ended.");
-        coordinatesSet.clear();
-        tokensPointsList.clear();
         drawButton.setDisable(true);
         shipboardGrid.setDisable(true);
     }
@@ -537,7 +630,11 @@ public class AdventureController extends GenericSceneController {
             planetButton.setStyle(style);
             int planetIndex = i;
             planetButton.setOnAction(event -> {
-                guiApplication.getController().userLandOnPlanet(guiApplication.getMyId(), true, planetIndex);
+                try {
+                    guiApplication.getController().userLandOnPlanet(guiApplication.getMyId(), true, planetIndex);
+                } catch (Exception e) {
+                    guiApplication.printUpdateMessage(error + e.getMessage());
+                }
             });
             buttons.add(planetButton);
             buttonsBox.getChildren().add(planetButton);
@@ -545,7 +642,11 @@ public class AdventureController extends GenericSceneController {
         Button planetButton = new Button("Don't land");
         planetButton.setStyle(style);
         planetButton.setOnAction(event -> {
-            guiApplication.getController().userLandOnPlanet(guiApplication.getMyId(), false, -1);
+            try {
+                guiApplication.getController().userLandOnPlanet(guiApplication.getMyId(), false, -1);
+            } catch (Exception e) {
+                guiApplication.printUpdateMessage(error + e.getMessage());
+            }
         });
         buttons.add(planetButton);
         buttonsBox.getChildren().add(planetButton);
@@ -567,14 +668,24 @@ public class AdventureController extends GenericSceneController {
         switch (inputCommand) {
             case InputActions.ACTIVATE_COMPONENTS -> {
                 finishButton.setOnAction(event -> {
-                    guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), coordinatesSet);
+                    try {
+                        System.out.println("The Token points list is" + tokenPointsListDefenitive);
+                        System.out.println("The coordinates set is" + coordinatesSet);
+                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), coordinatesSet);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }
                 });
             }
             case InputActions.SELECT_TOKENS -> {
-                tokenPointsListDefenitive.clear();
-                convertTokenList(tokensPointsList);
                 finishButton.setOnAction(event -> {
-                    guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+                    try {
+                        System.out.println("The Token points list is" + tokenPointsListDefenitive);
+                        System.out.println("The coordinates set is" + coordinatesSet);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+                    } catch (Exception e) {
+                        guiApplication.printUpdateMessage(error + e.getMessage());
+                    }
                 });
             }
         }
@@ -589,20 +700,6 @@ public class AdventureController extends GenericSceneController {
         cardEffect.getChildren().add(container);
     }
 
-    private void convertTokenList(ArrayList<Pair<Point, String>> tokensPointsList) {
-        tokensPointsList.forEach(pair -> {
-            Point coordinates = pair.getKey();
-            String tokenType = pair.getValue();
-            Token token = convertName(tokenType);
-            if (tokensMap.containsKey(token)) {
-                Pair<Point, Token> pairDefinitive = new Pair<>(coordinates, token);
-                tokenPointsListDefenitive.add(pairDefinitive);
-            } else {
-                guiApplication.printUpdateMessage(error + "Token not found: " + tokenType);
-            }
-        });
-    }
-
     public void configureEffectPaneThrowDices() {
         String style = "-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0);";
         Label labelString = new Label("Click here to throw the dices");
@@ -610,7 +707,11 @@ public class AdventureController extends GenericSceneController {
         Button throwButton = new Button("Throw");
         throwButton.setStyle(style);
         throwButton.setOnAction(event -> {
-            guiApplication.getController().userThrowDices(guiApplication.getMyId());
+            try {
+                guiApplication.getController().userThrowDices(guiApplication.getMyId());
+            } catch (Exception e) {
+                guiApplication.printUpdateMessage(error + e.getMessage());
+            }
         });
 
         HBox buttonsBox = new HBox(10);
@@ -664,15 +765,11 @@ public class AdventureController extends GenericSceneController {
                 ImageView imView = new ImageView(goodsMap.get(i));
                 tokens.getChildren().add(imView);
                 goodsNumbers[i]--;
-//                placeButton.setOnAction(event -> {
-//                    if (isPresentInTokenList(coordinates, Token.ASTRONAUT) || isPresentInTokenList(coordinates, Token.PURPLE_ALIENS) || isPresentInTokenList(coordinates, Token.BROWN_ALIENS)) {
-//                        tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
-//                        imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-//                    } else {
-//                        tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-//                        imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
-//                    }
-//                });
+                int finalI = i;
+                placeButton.setOnAction(event -> {
+                    tokenPointsListDefenitive.add(new Pair<>(lastSelectedCoordinates, tokensArrayForGoodPosition.get(finalI)));
+                    configureEffectPaneShowNextGood();
+                });
                 VBox container = new VBox(20, labelString, placeButton);
                 container.setAlignment(Pos.CENTER);
                 cardEffect.getChildren().clear();
@@ -681,6 +778,7 @@ public class AdventureController extends GenericSceneController {
             }
         }
         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+        tokens.getChildren().clear();
         tokens.setDisable(true);
         tokens.setVisible(false);
     }
@@ -728,31 +826,22 @@ public class AdventureController extends GenericSceneController {
             case DRAW -> {
                 drawButton.setDisable(false);
                 disableAllCellsShipboard();
-                tokens.setDisable(true);
-                tokens.setVisible(false);
                 clearEffectPane();
             }
             case DECISION_BATTERIES, DECISION_ASTRONAUTS_OR_ALIENS -> {
                 drawButton.setDisable(true);
                 enableAllCellsShipboard();
-                tokens.setDisable(false);
-                tokens.setVisible(true);
                 configureEffectPaneFinishDecision(InputActions.SELECT_TOKENS);
             }
             case DECISION_CANNON, DECISION_SHIELDS, DECISION_MOTOR -> {
                 drawButton.setDisable(true);
                 enableAllCellsShipboard();
-                tokens.setDisable(false);
-                tokens.setVisible(true);
                 configureEffectPaneFinishDecision(InputActions.ACTIVATE_COMPONENTS);
             }
             //TODO
             case DECISION_GOODS -> {
                 drawButton.setDisable(true);
                 enableAllCellsShipboard();
-                tokens.setDisable(false);
-                tokens.setVisible(true);
-                tokens.getChildren().clear();
 
             }
             case DECISION_LAND_PLANET -> {
@@ -793,10 +882,10 @@ public class AdventureController extends GenericSceneController {
         switch (currentAdventureState) {
             case AdventureStatesTypes.DECISION_BATTERIES -> {
                 if (isTheComponentOfThisType(ComponentType.BATTERY, coordinates)) {
-                    tokens.setDisable(false);
-                    tokens.setVisible(true);
-                    tokens.getChildren().clear();
-                    tokens.getChildren().add(setUpTokensBox(coordinates, Token.BATTERY_CELLS));
+                    Pane pane = (Pane) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
+                    pane.getChildren().removeLast();
+                    tokenPointsListDefenitive.add(new Pair<>(coordinates, Token.BATTERY_CELLS));
+                    lastSelectedCoordinates = coordinates;
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Batteries.");
                 }
@@ -805,10 +894,11 @@ public class AdventureController extends GenericSceneController {
                 if (isTheComponentOfThisType(ComponentType.DOUBLE_CANNON, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
                         coordinatesSet.remove(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5);
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
+                        lastSelectedCoordinates = coordinates;
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle(styleForHighlight);
                     }
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Cannons.");
@@ -816,40 +906,35 @@ public class AdventureController extends GenericSceneController {
             }
             case AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS -> {
                 if (isTheComponentOfThisType(ComponentType.CABINE, coordinates)) {
-
-                    tokens.setDisable(false);
-                    tokens.setVisible(true);
-                    tokens.getChildren().clear();
-                    tokens.getChildren().add(setUpTokensBox(coordinates, Token.ASTRONAUT));
+                    Pane pane = (Pane) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
+                    Token tok = (Token) pane.getChildren().removeLast().getUserData();
+                    tokenPointsListDefenitive.add(new Pair<>(coordinates, tok));
+                    lastSelectedCoordinates = coordinates;
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Cabines.");
                 }
             }
             case AdventureStatesTypes.DECISION_SHIELDS -> {
-
-                if (isTheComponentOfThisType(ComponentType.SHIELD, coordinates)) {
-                    if (coordinatesSet.contains(coordinates)) {
-
-                        coordinatesSet.remove(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-                    } else {
-                        coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
-                    }
+                if (coordinatesSet.contains(coordinates)) {
+                    coordinatesSet.remove(coordinates);
+                    getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                 } else {
-                    guiApplication.printUpdateMessage(error + "You can only select Shields.");
+                    lastSelectedCoordinates = coordinates;
+                    coordinatesSet.add(coordinates);
+                    getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle(styleForHighlight);
                 }
             }
             case AdventureStatesTypes.DECISION_GOODS -> {
 
                 if (isTheComponentOfThisType(ComponentType.SPECIAL_STORAGE, coordinates) || isTheComponentOfThisType(ComponentType.STORAGE, coordinates)) {
                     if (coordinatesSet.contains(coordinates)) {
-
                         coordinatesSet.remove(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().remove(highlightPane);
                     } else {
+                        lastSelectedCoordinates = coordinates;
                         coordinatesSet.add(coordinates);
-                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
+                        highlightPane.getChildren().clear();
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().add(highlightPane);
                     }
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Storage.");
@@ -858,13 +943,13 @@ public class AdventureController extends GenericSceneController {
             case AdventureStatesTypes.DECISION_MOTOR -> {
 
                 if (isTheComponentOfThisType(ComponentType.DOUBLE_ENGINE, coordinates)) {
-
                     if (coordinatesSet.contains(coordinates)) {
                         coordinatesSet.remove(coordinates);
-                        highlightPane.getChildren().clear();
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
                     } else {
+                        lastSelectedCoordinates = coordinates;
                         coordinatesSet.add(coordinates);
-                        shipboardGrid.add(highlightPane, coordinates.x - 4, coordinates.y - 5);
+                        getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).setStyle(styleForHighlight);
                     }
                 } else {
                     guiApplication.printUpdateMessage(error + "You can only select Engines.");
@@ -922,14 +1007,14 @@ public class AdventureController extends GenericSceneController {
         return playerShipboard.getTile(coordinates).getComponentType().equals(type);
     }
 
-    public Node getNodeFromGridPane(int col, int row) {
+    public StackPane getNodeFromGridPane(int col, int row) {
         for (Node node : shipboardGrid.getChildren()) {
-            Integer column = GridPane.getColumnIndex(node);
+            Integer colIndex = GridPane.getColumnIndex(node);
             Integer rowIndex = GridPane.getRowIndex(node);
-
-            if ((column == null ? 0 : column) == col &&
-                    (rowIndex == null ? 0 : rowIndex) == row) {
-                return node;
+            int currentCol = (colIndex == null ? 0 : colIndex);
+            int currentRow = (rowIndex == null ? 0 : rowIndex);
+            if (currentCol == col && currentRow == row) {
+                return (StackPane) node;
             }
         }
         return null;
@@ -943,19 +1028,6 @@ public class AdventureController extends GenericSceneController {
         canvas.setWidth(imgWidth);
         canvas.setHeight(imgHeight);
         gc.drawImage(img, 0, 0, imgWidth, imgHeight);
-
-        double originalWidth = 0;
-        double originalHeight = 0;
-        if (getGameMode().equals(GameMode.LEVEL_1) || getGameMode().equals(GameMode.FLIGHT_MODE)) {
-            originalWidth = 985;
-            originalHeight = 546;
-        } else if (getGameMode().equals(GameMode.LEVEL_2)) {
-            originalWidth = 1055;
-            originalHeight = 639;
-        }
-        double scaleX = imgWidth / originalWidth;
-        double scaleY = imgHeight / originalHeight;
-
         ArrayList<Optional<Player>> showableBoard = leaderBoard.getShowableLeaderBoard();
         for (int i = 0; i < showableBoard.size(); i++) {
             final int cellIndex = i;
@@ -979,106 +1051,14 @@ public class AdventureController extends GenericSceneController {
         };
     }
 
-    private boolean isPresentInTokenList(Point coordinates, Token token, int key) {
-        return tokensPointsList.stream().anyMatch(pair -> pair.getKey().equals(coordinates) && pair.getValue().equals(token.toString() + key));
-    }
-
-//    private HBox setUpTokensBox(Point coordinates, Token tok) {
-//        HBox temporaryToken = (HBox) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
-//        HBox newHBox = new HBox(1);
-//        newHBox.setAlignment(Pos.CENTER);
-//
-//        temporaryToken.getProperties().forEach((key, value) -> {
-//            if (value instanceof ImageView imgV) {
-//                Image im = imgV.getImage();
-//                ImageView imageView = new ImageView(im);
-//
-//                switch (tok) {
-//                    case ASTRONAUT -> imageView.setOnMouseClicked(event -> {
-//                        if (isPresentInTokenList(coordinates, Token.ASTRONAUT, (int)key) || isPresentInTokenList(coordinates, Token.PURPLE_ALIENS, (int) key) || isPresentInTokenList(coordinates, Token.BROWN_ALIENS, (int) key)) {
-//                            tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
-//                            System.out.println("Removing token: " + imgV.getUserData().toString() + key);
-//                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-//                        } else {
-//                            tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-//                            System.out.println("Adding token: " + imgV.getUserData().toString() + key);
-//                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 10; -fx-border-radius: 10;");
-//                        }
-//                    });
-//                    case BATTERY_CELLS -> imageView.setOnMouseClicked(event -> {
-//                        if (isPresentInTokenList(coordinates, Token.BATTERY_CELLS, (int) key)) {
-//                            tokensPointsList.stream().filter((pair) -> pair.getKey().equals(coordinates) && pair.getValue().equals(imgV.getUserData().toString() + key)).findFirst().ifPresent(tokensPointsList::remove);
-//                            imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-//                        } else {
-//                            tokensPointsList.add(new Pair<>(coordinates, imgV.getUserData().toString() + key));
-//                            imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
-//                        }
-//                    });
-//                }
-//                newHBox.getChildren().add(imageView);
-//            }
-//        });
-//        return newHBox;
-//    }
-    private Pane setUpTokensBox(Point coordinates, Token tok) {
-        Node containerNode = (Node) getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getProperties().get("tokens");
-        Pane temporaryToken;
-        if (containerNode instanceof HBox) {
-            temporaryToken = (HBox) containerNode;
-        } else if (containerNode instanceof VBox) {
-            temporaryToken = (VBox) containerNode;
-        } else {
-            temporaryToken = new HBox(1);
-            ((HBox) temporaryToken).setAlignment(Pos.CENTER);
-        }
-        // Crea un nuovo contenitore dello stesso tipo
-        Pane newContainer;
-        if (temporaryToken instanceof HBox) {
-            newContainer = new HBox(1);
-            ((HBox) temporaryToken).setAlignment(Pos.CENTER);
-        } else {
-            newContainer = new VBox(1);
-            ((VBox) temporaryToken).setAlignment(Pos.CENTER);
-        }
-        // Itera sulle proprietà del contenitore per ricostruire le ImageView con eventi di selezione multipla
-        temporaryToken.getProperties().forEach((key, value) -> {
-            if (value instanceof ImageView imgV) {
-                Image im = imgV.getImage();
-                ImageView imageView = new ImageView(im);
-                imageView.setUserData(imgV.getUserData());
-                // Gestione del click per il toggle della selezione sul token
-                imageView.setOnMouseClicked(event -> {
-                    String tokenKey = imageView.getUserData().toString() + key;
-                    if (isPresentInTokenList(coordinates, tok, (int) key)) {
-                        tokensPointsList.removeIf(pair ->
-                                pair.getKey().equals(coordinates) && pair.getValue().equals(tokenKey)
-                        );
-                        imageView.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
-                    } else {
-                        tokensPointsList.add(new Pair<>(coordinates, tokenKey));
-                        imageView.setStyle("-fx-border-color: yellow; -fx-border-width: 3; -fx-border-radius: 5;");
-                    }
-                });
-                newContainer.getChildren().add(imageView);
-            }
-        });
-        return newContainer;
-    }
-
-    private Token convertName(String name) {
-        if (name.contains("BROWN_ALIENS")) return Token.BROWN_ALIENS;
-        else if (name.contains("PURPLE_ALIEN")) return Token.PURPLE_ALIENS;
-        else if (name.contains("YELLOW_GOODS")) return Token.YELLOW_GOODS;
-        else if (name.contains("RED_GOODS")) return Token.RED_GOODS;
-        else if (name.contains("BLUE_GOODS")) return Token.BLUE_GOODS;
-        else if (name.contains("GREEN_GOODS")) return Token.GREEN_GOODS;
-        else if (name.contains("BATTERY_CELLS")) return Token.BATTERY_CELLS;
-        else if (name.contains("ASTRONAUT")) return Token.ASTRONAUT;
-        else return null;
+    private boolean isPresentInTokenList(Point coordinates, Token token) {
+        return tokenPointsListDefenitive.stream().anyMatch(pair -> pair.getKey().equals(coordinates) && pair.getValue().equals(token));
     }
 
     public void clearEffectPane() {
         cardEffect.getChildren().clear();
+        tokenPointsListDefenitive.clear();
+        coordinatesSet.clear();
     }
 
     public void updateChangeTurn() {
@@ -1089,12 +1069,11 @@ public class AdventureController extends GenericSceneController {
 
     public void deActivatePoints(List<Point> coordinates) {
         coordinates.forEach(coordinate -> {
-            Node node = getNodeFromGridPane(coordinate.x - 4, coordinate.y - 5);
+            StackPane node = getNodeFromGridPane(coordinate.x - 4, coordinate.y - 5);
             if (node != null) {
                 node.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
             }
         });
-        coordinates.forEach(coordinatesSet::remove);
     }
 
     public void removeTokenFromTile(Point coordinate, Token tok) {
@@ -1142,62 +1121,16 @@ public class AdventureController extends GenericSceneController {
 
     }
     public void updateAttack(Point coord, Orientation or, boolean isMeteor){
-        System.out.println("Updating attack animation at " + coord + " with orientation " + or + " and isMeteor: " + isMeteor);
-        ImageView imView;
-        String path = "/it/polimi/ingsw/is25am49/animations/";
-        if(isMeteor) {
-            imView = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(path +"cannonade_BIG.jpg")).toExternalForm()));
-        }
-        else{
-            imView = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(path +"meteor_BIG.jpg")).toExternalForm()));
-        }
-        switch(or) {
-            case NORTH -> {
-                imView.setRotate(0);
-                imView.setFitHeight(70);
-                imView.setFitWidth(50);
-                imView.setLayoutX(getNodeFromGridPane(coord.x  - 4, coord.y - 5).getLayoutX());
-                imView.setLayoutY(shipboard.getLayoutY() + shipboard.getHeight() + 10);
-            }
-            case SOUTH -> {
-                imView.setRotate(180);
-                imView.setFitHeight(70);
-                imView.setFitWidth(50);
-                imView.setLayoutX(getNodeFromGridPane(coord.x  - 4, coord.y - 5).getLayoutX());
-                imView.setLayoutY(shipboard.getLayoutY() - 10);
-            }
-            case EAST -> {
-                imView.setRotate(90);
-                imView.setFitHeight(50);
-                imView.setFitWidth(70);
-                imView.setLayoutY(getNodeFromGridPane(coord.x - 4, coord.y - 5).getLayoutY());
-                imView.setLayoutX(shipboard.getLayoutX() + shipboard.getWidth() + 10);
-            }
-            case WEST -> {
-                imView.setRotate(270);
-                imView.setFitHeight(50);
-                imView.setFitWidth(70);
-                imView.setLayoutY(getNodeFromGridPane(coord.x  - 4, coord.y - 5).getLayoutY());
-                imView.setLayoutX(shipboard.getLayoutX() - 10);
-            }
-        }
-        System.out.println("ImageView position: " + imView.getLayoutX() + ", " + imView.getLayoutY());
-        imView.setVisible(true);
-        adventureContainer.getChildren().add(imView);
-        shipboardGrid.getChildren().add(highlightPane);
-        timerForAnimation(imView, coord);
+        getNodeFromGridPane(coord.x - 4, coord.y - 5).getChildren().add(highlightPane);
+        timerForAnimation(coord);
     }
-    private void timerForAnimation(ImageView imv, Point coord) {
+    private void timerForAnimation(Point coord) {
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(e -> animationFinishAttack(imv, coord));
+        pause.setOnFinished(e -> animationFinishAttack(coord));
         pause.play();
     }
-    private void animationFinishAttack(ImageView imv, Point coord) {
-        System.out.println("Finishing attack animation at " + coord);
-        highlightPane.getChildren().clear();
-        imv.setVisible(false);
-        imv.setManaged(false);
-        adventureContainer.getChildren().remove(imv);
+    private void animationFinishAttack(Point coord) {
+        getNodeFromGridPane(coord.x - 4, coord.y - 5).getChildren().remove(highlightPane);
         printShipboard();
     }
     private void enableAllCellsShipboard() {
@@ -1222,4 +1155,15 @@ public class AdventureController extends GenericSceneController {
 //            guiApplication.printUpdateMessage(error + "No tile found at " + coordinates);
 //        }
 //    }
+public void addMessage(String text) {
+    Label messageLabel = new Label(text);
+    messageLabel.setWrapText(true);
+    messageLabel.setStyle("-fx-text-fill: white;");
+    messageBox.getChildren().add(messageLabel);
+    javafx.scene.control.Separator separator = new javafx.scene.control.Separator();
+    separator.setStyle("-fx-background-color: #dddddd;");
+    messageBox.getChildren().add(separator);
+    scrollPane.layout();
+    scrollPane.setVvalue(1.0);
+}
 }

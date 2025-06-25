@@ -195,7 +195,6 @@ public void setupLobbyListView() {
             guiApplication.printUpdateMessage(error + e.getMessage());
             guiApplication.showScene(ScenesName.ERROR);
         }catch (Exception e){
-            e.printStackTrace();
             guiApplication.printUpdateMessage(error+ e.getMessage());
         }
     }
