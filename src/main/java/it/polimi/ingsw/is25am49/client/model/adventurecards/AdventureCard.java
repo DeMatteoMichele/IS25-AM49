@@ -138,6 +138,7 @@ public abstract class AdventureCard {
         if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
         }
+        userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "Activating components with batteries");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
             shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
             userInterface.updateEffectModifyEnergy(shipBoard.getPlayerID(), coordinatesOfBatteries.get(i).getKey(),coordinatesOfBatteries.get(i).getValue());

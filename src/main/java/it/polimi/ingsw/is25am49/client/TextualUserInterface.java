@@ -762,7 +762,7 @@ public class TextualUserInterface implements UserInterface {
     /**
      * Updates the game state for a tile drawn by a player.
      * @param playerId the ID of the player who drew the tile
-     * @param idTile the ID of the tile drawn
+     * @param idTIle the ID of the tile drawn
      */
     @Override
     public void updateDrawTile(int playerId, int idTIle) {
