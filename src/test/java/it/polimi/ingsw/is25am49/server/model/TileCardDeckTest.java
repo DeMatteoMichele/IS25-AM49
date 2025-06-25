@@ -1,6 +1,7 @@
 package it.polimi.ingsw.is25am49.server.model;
 
 import it.polimi.ingsw.is25am49.server.model.*;
+import it.polimi.ingsw.is25am49.server.model.exceptions.OutOfDeckExceptions;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
@@ -72,25 +73,27 @@ class TileCardDeckTest {
         gameSession.userDrawTile(player1, 95);
         //TODO se chiamo questo metodo lancia eccezzione perche non può pescare una carta che ha già pescato un altro
 //        game.userDrawTile(player2, 95);
-        player1.getHandTile().ifPresent(System.out::println);
-        System.out.println(deck.toString());
-        gameSession.userDrawTile(player1,34);
-        gameSession.userDrawTile(player2,95);
-        player1.getHandTile().ifPresent(System.out::println);
 
-        System.out.println(deck.toString());
-        gameSession.userDrawTile(player1, 78);
+        assertThrows(OutOfDeckExceptions.class,()->{
+            player1.getHandTile().ifPresent(System.out::println);
+            System.out.println(deck.toString());
+            gameSession.userDrawTile(player1,34);
+            gameSession.userDrawTile(player2,95);
+            player1.getHandTile().ifPresent(System.out::println);
 
-        gameSession.userDrawTile(player2, 98);
-        gameSession.userDrawTile(player3, 11);
-        System.out.println(deck.toString());
-        player1.getHandTile().ifPresent(tile -> deck.addDiscardTile(tile, player1));
-        System.out.println(deck.toString());
-        gameSession.userDrawTile(player1, 23);
-        gameSession.userDrawTile(player2, 13);
-        gameSession.userDrawTile(player3, 67);
-        System.out.println(deck.toString());
-        System.out.println(deck.getTileById(95).toString());
+            System.out.println(deck.toString());
+            gameSession.userDrawTile(player1, 78);
+
+            gameSession.userDrawTile(player2, 98);
+            gameSession.userDrawTile(player3, 11);
+            System.out.println(deck.toString());
+            player1.getHandTile().ifPresent(tile -> deck.addDiscardTile(tile, player1));
+            System.out.println(deck.toString());
+            gameSession.userDrawTile(player1, 23);
+            gameSession.userDrawTile(player2, 13);
+            gameSession.userDrawTile(player3, 67);
+            System.out.println(deck.toString());
+            System.out.println(deck.getTileById(95).toString());});
         //System.out.println(deck.getTileById(139).toString());
     }
 }

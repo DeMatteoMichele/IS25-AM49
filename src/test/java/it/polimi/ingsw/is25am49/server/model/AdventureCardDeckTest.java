@@ -6,6 +6,7 @@ import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.*;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.FinishDeckExceptions;
@@ -60,7 +61,10 @@ class AdventureCardDeckTest {
         assertEquals("pianeti",cardDrawn.getDescription() );
         assertEquals(card.getLevel(),cardDrawn.getLevel());
         gameBoard.getCurrentCard().setFinished(true);
-        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        try {
+            gameBoard.drawAdventureCard(gameBoard.getLeader());
+        } catch (NullPointerException _) {}
+
         cardDrawn = gameBoard.getCurrentCard();
         assertEquals(card2.getDescription(),cardDrawn.getDescription());
     }

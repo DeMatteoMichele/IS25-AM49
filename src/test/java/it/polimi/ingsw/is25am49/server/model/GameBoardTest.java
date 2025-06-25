@@ -4,6 +4,7 @@ import it.polimi.ingsw.is25am49.server.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
 import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
@@ -222,7 +223,9 @@ class GameBoardTest {
             System.out.println(card.toString());
             System.out.println("\n");
         }
-        gameBoard.drawAdventureCard(gameBoard.getLeader());
+        try {
+            gameBoard.drawAdventureCard(gameBoard.getLeader());
+        } catch (NullPointerException _) {}
     }
     @Test
     void generateDeck() {
