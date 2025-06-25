@@ -11,13 +11,36 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a specific type of adventure card called "Epidemy Card".
+ * Triggers events related to the removal of crew members from cabins
+ * based on interconnectivity of cabin tiles on the game board.
+ */
 public class EpidemyCard extends AdventureCard {
 
+    /**
+     * Constructs an EpidemyCard instance by initializing it with the specified game board, description, level, and name.
+     *
+     * @param gameBoard the board where the game is being played.
+     * @param description a short summary or explanation of this card.
+     * @param level the intensity level of the card.
+     * @param name the name of the card.
+     */
     public EpidemyCard(GameBoard gameBoard, String description,int level,String name) {
         super(gameBoard,description, level,name);
     }
+    /**
+     * Stores the coordinates of all cabins related to the EpidemyCard.
+     * Each cabin's position is represented as a Point object.
+     */
     List<Point> coordinatesOfAllCabins = new ArrayList<>();
 
+    /**
+     * Overrides the drawCard method to perform additional functionality specific to the EpidemyCard.
+     * Calls the superclass method to change the game state and update the current player.
+     * Prints a message indicating the card drawn and its effects on the game.
+     * Invokes the checkRequirements method to assess the impact of interconnected cabins on crew members.
+     */
     @Override
     public void drawCard() {
         super.drawCard();
@@ -25,6 +48,11 @@ public class EpidemyCard extends AdventureCard {
         checkRequirements();
     }
 
+    /**
+     * Checks and updates the list of cabins on a ship to ensure only interconnected cabins remain.
+     * Identifies isolated cabins that lack any neighboring cabins (north, south, east, or west)
+     * and removes them from the list of cabin coordinates.
+     */
     public void checkInterconnectedCabin(){
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
         coordinatesOfAllCabins.addAll(ship.getComponentsPositions(ComponentType.CABINE));
@@ -41,6 +69,12 @@ public class EpidemyCard extends AdventureCard {
                 });
         coordinatesOfAllCabins.removeAll(pointsToRemove);
     }
+    /**
+     * Verifies whether the current player's ship has interconnected cabins.
+     * If cabins are not interconnected, proceeds to check the next player.
+     * If cabins are interconnected, sets the state to apply the effect and triggers it.
+     * Outputs the process and decisions to the console.
+     */
     @Override
     public void checkRequirements() {
         System.out.println("Now i check if "+ gameBoard.getCurrentPlayer().getUsername() + " has interconnected cabins");
@@ -57,6 +91,16 @@ public class EpidemyCard extends AdventureCard {
         }
     }
 
+    /**
+     * Determines whether the game should proceed with the next player's turn or move to the update phase.
+     *
+     * If there is a next player available, the method allows the turn to continue
+     * by switching to the next player and checking the game requirements.
+     * If there are no more players left for the turn, it triggers the update phase.
+     *
+     * Exceptions:
+     * - Catches and handles {@code IllegalSetOfNextPlayerException} when no next player is available.
+     */
     private void checkNextPlayer() {
         try {
             gameBoard.nextPlayer();
@@ -69,6 +113,16 @@ public class EpidemyCard extends AdventureCard {
         }
     }
 
+    /**
+     * Removes specific tokens (astronaut, brown aliens, purple aliens) from the tiles
+     * on the current player's ship board, based on the coordinates stored in
+     * {@code coordinatesOfAllCabins}. Clears the coordinates after processing and
+     * transitions to the next player.
+     *
+     * Overrides the base implementation to apply the custom effect of the EpidemyCard.
+     *
+     * Validation on the current state is handled by the superclass.
+     */
     @Override
     public void applyEffect(){
         super.applyEffect();
@@ -88,6 +142,12 @@ public class EpidemyCard extends AdventureCard {
         checkNextPlayer();
     }
 
+    /**
+     * Generates a string representation of the EpidemyCard object in a formatted box with details such as name,
+     * description, and level.
+     *
+     * @return a formatted string representing the EpidemyCard object
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

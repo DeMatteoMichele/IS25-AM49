@@ -13,6 +13,11 @@ public class NetworkController {
     private final ConcurrentMap<String, Integer> usernamesToIds;
 
 
+    /**
+     * Constructs a new instance of the NetworkController class.
+     * Initializes data structures and variables required to manage the network environment
+     * for players using RMI and Socket connections.
+     */
     public NetworkController() {
         this.playersRMI = new HashSet<>();
         this.playersSocket = new HashSet<>();

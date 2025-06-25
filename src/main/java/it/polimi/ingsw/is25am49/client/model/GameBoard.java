@@ -327,8 +327,8 @@ public class GameBoard {
             mapSmallAdventureDecks.forEach((index, smallDeck) -> smallDeck.stream().forEach(bufferDeck::add));
             mapSmallAdventureDecks.clear();
             setMainAdventureDeck(bufferDeck);
+            mainAdventureDeck.shuffle(new Random(seedForGeneration));
         }
-        mainAdventureDeck.shuffle(new Random(seedForGeneration));
     }
 
     /**

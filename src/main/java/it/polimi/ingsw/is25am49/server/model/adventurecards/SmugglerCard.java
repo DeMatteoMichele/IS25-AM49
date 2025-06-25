@@ -12,8 +12,28 @@ import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import java.util.ArrayList;
 
 
+/**
+ * Represents the SmugglerCard, a specific type of enemy in the game.
+ * This card handles battles and effects for winning or losing goods.
+ * Extends the Enemy class.
+ */
 public class SmugglerCard extends Enemy {
 
+    /**
+     * Constructs a SmugglerCard object with the specified parameters and initializes its effects.
+     *
+     * @param gameBoard the game board associated with this card
+     * @param description a brief description of the card
+     * @param level the difficulty level of the card
+     * @param name the name of the card
+     * @param dayslost the number of days lost when this card is encountered
+     * @param minimumFirePower the minimum firepower required to face this card
+     * @param redGoods the amount of red goods won if the effect is triggered
+     * @param yellowGoods the amount of yellow goods won if the effect is triggered
+     * @param greenGoods the amount of green goods won if the effect is triggered
+     * @param blueGoods the amount of blue goods won if the effect is triggered
+     * @param lostGoods the amount of goods lost if the effect is triggered
+     */
     public SmugglerCard(GameBoard gameBoard, String description, int level, String name, int dayslost, int minimumFirePower, int redGoods, int yellowGoods, int greenGoods, int blueGoods, int lostGoods) {
         super(gameBoard, description, level,name, dayslost, minimumFirePower);
         listEffects.add(new EffectWinGoods("WinGoods", redGoods, yellowGoods, greenGoods, blueGoods));
@@ -21,9 +41,23 @@ public class SmugglerCard extends Enemy {
     }
 
 
+    /**
+     * Index representing the position associated with rewarding goods
+     * when the battle outcome is a win in the SmugglerCard game logic.
+     */
     private static final int WIN_GOODS_INDEX = 0;
+    /**
+     * Represents the index corresponding to goods lost as a result of a smuggling encounter.
+     * Used within the SmugglerCard class to track penalties.
+     */
     private static final int LOSE_GOODS_INDEX = 1;
 
+    /**
+     * Evaluates the outcome of a battle based on the ship's firepower.
+     * Changes the game state, applies effects, and determines the next step in the game.
+     *
+     * @param shipBoard the current state of the ship's board, including its firepower and components.
+     */
     @Override
     protected void evaluateBattleOutcome(ShipBoard shipBoard) {
         if (checkWinFirePower(shipBoard)) {
@@ -47,6 +81,10 @@ public class SmugglerCard extends Enemy {
 
     }
 
+    /**
+     * Applies the effect of the smuggler card to the current player.
+
+     */
     @Override
     public void applyEffect() {
         super.applyEffect();
@@ -61,16 +99,32 @@ public class SmugglerCard extends Enemy {
         }
     }
 
+    /**
+     * Determines and returns the next state in the adventure sequence after processing batteries.
+     *
+     * @return The next adventure state, specifically DECISION_CANNON.
+     */
     @Override
     protected AdventureStatesTypes determineStateAfterBatteries() {
         return AdventureStatesTypes.DECISION_CANNON;
     }
 
+    /**
+     * Handles the decision-making process when the shipboard has empty batteries.
+     *
+     * @param shipBoard the ShipBoard instance representing the current state of the ship.
+     */
     @Override
     protected void handleEmptyBatteryDecision(ShipBoard shipBoard) {
         evaluateBattleOutcome(shipBoard);
     }
 
+    /**
+     * Handles the reward acceptance process in the adventure.
+     * Sets the current effect to winning goods and updates the state
+     * to decision-making for goods placement.
+     * Verifies player connection or applies a default effect if disconnected.
+     */
     @Override
     protected void handleRewards() {
         System.out.println("You have accepted the rewards! You can now choose where to put your new goods");
@@ -79,6 +133,12 @@ public class SmugglerCard extends Enemy {
         checkConnectionOrDefaultEffect(AdventureStatesTypes.DECISION_GOODS);
     }
 
+    /**
+     * Handles the player's refusal of the rewards associated with the SmugglerCard.
+     *
+     * Upon refusal, the card is marked as defeated without any loss of days,
+     * and the card's state is updated.
+     */
     @Override
     protected void handleRefuseOfRewards() {
         System.out.println("You have refused the rewards. The card is defeated and you don't lose days");

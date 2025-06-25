@@ -17,6 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents an adventure card for an abandoned station encounter in the game.
+ *
+ * The behavior of this card includes drawing, checking requirements, managing
+ * landing decisions, applying effects tied to winning goods, and updating the game state
+ * accordingly based on the player's decisions and card effects.
+ *
+ * Inherits from {@link AdventureCard}.
+ */
 public class AbandonedStationCard extends AdventureCard {
     protected final ArrayList<Token> Prize = new ArrayList<>();
 
@@ -24,6 +33,20 @@ public class AbandonedStationCard extends AdventureCard {
     private final int daysLost;
     private final int lostAstronauts;
 
+    /**
+     * Constructs an AbandonedStationCard with the specified parameters.
+     *
+     * @param gameBoard the game board on which the card operates
+     * @param description the description of the card
+     * @param level the level of the card
+     * @param name the name of the card
+     * @param daysLost the number of days lost when this card is used
+     * @param minimumAstronauts the minimum number of astronauts required
+     * @param redGoods the number of red goods rewarded
+     * @param yellowGoods the number of yellow goods rewarded
+     * @param greenGoods the number of green goods rewarded
+     * @param blueGoods the number of blue goods rewarded
+     */
     public AbandonedStationCard(GameBoard gameBoard, String description, int level, String name, int daysLost, int minimumAstronauts, int redGoods, int yellowGoods, int greenGoods, int blueGoods) {
         super(gameBoard, description, level, name);
         this.daysLost = daysLost;
@@ -32,6 +55,9 @@ public class AbandonedStationCard extends AdventureCard {
         listEffects.add(new EffectWinGoods("Win Goods", redGoods, yellowGoods, greenGoods, blueGoods));
     }
 
+    /**
+     * Draws the current card and performs specific actions for the Abandoned Station card.
+     */
     @Override
     public void drawCard() {
         super.drawCard();
@@ -40,6 +66,13 @@ public class AbandonedStationCard extends AdventureCard {
     }
 
 
+    /**
+     * Checks if the current player meets the requirements to proceed with the abandoned station card action.
+     * The method evaluates the total number of crew members (including astronauts, brown aliens, and purple aliens)
+     * on the player's shipboard to determine whether the player can land on the station. If the number of crew members
+     * is equal to or greater than the required amount, it transitions the game state to allow the player
+     * to decide whether to land on the station or the ship. Otherwise, it moves to the next player.
+     */
     @Override
     public void checkRequirements() {
         ShipBoard ship = gameBoard.getCurrentPlayer().getShipBoard();
@@ -62,6 +95,15 @@ public class AbandonedStationCard extends AdventureCard {
         }
     }
 
+    /**
+     * Handles the decision process for landing on a station or ship during the game.
+     * This method updates the game state and executes the appropriate actions based
+     * on whether the player decides to land or not.
+     *
+     * @param IsLanded boolean indicating the player's decision to land on the station or ship.
+     *                 If true, the player lands; if false, the player skips the landing.
+     * @throws IllegalMethodOnThisStateException if this method is called in an incorrect game state.
+     */
     @Override
     public void landingOnStationOrShip(boolean IsLanded) throws IllegalMethodOnThisStateException {
         super.landingOnStationOrShip(IsLanded);
@@ -84,6 +126,14 @@ public class AbandonedStationCard extends AdventureCard {
         }
     }
 
+    /**
+     * Completes the decision-making process for the current state of the game.
+     * This method validates the provided coordinates and updates the game state accordingly.
+     *
+     * @param coordinates a list of pairs where each pair consists of a {@code Point} and a {@code Token}, representing the selected coordinates and their respective tokens in the
+     *  decision-making process.
+     * @throws IllegalMethodOnThisStateException if the method is invoked in an incorrect game state.
+     */
     @Override
     public void finishDecision(List<Pair<Point, Token>> coordinates) {
         ShipBoard shipBoard = gameBoard.getCurrentPlayer().getShipBoard();
@@ -99,6 +149,11 @@ public class AbandonedStationCard extends AdventureCard {
         }
     }
 
+    /**
+     * Applies the effect of the AbandonedStationCard to the current player in the game.
+     * This method overrides the `applyEffect` method from its superclass and executes
+     * additional functionality specific to the AbandonedStationCard.
+     */
     @Override
     public void applyEffect() {
         super.applyEffect();
@@ -109,6 +164,13 @@ public class AbandonedStationCard extends AdventureCard {
         update();
     }
 
+    /**
+     * Converts the AbandonedStationCard object into a formatted string representation.
+     * The string representation includes details such as the name, description, level,
+     * minimum astronauts, days lost, and potential rewards in a structured box layout.
+     *
+     * @return a string containing a formatted representation of the card's details
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

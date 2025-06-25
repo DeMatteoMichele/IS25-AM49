@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Set;
 
 
+/**
+ * Represents the abstract base class for game states in the state machine.
+ * Encapsulates the shared behavior and core transitions between states.
+ */
 public abstract class State {
     public State(GameSession gameSession){
         this.gameSession = gameSession;
