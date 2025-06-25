@@ -13,6 +13,15 @@
 <!--            </image>-->
         </ImageView>
         <Button fx:id="startGameButton" onAction="#handleStartGame" prefHeight="50.0" prefWidth="275.0" style="-fx-font-size: 24px; -fx-background-color: linear-gradient(to bottom, #FFEB3B, #FBC02D); -fx-border-color: transparent; -fx-border-width: 2px; -fx-border-radius: 15px; -fx-background-radius: 15px; -fx-text-fill: white; -fx-alignment: center;" StackPane.alignment="CENTER" translateY="300" text="START" />
-    </children>
+<!--      <ScrollPane fx:id="scrollPane" prefHeight="100.0" prefWidth="100.0" maxHeight="300.0" maxWidth="500.0"-->
+<!--                          StackPane.alignment="TOP_CENTER" translateY="100" visible="true"-->
+<!--                          vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;">-->
+<!--                  <content>-->
+<!--                      <VBox fx:id="messageBox" spacing="10" prefWidth="380" maxWidth="480" style="-fx-padding: 10; -fx-text-fill: black; -fx-font-weight: bold;">-->
+<!--                          &lt;!&ndash; Qui verranno aggiunti i messaggi dinamicamente dal controller &ndash;&gt;-->
+<!--                      </VBox>-->
+<!--                  </content>-->
+<!--              </ScrollPane>-->
+          </children>
 
 </StackPane>

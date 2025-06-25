@@ -5,14 +5,12 @@ import it.polimi.ingsw.is25am49.server.model.GameBoard;
 import it.polimi.ingsw.is25am49.server.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.adventurecards.EpidemyCard;
-import it.polimi.ingsw.is25am49.shared.enums.Color;
-import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
-import it.polimi.ingsw.is25am49.shared.enums.GameMode;
-import it.polimi.ingsw.is25am49.shared.enums.Token;
+import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.server.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Tile;
+import it.polimi.ingsw.is25am49.shared.enums.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,20 +45,40 @@ class EpidemyCardTest {
         player1.setShipBoard(ship1);
         player2.setShipBoard(ship2);
         player3.setShipBoard(ship3);
-        component1 = new ContainerComponent(ComponentType.CABINE,4);
-        component2 = new ContainerComponent(ComponentType.CABINE,5);
-        component3 = new ContainerComponent(ComponentType.CABINE,4);
-        component4 = new ContainerComponent(ComponentType.BROWN_ALIEN_MODULE,5);
-        component5 = new ContainerComponent(ComponentType.CABINE,4);
+        component1 = new ContainerComponent(ComponentType.CABINE,2);
+        component2 = new ContainerComponent(ComponentType.CABINE,2);
+        component3 = new ContainerComponent(ComponentType.CABINE,2);
+        component4 = new ContainerComponent(ComponentType.CABINE,2);
+        component5 = new ContainerComponent(ComponentType.CABINE,2);
 
         tile1 = new Tile(2,component1);
+        tile1.setConnectors(
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL
+        );
+
         tile2 = new Tile(1,component2);
+        tile2.setConnectors(
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL
+        );
         tile3 = new Tile(2,component3);
         tile4 = new Tile(3,component4);
+        tile4.setConnectors(
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL,
+                ConnectorType.UNIVERSAL
+        );
         tile5 = new Tile(4,component5);
 
         player1.getShipBoard().insertTile(coordinate1,tile1);
         player1.getShipBoard().insertTile(coordinate2,tile2);
+        player1.getShipBoard().insertTile(coordinate4,tile4);
         player2.getShipBoard().insertTile(coordinate3,tile3);
         player2.getShipBoard().insertTile(coordinate4,tile4);
         player3.getShipBoard().insertTile(coordinate2,tile5);
@@ -69,8 +87,7 @@ class EpidemyCardTest {
         player1.getShipBoard().addTokenToTile(coordinate2, Token.ASTRONAUT);
         player2.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
         player2.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
-        player2.getShipBoard().addTokenToTile(coordinate4, Token.BROWN_ALIENS);
-        player2.getShipBoard().addTokenToTile(new Point(7,7), Token.ASTRONAUT);
+        player2.getShipBoard().addTokenToTile(coordinate4, Token.ASTRONAUT);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player1);
@@ -78,12 +95,16 @@ class EpidemyCardTest {
         deck = new AdventureCardDeck();
         deck.add(new EpidemyCard(gameBoard,"Epidemy Card", 1,"epidemy"));
         gameBoard.setMainAdventureDeck(deck);
+        ship1.completeShipBoard();
+        System.out.println(ship1.toString());
 
     }
     @Test
     void drawCard() {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
-        assertEquals(1, player1.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT));
+        System.out.println("NAVE 1");
+        System.out.println(ship1.toString());
+        assertEquals(3, player1.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT));
         assertEquals(0, player1.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS));
     }
 

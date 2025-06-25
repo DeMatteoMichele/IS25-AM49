@@ -20,6 +20,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -59,6 +60,10 @@ public class AdventureController extends GenericSceneController {
     private ImageView cardDeckImage;
     @FXML
     private AnchorPane adventureContainer;
+    @FXML
+    private VBox messageBox;
+    @FXML
+    private ScrollPane scrollPane;
 
 
     private volatile boolean timeIsDone;
@@ -1179,5 +1184,17 @@ public class AdventureController extends GenericSceneController {
         } else {
             guiApplication.printUpdateMessage(error + "No tile found at " + coordinates);
         }
+    }
+
+    public void addMessage(String text) {
+        Label messageLabel = new Label(text);
+        messageLabel.setWrapText(true);
+        messageLabel.setStyle("-fx-text-fill: white;");
+        messageBox.getChildren().add(messageLabel);
+        javafx.scene.control.Separator separator = new javafx.scene.control.Separator();
+        separator.setStyle("-fx-background-color: #dddddd;");
+        messageBox.getChildren().add(separator);
+        scrollPane.layout();
+        scrollPane.setVvalue(1.0);
     }
 }
