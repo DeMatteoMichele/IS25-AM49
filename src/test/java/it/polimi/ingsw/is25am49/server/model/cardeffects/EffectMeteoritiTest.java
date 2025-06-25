@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.server.model.cardeffects;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectMeteoriti;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EffectMeteoritiTest {
     Player player;
@@ -95,4 +99,53 @@ class EffectMeteoritiTest {
 
     }
 
+    @Test
+    void testIsCannonUsableAgainstMeteor() throws Exception {
+        EffectMeteoriti effect = new EffectMeteoriti("testEffect", 0, Orientation.NORTH);
+        effect.setPosition(6);
+
+
+        assertThrows(IllegalMethodOnThisCardException.class, () -> effect.getLostCrew());
+        assertThrows(IllegalMethodOnThisCardException.class, () -> effect.getGoods());
+        assertThrows(IllegalMethodOnThisCardException.class, () -> effect.setListOfCoordinates(new ArrayList<>()));
+        assertThrows(IllegalMethodOnThisCardException.class, () -> effect.setCoordinate(new Point(0, 0)));
+
+        Player testPlayer = new Player("TestPlayer", Color.BLUE, 1);
+        ShipBoard testShip = new ShipBoard(2, 3, Color.BLUE);
+        testPlayer.setShipBoard(testShip);
+
+        Tile matchingTile = new Tile(1, new SpecialComponent(ComponentType.CANNON, 1));
+        matchingTile.setTileOrientation(Orientation.NORTH);
+        testShip.insertTile(new Point(6, 7), matchingTile);
+
+        Tile nonMatchingTile = new Tile(2, new SpecialComponent(ComponentType.CANNON, 1));
+        nonMatchingTile.setTileOrientation(Orientation.SOUTH);
+        testShip.insertTile(new Point(6,8), nonMatchingTile);
+
+        java.lang.reflect.Method method = EffectMeteoriti.class.getDeclaredMethod("isCannonUsableAgainstMeteor", Player.class, Point.class);
+        method.setAccessible(true);
+
+        boolean resultMatching = (boolean) method.invoke(effect, testPlayer, new Point(6,7));
+        org.junit.jupiter.api.Assertions.assertTrue(resultMatching);
+
+        boolean resultNonMatching = (boolean) method.invoke(effect, testPlayer, new Point(6,8));
+        org.junit.jupiter.api.Assertions.assertFalse(resultNonMatching);
+
+        EffectMeteoriti effectEast = new EffectMeteoriti("testEffect", 0, Orientation.EAST);
+        effectEast.setPosition(5);
+
+        Tile eastTile = new Tile(3, new ContainerComponent(ComponentType.CANNON, 1));
+        eastTile.setTileOrientation(Orientation.EAST);
+        testShip.insertTile(new Point(8,5), eastTile);
+
+        boolean resultEast = (boolean) method.invoke(effectEast, testPlayer, new Point(8, 5));
+        org.junit.jupiter.api.Assertions.assertTrue(resultEast);
+
+        Tile eastTileFail = new Tile(4, new ContainerComponent(ComponentType.CANNON, 1));
+        eastTileFail.setTileOrientation(Orientation.EAST);
+        testShip.insertTile(new Point(8,6), eastTileFail);
+
+        boolean resultEastFail = (boolean) method.invoke(effectEast, testPlayer, new Point(8, 6));
+        org.junit.jupiter.api.Assertions.assertFalse(resultEastFail);
+    }
 }

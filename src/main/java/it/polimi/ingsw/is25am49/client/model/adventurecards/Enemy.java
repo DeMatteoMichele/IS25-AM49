@@ -89,6 +89,7 @@ public abstract class Enemy extends AdventureCard {
     protected void tryNextPlayer() {
         try {
             gameBoard.nextPlayer();
+            userInterface.updateGenericCardMessage(genericIdForUpdates,"Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now to update");
@@ -113,6 +114,7 @@ public abstract class Enemy extends AdventureCard {
                     return;
                 }
                 userInterface.updateGenericCardMessage(gameBoard.getCurrentPlayer().getIdPlayer(), "You have decided the coord for the batteries.");
+                userInterface.updateFinishDecisionToken(gameBoard.getCurrentPlayer().getIdPlayer(), coordinates, coordinates.size(), true);
                 currentState = determineStateAfterBatteries();
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(currentState);

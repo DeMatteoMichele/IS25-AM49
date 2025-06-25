@@ -93,19 +93,8 @@ public class TileCardDeck {
         }
     }
 
-    /**
-     * Draws a tile from the deck for the specified player.
-     *
-     * @return the drawn Tile
-     * @throws OutOfDeckExceptions if there are no tiles left in the deck
-     */
-    public int getPositionOfATile(Tile tile) {
-        return tileDeck.entrySet().stream()
-                .filter(e -> e.getValue().equals(tile))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(-1);
-    }
+
+
     public Stream<Map.Entry<Integer, Tile>> stream(){
         return tileDeck.entrySet().stream();
     }

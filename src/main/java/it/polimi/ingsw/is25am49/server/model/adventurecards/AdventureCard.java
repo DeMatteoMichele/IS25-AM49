@@ -264,7 +264,7 @@ public abstract class AdventureCard {
         if (coordinatesOfActivable.size() > coordinatesOfBatteries.size()) {
             throw new IllegalNumOfActivableException("You have to choose at max the same number of components as batteries");
         }
-        System.out.println("You have decided the coord for the components");
+        System.out.println("Activation of components with batteries");
         for (int i = 0; i < coordinatesOfActivable.size(); i++) {
             shipBoard.turnOnComponent(coordinatesOfActivable.get(i), coordinatesOfBatteries.get(i).getKey());
         }
