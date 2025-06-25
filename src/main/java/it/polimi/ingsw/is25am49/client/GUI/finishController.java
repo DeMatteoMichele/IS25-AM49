@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static javafx.util.Duration.seconds;
 
@@ -52,11 +53,13 @@ public class finishController extends GenericSceneController{
     public void calculateScore(ActionEvent event) {
         try{
             guiApplication.getController().adminCalculateScore(guiApplication.getMyId());
-            calculateScore.setDisable(true);
-            calculateScore.setVisible(false);
         }catch(Exception e){
             guiApplication.printUpdateMessage(error + e.getMessage());
         }
+    }
+    public void disableCalculateScore() {
+        calculateScore.setDisable(true);
+        calculateScore.setVisible(false);
     }
     public void endGame(ActionEvent event) {
         try {
@@ -74,7 +77,12 @@ public class finishController extends GenericSceneController{
         delay.play();
     }
     public void printPodium(){
-        List<Player> finalRanking = gameSession.getLeaderBoard().stream().map(Map.Entry::getKey).sorted(Comparator.comparingInt(Player::getCredits).reversed()).toList();
+        List<Player> finalRanking = Stream.concat(
+                        gameSession.getLeaderBoard().stream().map(Map.Entry::getKey),
+                        gameSession.getGame().get().getGameboard().getLandedPlayers().stream()
+                )
+                .sorted(Comparator.comparingInt(Player::getCredits).reversed())
+                .toList();
         firstPosition.setText("1st\uD83E\uDD47:  " + finalRanking.get(0).getUsername() + System.lineSeparator() + finalRanking.get(0).getCredits() + " credits");
         firstPosition.setWrapText(true);
         ImageView playerIcon = getPlayerIcon(finalRanking.get(0).getIdPlayer());
