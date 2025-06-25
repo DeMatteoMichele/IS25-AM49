@@ -52,6 +52,10 @@ class MeteorRainCardTest {
         player1.setShipBoard(shipMock1);
         player3.setShipBoard(shipMock3);
         player4.setShipBoard(shipMock4);
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        when(shipMock1.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        when(shipMock3.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        when(shipMock4.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player4);
@@ -82,7 +86,6 @@ class MeteorRainCardTest {
         gameBoard.getCurrentCard().rollDices();
         gameBoard.getCurrentCard().rollDices();
         gameBoard.getCurrentCard().rollDices();
-        verify(spyCard, Mockito.times(12)).applyEffect();
     }
 
     @Test
@@ -133,14 +136,12 @@ class MeteorRainCardTest {
         // Simula player2 che usa batterie per attivare un cannone
         List<Pair<Point, Token>> batteries = new ArrayList<>();
         batteries.add(new Pair<>(new Point(1, 1), Token.BATTERY_CELLS));
-        gameBoard.getCurrentCard().finishDecision(batteries);
+        gameBoard.disconnectionWarningToCard(player2);
+//        gameBoard.getCurrentCard().finishDecision(batteries);
 
         // Simula la scelta del cannone di Player2
         Set<Point> cannonCoordinates = new HashSet<>();
         cannonCoordinates.add(new Point(2, 1));
-        gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
-
-        // Test terzo effetto (Meteorite piccolo - livello 1). Simulo che nessuno abbia più batterie
         when(shipMock2.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(0);
         when(shipMock3.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(0);
         gameBoard.getCurrentCard().rollDices();

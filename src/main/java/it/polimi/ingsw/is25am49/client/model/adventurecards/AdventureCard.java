@@ -320,7 +320,7 @@ public abstract class AdventureCard {
                 currentState == AdventureStatesTypes.ROLL_DICES)) {
             applyDefaultEffect(currentState);
         } else {
-            userInterface.updateGenericCardMessage(genericIdForUpdates,gameBoard.getCurrentPlayer().getUsername() + " has disconnected, you can continue the game without him!");
+            userInterface.updateGenericCardMessage(genericIdForUpdates,player.getUsername() + " has disconnected, you can continue the game without him!");
         }
     }
 }

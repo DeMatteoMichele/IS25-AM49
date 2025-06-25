@@ -184,7 +184,6 @@ public class GameBoard {
                             int blueGoods = node.get("blueGoods").asInt();
                             yield new AbandonedStationCard(cardId, this, description, level, name, daysLost, minimumAstronauts, redGoods, yellowGoods, greenGoods, blueGoods);
                         }
-                        case "SabotageCard" -> new SabotageCard(cardId, this, description, level, name);
                         case "WarZoneCard" -> {
                             int daysLost = node.get("daysLost").asInt();
                             int loseAstronauts = node.get("lostAstronauts").asInt();

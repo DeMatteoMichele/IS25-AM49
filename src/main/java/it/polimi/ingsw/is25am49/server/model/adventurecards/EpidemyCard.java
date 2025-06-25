@@ -134,7 +134,7 @@ public class EpidemyCard extends AdventureCard {
             else if(ship.getPositionsOfaToken(Token.BROWN_ALIENS).contains(point)){
                 ship.removeTokenFromTile(point, Token.BROWN_ALIENS);
             }
-            else{
+            else if(ship.getPositionsOfaToken(Token.PURPLE_ALIENS).contains(point)){
                 ship.removeTokenFromTile(point, Token.PURPLE_ALIENS);
             }
         });

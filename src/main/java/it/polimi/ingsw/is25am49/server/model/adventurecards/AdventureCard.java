@@ -286,16 +286,16 @@ public abstract class AdventureCard {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
                     if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY && token != Token.BATTERY_CELLS) {
-                        throw new IllegalTokensException("Puoi utilizzare solo batterie con celle di batteria!");
+                        throw new IllegalTokensException("You can only use batteries with battery cells!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
-                        throw new IllegalTokensException("Hai selezionato un numero di token errato, incompatibile con la tua shipboard");
+                        throw new IllegalTokensException("You selected an incorrect number of tokens, incompatible with your shipboard");
                     }
                 }
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
                 if (coordinates.size() > currentEffect.getLostCrew()) {
-                    throw new IllegalTokensException("Non puoi scegliere un numero di crew maggiore di " + currentEffect.getLostCrew() + "!");
+                    throw new IllegalTokensException("You cannot choose a number of crew greater than " + currentEffect.getLostCrew() + "!");
                 }
                 int totalCrew = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT) + shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS) + shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
                 if (!((totalCrew < currentEffect.getLostCrew() && coordinates.size() == totalCrew) || (coordinates.size() == currentEffect.getLostCrew())))
@@ -304,10 +304,10 @@ public abstract class AdventureCard {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
                     if (shipBoard.getTile(position).getComponentType() != ComponentType.CABINE || (token != Token.ASTRONAUT && token != Token.BROWN_ALIENS && token != Token.PURPLE_ALIENS)) {
-                        throw new IllegalTokensException("Puoi utilizzare solo astronauti, alieni e  cabine!");
+                        throw new IllegalTokensException("You can only use astronauts, aliens, and cabins!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
-                        throw new IllegalTokensException("Puoi rimuovere al massimo " + shipBoard.getTile(position).getComponent().getLevel() + " astronauti o alieni da questa cabina!");
+                        throw new IllegalTokensException("You can remove at most " + shipBoard.getTile(position).getComponent().getNumberOfaToken(token) + " astronauts or aliens from this cabin!");
                     }
                 }
             }
@@ -351,31 +351,31 @@ public abstract class AdventureCard {
         switch (state) {
             case DECISION_CANNON -> {
                 if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size()) {
-                    throw new IllegalTokensException("Devi selezionare un numero di cannoni minore o uguale al numero di cannoni doppi attivabili!");
+                    throw new IllegalTokensException("You must select a number of cannons less than or equal to the available double cannons!");
                 }
                 for (Point position : coordinates) {
                     if (shipBoard.getTile(position).getComponentType() != ComponentType.DOUBLE_CANNON) {
-                        throw new IllegalTokensException("Puoi utilizzare solo cannoni doppi!");
+                        throw new IllegalTokensException("You can only use double cannons!");
                     }
                 }
             }
             case DECISION_MOTOR -> {
                 if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size()) {
-                    throw new IllegalTokensException("Devi selezionare un numero di cannoni minore o uguale al numero di motori doppi attivabili!");
+                    throw new IllegalTokensException("You must select a number of engines less than or equal to the available double engines!");
                 }
                 for (Point position : coordinates) {
                     if (shipBoard.getTile(position).getComponentType() != ComponentType.DOUBLE_ENGINE) {
-                        throw new IllegalTokensException("Puoi utilizzare solo motori doppi!");
+                        throw new IllegalTokensException("You can only use double engines!");
                     }
                 }
             }
             case DECISION_SHIELDS -> {
                 if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.SHIELD).size()) {
-                    throw new IllegalTokensException("Devi selezionare un numero di scudi minore o uguale al numero di scudi attivabili!");
+                    throw new IllegalTokensException("You must select a number of shields less than or equal to the available shields!");
                 }
                 for (Point position : coordinates) {
                     if (shipBoard.getTile(position).getComponentType() != ComponentType.SHIELD) {
-                        throw new IllegalTokensException("Puoi utilizzare solo scudi!");
+                        throw new IllegalTokensException("You can only use shields!");
                     }
                 }
             }
@@ -425,6 +425,8 @@ public abstract class AdventureCard {
                 rollDices();
             }
             case DECISION_ASTRONAUTS_OR_ALIENS -> {
+                System.out.println("Default effect of losing crew on" + gameBoard.getCurrentPlayer().getUsername());
+
                 ArrayList<Point> astronauts = gameBoard.getCurrentPlayer().getShipBoard().getPositionsOfaToken(Token.ASTRONAUT);
                 ArrayList<Point> brownAliens = gameBoard.getCurrentPlayer().getShipBoard().getPositionsOfaToken(Token.BROWN_ALIENS);
                 ArrayList<Point> purpleAliens = gameBoard.getCurrentPlayer().getShipBoard().getPositionsOfaToken(Token.PURPLE_ALIENS);
@@ -442,32 +444,35 @@ public abstract class AdventureCard {
                     coordinates = new ArrayList<>(coordinates.subList(0, currentEffect.getLostCrew()));
                 }
                 finishDecision(coordinates);
-                System.out.println("Default effect of losing crew on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_BATTERIES -> {
+                System.out.println("Default effect of losing batteries on" + gameBoard.getCurrentPlayer().getUsername());
+
                 ArrayList<Pair<Point, Token>> batteries = new ArrayList<>();
                 finishDecision(batteries);
-                System.out.println("Default effect of losing batteries on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_CANNON -> {
+                System.out.println("Default effect of losing cannons on" + gameBoard.getCurrentPlayer().getUsername());
+
                 Set<Point> cannons = new HashSet<>();
                 finishDecision(cannons);
-                System.out.println("Default effect of losing cannons on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_MOTOR -> {
+                System.out.println("Default effect of losing motors on" + gameBoard.getCurrentPlayer().getUsername());
+
                 Set<Point> motors = new HashSet<>();
                 finishDecision(motors);
-                System.out.println("Default effect of losing motors on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_SHIELDS -> {
+                System.out.println("Default effect of losing shields on" + gameBoard.getCurrentPlayer().getUsername());
+
                 Set<Point> shields = new HashSet<>();
                 finishDecision(shields);
-                System.out.println("Default effect of losing shields on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_GOODS -> {
+                System.out.println("Default effect of losing goods on" + gameBoard.getCurrentPlayer().getUsername());
                 ArrayList<Pair<Point, Token>> goods = new ArrayList<>();
                 finishDecision(goods);
-                System.out.println("Default effect of losing goods on" + gameBoard.getCurrentPlayer().getUsername());
             }
             case DECISION_LAND_PLANET -> {
                 landingOnPlanet(false, -1);

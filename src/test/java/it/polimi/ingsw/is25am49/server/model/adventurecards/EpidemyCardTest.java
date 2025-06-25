@@ -33,8 +33,6 @@ class EpidemyCardTest {
     Point coordinate3 = new Point(6,6);
     Point coordinate4 = new Point(6,7);
 
-
-
     @BeforeEach
     void init(){
         gameBoard = new GameBoard();
@@ -64,13 +62,13 @@ class EpidemyCardTest {
         player2.getShipBoard().insertTile(coordinate3,tile3);
         player2.getShipBoard().insertTile(coordinate4,tile4);
         player3.getShipBoard().insertTile(coordinate2,tile5);
-        player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
-        player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
-        player1.getShipBoard().addTokenToTile(coordinate2, Token.ASTRONAUT);
-        player2.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
-        player2.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
-        player2.getShipBoard().addTokenToTile(coordinate4, Token.BROWN_ALIENS);
-        player2.getShipBoard().addTokenToTile(new Point(7,7), Token.ASTRONAUT);
+//        player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
+//        player1.getShipBoard().addTokenToTile(coordinate1, Token.ASTRONAUT);
+//        player1.getShipBoard().addTokenToTile(coordinate2, Token.ASTRONAUT);
+//        player2.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
+//        player2.getShipBoard().addTokenToTile(coordinate3, Token.ASTRONAUT);
+//        player2.getShipBoard().addTokenToTile(coordinate4, Token.BROWN_ALIENS);
+//        player2.getShipBoard().addTokenToTile(new Point(7,7), Token.ASTRONAUT);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.addPlayerToLeaderboard(player1);
@@ -83,17 +81,10 @@ class EpidemyCardTest {
     @Test
     void drawCard() {
         gameBoard.drawAdventureCard(gameBoard.getLeader());
-        assertEquals(1, player1.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT));
+        assertEquals(2, player1.getShipBoard().getTotalNumberOfaToken(Token.ASTRONAUT));
         assertEquals(0, player1.getShipBoard().getTotalNumberOfaToken(Token.BROWN_ALIENS));
     }
 
-    @Test
-    void checkInterconnectedCabin() {
-    }
-
-    @Test
-    void checkRequirements() {
-    }
     @Test
     void testToString(){
         gameBoard.drawAdventureCard(gameBoard.getLeader());

@@ -94,19 +94,5 @@ class EffectMeteoritiTest {
         ship.printShipboardSpecial();
 
     }
-    @Test
-    void setPosition() {
-    }
 
-    @Test
-    void setListOfCoordinates() {
-    }
-
-    @Test
-    void setCoordinate() {
-    }
-
-    @Test
-    void getLevel() {
-    }
 }
