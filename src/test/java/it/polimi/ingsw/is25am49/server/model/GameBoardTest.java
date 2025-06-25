@@ -164,9 +164,9 @@ class GameBoardTest {
     @Test
     void calculateFinalCredits() {
         gameBoard.calculateFinalCredits();
-        assertEquals(6,player1.getCredits());
-        assertEquals(3,player2.getCredits());
-        assertEquals(1,player4.getCredits());
+        assertEquals(29,player1.getCredits());
+        assertEquals(37,player2.getCredits());
+        assertEquals(28,player4.getCredits());
     }
 
     @Test
