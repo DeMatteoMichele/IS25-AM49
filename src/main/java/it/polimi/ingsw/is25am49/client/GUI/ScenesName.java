@@ -8,6 +8,7 @@ public enum ScenesName {
     INIT("/it/polimi/ingsw/is25am49/FXML_files/init.fxml"),
     BUILD("/it/polimi/ingsw/is25am49/FXML_files/build.fxml"),
     ADVENTURE("/it/polimi/ingsw/is25am49/FXML_files/adventure.fxml"),
+    ADVENTURE2("/it/polimi/ingsw/is25am49/FXML_files/adventure2.fxml"),
     FINISH("/it/polimi/ingsw/is25am49/FXML_files/finish.fxml");
 
     private final String path;
@@ -42,7 +43,7 @@ public enum ScenesName {
                 return BUILD;
             }
             case 2 -> {
-                return ADVENTURE;
+                return ADVENTURE2;
             }
             case 3 -> {
                 return FINISH;
