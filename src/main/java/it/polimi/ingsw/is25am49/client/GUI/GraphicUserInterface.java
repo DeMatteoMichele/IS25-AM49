@@ -43,7 +43,6 @@ public class GraphicUserInterface extends Application implements UserInterface {
     private Map<ScenesName, Scene> scenesList;
     private Map<ScenesName, GenericSceneController> controllerList;
     private int myId = -1;
-    private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 
     private Stage stage;
@@ -477,14 +476,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateChangeTurn(int playerId) {
-        AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
         Platform.runLater(() -> {
-            if (myId == playerId) {
-                adventureController.updateChangeTurn();
-            }
-            else{
-                adventureController.updateCardMessageBox("Waiting for your turn");
-            }
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.updateChangeTurn(myId == playerId);
         });
     }
 
@@ -493,12 +487,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId || playerId==-99) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateCardMessageBox(message);
                 adventureController.addMessage(message);
             }
             else{
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateCardMessageBox(gameSession.getPlayer(playerId).get().getUsername() + " is playing, wait for your turn");
                 adventureController.addMessage(gameSession.getPlayer(playerId).get().getUsername() + " is playing, wait for your turn");
             }
         });
@@ -507,10 +499,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
         Platform.runLater(() -> {
-            if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.configureEffectPaneDices(firstDice, secondDice);
-            }
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.configureEffectPaneDices(firstDice, secondDice);
         });
     }
 
@@ -529,6 +519,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
+                adventureController.printShipboard();
             }
         });
     }
@@ -539,6 +530,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
+                adventureController.printShipboard();
             }
         });
     }
@@ -548,7 +540,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.deActivatePoints(coordinates);
+                adventureController.printShipboard();
             }
         });
     }
@@ -665,7 +657,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.removeTokenFromTile(coordinate, token);
+                adventureController.printShipboard();
             }
         });
     }
@@ -700,7 +692,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerId) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateShipboardDestroyedTiles(destroyedTiles);
+                adventureController.printShipboard();
                 adventureController.updatePlayerStats(0, 0, 0, 0, destroyedTiles.size());
             }
         });
