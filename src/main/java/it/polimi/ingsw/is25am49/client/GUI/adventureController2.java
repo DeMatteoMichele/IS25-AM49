@@ -1140,6 +1140,7 @@ public void printShipboard() {
                 clearEffectPane();
             }
             case  DECISION_ASTRONAUTS_OR_ALIENS -> {
+                ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 stateCard.setText("Please select the Astronauts or Aliens you want to remove.");
                 drawButton.setDisable(true);
                 confirm.setText("Finish");
@@ -1178,7 +1179,8 @@ public void printShipboard() {
                                     input.clear();
                                     return;
                             }
-                            tokenPointsListDefenitive.add(new Pair<>(coordinates,tok));
+                            tokens.add(new Pair<>(coordinates, tok));
+//                            tokenPointsListDefenitive.add(new Pair<>(coordinates,tok));
                             input.clear();
                             addMessage("Batteria aggiunta alle coordinate: " + coordinates);
                         } catch (Exception e) {
@@ -1188,18 +1190,19 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try {
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-                        tokenPointsListDefenitive.clear();
+                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
-                        tokenPointsListDefenitive.clear();
+                        tokens.clear();
                     }
                 });
 
 
             }
             case DECISION_BATTERIES -> {
+                ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 stateCard.setText("Please select the Batteries you want to activate.");
                 confirm.setText("Finish");
                 send.setVisible(true);
@@ -1223,11 +1226,7 @@ public void printShipboard() {
                             int y = Integer.parseInt(parts[1]);
                             Point coordinatess = new Point(x, y);
 
-                            tokenPointsListDefenitive.add(new Pair<>(coordinatess, Token.BATTERY_CELLS));
-                            System.out.println("Lista delle coordinate:");
-                            for (Pair<Point, Token> pair : tokenPointsListDefenitive) {
-                                System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
-                            }
+                            tokens.add(new Pair<>(coordinatess, Token.BATTERY_CELLS));
                             input.clear();
                             addMessage("Batteria aggiunta alle coordinate: " + coordinatess);
                         } catch (NumberFormatException e) {
@@ -1242,24 +1241,18 @@ public void printShipboard() {
                 confirm.setOnAction(event -> {
                     try{
                         System.out.println("chiamato");
-                        for (Pair<Point, Token> pair : tokenPointsListDefenitive) {
-                            System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
-                        }
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
-                        System.out.println("chiamata dopo la chiamta sul controller: ");
-                        for (Pair<Point, Token> pair : tokenPointsListDefenitive) {
-                            System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
-                        }
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-                        tokenPointsListDefenitive.clear();
+                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
-                        tokenPointsListDefenitive.clear();
+                        tokens.clear();
                     }
                 });
             }
 
             case DECISION_CANNON,DECISION_SHIELDS, DECISION_MOTOR -> {
+                HashSet<Point> points = new HashSet<>();
                 drawButton.setDisable(false);
                 switch (currentAdventureState) {
                     case DECISION_SHIELDS -> stateCard.setText("Please select the Shields you want to activate.");
@@ -1279,7 +1272,7 @@ public void printShipboard() {
                             int x = Integer.parseInt(coordinates[0]);
                             int y = Integer.parseInt(coordinates[1]);
                             Point coordinatess = new Point(x, y);
-                            coordinatesSet.add(coordinatess);
+                            points.add(coordinatess);
                             input.clear();
                             addMessage("Cannone selezionato alle coordinate: " + coordinatess);
                         }catch (NumberFormatException e) {
@@ -1293,18 +1286,19 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try{
-                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), coordinatesSet);
+                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
                         input.clear();
-                        coordinatesSet.clear();
+                        points.clear();
                     }catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         printShipboard();
-                        coordinatesSet.clear();
+                        points.clear();
                     }
                 });
             }
 
             case DECISION_GOODS -> {
+                ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 drawButton.setDisable(true);
                 send.setVisible(true);
                 confirm.setText("Finish");
@@ -1345,19 +1339,19 @@ public void printShipboard() {
                                     input.clear();
                                     return;
                             }
-                            tokenPointsListDefenitive.add(new Pair<>(coordinates,tok));
+                            tokens.add(new Pair<>(coordinates,tok));
                         } catch (Exception e) {
                             addMessage("Invalid input format. Use the format 'x y' z'");
                         }
                     }});
                 confirm.setOnAction(event -> {
                     try {
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-                        tokenPointsListDefenitive.clear();
+                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
-                        tokenPointsListDefenitive.clear();
+                        tokens.clear();
                     }
                 });
 
