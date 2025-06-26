@@ -60,6 +60,12 @@ public class Command implements Serializable {
     }
 
     public void addParameter(Object parameter) {
+        if(parameter instanceof Serializable){
+            System.out.println("IL PARAMETRO E' SERIALIZZABILE: " + parameter.getClass().getName());
+        }
+        else{
+            System.out.println("IL PARAMETRO NON E' SERIALIZZABILE: " + parameter.getClass().getName());
+        }
         this.parameters.add(parameter);
     }
 

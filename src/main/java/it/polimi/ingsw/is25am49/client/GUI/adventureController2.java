@@ -1128,6 +1128,7 @@ public void printShipboard() {
         printShipboard();
     }
 
+
     public void updateCardState(AdventureStatesTypes state) {
         currentAdventureState = state;
         switch (currentAdventureState) {
@@ -1202,6 +1203,7 @@ public void printShipboard() {
 
             }
             case DECISION_BATTERIES -> {
+                System.out.println("ENTRATO IN DECISION BATTERIES");
                 ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 stateCard.setText("Please select the Batteries you want to activate.");
                 confirm.setText("Finish");
@@ -1298,6 +1300,7 @@ public void printShipboard() {
             }
 
             case DECISION_GOODS -> {
+                System.out.println("ENTRATO IN DECISION GOODS");
                 ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 drawButton.setDisable(true);
                 send.setVisible(true);
