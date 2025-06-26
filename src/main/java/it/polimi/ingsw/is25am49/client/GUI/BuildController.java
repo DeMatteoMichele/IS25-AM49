@@ -36,6 +36,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -368,6 +369,7 @@ public class BuildController extends GenericSceneController {
     }
     public void updateListView(){
         ArrayList<Player> listPlayers = gameSession.getGame().get().getListPlayers();
+        listPlayers.sort(Comparator.comparingInt(Player::getIdPlayer));
         for(Player p : listPlayers){
             listViewPlayers.getItems().add(p.getUsername() + "  "+ p.getColor() + " (ID: " + p.getIdPlayer() + ")");
         }
@@ -1047,8 +1049,6 @@ public class BuildController extends GenericSceneController {
         cardContainer.setDisable(true);
         buildContainer.setVisible(false);
         buildContainer.setDisable(true);
-        timerLabel.setVisible(false);
-        timerLabel.setDisable(true);
         smallAdventureDeckContainer.setVisible(false);
         smallAdventureDeckContainer.setDisable(true);
         smallAdventureDeck.setVisible(false);
@@ -1059,8 +1059,6 @@ public class BuildController extends GenericSceneController {
         discardTile.setDisable(true);
         rotateTile.setVisible(false);
         rotateTile.setDisable(true);
-        timer.setVisible(false);
-        timer.setDisable(true);
         finish.setVisible(false);
         finish.setDisable(true);
         timer.setLayoutX(155);
