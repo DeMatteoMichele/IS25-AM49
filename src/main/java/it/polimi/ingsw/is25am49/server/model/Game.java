@@ -147,11 +147,11 @@ public class Game {
                     board.getLeaderBoard().disconnectPlayer(player);
                 }
                if ((players.size() - players.stream().filter(Player::isDisconnected).count()) == 1)
-                scheduler.schedule(() -> {
-                    if ((players.size() - players.stream().filter(Player::isDisconnected).count()) == 1) {
-                        finishGameDueToDisconnection();
-                    }
-                }, 30, java.util.concurrent.TimeUnit.SECONDS);
+//                scheduler.schedule(() -> {
+//                    if ((players.size() - players.stream().filter(Player::isDisconnected).count()) == 1) {
+//                        finishGameDueToDisconnection();
+//                    }
+//                }, 30, java.util.concurrent.TimeUnit.SECONDS);
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found

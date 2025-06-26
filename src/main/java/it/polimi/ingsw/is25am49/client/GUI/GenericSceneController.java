@@ -30,7 +30,7 @@ public abstract class GenericSceneController {
     protected final Map<String, ImageView> adventureCardMap = new HashMap<>();
     protected final Map<Token, ImageView> tokensMap = new HashMap<>();
 
-    protected StackPane highlightPane = new StackPane();
+
     protected StackPane damagePane = new StackPane();
 
     /**
@@ -74,7 +74,5 @@ public abstract class GenericSceneController {
         imageView.setFitHeight(20);
         return imageView;
     }
-    public void disableHighlight(){
-        highlightPane.getChildren().clear();
-    }
+
 }

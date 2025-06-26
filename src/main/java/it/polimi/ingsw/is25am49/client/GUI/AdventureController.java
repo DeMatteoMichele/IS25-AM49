@@ -85,6 +85,7 @@ public class AdventureController extends GenericSceneController {
     private final String styleForDamage;
     private final String styleForTransparent;
     private final Map<Point, StackPane> highlightsMap;
+    protected StackPane highlightPane = new StackPane();
 
     public AdventureController() {
         coordinatesSet = new HashSet<>();
@@ -151,7 +152,7 @@ public class AdventureController extends GenericSceneController {
         cardEffect.setVisible(true);
         cardMessages.setVisible(true);
         damagePane.setStyle(styleForDamage);
-        highlightPane.setStyle(styleForHighlight);
+//        highlightPane.setStyle(styleForHighlight);
     }
 
     private void loadLeaderBoard() {

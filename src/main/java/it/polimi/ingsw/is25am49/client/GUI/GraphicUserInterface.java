@@ -463,6 +463,15 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     }
 
+    public void lookAtShipboard2(int playerId) {
+        Platform.runLater(() -> {
+            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
+            adventureController.clearShipBoard();
+            adventureController.printPlayerByIdShipboard(playerId);
+        });
+
+    }
+
     /**
      * @param playerId
      * @param cardState
@@ -627,7 +636,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateStopFlight(int playerId) {
         Platform.runLater(() -> {
             Player p= gameSession.getPlayer(playerId).get();
-            printUpdateMessage("!!!Player " + p.getUsername() + " has landed!!!\t-out of the game");
+            printUpdateMessage("!!!Player " + p.getUsername() + " is landed!!!");
             adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
             adventureController.addMessage("!!!Player " + p.getUsername() + " has landed!!!\t-out of the game");
         });
@@ -655,12 +664,13 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             System.out.println("updateEffectModifyCrew");
             adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            adventureController.addMessage("you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+
             if (myId == playerId) {
 //                adventureController.removeTokenFromTile(coordinate, token);
                 Player p = gameSession.getPlayer(playerId).get();
                 adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
                 adventureController.printShipboard();
+                adventureController.addMessage("you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             }
         });
     }
@@ -682,12 +692,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
             adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            adventureController.addMessage("you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
 //                adventureController.removeTokenFromTile(coordinate, token);
                 adventureController.printShipboard();
                 Player p = gameSession.getPlayer(playerId).get();
                 adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
+                adventureController.addMessage("you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             }
         });
     }
@@ -700,8 +710,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 adventureController.printShipboard();
                 Player p = gameSession.getPlayer(playerId).get();
                 adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
+                adventureController.addMessage("you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             }
-            adventureController.addMessage("you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+
         });
     }
 
@@ -725,8 +736,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 adventureController.printShipboard();
                 Player p = gameSession.getPlayer(playerId).get();
                 adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
+                adventureController.addMessage("battery from coordinates: <" +coordinate.x +","+coordinate.y +"> has been removed");
             }
-            adventureController.addMessage("battery from coordinates: <" +coordinate.x +","+coordinate.y +"> have been removed");
+
 
         });
     }
@@ -766,24 +778,23 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateDestroyedTiles(int playerId, Set<Point> destroyedTiles) {
         Platform.runLater(() -> {
             adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            StringBuilder str = new StringBuilder();
-            Player p = gameSession.getPlayer(playerId).get();
-            str.append("Player ").append(p.getUsername()).append(" has lost the following tiles: ");
-            for (Point pt : destroyedTiles) {
-                try{
-                    Tile t=p.getShipBoard().getTile(pt);
-                    str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
-                }catch(Exception _){}
-            }
-            adventureController.addMessage(str.toString());
             if (myId == playerId) {
                 adventureController.printShipboard();
+                StringBuilder str = new StringBuilder();
+                Player p = gameSession.getPlayer(playerId).get();
+                str.append("Player ").append(p.getUsername()).append(" has lost the following tiles: ");
+                for (Point pt : destroyedTiles) {
+                    try{
+                        Tile t=p.getShipBoard().getTile(pt);
+                        str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+                    }catch(Exception _){}
+                }
+                adventureController.addMessage(str.toString());
                 adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
         });
     }
 
-    //Complesso, si potrebbe rivedere la modalità di gestione della leaderboard
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
         Platform.runLater(() -> {
