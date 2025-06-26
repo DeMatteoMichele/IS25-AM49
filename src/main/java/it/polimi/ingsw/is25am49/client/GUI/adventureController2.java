@@ -1149,12 +1149,19 @@ public void printShipboard() {
                     Token tok;
                     if(value!=null && !value.isEmpty()) {
                         try{
-                            char xChar = value.charAt(0);
-                            char yChar = value.charAt(2);
-                            char tokenType = value.charAt(4);
-                            int x = Character.getNumericValue(xChar);
-                            int y = Character.getNumericValue(yChar);
+                            String[] parts = value.trim().split("\\s+");
+
+                            int x = Integer.parseInt(parts[0]);
+                            int y = Integer.parseInt(parts[1]);
+                            char tokenType = parts[2].charAt(0); // prende il primo carattere del terzo input
                             Point coordinates = new Point(x, y);
+//                            Point point = new Point(x, y);
+//                            char xChar = value.charAt(0);
+//                            char yChar = value.charAt(2);
+//                            char tokenType = value.charAt(4);
+//                            int x = Character.getNumericValue(xChar);
+//                            int y = Character.getNumericValue(yChar);
+
 
                             switch (tokenType){
                                 case 'a':
@@ -1200,15 +1207,20 @@ public void printShipboard() {
                     String value = input.getText().trim();
                     if (value != null && !value.isEmpty()) {
                         try {
-                            // Dividi l'input usando lo spazio come separatore
-                            String[] coordinates = value.split("\\s+");
-                            if (coordinates.length != 2) {
-                                addMessage("Formato non valido. Inserire coordinate nel formato 'x y'");
-                                return;
-                            }
+//                            // Dividi l'input usando lo spazio come separatore
+//                            String[] coordinates = value.split("\\s+");
+//                            if (coordinates.length != 2) {
+//                                addMessage("Formato non valido. Inserire coordinate nel formato 'x y'");
+//                                return;
+//                            }
+//
+//                            int x = Integer.parseInt(coordinates[0]);
+//                            int y = Integer.parseInt(coordinates[1]);
+//                            Point coordinatess = new Point(x, y);
+                            String[] parts = value.trim().split("\\s+");
 
-                            int x = Integer.parseInt(coordinates[0]);
-                            int y = Integer.parseInt(coordinates[1]);
+                            int x = Integer.parseInt(parts[0]);
+                            int y = Integer.parseInt(parts[1]);
                             Point coordinatess = new Point(x, y);
 
                             tokenPointsListDefenitive.add(new Pair<>(coordinatess, Token.BATTERY_CELLS));
@@ -1291,11 +1303,17 @@ public void printShipboard() {
                     Token tok;
                     if(value!=null && !value.isEmpty()) {
                         try{
-                            char xChar = value.charAt(0);
-                            char yChar = value.charAt(2);
-                            char tokenType = value.charAt(4);
-                            int x = Character.getNumericValue(xChar);
-                            int y = Character.getNumericValue(yChar);
+//                            char xChar = value.charAt(0);
+//                            char yChar = value.charAt(2);
+//                            char tokenType = value.charAt(4);
+//                            int x = Character.getNumericValue(xChar);
+//                            int y = Character.getNumericValue(yChar);
+//                            Point coordinates = new Point(x, y);
+                            String[] parts = value.trim().split("\\s+");
+
+                            int x = Integer.parseInt(parts[0]);
+                            int y = Integer.parseInt(parts[1]);
+                            char tokenType = parts[2].charAt(0); // prende il primo carattere del terzo input
                             Point coordinates = new Point(x, y);
 
                             switch (tokenType){
