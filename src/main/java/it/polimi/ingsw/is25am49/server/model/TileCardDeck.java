@@ -42,7 +42,6 @@ public class TileCardDeck {
      * Discard a tile from the deck at the specified index for the given player.
      *
      * @param player the player drawing the tile
-     * @return the drawn Tile
      */
     public void addDiscardTile(Tile tile, Player player) {
         tile.uncoverTile();
