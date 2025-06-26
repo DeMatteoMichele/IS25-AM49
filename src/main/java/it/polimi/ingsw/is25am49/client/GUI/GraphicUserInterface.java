@@ -473,11 +473,13 @@ public class GraphicUserInterface extends Application implements UserInterface {
             adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
             if (myId == playerId) {
                 adventureController.updateCardState(cardState);
+                adventureController.updateChangeTurn(playerId);
             }
             else{
                 adventureController.updateCardMessageBox("Waiting for your turn");
                 adventureController.updateCardState(cardState);
-                updateGenericCardMessage(myId, "Player " + gameSession.getGame().get().getGameboard().getCurrentPlayer() + " is playing, wait for your turn");
+                adventureController.updateChangeTurn(playerId);
+                adventureController.addMessage( "Player " + gameSession.getGame().get().getGameboard().getCurrentPlayer().getUsername() + " is playing, wait for your turn");
             }
 
         });
@@ -491,7 +493,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
             if (myId == playerId) {
-
+                adventureController.updateChangeTurn(playerId);
                 adventureController.enableAll();
             }
             else{
@@ -593,8 +595,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
     adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
             Player player = gameSession.getPlayer(playerId).get();
-            if(isLanded) updateGenericCardMessage(myId,"Player " + player.getUsername() + " has landed on planet " + planetId);
-            else updateGenericCardMessage(myId,"Player " + player.getUsername() + " decided not to land");
+            if(isLanded) adventureController.addMessage("Player " + player.getUsername() + " has landed on planet " + planetId);
+            else adventureController.addMessage("Player " + player.getUsername() + " decided not to land");
         });
     }
 
@@ -603,8 +605,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
     adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
             Player p = gameSession.getPlayer(playerId).get();
-            if(isLanded) updateGenericCardMessage(myId,"Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
-            else updateGenericCardMessage(myId,"Player " + p.getUsername() + " decided not to land");
+            if(isLanded) adventureController.addMessage("Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
+            else adventureController.addMessage("Player " + p.getUsername() + " decided not to land");
         });
     }
 
@@ -615,6 +617,8 @@ public class GraphicUserInterface extends Application implements UserInterface {
                 adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
                 adventureController.clearEffectPane();
             }
+            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
+            adventureController.addMessage("Player " + gameSession.getPlayer(playerId).get().getUsername() + " has " + (isAccepted ? "accepted" : "rejected") + " the prizes");
         });
     }
 
@@ -650,7 +654,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             System.out.println("updateEffectModifyCrew");
             adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            updateGenericCardMessage(playerId,"you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+            adventureController.addMessage("you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
 //                adventureController.removeTokenFromTile(coordinate, token);
                 Player p = gameSession.getPlayer(playerId).get();

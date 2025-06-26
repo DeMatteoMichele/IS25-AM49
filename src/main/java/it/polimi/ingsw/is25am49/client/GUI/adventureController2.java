@@ -48,8 +48,8 @@ public class adventureController2 extends GenericSceneController {
     public Button stopButton;
     @FXML
     public StackPane tokens;
-    @FXML
-    private StackPane cardMessages;
+//    @FXML
+//    private StackPane cardMessages;
     @FXML
     private HBox statsContainer;
     @FXML
@@ -176,9 +176,9 @@ public class adventureController2 extends GenericSceneController {
         loadTilesMap();
         loadGrid();
         printShipboard();
-        updatePlayerStats(0, 0, 0, 0, 0);
+        updatePlayerStats(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTotalFirePower(), gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTotalEnginePower(), gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getTotalCrewNumber(), gameSession.getPlayer(guiApplication.getMyId()).get().getCredits(), gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getDestroyedTiles());
         cardEffect.setVisible(true);
-        cardMessages.setVisible(true);
+//        cardMessages.setVisible(true);
         highlightPane.setStyle("-fx-border-color: yellow; -fx-border-width: 4; -fx-border-style: solid; -fx-background-color: rgba(255,255,0,0.3);");
     }
 
@@ -677,6 +677,34 @@ public void printShipboard() {
                 // aggiungo box al grid
                 shipBoard.add(tokenContainer, coordinates.x-4, coordinates.y-5);
                 GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
+                } else if (tile.get().getComponent().getType()== ComponentType.STORAGE) {
+                    HBox tokenContainer = new HBox();
+                    tokenContainer.setSpacing(5);
+                    tokenContainer.setAlignment(javafx.geometry.Pos.CENTER);
+                    new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
+                        Image tokenImage = tokensMap.get(token).getImage();
+                        ImageView tokenImageView = new ImageView(tokenImage);
+                        tokenImageView.setFitWidth(20);
+                        tokenImageView.setFitHeight(20);
+                        tokenContainer.getChildren().add(tokenImageView);
+                    });
+                    shipBoard.add(tokenContainer, coordinates.x-4, coordinates.y-5);
+                    GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
+
+                }
+                else if(tile.get().getComponent().getType()==ComponentType.SPECIAL_STORAGE){
+                    HBox tokenContainer = new HBox();
+                    tokenContainer.setSpacing(5);
+                    tokenContainer.setAlignment(javafx.geometry.Pos.CENTER);
+                    new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
+                        Image tokenImage = tokensMap.get(token).getImage();
+                        ImageView tokenImageView = new ImageView(tokenImage);
+                        tokenImageView.setFitWidth(20);
+                        tokenImageView.setFitHeight(20);
+                        tokenContainer.getChildren().add(tokenImageView);
+                    });
+                    shipBoard.add(tokenContainer, coordinates.x-4, coordinates.y-5);
+                    GridPane.setHalignment(tokenContainer, javafx.geometry.HPos.CENTER);
                 }
             }
         }
@@ -1064,7 +1092,7 @@ public void printShipboard() {
     }
 
     public void updateCardMessageBox(String messageText) {
-        cardMessages.getChildren().clear();
+//        cardMessages.getChildren().clear();
         javafx.scene.control.Label message = new javafx.scene.control.Label();
         message.setText(messageText);
         String style = "-fx-border-color: #00ccff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #00ccff; -fx-background-color: rgba(0,30,60,0.8); -fx-effect: dropshadow(gaussian, rgba(0,204,255,0.6), 10, 0.5, 0, 0); -fx-padding: 10;";
@@ -1073,7 +1101,7 @@ public void printShipboard() {
         message.setMaxWidth(400);
         message.setAlignment(Pos.TOP_LEFT);
         message.setTextAlignment(TextAlignment.LEFT);
-        cardMessages.getChildren().add(message);
+//        cardMessages.getChildren().add(message);
     }
 
     public void updatePlayerStats(double firePower, int motorPower, int crew, int credits, int destroyedTiles) {
@@ -1219,7 +1247,6 @@ public void printShipboard() {
                     String value = input.getText();
                     if (value != null && !value.isEmpty()) {
                         try {
-                            // Dividi l'input usando lo spazio come separatore
                             String[] coordinates = value.split("\\s+");
                             if (coordinates.length != 2) {
                                 addMessage("Formato non valido. Inserire coordinate nel formato 'x y'");
@@ -1248,6 +1275,7 @@ public void printShipboard() {
                         coordinatesSet.clear();
                     }catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
+                        printShipboard();
                         coordinatesSet.clear();
                     }
                 });
@@ -1580,7 +1608,7 @@ public void printShipboard() {
         stateCard.setVisible(true);
     }
     public void updateChangeTurn(int playerId) {
-        drawButton.setDisable(true);
+//        drawButton.setDisable(true);
         turn.setText(gameSession.getGame().get().getGameboard().getCurrentPlayer().getUsername() + " IS PLAYING");
     }
 
