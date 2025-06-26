@@ -28,7 +28,7 @@ public class StarDustCard extends AdventureCard {
             int numExposedConnectors = player.getShipBoard().getNumberOfExposedConnectors();
             if (numExposedConnectors > 0) {
                 player.setDaysThisTurn(-numExposedConnectors);
-                userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + "has " + numExposedConnectors + " exposed connectors on your ship, he loses " + numExposedConnectors + " travel days.");
+                userInterface.updateGenericCardMessage(genericIdForUpdates, gameBoard.getCurrentPlayer().getUsername() + " has " + numExposedConnectors + " exposed connectors on your ship, he loses " + numExposedConnectors + " travel days.");
             }
         }
         update();

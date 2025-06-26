@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class EffectLoseGoods extends CardEffect {
     private int numberOfTokensToLose;
+    private int numberOfTokensToLoseMemory;
 
     /**
      * A list of points representing coordinates where the effect is applied.
@@ -31,7 +32,7 @@ public class EffectLoseGoods extends CardEffect {
     public EffectLoseGoods(String name_effect, int numberOfTokensToLose) {
 
         super(name_effect);
-        this.numberOfTokensToLose = numberOfTokensToLose;
+        this.numberOfTokensToLoseMemory = numberOfTokensToLose;
     }
     /**
      * Removes a specified number of tokens from the player's ship board, prioritizing
@@ -41,6 +42,7 @@ public class EffectLoseGoods extends CardEffect {
      * @param player the player whose ship board will have tokens removed
      */
     public void action(Player player) {
+        numberOfTokensToLose = numberOfTokensToLoseMemory;
         //rimuovo in ordine di importanza dal rosso finchè non sono finiti tutte le merci da rimuovere
         //oppure finchè non ci sono più merci di quel colore nella nave
         int redGoods = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
