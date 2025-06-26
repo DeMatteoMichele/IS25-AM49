@@ -213,6 +213,7 @@ public class ServerHandler {
     private void sendMessageToServer(Command command) {
         try {
             if (connected.get()) {
+                objectOutputStream.reset();
                 objectOutputStream.writeObject(command);
                 objectOutputStream.flush();
             } else

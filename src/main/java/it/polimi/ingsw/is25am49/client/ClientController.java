@@ -787,7 +787,6 @@ public class ClientController {
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
-
     }
 
     /**

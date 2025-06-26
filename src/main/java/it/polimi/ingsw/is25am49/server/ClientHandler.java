@@ -249,6 +249,7 @@ public class ClientHandler {
     private void sendMessageToSpecificClient(int clientId, Command command) {
         try {
             if (connections.get(clientId)) {
+                outputStreams.get(clientId).reset(); // Reset the stream to avoid issues with object serialization
                 outputStreams.get(clientId).writeObject(command);
                 outputStreams.get(clientId).flush();
             } else
