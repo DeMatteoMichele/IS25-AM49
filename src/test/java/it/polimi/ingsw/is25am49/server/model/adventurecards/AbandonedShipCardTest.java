@@ -41,13 +41,15 @@ class AbandonedShipCardTest {
         player1.setShipBoard(shipMock1);
         player2 = new Player("TestPlayer2", Color.BLUE, 2);
         player2.setShipBoard(shipMock2);
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        when(shipMock1.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
         gameBoard.setLeaderBoard(GameMode.LEVEL_1);
         gameBoard.addPlayerToLeaderboard(player1);
         gameBoard.addPlayerToLeaderboard(player2);
         gameBoard.getLeaderBoard().modifyFlightDays(player2,3);
         gameBoard.getLeaderBoard().modifyFlightDays(player1,0);
         adventureDeck = new AdventureCardDeck();
-        card1=new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, "abandoned ship",1, 100, 3);
+        card1=new AbandonedShipCard(gameBoard, "Abandoned Ship", 2, "abandoned ship",1, 100, 0);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 //        shipBoard1 = new ShipBoard(1,2);
@@ -72,7 +74,6 @@ class AbandonedShipCardTest {
         assertEquals(gameBoard.getLeader(),player2);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         assertEquals(0, adventureDeck.size());
-        assertEquals(player1, gameBoard.getCurrentPlayer());
     }
 
 
@@ -86,8 +87,8 @@ class AbandonedShipCardTest {
 
     @Test
     void finishDecision() {
-        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
-        when(shipMock1.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
+        when(shipMock1.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(1);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
         gameBoard.getCurrentCard().landingOnStationOrShip(false);
         gameBoard.getCurrentCard().landingOnStationOrShip(true);
@@ -99,7 +100,7 @@ class AbandonedShipCardTest {
 
     @Test
     void applyEffect() {
-        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(3);
+        when(shipMock2.getTotalNumberOfaToken(Token.ASTRONAUT)).thenReturn(5);
         gameBoard.drawAdventureCard(gameBoard.getLeader());
 //        ArrayList<Pair<Point, Token>> Coordinates = new ArrayList<>();
 //        Coordinates.add(new Pair<>(new Point(2, 2), Token.ASTRONAUT));

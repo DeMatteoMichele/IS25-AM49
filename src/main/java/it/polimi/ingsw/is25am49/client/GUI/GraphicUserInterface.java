@@ -22,7 +22,6 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import org.jline.terminal.TerminalBuilder;
 
 import java.awt.*;
 import java.io.IOException;
@@ -46,7 +45,6 @@ public class GraphicUserInterface extends Application implements UserInterface {
     private Map<ScenesName, Scene> scenesList;
     private Map<ScenesName, GenericSceneController> controllerList;
     private int myId = -1;
-    private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 
     private Stage stage;
@@ -176,11 +174,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
             }
             case 2 -> {//Adventure state
-                adventureController2 adventureContr = (adventureController2) sceneController;
+                AdventureController adventureContr = (AdventureController) sceneController;
                 System.out.println("ADVENTURE STATE");
                 adventureContr.init();
                 Platform.runLater(() -> {
-                    showScene(ScenesName.ADVENTURE2);
+                    showScene(ScenesName.ADVENTURE);
                 });
             }
             case 3 -> {
@@ -470,16 +468,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateCardState(int playerId, AdventureStatesTypes cardState) {
         Platform.runLater(() -> {
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            if (myId == playerId) {
-                adventureController.updateCardState(cardState);
-            }
-            else{
-                adventureController.updateCardMessageBox("Waiting for your turn");
-                adventureController.updateCardState(cardState);
-                updateGenericCardMessage(myId, "Player " + gameSession.getGame().get().getGameboard().getCurrentPlayer() + " is playing, wait for your turn");
-            }
-
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.updateCardState(cardState);
+            adventureController.addMessage( "Player " + gameSession.getGame().get().getGameboard().getCurrentPlayer().getUsername() + " is playing, wait for your turn");
         });
     }
 
@@ -488,17 +479,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
      */
     @Override
     public void updateChangeTurn(int playerId) {
-        adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
-            if (myId == playerId) {
-
-                adventureController.enableAll();
-            }
-            else{
-                adventureController.updateCardMessageBox("Waiting for your turn");
-                adventureController.disableall();
-                adventureController.updateChangeTurn(playerId);
-            }
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.updateChangeTurn(myId == playerId);
         });
     }
 
@@ -506,14 +489,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateGenericCardMessage(int playerId, String message) {
         Platform.runLater(() -> {
             if (myId == playerId || playerId==-99) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-                adventureController.updateCardMessageBox(message);
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.addMessage(message);
             }
             else{
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-                adventureController.updateCardMessageBox(gameSession.getPlayer(playerId).get().getUsername() + " is playing, wait for your turn");
-//                adventureController.addMessage(gameSession.getGame().get().getGameboard().getCurrentPlayer() + " is playing, wait for your turn");
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.addMessage(gameSession.getPlayer(playerId).get().getUsername() + " is playing, wait for your turn");
             }
         });
     }
@@ -521,17 +502,15 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateThrowDices(int playerId, int firstDice, int secondDice) {
         Platform.runLater(() -> {
-
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-                adventureController.configureEffectPaneDices(firstDice, secondDice);
-
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.configureEffectPaneDices(firstDice, secondDice);
         });
     }
 
     @Override
     public void updateDrawAdventureCard(int playerId, AdventureCard adventureCard) {
         Platform.runLater(() -> {
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             adventureController.updateCurrentCard(adventureCard);
         });
     }
@@ -539,30 +518,29 @@ public class GraphicUserInterface extends Application implements UserInterface {
 
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
-        adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
-                    System.out.println("entrato in updateFinishDecisionToken");
-                    Player p = gameSession.getPlayer(playerId).get();
-                    StringBuilder messageBuilder = new StringBuilder("Player " + p.getUsername() + " has activated: ");
-                    for (Point pt : coordinates) {
-                        try{
-                        Tile t = p.getShipBoard().getTile(pt);
-                        messageBuilder.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
-                    }catch(Exception _){
-                    }}
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            Player p = gameSession.getPlayer(playerId).get();
+            StringBuilder messageBuilder = new StringBuilder("Player " + p.getUsername() + " has activated: ");
+            for (Point pt : coordinates) {
+                try{
+                    Tile t = p.getShipBoard().getTile(pt);
+                    messageBuilder.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+                }catch(Exception _){
+                }}
             adventureController.addMessage(messageBuilder.toString());
-        if (myId== playerId) {
+            if (myId == playerId) {
+                adventureController.clearEffectPane();
+                adventureController.printShipboard();
 
-            adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
-            adventureController.printShipboard();
-        }});
+            }
+        });
     }
 
     @Override
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
-        adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
-            System.out.println("entrato in updateFinishDecisionToken");
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             Player p = gameSession.getPlayer(playerId).get();
             StringBuilder messageBuilder = new StringBuilder("Player " + p.getUsername() + " has decided to " + (removing ? "remove" : "inserted") + " the following tokens: ");
             for (Pair<Point, Token> pair : listOfTokens) {
@@ -570,61 +548,67 @@ public class GraphicUserInterface extends Application implements UserInterface {
             }
             adventureController.addMessage(messageBuilder.toString());
             if (myId == playerId) {
-
-//                adventureController.clearEffectPane();
+                adventureController.clearEffectPane();
                 adventureController.printShipboard();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
         });
     }
 
     @Override
     public void updateDeactivating(int playerId, List<Point> coordinates) {
-//        Platform.runLater(() -> {
-//            if (myId == playerId) {
-//                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-//                adventureController.deActivatePoints(coordinates);
-//            }
-//        });
+        Platform.runLater(() -> {
+            if (myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.printShipboard();
+            }
+        });
     }
 
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
-    adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             Player player = gameSession.getPlayer(playerId).get();
-            if(isLanded) updateGenericCardMessage(myId,"Player " + player.getUsername() + " has landed on planet " + planetId);
-            else updateGenericCardMessage(myId,"Player " + player.getUsername() + " decided not to land");
-        });
-    }
-
-    @Override
-    public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
-    adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-        Platform.runLater(() -> {
-            Player p = gameSession.getPlayer(playerId).get();
-            if(isLanded) updateGenericCardMessage(myId,"Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
-            else updateGenericCardMessage(myId,"Player " + p.getUsername() + " decided not to land");
-        });
-    }
-
-    @Override
-    public void updateAcceptPrizes(int playerId, boolean isAccepted) {
-        Platform.runLater(() -> {
+            if(isLanded) adventureController.addMessage("Player " + player.getUsername() + " has landed on planet " + planetId);
+            else adventureController.addMessage("Player " + player.getUsername() + " decided not to land");
             if (myId == playerId) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
                 adventureController.clearEffectPane();
             }
         });
     }
 
     @Override
+    public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
+        Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            Player p = gameSession.getPlayer(playerId).get();
+            if(isLanded) adventureController.addMessage("Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
+            else adventureController.addMessage("Player " + p.getUsername() + " decided not to land");
+            if (myId == playerId) {
+                adventureController.clearEffectPane();
+            }
+        });
+    }
+
+    @Override
+    public void updateAcceptPrizes(int playerId, boolean isAccepted) {
+        Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            if (myId == playerId) {
+                adventureController.clearEffectPane();
+            }
+            adventureController.addMessage("Player " + gameSession.getPlayer(playerId).get().getUsername() + " has " + (isAccepted ? "accepted" : "rejected") + " the prizes");
+
+        });
+    }
+
+    @Override
     public void updateStopFlight(int playerId) {
         Platform.runLater(() -> {
-            Player p= gameSession.getPlayer(playerId).get();
-            printUpdateMessage("!!!Player " + p.getUsername() + " has landed!!!\t-out of the game");
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            adventureController.addMessage("!!!Player " + p.getUsername() + " has landed!!!\t-out of the game");
+            if (myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.stopFlight();
+            }
         });
     }
 
@@ -632,14 +616,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void updateEnemyDefeated(int playerIdWhoWon, String enemyName, String cardId) {
         Platform.runLater(() -> {
             if (myId == playerIdWhoWon) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-                adventureController.updateCardMessageBox("You have defeted the enemy " + enemyName);
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.addMessage("You have defeted the enemy " + enemyName);
-                Player p = gameSession.getPlayer(playerIdWhoWon).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
             else{
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.addMessage("Player " + gameSession.getPlayer(playerIdWhoWon).get().getUsername() + " has defeted the enemy " + enemyName );
             }
         });
@@ -648,13 +629,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
-            System.out.println("updateEffectModifyCrew");
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            updateGenericCardMessage(playerId,"you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
-//                adventureController.removeTokenFromTile(coordinate, token);
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
                 adventureController.printShipboard();
             }
         });
@@ -663,12 +640,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
         Platform.runLater(() -> {
-            updateGenericCardMessage(playerId,"the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
             if (myId == playerId) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
                 adventureController.printShipboard();
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
         });
     }
@@ -676,13 +651,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
-            updateGenericCardMessage(playerId,"you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
-//                adventureController.removeTokenFromTile(coordinate, token);
                 adventureController.printShipboard();
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
         });
     }
@@ -690,39 +662,39 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
                 adventureController.printShipboard();
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
-            updateGenericCardMessage(playerId,"you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
         });
     }
 
-
+    /**
+     * @param playerId
+     * @param redgoods
+     * @param yellowgoods
+     * @param greengoods
+     * @param bluegoods
+     */
     @Override
     public void updateNumberOfWinGoods(int playerId, int redgoods, int yellowgoods, int greengoods, int bluegoods) {
-//        Platform.runLater(() -> {
-//            if (myId == playerId) {
-//                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-//                adventureController.configureEffectPaneGoods(redgoods, greengoods, bluegoods, yellowgoods);
-//            }
-//        });
+        Platform.runLater(() -> {
+            if (myId == playerId) {
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.configureEffectPaneGoods(redgoods, greengoods, bluegoods, yellowgoods);
+            }
+        });
     }
 
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-            if (myId == playerId) {
-//                adventureController.removeTokenFromTile(coordinate, token);
-                adventureController.printShipboard();
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
-            }
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             adventureController.addMessage("battery from coordinates: <" +coordinate.x +","+coordinate.y +"> have been removed");
-
+            if (myId == playerId) {
+                adventureController.printShipboard();
+            }
         });
     }
 
@@ -733,27 +705,20 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
             if (myId == playerId) {
-                System.out.println("updateEffectMeteorite");
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-//                adventureController.updateAttack(coordinate, or, true);
                 adventureController.printShipboard();
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
             }
-            updateGenericCardMessage(playerId,"the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
         });
     }
 
     @Override
     public void updateEarnedCredits(int playerId, int credits) {
         Platform.runLater(() -> {
-            updateGenericCardMessage(playerId, "you have earned " + credits + " credits");
             if (myId == playerId) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-                Player p = gameSession.getPlayer(playerId).get();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
-//                adventureController.updatePlayerStats(0,0,);
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.updatePlayerStats(0, 0, 0, credits, 0);
             }
         });
     }
@@ -761,6 +726,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateDestroyedTiles(int playerId, Set<Point> destroyedTiles) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             StringBuilder str = new StringBuilder();
             Player p = gameSession.getPlayer(playerId).get();
             str.append("Player ").append(p.getUsername()).append(" has lost the following tiles: ");
@@ -770,11 +736,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
                     str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
                 }catch(Exception _){}
             }
-            updateGenericCardMessage(myId,str.toString());
+            adventureController.addMessage(str.toString());
             if (myId == playerId) {
-                adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
                 adventureController.printShipboard();
-                adventureController.updatePlayerStats(p.getShipBoard().getTotalFirePower(),p.getShipBoard().getTotalEnginePower(),p.getShipBoard().getTotalCrewNumber(),p.getCredits(),p.getShipBoard().getDestroyedTiles());
+                adventureController.updatePlayerStats(0, 0, 0, 0, destroyedTiles.size());
             }
         });
     }
@@ -783,7 +748,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateLeaderBoard(LeaderBoard leaderBoard) {
         Platform.runLater(() -> {
-            adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             adventureController.reDrawLeaderBoard(leaderBoard);
         });
     }

@@ -63,7 +63,6 @@ public class SlaverCard extends Enemy {
         if (checkWinFirePower(shipBoard)) {
             deactivateComponents(shipBoard, coordinatesOfActivable);
             System.out.println("You have more firepower to defeat the Slavers! You win some credits!");
-            System.out.println("Now decide if you want to accept the rewards ");
             isDefeated = true;
             System.out.println("Now decide if you want to accept the rewards ");
             currentState = AdventureStatesTypes.DECISION_REWARDS;

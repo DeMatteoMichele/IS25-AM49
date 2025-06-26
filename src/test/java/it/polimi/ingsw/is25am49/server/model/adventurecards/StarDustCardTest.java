@@ -32,7 +32,6 @@ class StarDustCardTest {
     ShipBoard shipMock1 = Mockito.mock(ShipBoard.class);
     ShipBoard shipMock2 = Mockito.mock(ShipBoard.class);
     ShipBoard shipMock3 = Mockito.mock(ShipBoard.class);
-
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
 
@@ -55,11 +54,9 @@ class StarDustCardTest {
         gameBoard.addPlayerToLeaderboard( player2);
         gameBoard.addPlayerToLeaderboard( player3);
         adventureDeck = new AdventureCardDeck();
-
         card1 = new StarDustCard(gameBoard, "StardDust", 0, "stardust");
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
-
     }
 
     @Test

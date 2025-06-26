@@ -20,6 +20,10 @@ public class ClientSerializer implements RemoteServer {
     private final ExecutorService executors;
     private GameSession gameSession;
 
+    /**
+     * Initializes a new ClientSerializer with the specified ClientController.
+     * @param clientController the client controller used to manage client operations
+     */
     public ClientSerializer(ClientController clientController) {
         this.filesFromSocketQueue = new ArrayBlockingQueue<>(1000, true);
         executors = Executors.newFixedThreadPool(20);
@@ -27,6 +31,11 @@ public class ClientSerializer implements RemoteServer {
         this.clientController = clientController;
     }
 
+    /**
+     * Continuously processes commands from the filesFromSocketQueue.
+     * Each taken command is deserialized and executed.
+     * Handles interruptions during queue operations.
+     */
     private void processFilesFromSocketQueue() {
         while (true) {
             try {
@@ -38,6 +47,11 @@ public class ClientSerializer implements RemoteServer {
         }
     }
 
+    /**
+     * Sets the current game session.
+     *
+     * @param gameSession the GameSession object to be set
+     */
     public void setGamesession(GameSession gameSession) {
         this.gameSession = gameSession;
     }
@@ -45,8 +59,10 @@ public class ClientSerializer implements RemoteServer {
     //IL SERIALIZER SE DEVE PASSARE UN FILE AL SERVERHANDLER GLIELO DEVE METTERE NELLA SUA OUTGOINGQUEUE TRAMITE IL METODO APPOSIT DEL SERVERHANDLER.
 
     /**
-     * This method is used to put files in the queue.
-     * It is called by ServerHandler after receiving a message from server
+     * Puts a provided Command object into the filesFromSocketQueue for processing.
+     *
+     * @param command the Command object to be added to the queue.
+     *                Cannot be null; expected to contain data from a socket.
      */
     public void putFileFromSocketInQueue(Command command) {
         try {
@@ -56,27 +72,58 @@ public class ClientSerializer implements RemoteServer {
         }
     }
 
+    /**
+     * Processes and executes a Command received from the server by associating it with
+     * the client controller and invoking its corresponding methods.
+     *
+     * @param command The Command object received from the server which is to be deserialized and executed.
+     * @return The processed Command object after execution has completed.
+     */
     public Command deSerializeStringFromServer(Command command) {
         command.setClientController(clientController);
         command.callMethod();
         return command;
     }
 
+    /**
+     * Sends a command object to the server for processing by adding it to the server handler's
+     * outgoing file queue.
+     *
+     * @param command the command object to be serialized and sent to the server
+     * @return always returns null
+     */
     public File serializeObjectFromClient(Command command) {
         serverHandler.putInTheOutGoingFileQueue(command);
         return null;
     }
 
 
+    /**
+     * Sets the server handler instance for managing server-related operations.
+     *
+     * @param serverHandler the ServerHandler instance to be assigned
+     */
     public void setServerHandler(ServerHandler serverHandler) {
         this.serverHandler = serverHandler;
     }
 
+    /**
+     * Processes a command received from the client and sends it to the server.
+     *
+     * @param command the command object received from the client
+     * @throws RemoteException if a communication-related error occurs
+     */
     @Override
     public void command_FromClientToServer(Command command) throws RemoteException {
         serializeObjectFromClient(command);
     }
 
+    /**
+     * Initiates the client socket registration process by asking the controller
+     * to register the client with the server.
+     * Handles RemoteException during the registration process, logging an error message.
+     * @throws IOException if an I/O error occurs during registration.
+     */
     public void askControllerToStartRegistration() throws IOException {
         try {
             clientController.registerClientSocket();
@@ -85,6 +132,10 @@ public class ClientSerializer implements RemoteServer {
         }
     }
 
+    /**
+     * Triggers the client controller to reset the model, initializing a new game session
+     * and resetting the client state to its default configuration.
+     */
     public void askControllerToResetModel() {
         clientController.clientReset();
     }

@@ -26,6 +26,15 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
     private final BlockingQueue<Command> commandsFromServerQueue;
 
 
+    /**
+     * Constructs a ClientRMI instance to handle client-server communication via RMI.
+     *
+     * @param clientController the controller managing client-side logic
+     * @param serverRMI the remote server interface
+     * @param userInterface the client-side user interface
+     * @param serverIP the IP address of the remote server
+     * @throws RemoteException if there is an RMI communication-related issue
+     */
     public ClientRMI(ClientController clientController, RemoteServer serverRMI, UserInterface userInterface, String serverIP) throws RemoteException {
         super();
         System.setProperty("java.rmi.server.hostname", serverIP);
@@ -45,12 +54,11 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         executorService.submit(this::processCommandsFromServerQueue);
     }
 
-    /**THIS METHOD IS CALLED BY THE SERVER
-     *REMEMBER: RMI WORKS BY CALLING METHODS ON A REMOTE OBJECT
-     * SO: SERVER CAN CALL HIS INTERFACE METHOD(command_FromServerToClient) ONLY IF
-     * CLIENTRMI(the remote object) HAS THE METHOD IMPLEMENTED.
-     * REMEMBER, WE CAN CALL A METHOD ON AN OBJECT ONLY IF THE OBJECT HAS THAT METHOD. OTHERWISE, WE ARE NOT CALLING ANYTHING.
-     * EXAMPLE: TO CALL PLACETILE ON THE SHIPBOARD, THE SHIPBOARD MUST HAVE PLACETILE ON ITS CODE.
+    /**
+     * Handles a command sent from the server to the client and processes it by adding to a queue.
+     *
+     * @param command the command object sent from the server to be processed by the client.
+     * @throws RemoteException if a communication error occurs during the remote method call.
      */
 
     @Override
@@ -58,6 +66,12 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         putFileFromServerInQueue(command);
     }
 
+    /**
+     * Adds a command object received from the server into the local command queue.
+     * Handles thread interruption during the enqueue process.
+     *
+     * @param command the command object to be added to the queue
+     */
     private void putFileFromServerInQueue(Command command) {
         try {
             commandsFromServerQueue.put(command);
@@ -65,6 +79,11 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
             System.err.println("Error putting file from Client in queue in ServerRMI cause thread was interrupted: " + e.getMessage());
         }
     }
+    /**
+     * Continuously processes commands from the server queue by executing the corresponding method.
+     * Handles interruptions and pauses briefly between processing commands.
+     * Updates client connection status based on specific command methods.
+     */
     private void processCommandsFromServerQueue()  {
         while (true) {
             try {
@@ -85,6 +104,11 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         }
     }
 
+    /**
+     * Sends a heartbeat signal to the server to maintain the connection status.
+     * Attempts to reconnect if the connection is lost, with a limited number of retries.
+     * Logs the connection attempts and updates the client state accordingly.
+     */
     private void sendHeartBeat() {
         if (isConnected) {
             try {
@@ -121,6 +145,11 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
         }
     }
 
+    /**
+     * Initiates the mechanism for periodically sending heartbeats
+     * to the server to verify and maintain the connection status.
+     * This method ensures the client remains connected or attempts to recover.
+     */
     private void startHeartBeat() {
 //        while(isConnected) {
             sendHeartBeat();
@@ -138,6 +167,11 @@ public class ClientRMI extends UnicastRemoteObject implements RemoteClient {
 //        }
 //    }
 
+    /**
+     * Replaces the current RemoteServer stub with a new one.
+     *
+     * @param newServerRMI the new RemoteServer object to be assigned
+     */
     public void replaceServerStub(RemoteServer newServerRMI) {
         this.serverRMI = newServerRMI;
     }
