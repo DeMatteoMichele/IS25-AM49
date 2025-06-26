@@ -243,17 +243,6 @@ public class LeaderBoard {
             return Optional.empty();
     }
 
-    public void addToNearestPosition(Player player, int days) {
-        int i = 0;
-        while (getPlayerWithDays(days - i).isPresent()) {
-            i++;
-        }
-        mapLeaderboard.put(player, days - i);
-        arrayLeaderboard.add(Map.entry(player, days - i));
-        showableLeaderBoard.set(moduleNumberOfCells(days - i), Optional.of(player));
-        sort();
-    }
-
     public void refreshConnections() {
         disconnectedPlayers.entrySet().removeIf(entry -> entry.getValue().isConnected());
     }
@@ -264,9 +253,6 @@ public class LeaderBoard {
 
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
-        if(arrayLeaderboard.size()- disconnectedPlayers.size() <= 1) {
-            throw new NotEnoughPlayerException("The leaderboard has only one player left, going in finish state");
-        }
     }
 
     public boolean isDisconnected(Player player) {

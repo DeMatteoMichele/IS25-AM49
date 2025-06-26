@@ -44,6 +44,10 @@ public class Player {
         connectionFlag = true;
     }
 
+    public boolean getConnectionFlag() {
+       return connectionFlag;
+    }
+
     public void setConnectionFlag(boolean connectionFlag) {
         this.connectionFlag = connectionFlag;
     }

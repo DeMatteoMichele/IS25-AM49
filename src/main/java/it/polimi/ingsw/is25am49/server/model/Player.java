@@ -106,6 +106,10 @@ public class Player {
         return connectionFlag;
     }
 
+    public boolean isDisconnected() {
+        return !connectionFlag;
+    }
+
     /**
      * Retrieves the player's unique identifier.
      * @return the unique identifier of the player.
