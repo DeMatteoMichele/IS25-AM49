@@ -1242,6 +1242,9 @@ public void printShipboard() {
                 confirm.setOnAction(event -> {
                     try{
                         System.out.println("chiamato");
+                        for (Pair<Point, Token> pair : tokenPointsListDefenitive) {
+                            System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
+                        }
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
                         input.clear();
                         tokenPointsListDefenitive.clear();

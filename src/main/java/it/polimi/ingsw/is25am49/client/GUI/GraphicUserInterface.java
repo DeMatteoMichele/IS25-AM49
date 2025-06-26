@@ -40,7 +40,7 @@ import java.util.concurrent.Executors;
 public class GraphicUserInterface extends Application implements UserInterface {
     private ClientController controller;
     private GameSession gameSession;
-    private static String serverIP = "localhost"; // Default server IP
+    public static String serverIP = "localhost"; // Default server IP
     private final int serverPortRMI = 1099;
     private String username;
     private Map<ScenesName, Scene> scenesList;
