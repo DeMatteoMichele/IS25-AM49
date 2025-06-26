@@ -108,7 +108,6 @@ public class AdventureCardDeck {
      * @param i the index of the card to be retrieved, must be within the range of 0 (inclusive)
      *          and the size of the deck (exclusive)
      * @return the AdventureCard located at the specified index
-     * @throws IndexOutOfBoundsException if the index is out of bounds (i < 0 or i >= deck.size())
      */
     public AdventureCard getCard(int i) {
         if (i < 0 || i >= deck.size()) {

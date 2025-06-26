@@ -129,7 +129,7 @@ public class FinishScoreState extends State {
      * in the current game state and will throw an exception if invoked.
      *
      * @param playerId the unique identifier of the player attempting to perform the action
-     * @param idTile the unique identifier of the tile the player wants to draw
+     * @param idTIle the unique identifier of the tile the player wants to draw
      * @throws IllegalMethodOnThisStateException if this method is invoked in an invalid state
      */
     public void userDrawTile(int playerId, int idTIle) {

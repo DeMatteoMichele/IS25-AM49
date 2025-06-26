@@ -349,10 +349,6 @@ public class ShipBoard {
         return connectedTiles;
     }
 
-    /**
-     * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
-     *     if the center is destroyed it destroys all the tiles
-     */
     public void destroyDisconnectedTiles(){
         Set<Point> elimina = new HashSet<>(grid.keySet());
         try {
@@ -413,7 +409,6 @@ public class ShipBoard {
     /**
      * check all 4 sides of a cabin to verify if an alien can be present in the crew
      * @param coordinates of the cabin to check
-     * @return a HashMap<\Point,Token> of the possible crew members of the cabin at given coordinates
      */
     public Set<Token> checkIfAlienArePossible(Point coordinates) {
         Set<Token> crew = new HashSet<>();
