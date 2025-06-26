@@ -1193,7 +1193,6 @@ public void printShipboard() {
                     try {
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-//                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
@@ -1245,7 +1244,6 @@ public void printShipboard() {
                         System.out.println("chiamato");
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-//                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
@@ -1290,7 +1288,6 @@ public void printShipboard() {
                     try{
                         guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
                         input.clear();
-                        points.clear();
                     }catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         printShipboard();
@@ -1351,7 +1348,6 @@ public void printShipboard() {
                     try {
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-//                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
