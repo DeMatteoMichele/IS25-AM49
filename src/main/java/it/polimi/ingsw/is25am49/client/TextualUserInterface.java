@@ -295,8 +295,9 @@ public class TextualUserInterface implements UserInterface {
                 }
                 if( inputString.equalsIgnoreCase("reconnect")) {
                     controller.clientReset();
-                    userSettings();
-                    continue;
+                    main(new String[]{serverIP});
+                    //System.exit(0);
+                    break;
                 }
                 handleInput(inputString.toLowerCase());
                 terminal.flush();

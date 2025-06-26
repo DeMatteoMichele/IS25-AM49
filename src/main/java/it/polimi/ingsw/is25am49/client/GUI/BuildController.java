@@ -1154,7 +1154,7 @@ public class BuildController extends GenericSceneController {
             }
         });
 
-        KeyFrame kf2 = new KeyFrame(Duration.millis(150), e -> {
+        KeyFrame kf2 = new KeyFrame(Duration.millis(300), e -> {
             try {
                 Orientation o = Orientation.valueOf(node.get("orientation").asText());
                 gameSession.getState().userRotateHandTile(guiApplication.getMyId(), o);
@@ -1164,7 +1164,7 @@ public class BuildController extends GenericSceneController {
             }
         });
 
-        KeyFrame kf3 = new KeyFrame(Duration.millis(300), e -> {
+        KeyFrame kf3 = new KeyFrame(Duration.millis(350), e -> {
             try {
                 Orientation o = Orientation.valueOf(node.get("orientation").asText());
                 Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
