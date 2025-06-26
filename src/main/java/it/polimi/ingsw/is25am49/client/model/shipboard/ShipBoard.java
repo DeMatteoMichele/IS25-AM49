@@ -15,6 +15,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -61,12 +62,12 @@ public class ShipBoard {
         switch (level) {
             case 0, 1:
                 try {
-                    File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_one_config.json");
-                    if (!file.exists()) {
-                        throw new FileNotFoundException("File(shipboard_two_config.json) non trovato: " + file.getAbsolutePath());
-                    } else {
+                    try (InputStream is = getClass().getResourceAsStream("/it/polimi/ingsw/is25am49/shipboard_one_config.json")) {
+                        if (is == null) {
+                            throw new FileNotFoundException("File ( shipboard_one_config.json ) non trovato nel classpath.");
+                        }
                         ObjectMapper objectMapper = new ObjectMapper();
-                        Set<Point> points = objectMapper.readValue(file, new TypeReference<>() {
+                        Set<Point> points = objectMapper.readValue(is, new TypeReference<>() {
                         });
 
                         for (Point p : points) {
@@ -83,17 +84,20 @@ public class ShipBoard {
                 break;
             case 2:
                 try {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    File file = new File("src/main/resources/it/polimi/ingsw/is25am49/shipboard_two_config.json");
-                    Set<Point> points = objectMapper.readValue(file, new TypeReference<>() {
-                    });
+                    try (InputStream is = getClass().getResourceAsStream("/it/polimi/ingsw/is25am49/shipboard_two_config.json")) {
+                        if (is == null) {
+                            throw new FileNotFoundException("File ( shipboard_two_config.json ) non trovato nel classpath.");
+                        }
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        Set<Point> points = objectMapper.readValue(is, new TypeReference<>() {
+                        });
 
-                    for (Point p : points) {
-                        grid.put(p, Optional.empty());
+                        for (Point p : points) {
+                            grid.put(p, Optional.empty());
+                        }
+                        grid.put(new Point(7, 7), Optional.of(centerCabinTile));
+                        //this.printShipboard();
                     }
-                    grid.put(new Point(7, 7), Optional.of(centerCabinTile));
-                    //this.printShipboard();
-
                 } catch (FileNotFoundException e) {
                     System.err.println("Errore: Il file di configurazione non è stato trovato.");
                 } catch (IOException e) {
@@ -545,10 +549,7 @@ public class ShipBoard {
         return connectedTiles;
     }
 
-    /**
-     * this method destroys all the empty tiles or the ones that are not connected to the center - point<7,7>
-     *     if the center is destroyed it destroys all the tiles
-     */
+
     public Set<Point> destroyDisconnectedTiles(){
         Set<Point> elimina = new HashSet<>(grid.keySet());
         try {
@@ -610,7 +611,6 @@ public class ShipBoard {
      * check all 4 sides of a cabin to verify if an alien can be present in the crew
      *
      * @param coordinates of the cabin to check
-     * @return a HashMap<\Point,Token> of the possible crew members of the cabin at given coordinates
      */
     public Set<Token> checkIfAlienArePossible(Point coordinates) {
         Set<Token> crew = new HashSet<>();

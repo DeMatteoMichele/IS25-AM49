@@ -11,6 +11,8 @@ import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCompo
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -355,36 +357,40 @@ public class Tile {
      * @return a map where keys are tile IDs and values are Tile objects, or null if an exception occurs
      */
     public static Map<Integer,Tile> generateTiles(){
-        try{
-            File file = new File("src/main/resources/it/polimi/ingsw/is25am49/tiles_config.json");
-            if(!file.exists()){throw new FileNotFoundException("File(tiles_config.json) non trovato: " + file.getAbsolutePath());}
-            else{
-                Map<Integer,Tile> tiles = new HashMap<>();
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootArray = objectMapper.readTree(file);
-
-                for (JsonNode node : rootArray) {
-                    int idTile = node.get("idTile").asInt();
-                    ComponentType type= ComponentType.valueOf(node.get("component").asText());
-                    int level = node.get("level").asInt();
-                    ConnectorType c1= ConnectorType.valueOf(node.get("c1").asText());
-                    ConnectorType c2= ConnectorType.valueOf(node.get("c2").asText());
-                    ConnectorType c3= ConnectorType.valueOf(node.get("c3").asText());
-                    ConnectorType c4= ConnectorType.valueOf(node.get("c4").asText());
-                    //System.out.println(idTile + " " + type+ " "+ level+ " "+ c1+ " "+ c2+ " "+ c3+ " "+ c4);
-                    Component component = switch (type) {
-                        case ENGINE, CANNON, FRAME_SECTION, SKY, PURPLE_ALIEN_MODULE ,BROWN_ALIEN_MODULE -> new BasicComponent(type, level);
-                        case DOUBLE_CANNON, DOUBLE_ENGINE, SHIELD -> new SpecialComponent(type, level);
-                        default -> new ContainerComponent(type, level);
-                    };
-                    tiles.put(idTile,new Tile(idTile,component,c1,c2,c3,c4));
-                }
-                return tiles;
+        try {
+            URL url= Tile.class.getResource("/it/polimi/ingsw/is25am49/tiles_config.json");
+            System.out.printf("URL del file di configurazione: %s\n", url);
+            InputStream inputStream = Tile.class.getResourceAsStream("/it/polimi/ingsw/is25am49/tiles_config.json");
+            if (inputStream == null) {
+                throw new FileNotFoundException("File tiles_config.json non trovato nel classpath");
             }
-        }catch (FileNotFoundException e) {
+
+            Map<Integer,Tile> tiles = new HashMap<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootArray = objectMapper.readTree(inputStream);
+
+            for (JsonNode node : rootArray) {
+                int idTile = node.get("idTile").asInt();
+                ComponentType type = ComponentType.valueOf(node.get("component").asText());
+                int level = node.get("level").asInt();
+                ConnectorType c1 = ConnectorType.valueOf(node.get("c1").asText());
+                ConnectorType c2 = ConnectorType.valueOf(node.get("c2").asText());
+                ConnectorType c3 = ConnectorType.valueOf(node.get("c3").asText());
+                ConnectorType c4 = ConnectorType.valueOf(node.get("c4").asText());
+
+                Component component = switch (type) {
+                    case ENGINE, CANNON, FRAME_SECTION, SKY, PURPLE_ALIEN_MODULE, BROWN_ALIEN_MODULE -> new BasicComponent(type, level);
+                    case DOUBLE_CANNON, DOUBLE_ENGINE, SHIELD -> new SpecialComponent(type, level);
+                    default -> new ContainerComponent(type, level);
+                };
+                tiles.put(idTile, new Tile(idTile, component, c1, c2, c3, c4));
+            }
+            return tiles;
+
+        } catch (FileNotFoundException e) {
             System.err.println("Errore: Il file di configurazione non è stato trovato. -->" + e.getMessage());
-        }catch (IllegalArgumentException e) {
-            System.err.println("Errore nella conversione dell'enum!"+e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Errore nella conversione dell'enum!" + e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
