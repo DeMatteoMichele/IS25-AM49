@@ -1183,5 +1183,9 @@ public class BuildController extends GenericSceneController {
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.play();
     }
+    @FXML
+    public void reset(ActionEvent event) {
+        guiApplication.reset();
+    }
 
 }

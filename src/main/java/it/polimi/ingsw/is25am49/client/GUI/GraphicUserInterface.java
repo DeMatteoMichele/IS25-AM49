@@ -514,7 +514,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
             }
             else{
                 adventureController2 adventureController = (adventureController2) controllerList.get(ScenesName.ADVENTURE2);
-                adventureController.updateCardMessageBox(gameSession.getPlayer(playerId).get().getUsername() + " is playing, wait for your turn");
+//                adventureController.updateCardMessageBox(gameSession.getPlayer(playerId).get().getUsername() + " is playing, wait for your turn");
 //                adventureController.addMessage(gameSession.getGame().get().getGameboard().getCurrentPlayer() + " is playing, wait for your turn");
             }
         });
@@ -846,4 +846,25 @@ public class GraphicUserInterface extends Application implements UserInterface {
     public void setGameSession(GameSession gameSession) {
         this.gameSession = gameSession;
     }
+
+    public void reset() {
+//        myId = -1;
+//        username = null;
+//        // Ricarica tutte le scene
+//        try {
+//            loadStage(stage);
+//            showScene(ScenesName.HOME);
+//            controller = new ClientController(gameSession, this);
+//        } catch (Exception e) {
+//            System.out.println("Errore durante il reset della GUI: " + e.getMessage());
+//            e.printStackTrace();
+
+        controller.clientReset();
+//        Platform.exit();
+        start(stage);
+//        main(new String[]{serverIP});
+    }
+//    }
+
+
 }

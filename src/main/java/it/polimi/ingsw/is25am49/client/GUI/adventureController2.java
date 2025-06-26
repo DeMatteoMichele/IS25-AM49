@@ -1743,4 +1743,7 @@ public void printShipboard() {
             guiApplication.printUpdateMessage(error + e.getMessage());
         }
     }
+    public void reset(ActionEvent event){
+        guiApplication.reset();
+    }
 }

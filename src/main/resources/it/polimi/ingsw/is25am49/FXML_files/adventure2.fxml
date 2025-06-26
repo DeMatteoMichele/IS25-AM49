@@ -44,7 +44,7 @@
                 <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStopButton" prefHeight="75.0" prefWidth="75.0" style="-fx-font-size: 16px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: linear-gradient(to bottom, #ffd166, #e29100); -fx-border-color: #ffedaa; -fx-border-width: 1.5px; -fx-border-radius: 20px; -fx-background-radius: 20px; -fx-text-fill: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 2); -fx-cursor: hand;" text="Stop" />
             </children>
         </HBox>
-        <StackPane fx:id="cardEffect" layoutX="414.0" layoutY="378.0" prefHeight="300.0" prefWidth="500.0" AnchorPane.bottomAnchor="49.0" AnchorPane.rightAnchor="150.0"> </StackPane>
+        <StackPane fx:id="cardEffect" layoutX="414.0" layoutY="378.0" prefHeight="300.0" prefWidth="500.0" AnchorPane.bottomAnchor="49.0" AnchorPane.rightAnchor="230.0"> </StackPane>
         <StackPane fx:id="leaderboard" prefHeight="250.0" prefWidth="392.0" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="50" />
 
 
@@ -67,7 +67,8 @@
         <Button layoutX="975.0" layoutY="655.0" mnemonicParsing="false" onAction="#throwDices" prefHeight="25.0" prefWidth="116.0" style="-fx-background-color: rgba(0,30,60,0.8); -fx-background-radius: 10; -fx-border-color: linear-gradient(to bottom, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="Throw dices" />
         <Button fx:id="send" layoutX="1080.0" layoutY="547.0" mnemonicParsing="false" style="-fx-background-color: rgba(0,30,60,0.8); -fx-background-radius: 10; -fx-border-color: linear-gradient(to bottom, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="Button" />
         <Label fx:id="stateCard" layoutX="910.0" layoutY="474.0" prefHeight="58.0" prefWidth="308.0" style="-fx-background-color: rgba(0,20,40,0.7); -fx-background-radius: 10; -fx-border-color: linear-gradient(to bottom, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-padding: 8; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="Label" />
-        <Label fx:id="turn" layoutX="668.0" layoutY="640.0" prefHeight="67.0" prefWidth="220.0" style="-fx-background-color: rgba(0,20,40,0.7); -fx-background-radius: 10; -fx-border-color: linear-gradient(to bottom, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-padding: 8; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="Label" />
+        <Label fx:id="turn" layoutX="668.0" layoutY="710.0" prefHeight="67.0" prefWidth="220.0" style="-fx-background-color: rgba(0,20,40,0.7); -fx-background-radius: 10; -fx-border-color: linear-gradient(to bottom, #5e60ce, #64dfdf); -fx-border-width: 2; -fx-border-radius: 10; -fx-padding: 8; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 3);" text="Label" />
+      <Button layoutX="420.0" layoutY="310.0" onAction="#reset" mnemonicParsing="false" text="Reset" />
 
     </children>
 
