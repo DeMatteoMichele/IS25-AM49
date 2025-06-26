@@ -11,14 +11,16 @@ import java.util.List;
 
 public class EffectLoseGoods extends CardEffect {
     private int numberOfTokensToLose;
+    private int numberOfTokensToLoseMemory;
 
     List<Point> coordinates = new ArrayList<>();
     public EffectLoseGoods(String name_effect, int numberOfTokensToLose) {
-
         super(name_effect);
-        this.numberOfTokensToLose = numberOfTokensToLose;
+        this.numberOfTokensToLoseMemory = numberOfTokensToLose;
     }
+
     public void action(Player player) {
+        numberOfTokensToLose = numberOfTokensToLoseMemory;
         //rimuovo in ordine di importanza dal rosso finchè non sono finiti tutte le merci da rimuovere
         //oppure finchè non ci sono più merci di quel colore nella nave
         int redGoods = player.getShipBoard().getTotalNumberOfaToken(Token.RED_GOODS);
