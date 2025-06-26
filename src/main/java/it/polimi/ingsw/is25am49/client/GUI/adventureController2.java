@@ -1224,6 +1224,10 @@ public void printShipboard() {
                             Point coordinatess = new Point(x, y);
 
                             tokenPointsListDefenitive.add(new Pair<>(coordinatess, Token.BATTERY_CELLS));
+                            System.out.println("Lista delle coordinate:");
+                            for (Pair<Point, Token> pair : tokenPointsListDefenitive) {
+                                System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
+                            }
                             input.clear();
                             addMessage("Batteria aggiunta alle coordinate: " + coordinatess);
                         } catch (NumberFormatException e) {
@@ -1240,7 +1244,7 @@ public void printShipboard() {
                         System.out.println("chiamato");
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
                         input.clear();
-                        tokenPointsListDefenitive.clear();;
+                        tokenPointsListDefenitive.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokenPointsListDefenitive.clear();

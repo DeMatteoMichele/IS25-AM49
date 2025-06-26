@@ -72,9 +72,12 @@ public class finishController extends GenericSceneController{
         endGame.setDisable(true);
         endGame.setVisible(false);
         gameFinished.setVisible(true);
-        PauseTransition delay = new PauseTransition(seconds(5));
-        delay.setOnFinished(event -> Platform.exit());
-        delay.play();
+       PauseTransition delay = new PauseTransition(seconds(5));
+       delay.setOnFinished(event -> {
+           Platform.exit();
+           System.exit(0);
+       });
+       delay.play();
     }
     public void printPodium(){
         List<Player> finalRanking = Stream.concat(

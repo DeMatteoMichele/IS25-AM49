@@ -149,11 +149,11 @@ public class Game {
                     board.getLeaderBoard().disconnectPlayer(player);
                 }
             } catch (NotEnoughPlayerException e) {
-                scheduler.schedule(() -> {
-                    if (board.getLeaderBoard().size()- board.getLeaderBoard().sizeOfDisconnected() <= 1) {
-                        finishGameDueToDisconnection();
-                    }
-                }, 30, java.util.concurrent.TimeUnit.SECONDS);
+//                scheduler.schedule(() -> {
+//                    if (board.getLeaderBoard().size()- board.getLeaderBoard().sizeOfDisconnected() <= 1) {
+//                        finishGameDueToDisconnection();
+//                    }
+//                }, 30, java.util.concurrent.TimeUnit.SECONDS);
             }
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
