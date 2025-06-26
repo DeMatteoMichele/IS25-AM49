@@ -20,6 +20,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,13 +126,13 @@ public class GameBoard {
         List<AdventureCard> deckLevel1 = new ArrayList<>();
         List<AdventureCard> deckLevel2 = new ArrayList<>();
         try {
-            File file = new File("src/main/resources/it/polimi/ingsw/is25am49/adventure_card_deck_config.json");
-            if (!file.exists()) {
-                throw new FileNotFoundException("File non trovato");
-            } else {
+            try (InputStream is = getClass().getResourceAsStream("/it/polimi/ingsw/is25am49/adventure_card_deck_config.json")) {
+                if (is == null) {
+                    throw new FileNotFoundException("File ( adventure_card_deck_config.json ) non trovato nel classpath.");
+                }
                 List<AdventureCard> adventureCards = new ArrayList<>();
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode rootNode = mapper.readTree(file);
+                JsonNode rootNode = mapper.readTree(is);
                 AdventureCard card;
                 for (JsonNode node : rootNode) {
                     int level = node.get("level").asInt();

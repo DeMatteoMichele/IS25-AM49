@@ -4,21 +4,16 @@ import it.polimi.ingsw.is25am49.client.model.AdventureCardDeck;
 import it.polimi.ingsw.is25am49.client.model.Game;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.AbandonedShipCard;
-import it.polimi.ingsw.is25am49.client.model.adventurecards.AbandonedStationCard;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.PlanetCard;
-import it.polimi.ingsw.is25am49.client.model.shipboard.ContainerComponent;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -35,7 +30,6 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.awt.*;
-import java.awt.color.ICC_ColorSpace;
 import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -141,10 +135,10 @@ public class adventureController2 extends GenericSceneController {
             }
         });
         String path = "/it/polimi/ingsw/is25am49/tokens/";
-        goodsMap.put(0, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "Redgood.png")).toExternalForm()));
-        goodsMap.put(1, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "Greengood.png")).toExternalForm()));
-        goodsMap.put(2, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "Bluegood.png")).toExternalForm()));
-        goodsMap.put(3, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "Yellowgood.png")).toExternalForm()));
+        goodsMap.put(0, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "redgood.png")).toExternalForm()));
+        goodsMap.put(1, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "greengood.png")).toExternalForm()));
+        goodsMap.put(2, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "bluegood.png")).toExternalForm()));
+        goodsMap.put(3, new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource(path + "yellowgood.png")).toExternalForm()));
     }
 
     public void handleDrawButton() {
@@ -353,7 +347,7 @@ public class adventureController2 extends GenericSceneController {
 //                        case SOUTH -> imageView.setRotate(180);
 //                        case WEST -> imageView.setRotate(270);
 //                    }
-//                    javafx.scene.image.Image i = new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Graysquare.png")).toExternalForm());
+//                    javafx.scene.image.Image i = new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/graysquare.png")).toExternalForm());
 //                    getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5).getChildren().add(imageView);
 //                    shipboard.getProperties().put(coordinates, imageView);
 //                    if (tile.get().getComponent() instanceof ContainerComponent) {
@@ -529,19 +523,19 @@ public void printShipboard() {
 
                                 switch (playerColor) {
                                     case RED:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                         break;
                                     case BLUE:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                         break;
                                     case GREEN:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                         break;
                                     case YELLOW:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                         break;
                                     default:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                 }
                             }
                             else{
@@ -627,19 +621,19 @@ public void printShipboard() {
 
                             switch (playerColor) {
                                 case RED:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                     break;
                                 case BLUE:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                     break;
                                 case GREEN:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                     break;
                                 case YELLOW:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                     break;
                                 default:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                             }
                         }
                         else{

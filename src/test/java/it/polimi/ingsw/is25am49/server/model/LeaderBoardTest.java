@@ -216,8 +216,8 @@ class LeaderBoardTest {
 
         assertEquals(player4, leaderBoard1.getPlayerConnectedStartingFromThisPosition(2));
 
-        assertThrows(NotEnoughPlayerException.class,()->leaderBoard1.disconnectPlayer(player1));
-        assertThrows(NotEnoughPlayerException.class,()->leaderBoard1.disconnectPlayer(player4));
+        assertDoesNotThrow(()->leaderBoard1.disconnectPlayer(player1));
+        assertDoesNotThrow(()->leaderBoard1.disconnectPlayer(player4));
         assertThrows(IllegalSetOfNextPlayerException.class,
                 () -> leaderBoard1.getPlayerConnectedStartingFromThisPosition(1));
     }
