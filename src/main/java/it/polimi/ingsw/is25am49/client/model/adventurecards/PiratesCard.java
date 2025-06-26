@@ -86,6 +86,7 @@ public class PiratesCard extends Enemy {
     protected void tryNextPlayerOrHandleDefeatedPlayers() {
         try {
             gameBoard.nextPlayer();
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "Now check on next player");
             checkRequirements();
         } catch (IllegalSetOfNextPlayerException e) {
             handleDefeatedPlayers();
@@ -97,7 +98,7 @@ public class PiratesCard extends Enemy {
             userInterface.updateGenericCardMessage(genericIdForUpdates, "No defeated players, now to update");
             update();
         } else {
-            userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices!");
+            userInterface.updateGenericCardMessage(genericIdForUpdates, "No more players, now " + defeatedPlayers.getFirst().getUsername() + " must roll the dices!");
             gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
             userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
             for (Player player : defeatedPlayers) {
@@ -105,6 +106,7 @@ public class PiratesCard extends Enemy {
             }
             currentEffect = listEffects.removeFirst();
             currentState = AdventureStatesTypes.ROLL_DICES;
+            cannonadesPhase = true;
             userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
             checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);
         }
@@ -124,7 +126,7 @@ public class PiratesCard extends Enemy {
                 gameBoard.setCurrentPlayer(defeatedPlayers.getFirst());
                 userInterface.updateChangeTurn(gameBoard.getCurrentPlayer().getIdPlayer());
                 currentEffect = listEffects.removeFirst();
-                userInterface.updateGenericCardMessage(genericIdForUpdates, "Another meteora! Now" + defeatedPlayers.getFirst().getUsername() + "must roll the dices again!");
+                userInterface.updateGenericCardMessage(genericIdForUpdates, "Another meteora! Now " + defeatedPlayers.getFirst().getUsername() + " must roll the dices again!");
                 currentState = AdventureStatesTypes.ROLL_DICES;
                 userInterface.updateCardState(gameBoard.getCurrentPlayer().getIdPlayer(), currentState);
                 checkConnectionOrDefaultEffect(AdventureStatesTypes.ROLL_DICES);

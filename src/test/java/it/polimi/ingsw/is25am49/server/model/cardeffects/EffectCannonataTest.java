@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.server.model.cardeffects;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.CardEffect;
 import it.polimi.ingsw.is25am49.server.model.cardeffects.EffectCannonata;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalMethodOnThisCardException;
 import it.polimi.ingsw.is25am49.shared.enums.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.*;
 import it.polimi.ingsw.is25am49.server.model.shipboard.Component;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EffectCannonataTest {
     Player player;
@@ -58,6 +62,10 @@ class EffectCannonataTest {
         cardEffect = new EffectCannonata("effect cannonata", 0, Orientation.NORTH);
         cardEffect.setPosition(6);
         player.getShipBoard().completeShipBoard();
+        assertThrows(IllegalMethodOnThisCardException.class, () -> cardEffect.getLostCrew());
+        assertThrows(IllegalMethodOnThisCardException.class, () -> cardEffect.getGoods());
+        assertThrows(IllegalMethodOnThisCardException.class, () -> cardEffect.setListOfCoordinates(new ArrayList<>()));
+        assertThrows(IllegalMethodOnThisCardException.class, () -> cardEffect.setCoordinate(new Point(0, 0)));
 
     }
 
@@ -73,20 +81,5 @@ class EffectCannonataTest {
         cardEffect.action(player);
         ship.printShipboardSpecial();
 
-    }
-    @Test
-    void setPosition() {
-    }
-
-    @Test
-    void setListOfCoordinates() {
-    }
-
-    @Test
-    void setCoordinate() {
-    }
-
-    @Test
-    void getLevel() {
     }
 }

@@ -3,6 +3,7 @@ package it.polimi.ingsw.is25am49.server.model;
 import it.polimi.ingsw.is25am49.server.model.LeaderBoard;
 import it.polimi.ingsw.is25am49.server.model.Player;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalSetOfNextPlayerException;
+import it.polimi.ingsw.is25am49.server.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.Color;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.server.model.exceptions.GameSettingsException;
@@ -101,7 +102,7 @@ class LeaderBoardTest {
         assertTrue(leaderBoard1.isSorted());
         leaderBoard1.remove(player3);
         assertTrue(leaderBoard1.isSorted());
-        leaderBoard1.remove(player4);
+        assertThrows(NotEnoughPlayerException.class,()->leaderBoard1.remove(player4));
         assertTrue(leaderBoard1.isEmpty());
         leaderBoard2.add(player1);
         leaderBoard2.add(player2);
@@ -113,7 +114,7 @@ class LeaderBoardTest {
         assertTrue(leaderBoard2.isSorted());
         leaderBoard2.remove(player3);
         assertTrue(leaderBoard2.isSorted());
-        leaderBoard2.remove(player4);
+        assertThrows(NotEnoughPlayerException.class,()->leaderBoard2.remove(player4));
         assertTrue(leaderBoard2.isEmpty());
     }
 
@@ -215,8 +216,8 @@ class LeaderBoardTest {
 
         assertEquals(player4, leaderBoard1.getPlayerConnectedStartingFromThisPosition(2));
 
-        leaderBoard1.disconnectPlayer(player1);
-        leaderBoard1.disconnectPlayer(player4);
+        assertThrows(NotEnoughPlayerException.class,()->leaderBoard1.disconnectPlayer(player1));
+        assertThrows(NotEnoughPlayerException.class,()->leaderBoard1.disconnectPlayer(player4));
         assertThrows(IllegalSetOfNextPlayerException.class,
                 () -> leaderBoard1.getPlayerConnectedStartingFromThisPosition(1));
     }

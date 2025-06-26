@@ -45,7 +45,6 @@ class WarZoneCardTest {
     void init(){
         effects = new ArrayList<>();
         effects.add(new EffectCannonata("EffectCannonata",0, Orientation.NORTH));
-        effects.add(new EffectCannonata("EffectCannonata",1, Orientation.EAST));
         motors = new HashSet<Point>();
         motors.add(coordinate1);
         motors.add(coordinate2);
@@ -121,7 +120,6 @@ class WarZoneCardTest {
         gameBoard.getCurrentCard().rollDices();
         gameBoard.getCurrentCard().finishDecision(batteries2);
         gameBoard.getCurrentCard().finishDecision(shield);
-        gameBoard.getCurrentCard().rollDices();
    }
 
     @Test

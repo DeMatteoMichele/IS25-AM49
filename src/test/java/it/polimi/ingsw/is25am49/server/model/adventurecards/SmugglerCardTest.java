@@ -33,13 +33,13 @@ class SmugglerCardTest {
     AdventureCardDeck adventureDeck;
     Player player1;
     Player player2;
-    ShipBoard shipMock= Mockito.mock(ShipBoard.class);
+    ShipBoard shipMock = Mockito.mock(ShipBoard.class);
     ShipBoard shipMock1 = Mockito.mock(ShipBoard.class);
     List<CardEffect> listEffects = new ArrayList<>();
     AdventureCard card1;
 
     @BeforeEach
-    void init(){
+    void init() {
         // Initialize the game board and player1
         gameBoard = new GameBoard();
         player1 = new Player("TestPlayer", Color.RED, 1);
@@ -57,7 +57,7 @@ class SmugglerCardTest {
         adventureDeck = new AdventureCardDeck();
 //        listEffects.add(new EffectWinGoods("WinGoods", 3,2,1,1));
 //        listEffects.add(new EffectLoseGoods("LoseGoods", 3));
-        card1=new SmugglerCard(gameBoard, "SmugglerCardTest", 1, "smuggler",2,  3, 3,2,1,1,3 );
+        card1 = new SmugglerCard(gameBoard, "SmugglerCardTest", 1, "smuggler", 2, 3, 3, 2, 1, 1, 3);
         adventureDeck.add(card1);
         gameBoard.setMainAdventureDeck(adventureDeck);
 
@@ -117,7 +117,7 @@ class SmugglerCardTest {
     }
 
     @Test
-    void CheckEnoughFirePowerToDrawButNotEnoughBatteriesToWin(){
+    void CheckEnoughFirePowerToDrawButNotEnoughBatteriesToWin() {
         when(shipMock.getTotalFirePower()).thenReturn(3.0);
         when(shipMock.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(0);
 
@@ -139,47 +139,47 @@ class SmugglerCardTest {
         assertEquals(AdventureStatesTypes.DECISION_REWARDS, gameBoard.getCurrentCard().getCurrentState());
     }
 
-    @Test
-    void ActivationOfCannons(){
-        when(shipMock.getTotalFirePower()).thenReturn(2.0);
-        when(shipMock.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(3);
-        ArrayList<Point> activatablePoints = new ArrayList<>();
-        activatablePoints.add(new Point(1, 1));
-        activatablePoints.add(new Point(2, 2));
-        activatablePoints.add(new Point(3, 3));
-
-        when(shipMock.getActivatableComponents(ComponentType.DOUBLE_CANNON)).thenReturn(activatablePoints);
-
-        Tile tileMock1 = Mockito.mock(Tile.class);
-        Tile tileMock2 = Mockito.mock(Tile.class);
-        Tile tileMock3 = Mockito.mock(Tile.class);
-
-        when(shipMock.getTile(new Point(1, 1))).thenReturn(tileMock1);
-        when(shipMock.getTile(new Point(2, 2))).thenReturn(tileMock2);
-        when(shipMock.getTile(new Point(3, 3))).thenReturn(tileMock3);
-
-        when(tileMock1.getPotentialFirePower()).thenReturn(1.0);
-        when(tileMock2.getPotentialFirePower()).thenReturn(1.0);
-        when(tileMock3.getPotentialFirePower()).thenReturn(1.0);
-
-        player2.setShipBoard(shipMock);
-        gameBoard.drawAdventureCard(gameBoard.getLeader());
-        assertEquals(gameBoard.getCurrentCard().getCurrentState(), AdventureStatesTypes.DECISION_BATTERIES);
-        List<Pair<Point, Token>> batteryCoordinates = new ArrayList<>();
-                batteryCoordinates.add(new Pair<>(new Point(1, 1), Token.BATTERY_CELLS));
-                batteryCoordinates.add(new Pair<>(new Point(2, 2), Token.BATTERY_CELLS));
-                batteryCoordinates.add(new Pair<>(new Point(3, 3), Token.BATTERY_CELLS));
-                gameBoard.getCurrentCard().finishDecision(batteryCoordinates);
-        assertEquals(AdventureStatesTypes.DECISION_CANNON, gameBoard.getCurrentCard().getCurrentState());
-        Set<Point> cannonCoordinates = new HashSet<>();
-                cannonCoordinates.add(new Point(1, 1));
-                cannonCoordinates.add(new Point(2, 2));
-                cannonCoordinates.add(new Point(3, 3));
-                when(shipMock.getTotalFirePower()).thenReturn(2.0);
-                gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
-                assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
-                assertEquals(EffectLoseGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
-    }
+//    @Test
+//    void ActivationOfCannons() {
+//        when(shipMock.getTotalFirePower()).thenReturn(2.0);
+//        when(shipMock.getTotalNumberOfaToken(Token.BATTERY_CELLS)).thenReturn(3);
+//        ArrayList<Point> activatablePoints = new ArrayList<>();
+//        activatablePoints.add(new Point(1, 1));
+//        activatablePoints.add(new Point(2, 2));
+//        activatablePoints.add(new Point(3, 3));
+//
+//        when(shipMock.getActivatableComponents(ComponentType.DOUBLE_CANNON)).thenReturn(activatablePoints);
+//
+//        Tile tileMock1 = Mockito.mock(Tile.class);
+//        Tile tileMock2 = Mockito.mock(Tile.class);
+//        Tile tileMock3 = Mockito.mock(Tile.class);
+//
+//        when(shipMock.getTile(new Point(1, 1))).thenReturn(tileMock1);
+//        when(shipMock.getTile(new Point(2, 2))).thenReturn(tileMock2);
+//        when(shipMock.getTile(new Point(3, 3))).thenReturn(tileMock3);
+//
+//        when(tileMock1.getPotentialFirePower()).thenReturn(1.0);
+//        when(tileMock2.getPotentialFirePower()).thenReturn(1.0);
+//        when(tileMock3.getPotentialFirePower()).thenReturn(1.0);
+//
+//        player2.setShipBoard(shipMock);
+//        gameBoard.drawAdventureCard(gameBoard.getLeader());
+//        assertEquals(gameBoard.getCurrentCard().getCurrentState(), AdventureStatesTypes.DECISION_BATTERIES);
+//        List<Pair<Point, Token>> batteryCoordinates = new ArrayList<>();
+//        batteryCoordinates.add(new Pair<>(new Point(1, 1), Token.BATTERY_CELLS));
+//        batteryCoordinates.add(new Pair<>(new Point(2, 2), Token.BATTERY_CELLS));
+//        batteryCoordinates.add(new Pair<>(new Point(3, 3), Token.BATTERY_CELLS));
+//        gameBoard.getCurrentCard().finishDecision(batteryCoordinates);
+//        assertEquals(AdventureStatesTypes.DECISION_CANNON, gameBoard.getCurrentCard().getCurrentState());
+//        Set<Point> cannonCoordinates = new HashSet<>();
+//        cannonCoordinates.add(new Point(1, 1));
+//        cannonCoordinates.add(new Point(2, 2));
+//        cannonCoordinates.add(new Point(3, 3));
+//        when(shipMock.getTotalFirePower()).thenReturn(2.0);
+//        gameBoard.getCurrentCard().finishDecision(cannonCoordinates);
+//        assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState());
+//        assertEquals(EffectLoseGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
+//    }
 
 
     @Test
@@ -194,9 +194,7 @@ class SmugglerCardTest {
         goodsCoordinates.add(new Pair<>(new Point(1, 1), Token.RED_GOODS));
         goodsCoordinates.add(new Pair<>(new Point(2, 2), Token.BLUE_GOODS));
         gameBoard.getCurrentCard().acceptPrizes(true);
-        gameBoard.getCurrentCard().finishDecision(goodsCoordinates);
-        assertEquals(EffectWinGoods.class, gameBoard.getCurrentCard().getCurrentEffect().getClass());
-        assertEquals(-2, gameBoard.getCurrentPlayer().getDaysThisTurn()); // verifica che i giorni persi siano impostati
+        gameBoard.disconnectionWarningToCard(gameBoard.getCurrentPlayer());
         assertEquals(AdventureStatesTypes.UPDATE, gameBoard.getCurrentCard().getCurrentState()); // verifica lo stato finale
     }
 

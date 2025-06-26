@@ -521,4 +521,8 @@ public class Game {
     public boolean checkIfShipboardsAreFullOfToken() {
         return players.stream().allMatch(Player::shipBoardIsFullOfToken);
     }
+
+    public Timer getTimer() {
+        return timer;
+    }
 }

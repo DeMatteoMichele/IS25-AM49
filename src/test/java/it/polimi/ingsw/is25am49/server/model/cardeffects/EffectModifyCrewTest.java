@@ -40,22 +40,18 @@ class EffectModifyCrewTest {
         coordinates = new ArrayList<>();
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
-        coordinates.add(new Pair<>(coordinate,Token.ASTRONAUT));
         coordinates.add(new Pair<>(coordinate2,Token.BROWN_ALIENS));
         player.setShipBoard(shipBoard);
         component = new ContainerComponent(ComponentType.CABINE, 5);
-        component2 = new ContainerComponent(ComponentType.BROWN_ALIEN_MODULE, 2);
+        component2 = new ContainerComponent(ComponentType.CABINE, 2);
         tile = new Tile(3, component );
         tile2 = new Tile(3, component2);
         shipBoard.insertTile(coordinate, tile);
         player.getShipBoard().insertTile(coordinate2, tile2);
         player.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
-        player.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
-        player.getShipBoard().addTokenToTile(coordinate, Token.ASTRONAUT);
         player.getShipBoard().addTokenToTile(coordinate2, Token.BROWN_ALIENS);
-        player.getShipBoard().addTokenToTile(coordinate2, Token.BROWN_ALIENS);
-        cardEffect = new EffectModifyCrew("perdi astronauti", 4);
+        cardEffect = new EffectModifyCrew("perdi astronauti", 2);
         cardEffect.setListOfCoordinates(coordinates);
 
     }
