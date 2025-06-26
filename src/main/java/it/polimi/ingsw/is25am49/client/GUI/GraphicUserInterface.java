@@ -3,7 +3,9 @@ package it.polimi.ingsw.is25am49.client.GUI;
 import it.polimi.ingsw.is25am49.client.*;
 import it.polimi.ingsw.is25am49.client.model.GameSession;
 import it.polimi.ingsw.is25am49.client.model.LeaderBoard;
+import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.adventurecards.AdventureCard;
+import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
 import it.polimi.ingsw.is25am49.shared.RemoteServer;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
@@ -468,6 +470,7 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             adventureController.updateCardState(cardState);
+            adventureController.addMessage( "Player " + gameSession.getGame().get().getGameboard().getCurrentPlayer().getUsername() + " is playing, wait for your turn");
         });
     }
 
@@ -516,10 +519,20 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateFinishDecisionActivating(int playerId, Set<Point> coordinates) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            Player p = gameSession.getPlayer(playerId).get();
+            StringBuilder messageBuilder = new StringBuilder("Player " + p.getUsername() + " has activated: ");
+            for (Point pt : coordinates) {
+                try{
+                    Tile t = p.getShipBoard().getTile(pt);
+                    messageBuilder.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+                }catch(Exception _){
+                }}
+            adventureController.addMessage(messageBuilder.toString());
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
                 adventureController.printShipboard();
+
             }
         });
     }
@@ -527,8 +540,14 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateFinishDecisionToken(int playerId, List<Pair<Point, Token>> listOfTokens, int numTokens, boolean removing) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            Player p = gameSession.getPlayer(playerId).get();
+            StringBuilder messageBuilder = new StringBuilder("Player " + p.getUsername() + " has decided to " + (removing ? "remove" : "inserted") + " the following tokens: ");
+            for (Pair<Point, Token> pair : listOfTokens) {
+                messageBuilder.append("\n- ").append(pair.getValue().toString()).append(" at ").append(pair.getKey());
+            }
+            adventureController.addMessage(messageBuilder.toString());
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
                 adventureController.printShipboard();
             }
@@ -548,8 +567,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateLandOnPlanet(int playerId, boolean isLanded, int planetId) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            Player player = gameSession.getPlayer(playerId).get();
+            if(isLanded) adventureController.addMessage("Player " + player.getUsername() + " has landed on planet " + planetId);
+            else adventureController.addMessage("Player " + player.getUsername() + " decided not to land");
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
         });
@@ -558,8 +580,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateLandOnStationOrShip(int playerId, boolean isLanded, String cardId) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            Player p = gameSession.getPlayer(playerId).get();
+            if(isLanded) adventureController.addMessage("Player " + p.getUsername() + " decided to land on the station or ship with cardID: " + cardId);
+            else adventureController.addMessage("Player " + p.getUsername() + " decided not to land");
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
         });
@@ -568,10 +593,12 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.clearEffectPane();
             }
+            adventureController.addMessage("Player " + gameSession.getPlayer(playerId).get().getUsername() + " has " + (isAccepted ? "accepted" : "rejected") + " the prizes");
+
         });
     }
 
@@ -590,7 +617,11 @@ public class GraphicUserInterface extends Application implements UserInterface {
         Platform.runLater(() -> {
             if (myId == playerIdWhoWon) {
                 AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateCardMessageBox("You have defeted the enemy " + enemyName);
+                adventureController.addMessage("You have defeted the enemy " + enemyName);
+            }
+            else{
+                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+                adventureController.addMessage("Player " + gameSession.getPlayer(playerIdWhoWon).get().getUsername() + " has defeted the enemy " + enemyName );
             }
         });
     }
@@ -598,8 +629,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectModifyCrew(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("you have lost a crew member on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.printShipboard();
             }
         });
@@ -608,9 +640,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectCannonade(int playerId, Point coordinate, Orientation or) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("the cannonade successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateAttack(coordinate, or, false);
+                adventureController.printShipboard();
             }
         });
     }
@@ -618,8 +651,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectLoseGoods(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("you have lost a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.printShipboard();
             }
         });
@@ -628,8 +662,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectWinGoods(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("you have won a good on coordinates: <" +coordinate.x +","+coordinate.y +"> - token: " + token);
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.printShipboard();
             }
         });
@@ -655,8 +690,9 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectModifyEnergy(int playerId, Point coordinate, Token token) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("battery from coordinates: <" +coordinate.x +","+coordinate.y +"> have been removed");
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.printShipboard();
             }
         });
@@ -669,10 +705,10 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateEffectMeteorite(int playerId, Point coordinate, Orientation or) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            adventureController.addMessage("the meteorite successfully hit the shipboard\n -->tile in coordinates: <" +coordinate.x +","+coordinate.y +"> has been destroyed");
             if (myId == playerId) {
-                System.out.println("updateEffectMeteorite");
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
-                adventureController.updateAttack(coordinate, or, true);
+                adventureController.printShipboard();
             }
         });
     }
@@ -690,8 +726,18 @@ public class GraphicUserInterface extends Application implements UserInterface {
     @Override
     public void updateDestroyedTiles(int playerId, Set<Point> destroyedTiles) {
         Platform.runLater(() -> {
+            AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
+            StringBuilder str = new StringBuilder();
+            Player p = gameSession.getPlayer(playerId).get();
+            str.append("Player ").append(p.getUsername()).append(" has lost the following tiles: ");
+            for (Point pt : destroyedTiles) {
+                try{
+                    Tile t=p.getShipBoard().getTile(pt);
+                    str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+                }catch(Exception _){}
+            }
+            adventureController.addMessage(str.toString());
             if (myId == playerId) {
-                AdventureController adventureController = (AdventureController) controllerList.get(ScenesName.ADVENTURE);
                 adventureController.printShipboard();
                 adventureController.updatePlayerStats(0, 0, 0, 0, destroyedTiles.size());
             }
