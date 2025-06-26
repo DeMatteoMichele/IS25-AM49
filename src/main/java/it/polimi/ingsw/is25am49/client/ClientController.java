@@ -775,12 +775,13 @@ public class ClientController {
      */
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         for (Pair<Point, Token> pair : listOfTokens) {
-            System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
+            System.out.println("CController: Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
         }
         gameSession.getState().checkUserFinishDecisionToken(playerId, listOfTokens);
         Command command = new Command("userFinishDecisionToken", myId);
         command.addParameter(playerId);
         command.addParameter(listOfTokens);
+        System.out.println(listOfTokens);
         try {
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException e) {

@@ -211,6 +211,7 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionToken" -> {
                 try {
+                    System.out.println("command: Coordinate: " + parameters.get(1));
                     for (Pair<Point, Token> pair : (ArrayList<Pair<Point, Token>>) parameters.get(1)) {
                         System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
                     }
@@ -422,6 +423,7 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionTokenCallback" -> {
                 try {
+                    System.out.println("command callback: Coordinate: " + parameters.get(1));
                     for (Pair<Point, Token> pair : (ArrayList<Pair<Point, Token>>) parameters.get(1)) {
                         System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
                     }
