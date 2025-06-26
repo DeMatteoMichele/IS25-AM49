@@ -60,12 +60,6 @@ public class Command implements Serializable {
     }
 
     public void addParameter(Object parameter) {
-        if(parameter instanceof Serializable){
-            System.out.println("IL PARAMETRO E' SERIALIZZABILE: " + parameter.getClass().getName());
-        }
-        else{
-            System.out.println("IL PARAMETRO NON E' SERIALIZZABILE: " + parameter.getClass().getName());
-        }
         this.parameters.add(parameter);
     }
 
@@ -218,9 +212,6 @@ public class Command implements Serializable {
             case "userFinishDecisionToken" -> {
                 try {
                     System.out.println("command: Coordinate: " + parameters.get(1));
-                    for (Pair<Point, Token> pair : (ArrayList<Pair<Point, Token>>) parameters.get(1)) {
-                        System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
-                    }
                     serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionToken: " + e.getMessage());
@@ -430,9 +421,6 @@ public class Command implements Serializable {
             case "userFinishDecisionTokenCallback" -> {
                 try {
                     System.out.println("command callback: Coordinate: " + parameters.get(1));
-                    for (Pair<Point, Token> pair : (ArrayList<Pair<Point, Token>>) parameters.get(1)) {
-                        System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
-                    }
                     clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
