@@ -472,6 +472,9 @@ public class ServerController {
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         try {
             try {
+                for (Pair<Point, Token> pair : listOfTokens) {
+                    System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
+                }
                 gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
                 Command command = new Command("userFinishDecisionTokenCallback", playerId);
                 command.addParameter(playerId);

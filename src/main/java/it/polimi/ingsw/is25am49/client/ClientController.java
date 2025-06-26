@@ -774,7 +774,9 @@ public class ClientController {
      * @param listOfTokens A list of token-position pairs representing the player's decisions.
      */
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
+        for (Pair<Point, Token> pair : listOfTokens) {
+            System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
+        }
         gameSession.getState().checkUserFinishDecisionToken(playerId, listOfTokens);
         Command command = new Command("userFinishDecisionToken", myId);
         command.addParameter(playerId);
