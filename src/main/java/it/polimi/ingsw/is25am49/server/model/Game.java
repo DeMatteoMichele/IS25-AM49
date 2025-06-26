@@ -143,18 +143,15 @@ public class Game {
             try {
                 session.getState().userFinishShipboard(playerId);
             } catch (Exception _) {}
-
-            try {
                 if (board.getLeaderBoard()!= null) {
                     board.getLeaderBoard().disconnectPlayer(player);
                 }
-            } catch (NotEnoughPlayerException e) {
-//                scheduler.schedule(() -> {
-//                    if (board.getLeaderBoard().size()- board.getLeaderBoard().sizeOfDisconnected() <= 1) {
-//                        finishGameDueToDisconnection();
-//                    }
-//                }, 30, java.util.concurrent.TimeUnit.SECONDS);
-            }
+               if ((players.size() - players.stream().filter(Player::isDisconnected).count()) == 1)
+                scheduler.schedule(() -> {
+                    if ((players.size() - players.stream().filter(Player::isDisconnected).count()) == 1) {
+                        finishGameDueToDisconnection();
+                    }
+                }, 30, java.util.concurrent.TimeUnit.SECONDS);
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found

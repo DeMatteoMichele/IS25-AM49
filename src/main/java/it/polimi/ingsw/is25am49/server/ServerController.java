@@ -405,7 +405,6 @@ public class ServerController {
                 command.addParameter("Throw dices hasn't worked in Server ->   " + e.getMessage());
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
-                e.printStackTrace();
             }
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in throwDices ->   " + e.getMessage());
@@ -426,7 +425,6 @@ public class ServerController {
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-               // e.printStackTrace();
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Draw adventure card hasn't worked in Server ->   " + e.getMessage());
@@ -457,7 +455,6 @@ public class ServerController {
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision activating hasn't worked in Server ->   " + e.getMessage());
-                e.printStackTrace();
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             }
@@ -482,7 +479,6 @@ public class ServerController {
                 serverSerializer.command_FromServerToClient(command);
                 serverRMI.command_FromServerToClient(command);
             } catch (Exception e) {
-                e.printStackTrace();
                 Command command = new Command("errorCallback", playerId);
                 command.addParameter(playerId);
                 command.addParameter("Finish decision token hasn't worked in Server ->   " + e.getMessage());
@@ -635,7 +631,6 @@ public class ServerController {
         } catch (RemoteException e) {
             System.out.println("Error due to RemoteException in Server  in changeState ->   " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

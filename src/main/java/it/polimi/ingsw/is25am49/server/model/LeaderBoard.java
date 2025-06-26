@@ -398,9 +398,6 @@ public class LeaderBoard {
      */
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
-        if (arrayLeaderboard.size() - disconnectedPlayers.size() <= 1) {
-            throw new NotEnoughPlayerException("The leaderboard has only one player left, going in finish state");
-        }
     }
 
     /**
