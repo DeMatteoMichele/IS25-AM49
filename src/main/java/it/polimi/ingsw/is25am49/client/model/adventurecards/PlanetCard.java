@@ -28,6 +28,9 @@ public class PlanetCard extends AdventureCard {
             planet.getEffect().setUserInterface(userInterface);
         }
     }
+    public List<Planet> getPlanets() {
+        return planets;
+    }
 
     public int getNumOfPlanets() {
         return planets.size();
