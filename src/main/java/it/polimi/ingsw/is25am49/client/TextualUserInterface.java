@@ -1118,7 +1118,8 @@ public class TextualUserInterface implements UserInterface {
      */
     @Override
     public void updateAcceptPrizes(int playerId, boolean isAccepted) {
-
+        Player p = gameSession.getPlayer(playerId).get();
+        updateGenericCardMessage(myId,"Player " + p.getUsername() + " has "+(isAccepted?"accepted":"refused")+"  the prizes");
     }
 
     /**
@@ -1266,15 +1267,17 @@ public class TextualUserInterface implements UserInterface {
     public void updateDestroyedTiles(int idPlayer, Set<Point> destroyedTiles) {
         StringBuilder str = new StringBuilder();
         Player p = gameSession.getPlayer(idPlayer).get();
-        str.append("Player ").append(p.getUsername()).append(" has lost the following tiles:\n");
-        for (Point pt : destroyedTiles) {
-            try{
-                Tile t=p.getShipBoard().getTile(pt);
-                str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
-            }catch(Exception _){}
+        if(!destroyedTiles.isEmpty()) {
+            str.append("Player ").append(p.getUsername()).append(" has lost the following tiles:\n");
+            for (Point pt : destroyedTiles) {
+                try{
+                    Tile t=p.getShipBoard().getTile(pt);
+                    str.append("[").append(pt.x).append(",").append(pt.y).append("] - ").append(t.getComponentType()).append("\n");
+                }catch(Exception _){}
+            }
+            updateGenericCardMessage(myId,str.toString());
+            if(idPlayer==myId)updateShipBoard(myId);
         }
-        updateGenericCardMessage(myId,str.toString());
-        if(idPlayer==myId)updateShipBoard(myId);
     }
 
     /**
