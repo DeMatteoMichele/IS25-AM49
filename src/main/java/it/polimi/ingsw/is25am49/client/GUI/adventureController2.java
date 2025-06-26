@@ -1246,6 +1246,10 @@ public void printShipboard() {
                             System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
                         }
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokenPointsListDefenitive);
+                        System.out.println("chiamata dopo la chiamta sul controller: ");
+                        for (Pair<Point, Token> pair : tokenPointsListDefenitive) {
+                            System.out.println("Coordinate: (" + pair.getKey().x + ", " + pair.getKey().y + "), Token: " + pair.getValue());
+                        }
                         input.clear();
                         tokenPointsListDefenitive.clear();
                     } catch (Exception e) {
