@@ -715,10 +715,18 @@ public class GraphicUserInterface extends Application implements UserInterface {
             if (myId == playerId) {
                 adventureController.updateChangeTurn(playerId);
                 adventureController.enableAll();
+                if(gameSession.getGame().get().getGameboard().getCurrentCard().getCurrentState()==AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS ||
+                        gameSession.getGame().get().getGameboard().getCurrentCard().getCurrentState()==AdventureStatesTypes.DECISION_GOODS){
+                    adventureController.enable();
+                }
             }
             else{
+                if(gameSession.getGame().get().getGameboard().getCurrentCard().getCurrentState()==AdventureStatesTypes.UPDATE){
+                    adventureController.setDraw();
+                }
                 adventureController.updateCardMessageBox("Waiting for your turn");
                 adventureController.disableall();
+                adventureController.disable();
                 adventureController.updateChangeTurn(playerId);
             }
         });

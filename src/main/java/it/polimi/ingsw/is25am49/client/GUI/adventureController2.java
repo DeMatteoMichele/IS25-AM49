@@ -364,57 +364,6 @@ public void printPlayerByIdShipboard(int playerId){
                 imageView.setFitWidth(60);
                 imageView.setFitHeight(60);
                 imageView.setUserData(idTile);
-                imageView.setOnMouseClicked(event -> {
-                    System.out.println("cliccato"+ coordinates);
-
-                    if(tile.get().getComponent().getType()==ComponentType.CABINE){
-
-                        new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
-
-                            ImageView tokenImageView;
-                            if(token==Token.ASTRONAUT) {
-                                //se il token è un astronauta, prendo il colore del giocatore
-                                Color playerColor = gameSession.getPlayer(playerId).get().getColor();
-
-                                switch (playerColor) {
-                                    case RED:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
-                                        break;
-                                    case BLUE:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
-                                        break;
-                                    case GREEN:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
-                                        break;
-                                    case YELLOW:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
-                                        break;
-                                    default:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
-                                }
-                            }
-                            else{
-                                tokenImageView = tokensMap.get(token);
-                            }
-                            tokenImageView.setFitWidth(50);
-                            tokenImageView.setFitHeight(90);
-                            ;
-
-                        });
-                    }
-                    else{
-
-                        new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
-                            Image tokenImage = tokensMap.get(token).getImage();
-                            ImageView tokenImageView = new ImageView(tokenImage);
-                            tokenImageView.setFitWidth(50);
-                            tokenImageView.setFitHeight(90);
-
-                        });
-                    }
-
-                });
-
                 switch (tile.get().getTileOrientation()) {
                     case NORTH -> imageView.setRotate(0);
                     case EAST -> imageView.setRotate(90);
@@ -536,56 +485,6 @@ public void printShipboard() {
                 imageView.setFitWidth(60);
                 imageView.setFitHeight(60);
                 imageView.setUserData(idTile);
-                imageView.setOnMouseClicked(event -> {
-                    System.out.println("cliccato"+ coordinates);
-
-                    if(tile.get().getComponent().getType()==ComponentType.CABINE){
-
-                        new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
-
-                            ImageView tokenImageView;
-                            if(token==Token.ASTRONAUT) {
-                                //se il token è un astronauta, prendo il colore del giocatore
-                                Color playerColor = gameSession.getPlayer(guiApplication.getMyId()).get().getColor();
-
-                                switch (playerColor) {
-                                    case RED:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
-                                        break;
-                                    case BLUE:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
-                                        break;
-                                    case GREEN:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
-                                        break;
-                                    case YELLOW:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
-                                        break;
-                                    default:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
-                                }
-                            }
-                            else{
-                                tokenImageView = tokensMap.get(token);
-                            }
-                            tokenImageView.setFitWidth(50);
-                            tokenImageView.setFitHeight(90);
-                            ;
-
-                        });
-                    }
-                    else{
-
-                        new ArrayList<>(tile.get().getComponent().getTokenList()).forEach(token -> {
-                            Image tokenImage = tokensMap.get(token).getImage();
-                            ImageView tokenImageView = new ImageView(tokenImage);
-                            tokenImageView.setFitWidth(50);
-                            tokenImageView.setFitHeight(90);
-
-                    });
-                    }
-
-                });
 
                 switch (tile.get().getTileOrientation()) {
                     case NORTH -> imageView.setRotate(0);
@@ -824,14 +723,21 @@ public void printShipboard() {
         }
         statsContainer.getChildren().add(playerStats);
     }
-
+    public void disable(){
+        send.setVisible(false);
+        select.setVisible(false);
+    }
+    public void enable(){
+        send.setVisible(true);
+        select.setVisible(true);
+    }
     public void updateCardState(AdventureStatesTypes state) {
         currentAdventureState = state;
         switch (currentAdventureState) {
             case DRAW -> {
                 drawButton.setDisable(false);
 //                disableAllCellsShipboard();
-                stateCard.setText("Updating... Now the leader must draw again");
+                stateCard.setText("Drawing the card...");
                 confirm.setVisible(false);
                 send.setVisible(false);
                 clearEffectPane();
@@ -878,22 +784,6 @@ public void printShipboard() {
                                     input.clear();
                                     return;
                             }
-
-//                            switch (tokenType){
-//                                case 'a':
-//                                    tok = Token.ASTRONAUT;
-//                                    break;
-//                                case 'p':
-//                                    tok = Token.PURPLE_ALIENS;
-//                                    break;
-//                                case 'b':
-//                                    tok = Token.BROWN_ALIENS;
-//                                    break;
-//                                default:
-//                                    guiApplication.printUpdateMessage(error + "invalid choice, select astronauts or aliens");
-//                                    input.clear();
-//                                    return;
-//                            }
                             tokens.add(new Pair<>(coordinates, tok));
                             input.clear();
                             switch (selectedGood){
@@ -914,21 +804,21 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try {
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
+                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens2);
+                        tokens.clear();
                         input.clear();
                         select.getItems().clear();
-                        send.setVisible(false);
-                        select.setVisible(false);
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    tokens.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    tokens.clear();
                 });
 
 
@@ -964,19 +854,20 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try{
-                        System.out.println("chiamato");
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
+                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens2);
                         input.clear();
+                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    tokens.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    tokens.clear();
                 });
             }
 
@@ -1041,14 +932,22 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try{
-                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
+                        HashSet<Point> points2 = new HashSet<>(points);
+                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points2);
                         input.clear();
+                        points.clear();
                         printShipboard();
                     }catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         printShipboard();
                         points.clear();
                     }
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    points.clear();
                 });
             }
 
@@ -1096,27 +995,7 @@ public void printShipboard() {
                                     input.clear();
                                     return;
                             }
-//                            char tokenType = parts[2].charAt(0); // prende il primo carattere del terzo input
 
-
-//                            switch (tokenType){
-//                                case 'r':
-//                                    tok = Token.RED_GOODS;
-//                                    break;
-//                                case 'y':
-//                                    tok = Token.YELLOW_GOODS;
-//                                    break;
-//                                case 'b':
-//                                    tok = Token.BLUE_GOODS;
-//                                    break;
-//                                case 'g':
-//                                    tok = Token.GREEN_GOODS;
-//                                    break;
-//                                default:
-//                                    guiApplication.printUpdateMessage(error + "invalid choice, select astronauts or aliens");
-//                                    input.clear();
-//                                    return;
-//                            }
                             Point coordinates = new Point(x, y);
                             tokens.add(new Pair<>(coordinates,tok));
                             input.clear();
@@ -1134,41 +1013,27 @@ public void printShipboard() {
                                     addMessage("Selected Green Good at coordinates: [" + x + ", " + y + "]");
                                     break;
                             }
-//                            switch (tokenType){
-//                                case 'r':
-//                                    addMessage("Selected Red Good at coordinates: [" + x + ", " + y + "]");
-//                                    break;
-//                                case 'y':
-//                                    addMessage("Selected Yellow Good at coordinates: [" + x + ", " + y + "]");
-//                                    break;
-//                                case 'b':
-//                                    addMessage("Selected Blue Good at coordinates: [" + x + ", " + y + "]");
-//                                    break;
-//                                case 'g':
-//                                    addMessage("Selected Green Good at coordinates: [" + x + ", " + y + "]");
-//                                    break;
-//                            }
                         } catch (Exception e) {
                             guiApplication.printUpdateMessage(error + "Invalid input format. Use the format 'x y' z'");
                         }
                     }});
                 confirm.setOnAction(event -> {
                     try {
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
+                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens2);
                         input.clear();
+                        tokens.clear();
                         select.getItems().clear();
-                        send.setVisible(false);
-                        select.setVisible(false);
                     } catch (Exception e) {
                         tokens.clear();
                         guiApplication.printUpdateMessage(error + e.getMessage());
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    tokens.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    tokens.clear();
                 });
 
                 }
@@ -1228,13 +1093,12 @@ public void printShipboard() {
             case ROLL_DICES -> {
                 stateCard.setText("Roll the dices!");
                 drawButton.setDisable(true);
+                disable();
             }
             case UPDATE -> {
                 drawButton.setDisable(false);
-                stateCard.setText("Updating... Now the leader must draw again");
                 confirm.setVisible(false);
                 send.setVisible(false);
-                turn.setText(gameSession.getGame().get().getGameboard().getLeader().getUsername() + " IS PLAYING");
 //                disableAllCellsShipboard();
                 clearEffectPane();
             }
@@ -1242,6 +1106,10 @@ public void printShipboard() {
             }
 
         }
+    }
+    public void setDraw(){
+        stateCard.setText("Updating... Now the leader must draw again");
+        turn.setText(gameSession.getGame().get().getGameboard().getLeader().getUsername() + " IS PLAYING");
     }
 
     private GameMode getGameMode() {
