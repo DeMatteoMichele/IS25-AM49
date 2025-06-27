@@ -420,7 +420,6 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionTokenCallback" -> {
                 try {
-                    System.out.println("command callback: Coordinate: " + parameters.get(1));
                     clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
