@@ -828,7 +828,6 @@ public void printShipboard() {
                     try {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
-                        tokens.clear();
                         input.clear();
                         select.getItems().clear();
                         select.setVisible(false);
