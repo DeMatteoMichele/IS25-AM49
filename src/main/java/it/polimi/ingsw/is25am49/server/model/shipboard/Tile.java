@@ -358,8 +358,8 @@ public class Tile {
      */
     public static Map<Integer,Tile> generateTiles(){
         try {
-            URL url= Tile.class.getResource("/it/polimi/ingsw/is25am49/tiles_config.json");
-            System.out.printf("URL del file di configurazione: %s\n", url);
+//            URL url= Tile.class.getResource("/it/polimi/ingsw/is25am49/tiles_config.json");
+//            System.out.printf("URL del file di configurazione: %s\n", url);
             InputStream inputStream = Tile.class.getResourceAsStream("/it/polimi/ingsw/is25am49/tiles_config.json");
             if (inputStream == null) {
                 throw new FileNotFoundException("File tiles_config.json non trovato nel classpath");
