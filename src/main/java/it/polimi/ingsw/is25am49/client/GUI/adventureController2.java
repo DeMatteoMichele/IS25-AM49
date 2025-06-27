@@ -826,8 +826,9 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try {
-                        System.out.println("Schiacciato rimozione alieni finish");
+                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
+                        tokens.clear();
                         input.clear();
                         select.getItems().clear();
                         select.setVisible(false);
@@ -835,12 +836,12 @@ public void printShipboard() {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
                     }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    tokens.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    tokens.clear();
                 });
 
 
@@ -878,19 +879,19 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try{
-                        System.out.println("schicciato finish decision batteries");
+                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
                     }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    tokens.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    tokens.clear();
                 });
             }
 
@@ -959,7 +960,7 @@ public void printShipboard() {
                 });
                 confirm.setOnAction(event -> {
                     try{
-                        System.out.println("schicciato finish decision " + currentAdventureState);
+                        HashSet<Point> points2 = new HashSet<>(points);
                         guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
                         input.clear();
                         select.setVisible(false);
@@ -969,12 +970,12 @@ public void printShipboard() {
                         printShipboard();
                         points.clear();
                     }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    points.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    points.clear();
                 });
             }
 
@@ -1048,7 +1049,7 @@ public void printShipboard() {
                     }});
                 confirm.setOnAction(event -> {
                     try {
-                        System.out.println("Schiacciato rimozione goods finish");
+                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
                         select.getItems().clear();
@@ -1057,12 +1058,12 @@ public void printShipboard() {
                         tokens.clear();
                         guiApplication.printUpdateMessage(error + e.getMessage());
                     }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    tokens.clear();
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    tokens.clear();
                 });
 
                 }

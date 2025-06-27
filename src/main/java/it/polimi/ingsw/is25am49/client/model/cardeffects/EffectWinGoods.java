@@ -8,6 +8,7 @@ import it.polimi.ingsw.is25am49.client.model.shipboard.Component;
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EffectWinGoods extends CardEffect {
@@ -140,5 +141,20 @@ public class EffectWinGoods extends CardEffect {
     @Override
     public int getLostCrew() {
         throw new IllegalMethodOnThisCardException("Illegal Method On This Card");
+    }
+
+    /**
+     * Retrieves a list of goods represented by their corresponding integer amounts.
+     *
+     * @return a list of integers containing the quantities of red, yellow, green, and blue goods.
+     */
+    @Override
+    public List<Integer> getGoods() {
+        List<Integer> goodsList = new ArrayList<>();
+        goodsList.add(redGoods);
+        goodsList.add(yellowGoods);
+        goodsList.add(greenGoods);
+        goodsList.add(blueGoods);
+        return goodsList;
     }
 }

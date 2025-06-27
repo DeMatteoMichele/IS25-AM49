@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.client.model;
 
-import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -251,9 +250,9 @@ public class Game {
         board.checkDrawAdventureCard(player);
     }
 
-    public void checkFinishDecisionActivatingStates() {
-        board.getCurrentCard().checkFinishDecisionActivatingStates();
-    }
+//    public void checkFinishDecisionActivatingStates() {
+//        board.getCurrentCard().checkFinishDecisionActivatingStates(playerId, coordinates);
+//    }
 
     public void checkThrowDicesState() {
         board.getCurrentCard().checkThrowDicesState();
@@ -263,9 +262,9 @@ public class Game {
 
     }
 
-    public void checkFinishDecisionTokenStates() {
-        board.getCurrentCard().checkFinishDecisionTokenStates();
-    }
+//    public void checkFinishDecisionTokenStates() {
+//        board.getCurrentCard().checkFinishDecisionTokenStates(playerId, listOfTokens);
+//    }
 
     public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens) {
         board.getCurrentCard().checkFinishDecisionTokenCoordinates(listOfTokens);
