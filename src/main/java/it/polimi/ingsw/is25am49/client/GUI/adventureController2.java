@@ -136,16 +136,16 @@ public class adventureController2 extends GenericSceneController {
 
         switch (playerColor) {
             case RED:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                 break;
             case BLUE:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                 break;
             case GREEN:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                 break;
             case YELLOW:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                 break;
             default:
                 playerIcon = null;
@@ -378,19 +378,19 @@ public void printPlayerByIdShipboard(int playerId){
 
                                 switch (playerColor) {
                                     case RED:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                         break;
                                     case BLUE:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                         break;
                                     case GREEN:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                         break;
                                     case YELLOW:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                         break;
                                     default:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                 }
                             }
                             else{
@@ -440,19 +440,19 @@ public void printPlayerByIdShipboard(int playerId){
 
                             switch (playerColor) {
                                 case RED:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                     break;
                                 case BLUE:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                     break;
                                 case GREEN:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                     break;
                                 case YELLOW:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                     break;
                                 default:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                             }
                         }
                         else{
@@ -550,19 +550,19 @@ public void printShipboard() {
 
                                 switch (playerColor) {
                                     case RED:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                         break;
                                     case BLUE:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                         break;
                                     case GREEN:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                         break;
                                     case YELLOW:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                         break;
                                     default:
-                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                        tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                 }
                             }
                             else{
@@ -612,19 +612,19 @@ public void printShipboard() {
 
                             switch (playerColor) {
                                 case RED:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                     break;
                                 case BLUE:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                     break;
                                 case GREEN:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                     break;
                                 case YELLOW:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                     break;
                                 default:
-                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                    tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                             }
                         }
                         else{
