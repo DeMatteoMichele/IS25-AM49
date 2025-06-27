@@ -26,7 +26,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class settingsController extends GenericSceneController {
-    private final int serverPortSocket = 8080;
+    private final int serverPortSocket = 8081;
 
     private String username;
     boolean isAlreadyConnected = false;

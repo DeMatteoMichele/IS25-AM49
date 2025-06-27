@@ -434,7 +434,7 @@ public class ClientHandler {
         gameSession.setServerController(serverController);
         ServerSerializer serverSerializer = new ServerSerializer(serverController);
         serverSerializer.setNetworkController(networkController);
-        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8080);
+        ClientHandler clientHandler = new ClientHandler(serverSerializer, 8081);
         System.out.println("Server socket acceso!");
         serverSerializer.setClientHandler(clientHandler);
         serverController.setSerializer(serverSerializer);
