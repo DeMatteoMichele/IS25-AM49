@@ -82,4 +82,8 @@ public abstract class CardEffect {
     public abstract int getYellowGoods();
     public abstract int getBlueGoods();
     public abstract int getGreenGoods();
+
+    public List<Integer> getGoods() {
+        return null;
+    }
 }

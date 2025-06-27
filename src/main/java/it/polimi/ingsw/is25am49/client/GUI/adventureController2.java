@@ -805,7 +805,7 @@ public void printShipboard() {
                 confirm.setOnAction(event -> {
                     try {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens2);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         tokens.clear();
                         input.clear();
                         select.getItems().clear();
@@ -855,7 +855,7 @@ public void printShipboard() {
                 confirm.setOnAction(event -> {
                     try{
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens2);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
                         tokens.clear();
                     } catch (Exception e) {
@@ -933,7 +933,7 @@ public void printShipboard() {
                 confirm.setOnAction(event -> {
                     try{
                         HashSet<Point> points2 = new HashSet<>(points);
-                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points2);
+                        guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
                         input.clear();
                         points.clear();
                         printShipboard();
@@ -1020,7 +1020,7 @@ public void printShipboard() {
                 confirm.setOnAction(event -> {
                     try {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
-                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens2);
+                        guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
                         tokens.clear();
                         select.getItems().clear();
