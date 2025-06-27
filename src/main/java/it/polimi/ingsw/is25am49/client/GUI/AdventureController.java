@@ -649,7 +649,7 @@ public class AdventureController extends GenericSceneController {
             for (int i = 1; i <= numPlanets; i++) {
                 Button planetButton = new Button("Planet " + planetCard.getPlanets().get(i-1).getPlanetId());
                 planetButton.setStyle(style);
-                int planetIndex = i;
+                int planetIndex = planetCard.getPlanets().get(i-1).getPlanetId();
                 planetButton.setOnAction(event -> {
                     try {
                         guiApplication.getController().userLandOnPlanet(guiApplication.getMyId(), true, planetIndex);
