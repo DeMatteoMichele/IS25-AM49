@@ -179,31 +179,31 @@ public class adventureController2 extends GenericSceneController {
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
             }
         });
-        select.setCellFactory(list -> new ListCell<String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.toString());
-                    setStyle("-fx-text-fill: white;");
-                }
-            }
-        });
+       select.setCellFactory(list -> new ListCell<String>() {
+           @Override
+           protected void updateItem(String item, boolean empty) {
+               super.updateItem(item, empty);
+               if (empty || item == null) {
+                   setText(null);
+               } else {
+                   setText(item.toString());
+                   setStyle("-fx-text-fill: white; -fx-background-color: rgba(0,30,60,0.8);");
+               }
+           }
+       });
 
-        select.setButtonCell(new ListCell<String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.toString());
-                    setStyle("-fx-text-fill: white;");
-                }
-            }
-        });
+       select.setButtonCell(new ListCell<String>() {
+           @Override
+           protected void updateItem(String item, boolean empty) {
+               super.updateItem(item, empty);
+               if (empty || item == null) {
+                   setText(null);
+               } else {
+                   setText(item.toString());
+                   setStyle("-fx-text-fill: white; -fx-background-color: rgba(0,30,60,0.8);");
+               }
+           }
+       });
     }
 
     public void handleDrawButton() {
@@ -767,6 +767,7 @@ public void printShipboard() {
                 ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 stateCard.setText("Please select the Astronauts or Aliens you want to remove.");
                 drawButton.setDisable(true);
+                select.getItems().clear();
                 select.getItems().addAll("Astronaut", "Purple Alien", "Brown Alien");
                 select.setPromptText("Select crew member");
                 select.setVisible(true);
@@ -981,6 +982,7 @@ public void printShipboard() {
             case DECISION_GOODS -> {
                 ArrayList<Pair<Point, Token>> tokens = new ArrayList<>();
                 drawButton.setDisable(true);
+                select.getItems().clear();
                 select.getItems().addAll("Red Good", "Yellow Good", "Blue Good", "Green Good");
                 select.setPromptText("Select good type");
                 select.setVisible(true);
@@ -1048,7 +1050,6 @@ public void printShipboard() {
                     }});
                 confirm.setOnAction(event -> {
                     try {
-                        ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
                         select.getItems().clear();
@@ -1140,6 +1141,7 @@ public void printShipboard() {
                 drawButton.setDisable(false);
                 confirm.setVisible(false);
                 send.setVisible(false);
+                stateCard.setVisible(false);
                 input.setVisible(false);
                 select.setVisible(false);
 //                disableAllCellsShipboard();

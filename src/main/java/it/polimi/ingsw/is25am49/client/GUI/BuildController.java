@@ -203,7 +203,7 @@ public class BuildController extends GenericSceneController {
 
     public void printShipboard() {
 
-        gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid().forEach((coordinates, tile) -> {
+    new HashMap<>(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid()).forEach((coordinates, tile) -> {
 
             if (tile.isPresent()) {
                 int idTile = tile.get().getIdTile();
