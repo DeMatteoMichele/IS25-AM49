@@ -260,10 +260,7 @@ public class LeaderBoard {
             throw new IllegalSetOfNextPlayerException("This player is not in the leaderboard");
     }
 
-    /**
-     * Streams the entries of the leaderboard as a Stream of Map.Entry<Player, Integer>.
-     * @return a Stream of Map.Entry<Player, Integer> representing the leaderboard entries.
-     */
+
     public Stream<Map.Entry<Player, Integer>> stream() {
         return arrayLeaderboard.stream();
     }
@@ -332,7 +329,6 @@ public class LeaderBoard {
     /**
      * Retrieves the list of players in the showable leaderboard.
      *
-     * @return an ArrayList containing Optional<Player> objects representing players in the showable leaderboard.
      */
     public ArrayList<Optional<Player>> getShowableLeaderBoard() {
         return showableLeaderBoard;
@@ -398,9 +394,6 @@ public class LeaderBoard {
      */
     public void disconnectPlayer(Player player) {
         disconnectedPlayers.put(player.getIdPlayer(), player);
-        if (arrayLeaderboard.size() - disconnectedPlayers.size() <= 1) {
-            throw new NotEnoughPlayerException("The leaderboard has only one player left, going in finish state");
-        }
     }
 
     /**

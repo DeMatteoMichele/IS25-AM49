@@ -63,20 +63,58 @@ public class GTLauncher {
 
     private static String askForIp(){
         Scanner scanner = new Scanner(System.in);
-        String ipPattern =
-                "^localhost$|^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
-        Pattern pattern = Pattern.compile(ipPattern);
         String serverIP;
+        boolean valid = false;
         do {
-            System.out.print("Inserisci l'IP del server (lettera qualsiasi per localhost): ");
+            System.out.print("Inserisci l 'IP del server (lettera qualsiasi per localhost): ");
             serverIP = scanner.nextLine().trim();
-            if (serverIP.matches("[a-zA-Z]")) {
+            if (serverIP.length() == 1) {
                 serverIP = "localhost";
+                valid = true;
+            } else if (serverIP.equals("localhost")) {
+                valid = true;
+            } else {
+                valid = true;
+                int dotCount = 0;
+                int lastDot = -1;
+                for (int i = 0; i < serverIP.length(); i++){
+                    char c = serverIP.charAt(i);
+                    if(c == '.'){
+                        dotCount++;
+                        String segment = serverIP.substring(lastDot + 1, i);
+                        try{
+                            int value = Integer.parseInt(segment);
+                            if(value < 0 || value > 255){
+                                valid = false;
+                                break;
+                            }
+                        } catch(NumberFormatException e){
+                            valid = false;
+                            break;
+                        }
+                        lastDot = i;
+                    } else if(c < '0' || c > '9'){
+                        valid = false;
+                        break;
+                    }
+                }
+                if(dotCount != 3){
+                    valid = false;
+                } else {
+                    try{
+                        int value = Integer.parseInt(serverIP.substring(lastDot + 1));
+                        if(value < 0 || value > 255){
+                            valid = false;
+                        }
+                    } catch(NumberFormatException e){
+                        valid = false;
+                    }
+                }
+                if(!valid){
+                    System.out.println("IP non valido. Riprova.");
+                }
             }
-            if (!pattern.matcher(serverIP).matches()) {
-                System.out.println("IP non valido. Riprova.");
-            }
-        } while (!pattern.matcher(serverIP).matches());
+        } while(!valid);
         System.out.println("IP valido inserito: " + serverIP);
         return serverIP;
     }

@@ -26,8 +26,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class settingsController extends GenericSceneController {
-    private final String serverIP = "localhost";
-    private final int serverPortSocket = 8081;
+    private final int serverPortSocket = 8080;
 
     private String username;
     boolean isAlreadyConnected = false;
@@ -177,7 +176,7 @@ public class settingsController extends GenericSceneController {
         try {
             ClientController controller = guiApplication.getController();
             ClientSerializer clientSerializer = new ClientSerializer(controller);
-            ServerHandler serverHandler = new ServerHandler(serverIP, serverPortSocket);
+            ServerHandler serverHandler = new ServerHandler(guiApplication.serverIP, serverPortSocket);
             serverHandler.setClientSerializer(clientSerializer);
             clientSerializer.setServerHandler(serverHandler);
             controller.setServerMethods(clientSerializer);

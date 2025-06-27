@@ -139,6 +139,7 @@ public class WarZoneCard extends AdventureCard {
         if (gameBoard.getLeaderBoard().sizeOfConnected() == 1) {
             System.out.println("you are the only player, you skip this card");
             update();
+            return;
         }
         Player playerWithMinimumCrew = gameBoard.getLeaderBoard().stream()
                 .map(Map.Entry::getKey)

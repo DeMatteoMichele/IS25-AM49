@@ -263,18 +263,18 @@ public class GameSession {
     public void checkUserDrawAdventureCard(int playerId) throws GameSettingsException {
         game.ifPresent(g -> g.checkUserDrawAdventureCard(playerId));
     }
-    public void checkFinishDecisionActivatingStates(){
-        game.ifPresent(Game::checkFinishDecisionActivatingStates);
-    }
+//    public void checkFinishDecisionActivatingStates(){
+//        game.ifPresent(Game::checkFinishDecisionActivatingStates);
+//    }
     public void checkThrowDicesState(){
         game.ifPresent(Game::checkThrowDicesState);
     }
     public void checkFinishDecisionActivatingCoordinates(Set<Point> coordinates){
         game.ifPresent(g->g.checkFinishDecisionActivatingCoordinates(coordinates));
     }
-    public void checkFinishDecisionTokenStates(){
-        game.ifPresent(Game::checkFinishDecisionTokenStates);
-    }
+//    public void checkFinishDecisionTokenStates(){
+//        game.ifPresent(Game::checkFinishDecisionTokenStates);
+//    }
     public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens){
         game.ifPresent(g->g.checkFinishDecisionTokenCoordinates(listOfTokens));
     }

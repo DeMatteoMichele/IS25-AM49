@@ -211,6 +211,7 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionToken" -> {
                 try {
+                    System.out.println("command: Coordinate: " + parameters.get(1));
                     serverController.userFinishDecisionToken((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionToken: " + e.getMessage());
@@ -419,7 +420,7 @@ public class Command implements Serializable {
             }
             case "userFinishDecisionTokenCallback" -> {
                 try {
-                    clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, it.polimi.ingsw.is25am49.shared.enums.Token>>) parameters.get(1));
+                    clientController.userFinishDecisionTokenCallback((int) parameters.get(0), (ArrayList<Pair<Point, Token>>) parameters.get(1));
                 } catch (Exception e) {
                     System.err.println("Errore in userFinishDecisionTokenCallback: " + e.getMessage());
                     e.printStackTrace();

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.is25am49.client.model;
 
-import it.polimi.ingsw.is25am49.client.model.exceptions.NotEnoughPlayerException;
 import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.GameMode;
 import it.polimi.ingsw.is25am49.client.model.exceptions.GameSettingsException;
@@ -66,17 +65,9 @@ public class Game {
             try {
                 session.getState().userFinishShipboard(playerId);
             } catch (Exception _) {}
-
-
-            try {
-                board.getLeaderBoard().disconnectPlayer(player);
-            } catch (NotEnoughPlayerException e) {
-//                scheduler.schedule(() -> {
-//                    if (board.getLeaderBoard().size()- board.getLeaderBoard().sizeOfDisconnected() <= 1) {
-//                        finishGame();
-//                    }
-//                }, 30, java.util.concurrent.TimeUnit.SECONDS);
-            }
+                if (board.getLeaderBoard()!= null) {
+                    board.getLeaderBoard().disconnectPlayer(player);
+                }
             board.disconnectionWarningToCard(player);
         } catch (IllegalArgumentException e) {
             //nothing to do if player not found
@@ -259,9 +250,9 @@ public class Game {
         board.checkDrawAdventureCard(player);
     }
 
-    public void checkFinishDecisionActivatingStates() {
-        board.getCurrentCard().checkFinishDecisionActivatingStates();
-    }
+//    public void checkFinishDecisionActivatingStates() {
+//        board.getCurrentCard().checkFinishDecisionActivatingStates(playerId, coordinates);
+//    }
 
     public void checkThrowDicesState() {
         board.getCurrentCard().checkThrowDicesState();
@@ -271,9 +262,9 @@ public class Game {
 
     }
 
-    public void checkFinishDecisionTokenStates() {
-        board.getCurrentCard().checkFinishDecisionTokenStates();
-    }
+//    public void checkFinishDecisionTokenStates() {
+//        board.getCurrentCard().checkFinishDecisionTokenStates(playerId, listOfTokens);
+//    }
 
     public void checkFinishDecisionTokenCoordinates(ArrayList<Pair<Point, Token>> listOfTokens) {
         board.getCurrentCard().checkFinishDecisionTokenCoordinates(listOfTokens);

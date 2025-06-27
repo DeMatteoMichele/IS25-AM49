@@ -285,7 +285,7 @@ public abstract class AdventureCard {
                 for (Pair<Point, Token> pair : coordinates) {
                     Point position = pair.getKey();
                     Token token = pair.getValue();
-                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY && token != Token.BATTERY_CELLS) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY || token != Token.BATTERY_CELLS) {
                         throw new IllegalTokensException("You can only use batteries with battery cells!");
                     }
                     if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {

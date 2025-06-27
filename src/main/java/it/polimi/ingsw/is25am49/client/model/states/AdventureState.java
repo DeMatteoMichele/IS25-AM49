@@ -202,7 +202,7 @@ public class AdventureState extends State {
         gameSession.checkUserDrawAdventureCard(playerId);
     }
     public void checkUserFinishDecisionActivating(int playerId, Set<Point> coordinates){
-        gameSession.checkFinishDecisionActivatingStates();
+        gameSession.getGame().get().getGameboard().getCurrentCard().checkFinishDecisionActivatingStates(playerId, coordinates);
         Player player = getPlayerById(playerId);
         for (Point p: coordinates) {
             player.getShipBoard().checkCoordinates(p);
@@ -215,7 +215,7 @@ public class AdventureState extends State {
 
     }
     public void checkUserFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens){
-        gameSession.checkFinishDecisionTokenStates();
+        gameSession.getGame().get().getGameboard().getCurrentCard().checkFinishDecisionTokenStates(playerId, listOfTokens);
         Player player = getPlayerById(playerId);
         Player currentPlayer = getCurrentPlayer();
         for (Pair<Point, Token> p: listOfTokens) {

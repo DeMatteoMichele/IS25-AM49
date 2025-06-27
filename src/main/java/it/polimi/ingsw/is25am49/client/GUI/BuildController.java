@@ -3,7 +3,6 @@ package it.polimi.ingsw.is25am49.client.GUI;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.is25am49.client.model.AdventureCardDeck;
-import it.polimi.ingsw.is25am49.client.model.Game;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.TileCardDeck;
 import it.polimi.ingsw.is25am49.client.model.shipboard.Tile;
@@ -20,22 +19,20 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.Button;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
 import javafx.util.Duration;
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -206,7 +203,7 @@ public class BuildController extends GenericSceneController {
 
     public void printShipboard() {
 
-        gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid().forEach((coordinates, tile) -> {
+    new HashMap<>(gameSession.getPlayer(guiApplication.getMyId()).get().getShipBoard().getGrid()).forEach((coordinates, tile) -> {
 
             if (tile.isPresent()) {
                 int idTile = tile.get().getIdTile();
@@ -251,19 +248,19 @@ public class BuildController extends GenericSceneController {
 
                                     switch (playerColor) {
                                         case RED:
-                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                             break;
                                         case BLUE:
-                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                             break;
                                         case GREEN:
-                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                             break;
                                         case YELLOW:
-                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                             break;
                                         default:
-                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                            tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                     }
                                 }
                                 else{
@@ -368,6 +365,7 @@ public class BuildController extends GenericSceneController {
     }
     public void updateListView(){
         ArrayList<Player> listPlayers = gameSession.getGame().get().getListPlayers();
+        listPlayers.sort(Comparator.comparingInt(Player::getIdPlayer));
         for(Player p : listPlayers){
             listViewPlayers.getItems().add(p.getUsername() + "  "+ p.getColor() + " (ID: " + p.getIdPlayer() + ")");
         }
@@ -376,16 +374,16 @@ public class BuildController extends GenericSceneController {
 
         switch (playerColor) {
             case RED:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                 break;
             case BLUE:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                 break;
             case GREEN:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                 break;
             case YELLOW:
-                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                playerIcon = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                 break;
             default:
                 playerIcon = null;
@@ -919,20 +917,20 @@ public class BuildController extends GenericSceneController {
 
                                switch (playerColor) {
                                    case RED:
-                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                        break;
                                    case BLUE:
-                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Blue_astronaut.png").toExternalForm()));
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/blue_astronaut.png").toExternalForm()));
                                        break;
                                    case GREEN:
-                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Green_astronaut.png").toExternalForm()));
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/green_astronaut.png").toExternalForm()));
                                        break;
                                    case YELLOW:
-                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Yellow_astronaut.png").toExternalForm()));
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/yellow_astronaut.png").toExternalForm()));
                                        break;
                                    default:
                                        // Immagine predefinita in caso di colore non gestito
-                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Red_astronaut.png").toExternalForm()));
+                                       tokenImageView = new ImageView(new Image(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/red_astronaut.png").toExternalForm()));
                                }
                            } else {
                                tokenImageView = tokensMap.get(token);
@@ -1047,8 +1045,6 @@ public class BuildController extends GenericSceneController {
         cardContainer.setDisable(true);
         buildContainer.setVisible(false);
         buildContainer.setDisable(true);
-        timerLabel.setVisible(false);
-        timerLabel.setDisable(true);
         smallAdventureDeckContainer.setVisible(false);
         smallAdventureDeckContainer.setDisable(true);
         smallAdventureDeck.setVisible(false);
@@ -1059,8 +1055,6 @@ public class BuildController extends GenericSceneController {
         discardTile.setDisable(true);
         rotateTile.setVisible(false);
         rotateTile.setDisable(true);
-        timer.setVisible(false);
-        timer.setDisable(true);
         finish.setVisible(false);
         finish.setDisable(true);
         timer.setLayoutX(155);
@@ -1119,16 +1113,13 @@ public class BuildController extends GenericSceneController {
         build4.setDisable(true);
     }
     public void readShipboardFromFile(String filename) {
-        filename = "src/main/resources/it/polimi/ingsw/is25am49/" + filename;
-
-        try {
-            File file = new File(filename);
-            if (!file.exists()) {
-                throw new FileNotFoundException("File (" + filename + ") non trovato: " + file.getAbsolutePath());
+        try (InputStream is = getClass().getResourceAsStream("/it/polimi/ingsw/is25am49/" + filename)) {
+            if (is == null) {
+                throw new FileNotFoundException("File (" + filename + ") non trovato nel classpath.");
             }
 
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootArray = objectMapper.readTree(file);
+            JsonNode rootArray = objectMapper.readTree(is);
 
             // Elabora i nodi in sequenza per vedere gli aggiornamenti
             processNodesSequentially(rootArray, 0);
@@ -1156,7 +1147,7 @@ public class BuildController extends GenericSceneController {
             }
         });
 
-        KeyFrame kf2 = new KeyFrame(Duration.millis(150), e -> {
+        KeyFrame kf2 = new KeyFrame(Duration.millis(300), e -> {
             try {
                 Orientation o = Orientation.valueOf(node.get("orientation").asText());
                 gameSession.getState().userRotateHandTile(guiApplication.getMyId(), o);
@@ -1166,7 +1157,7 @@ public class BuildController extends GenericSceneController {
             }
         });
 
-        KeyFrame kf3 = new KeyFrame(Duration.millis(300), e -> {
+        KeyFrame kf3 = new KeyFrame(Duration.millis(350), e -> {
             try {
                 Orientation o = Orientation.valueOf(node.get("orientation").asText());
                 Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
@@ -1184,6 +1175,10 @@ public class BuildController extends GenericSceneController {
 
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.play();
+    }
+    @FXML
+    public void reset(ActionEvent event) {
+        guiApplication.reset();
     }
 
 }

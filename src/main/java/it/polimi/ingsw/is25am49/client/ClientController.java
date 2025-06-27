@@ -362,7 +362,7 @@ public class ClientController {
         try {
             gameSession.getState().userFinishDecisionToken(playerId, listOfTokens);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             ui.printUpdateMessage(error + "Error while finishing decision token: --> " + e.getMessage());
         }
     }
@@ -774,17 +774,16 @@ public class ClientController {
      * @param listOfTokens A list of token-position pairs representing the player's decisions.
      */
     public void userFinishDecisionToken(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
-
         gameSession.getState().checkUserFinishDecisionToken(playerId, listOfTokens);
         Command command = new Command("userFinishDecisionToken", myId);
         command.addParameter(playerId);
         command.addParameter(listOfTokens);
+        System.out.println(listOfTokens);
         try {
             serverMethods.command_FromClientToServer(command);
         } catch (RemoteException e) {
             ui.printUpdateMessage("Error: you are disconnected from ServerRMI");
         }
-
     }
 
     /**

@@ -30,7 +30,7 @@ public abstract class GenericSceneController {
     protected final Map<String, ImageView> adventureCardMap = new HashMap<>();
     protected final Map<Token, ImageView> tokensMap = new HashMap<>();
 
-    protected StackPane highlightPane = new StackPane();
+
     protected StackPane damagePane = new StackPane();
 
     /**
@@ -57,24 +57,22 @@ public abstract class GenericSceneController {
 
     public void loadTokens() {
         String basePath = "/it/polimi/ingsw/is25am49/tokens/";
-        tokensMap.put(Token.ASTRONAUT, createTokenImage(basePath + "Astronaut.png"));
-        tokensMap.put(Token.BROWN_ALIENS, createTokenImage(basePath + "Brownalien.png"));
-        tokensMap.put(Token.PURPLE_ALIENS, createTokenImage(basePath + "Purplealien.png"));
-        tokensMap.put(Token.YELLOW_GOODS, createTokenImage(basePath + "Yellowgood.png"));
-        tokensMap.put(Token.RED_GOODS, createTokenImage(basePath + "Redgood.png"));
-        tokensMap.put(Token.BLUE_GOODS, createTokenImage(basePath + "Bluegood.png"));
-        tokensMap.put(Token.GREEN_GOODS, createTokenImage(basePath + "Greengood.png"));
-        tokensMap.put(Token.BATTERY_CELLS, createTokenImage(basePath + "Battery.png"));
+        tokensMap.put(Token.ASTRONAUT, createTokenImage(basePath + "astronaut.png"));
+        tokensMap.put(Token.BROWN_ALIENS, createTokenImage(basePath + "brownalien.png"));
+        tokensMap.put(Token.PURPLE_ALIENS, createTokenImage(basePath + "purplealien.png"));
+        tokensMap.put(Token.YELLOW_GOODS, createTokenImage(basePath + "yellowgood.png"));
+        tokensMap.put(Token.RED_GOODS, createTokenImage(basePath + "redgood.png"));
+        tokensMap.put(Token.BLUE_GOODS, createTokenImage(basePath + "bluegood.png"));
+        tokensMap.put(Token.GREEN_GOODS, createTokenImage(basePath + "greengood.png"));
+        tokensMap.put(Token.BATTERY_CELLS, createTokenImage(basePath + "battery.png"));
     }
 
     private ImageView createTokenImage(String imagePath) {
-        Image image = new Image(Objects.requireNonNull(getClass().getResource(imagePath)).toExternalForm());
+        Image image = new Image((getClass().getResource(imagePath)).toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(20);
         imageView.setFitHeight(20);
         return imageView;
     }
-    public void disableHighlight(){
-        highlightPane.getChildren().clear();
-    }
+
 }

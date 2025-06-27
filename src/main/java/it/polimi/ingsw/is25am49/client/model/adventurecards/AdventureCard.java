@@ -4,9 +4,12 @@ import it.polimi.ingsw.is25am49.client.UserInterface;
 import it.polimi.ingsw.is25am49.client.model.GameBoard;
 import it.polimi.ingsw.is25am49.client.model.Player;
 import it.polimi.ingsw.is25am49.client.model.cardeffects.CardEffect;
+import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalSizeToRemove;
 import it.polimi.ingsw.is25am49.client.model.shipboard.ShipBoard;
 import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalNumOfActivableException;
+import it.polimi.ingsw.is25am49.server.model.exceptions.IllegalTokensException;
 import it.polimi.ingsw.is25am49.shared.enums.AdventureStatesTypes;
+import it.polimi.ingsw.is25am49.shared.enums.ComponentType;
 import it.polimi.ingsw.is25am49.shared.enums.Token;
 import it.polimi.ingsw.is25am49.client.model.exceptions.IllegalMethodOnThisStateException;
 import javafx.util.Pair;
@@ -144,6 +147,136 @@ public abstract class AdventureCard {
             userInterface.updateEffectModifyEnergy(shipBoard.getPlayerID(), coordinatesOfBatteries.get(i).getKey(),coordinatesOfBatteries.get(i).getValue());
         }
     }
+
+    /**
+     * Validates the correctness of tokens and their associated positions based on the current adventure state and ship board configuration.
+     *
+     * @param state        The current state of the adventure, which determines the validation rules.
+     * @param coordinates  A list of pairs, each containing a position (Point) and a token (Token), for verification.
+     * @param shipBoard    The ship board containing tiles and components to validate tokens and positions against.
+     * @throws IllegalTokensException If the tokens or positions do not adhere to the rules of the current state.
+     * @throws IllegalSizeToRemove   If the number of selected coordinates exceeds or does not match the required amount to be removed in the current state.
+     */
+    protected void checkCorrectnessOfTokensAndPoints(AdventureStatesTypes state, List<Pair<Point, Token>> coordinates, ShipBoard shipBoard) {
+        switch (state) {
+            case DECISION_BATTERIES -> {
+                for (Pair<Point, Token> pair : coordinates) {
+                    Point position = pair.getKey();
+                    Token token = pair.getValue();
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.BATTERY || token != Token.BATTERY_CELLS) {
+                        throw new IllegalTokensException("You can only use batteries with battery cells!");
+                    }
+                    if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
+                        throw new IllegalTokensException("You selected an incorrect number of tokens, incompatible with your shipboard");
+                    }
+                }
+            }
+            case DECISION_ASTRONAUTS_OR_ALIENS -> {
+                if (coordinates.size() > currentEffect.getLostCrew()) {
+                    throw new IllegalTokensException("You cannot choose a number of crew greater than " + currentEffect.getLostCrew() + "!");
+                }
+                int totalCrew = shipBoard.getTotalNumberOfaToken(Token.ASTRONAUT) + shipBoard.getTotalNumberOfaToken(Token.BROWN_ALIENS) + shipBoard.getTotalNumberOfaToken(Token.PURPLE_ALIENS);
+                if (!((totalCrew < currentEffect.getLostCrew() && coordinates.size() == totalCrew) || (coordinates.size() == currentEffect.getLostCrew())))
+                    throw new IllegalSizeToRemove("Please select the right amount of crew to remove: " + currentEffect.getLostCrew());
+                for (Pair<Point, Token> pair : coordinates) {
+                    Point position = pair.getKey();
+                    Token token = pair.getValue();
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.CABINE || (token != Token.ASTRONAUT && token != Token.BROWN_ALIENS && token != Token.PURPLE_ALIENS)) {
+                        throw new IllegalTokensException("You can only use astronauts, aliens, and cabins!");
+                    }
+                    if (countSamePair(pair, coordinates) > shipBoard.getTile(position).getComponent().getNumberOfaToken(token)) {
+                        throw new IllegalTokensException("You can remove at most " + shipBoard.getTile(position).getComponent().getNumberOfaToken(token) + " astronauts or aliens from this cabin!");
+                    }
+                }
+            }
+            case DECISION_GOODS -> {
+                List<Integer> goods = currentEffect.getGoods();
+//                int redGoods = goods.get(0);
+//                int yellowGoods = goods.get(1);
+//                int greenGoods = goods.get(2);
+//                int blueGoods = goods.get(3);
+//                int totalGoods = redGoods + yellowGoods + greenGoods + blueGoods;
+                for (Pair<Point, Token> pair : coordinates) {
+                    Point position = pair.getKey();
+                    Token token = pair.getValue();
+                    if (!(shipBoard.getTile(position).getComponentType() == ComponentType.SPECIAL_STORAGE && (token == Token.RED_GOODS || token == Token.BLUE_GOODS || token == Token.GREEN_GOODS || token == Token.YELLOW_GOODS)) && !(shipBoard.getTile(position).getComponentType() == ComponentType.STORAGE && (token == Token.BLUE_GOODS || token == Token.GREEN_GOODS || token == Token.YELLOW_GOODS))) {
+                        throw new IllegalTokensException("You chose a wrong type of storage !");
+                    }
+//                    if (token == Token.RED_GOODS) redGoods--;
+//                    else if (token == Token.YELLOW_GOODS) yellowGoods--;
+//                    else if (token == Token.GREEN_GOODS) greenGoods--;
+//                    else if (token == Token.BLUE_GOODS) blueGoods--;
+//                }
+//                if (redGoods != 0 || yellowGoods != 0 || greenGoods != 0 || blueGoods != 0) {
+//                    throw new IllegalTokensException("You have selected a wrong type or number of goods!");
+                }
+            }
+        }
+    }
+
+    /**
+     * Counts the number of occurrences of a specific pair within a list of pairs.
+     *
+     * @param targetPair the pair to be compared against elements in the list
+     * @param coordinates the list of pairs to search through
+     * @return the number of times the targetPair appears in the list
+     */
+    private int countSamePair(Pair<Point, Token> targetPair, List<Pair<Point, Token>> coordinates) {
+        int count = 0;
+        for (Pair<Point, Token> pair : coordinates) {
+            if (pair.equals(targetPair)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    /**
+     * Validates the correctness of selected activable components based on the current state
+     * and prevents invalid actions by throwing appropriate exceptions.
+     *
+     * @param state the current state of the game, dictating which components can be activated
+     * @param coordinates the set of positions on the shipboard representing components to be activated
+     * @param shipBoard the ship board instance containing the layout and activable components
+     * @throws IllegalTokensException if the number of components selected exceeds the activable limit
+     *                                or if the selected components do not match the expected type for the state
+     */
+    protected void checkCorrectnessOfActivable(AdventureStatesTypes state, Set<Point> coordinates, ShipBoard shipBoard) {
+        switch (state) {
+            case DECISION_CANNON -> {
+                if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.DOUBLE_CANNON).size()) {
+                    throw new IllegalTokensException("You must select a number of cannons less than or equal to the available double cannons!");
+                }
+                for (Point position : coordinates) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.DOUBLE_CANNON) {
+                        throw new IllegalTokensException("You can only use double cannons!");
+                    }
+                }
+            }
+            case DECISION_MOTOR -> {
+                if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.DOUBLE_ENGINE).size()) {
+                    throw new IllegalTokensException("You must select a number of engines less than or equal to the available double engines!");
+                }
+                for (Point position : coordinates) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.DOUBLE_ENGINE) {
+                        throw new IllegalTokensException("You can only use double engines!");
+                    }
+                }
+            }
+            case DECISION_SHIELDS -> {
+                if (coordinates.size() > shipBoard.getActivatableComponents(ComponentType.SHIELD).size()) {
+                    throw new IllegalTokensException("You must select a number of shields less than or equal to the available shields!");
+                }
+                for (Point position : coordinates) {
+                    if (shipBoard.getTile(position).getComponentType() != ComponentType.SHIELD) {
+                        throw new IllegalTokensException("You can only use shields!");
+                    }
+                }
+            }
+        }
+    }
+
     protected void checkNumberOfBatteries(List<Pair<Point, Token>> batteries, ShipBoard shipBoard) {
         if (batteries.size() > shipBoard.getTotalNumberOfaToken(Token.BATTERY_CELLS)) {
             throw new IllegalArgumentException("you have chosen more batteries than you have");
@@ -231,17 +364,18 @@ public abstract class AdventureCard {
         }
     }
 
-    public void checkFinishDecisionActivatingStates() {
+    public void checkFinishDecisionActivatingStates(int playerId, Set<Point> coordinates) {
         if (currentState == AdventureStatesTypes.DECISION_CANNON || currentState == AdventureStatesTypes.DECISION_MOTOR || currentState == AdventureStatesTypes.DECISION_SHIELDS) {
-            //OK
+            checkCorrectnessOfActivable(currentState, coordinates, gameBoard.getCurrentPlayer().getShipBoard());
+
         } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
     }
 
-    public void checkFinishDecisionTokenStates() {
+    public void checkFinishDecisionTokenStates(int playerId, ArrayList<Pair<Point, Token>> listOfTokens) {
         if (currentState == AdventureStatesTypes.DECISION_BATTERIES || currentState == AdventureStatesTypes.DECISION_GOODS  || currentState == AdventureStatesTypes.DECISION_ASTRONAUTS_OR_ALIENS) {
-            //OK
+            checkCorrectnessOfTokensAndPoints(currentState, listOfTokens, gameBoard.getCurrentPlayer().getShipBoard());
         } else {
             throw new IllegalMethodOnThisStateException("Wrong state");
         }
