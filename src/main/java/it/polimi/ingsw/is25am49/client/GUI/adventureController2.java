@@ -48,8 +48,6 @@ import java.util.concurrent.ScheduledExecutorService;
 public class adventureController2 extends GenericSceneController {
     @FXML
     public Button stopButton;
-    @FXML
-    public StackPane tokens;
 //    @FXML
 //    private StackPane cardMessages;
     @FXML
@@ -172,8 +170,6 @@ public class adventureController2 extends GenericSceneController {
     }
 
     public void initialize() {
-        tokens.setDisable(true);
-        tokens.setVisible(false);
         select.setVisible(false);
         javafx.scene.image.Image image = new javafx.scene.image.Image(getClass().getResource("/sfondo3.jpg").toExternalForm());
         backgroundImage.setImage(image);
@@ -181,6 +177,31 @@ public class adventureController2 extends GenericSceneController {
             if (newScene != null) {
                 backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
+            }
+        });
+        select.setCellFactory(list -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                    setStyle("-fx-text-fill: white;");
+                }
+            }
+        });
+
+        select.setButtonCell(new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                    setStyle("-fx-text-fill: white;");
+                }
             }
         });
     }
@@ -207,8 +228,8 @@ public class adventureController2 extends GenericSceneController {
     public void init() {
         stateCard.setText("");
         stateCard.setWrapText(true);
-        stateCard.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 5px; -fx-border-color: #000000; -fx-border-width: 1px;");
-        turn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 5px; -fx-border-color: #000000; -fx-border-width: 1px;");
+//        stateCard.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 5px; -fx-border-color: #000000; -fx-border-width: 1px;");
+//        turn.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 5px; -fx-border-color: #000000; -fx-border-width: 1px;");
         turn.setText(gameSession.getGame().get().getGameboard().getCurrentPlayer().getUsername()+ " IS PLAYING");
         turn.setWrapText(true);
         loadAdventureCardsAndButton();
@@ -752,6 +773,8 @@ public void printShipboard() {
                 send.setText("Remove Crew");
                 confirm.setText("Finish Decision");
                 send.setVisible(true);
+                confirm.setVisible(true);
+                input.setVisible(true);
                 send.setOnAction(event -> {
                     String value = input.getText();
                     Token tok;
@@ -761,7 +784,6 @@ public void printShipboard() {
 
                             int x = Integer.parseInt(parts[0]);
                             int y = Integer.parseInt(parts[1]);
-//                            char tokenType = parts[2].charAt(0); // prende il primo carattere del terzo input
                             Point coordinates = new Point(x, y);
                             String selectedGood = select.getValue();
                             if (selectedGood == null) {
@@ -806,8 +828,10 @@ public void printShipboard() {
                     try {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
+                        tokens.clear();
                         input.clear();
                         select.getItems().clear();
+                        select.setVisible(false);
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
@@ -829,6 +853,8 @@ public void printShipboard() {
                 send.setText("Use Batteries");
                 confirm.setText("Finish Decision");
                 send.setVisible(true);
+                input.setVisible(true);
+                confirm.setVisible(true);
                 send.setOnAction(event -> {
                     String value = input.getText().trim();
                     if (value != null && !value.isEmpty()) {
@@ -872,6 +898,10 @@ public void printShipboard() {
             case DECISION_CANNON,DECISION_SHIELDS, DECISION_MOTOR -> {
                 HashSet<Point> points = new HashSet<>();
                 drawButton.setDisable(false);
+                confirm.setVisible(true);
+                select.setVisible(false);
+                send.setVisible(true);
+                input.setVisible(true);
                 switch (currentAdventureState) {
                     case DECISION_SHIELDS -> {
                         send.setText("Activate Shield");
@@ -933,6 +963,7 @@ public void printShipboard() {
                         HashSet<Point> points2 = new HashSet<>(points);
                         guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
                         input.clear();
+                        select.setVisible(false);
                         printShipboard();
                     }catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
@@ -955,6 +986,8 @@ public void printShipboard() {
                 select.setPromptText("Select good type");
                 select.setVisible(true);
                 send.setVisible(true);
+                input.setVisible(true);
+                confirm.setVisible(true);
                 send.setText("Add Good");
                 confirm.setText("Finish Decision");
                 stateCard.setText("Please select the storage in which you wanna add the goods.");
@@ -1020,6 +1053,7 @@ public void printShipboard() {
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
                         select.getItems().clear();
+                        select.setVisible(false);
                     } catch (Exception e) {
                         tokens.clear();
                         guiApplication.printUpdateMessage(error + e.getMessage());
@@ -1036,9 +1070,12 @@ public void printShipboard() {
 
             case DECISION_LAND_PLANET -> {
                 drawButton.setDisable(true);
-                stateCard.setText("Please select the planet you want to land on.");
+                stateCard.setText("Please select the planet you want to land on. (id of the planet if you want to land, nothing if you don't want to land)");
                 confirm.setText("Land");
                 send.setVisible(false);
+                input.setVisible(true);
+                select.setVisible(false);
+                confirm.setVisible(true);
                 confirm.setOnAction(event -> {
                     String value = input.getText();
                     if(value != null && value.length() == 1) {
@@ -1054,8 +1091,11 @@ public void printShipboard() {
                 });
             }
             case DECISION_REWARDS -> {
+                confirm.setVisible(true);
                 drawButton.setDisable(true);
-                stateCard.setText("Do you want to accept the prizes?");
+                input.setVisible(true);
+                select.setVisible(false);
+                stateCard.setText("Do you want to accept the prizes? (y if you want to land, nothing if you don't want to land)");
                 confirm.setText("Accept");
                 send.setVisible(false);
                 confirm.setOnAction(event -> {
@@ -1072,7 +1112,10 @@ public void printShipboard() {
             }
             case DECISION_LAND_STATION_OR_SHIP -> {
                 drawButton.setDisable(true);
-                stateCard.setText("Select if you wanna land on the station or on your ship.");
+                confirm.setVisible(true);
+                input.setVisible(true);
+                select.setVisible(false);
+                stateCard.setText("Select if you wanna land on the station or on your ship (y if you want to land, nothing if you don't want to land)");
                 confirm.setText("Land");
                 send.setVisible(false);
                 confirm.setOnAction(event -> {
@@ -1089,12 +1132,17 @@ public void printShipboard() {
             case ROLL_DICES -> {
                 stateCard.setText("Roll the dices!");
                 drawButton.setDisable(true);
+                confirm.setVisible(false);
+                input.setVisible(false);
+                select.setVisible(false);
                 disable();
             }
             case UPDATE -> {
                 drawButton.setDisable(false);
                 confirm.setVisible(false);
                 send.setVisible(false);
+                input.setVisible(false);
+                select.setVisible(false);
 //                disableAllCellsShipboard();
                 clearEffectPane();
             }
