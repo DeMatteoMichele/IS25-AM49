@@ -11,7 +11,18 @@ The system uses two communication mechanisms—plain TCP sockets and Java RMI—
 The system offers the choice for two types of user interfaces: a TextualUserInterface (TUI) that runs in a terminal environment and a GraphicalUserInterface (GUI) implemented with JavaFX.
 
 The testing was performed using Junit5.
-This project has been developed utilizing Apache Maven as the build automation and dependency management tool. 
+
+**Prerequisites**
+Java JDK 23 must be installed on your pc and available in the system PATH.
+Apache Maven (version 3.6 or later) must be installed.
+
+***How to Build and Run the Executable JAR***
+This project uses Apache Maven to compile the source code and generate an executable .jar file in the target/ directory of this project.
+From the root of the repository, execute on your system terminal: mvn clean install
+After building, navigate to the target/ directory: cd target
+To start the launcher insert on your terminal java -jar IS25-AM49.jar
+The launcher will prompt you to select whether to start the server or one of the client modes (CLI or GUI) and then you are ready to play!
+
 
 The project was developed by students of the Software Engineering course at Politecnico di Milano; 
 Team members: Michele De Matteo, Andrea Compagnoni, Daniele Confalonieri, Davis Crippa.
