@@ -806,7 +806,6 @@ public void printShipboard() {
                     try {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
-                        tokens.clear();
                         input.clear();
                         select.getItems().clear();
                     } catch (Exception e) {
@@ -857,7 +856,6 @@ public void printShipboard() {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-                        tokens.clear();
                     } catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
                         tokens.clear();
@@ -935,7 +933,6 @@ public void printShipboard() {
                         HashSet<Point> points2 = new HashSet<>(points);
                         guiApplication.getController().userFinishDecisionActivating(guiApplication.getMyId(), points);
                         input.clear();
-                        points.clear();
                         printShipboard();
                     }catch (Exception e) {
                         guiApplication.printUpdateMessage(error + e.getMessage());
@@ -1022,7 +1019,6 @@ public void printShipboard() {
                         ArrayList<Pair<Point, Token>> tokens2 = new ArrayList<>(tokens);
                         guiApplication.getController().userFinishDecisionToken(guiApplication.getMyId(), tokens);
                         input.clear();
-                        tokens.clear();
                         select.getItems().clear();
                     } catch (Exception e) {
                         tokens.clear();
