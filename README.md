@@ -18,9 +18,9 @@ Apache Maven (version 3.6 or later) must be installed.
 
 ***How to Build and Run the Executable JAR***
 This project uses Apache Maven to compile the source code and generate an executable .jar file in the target/ directory of this project.
-From the root of the repository, execute on your system terminal: mvn clean install
-After building, navigate to the target/ directory: cd target
-To start the launcher insert on your terminal java -jar IS25-AM49.jar
+From the root of the repository, execute on your system terminal: mvn clean package. After building, navigate to the target/ directory: cd target
+Alternatively you can run it without building with maven, insert in your terminal cd Deliverables, after that insert cd Jar.
+To start the launcher insert on your terminal when you are in the correct folder java -jar IS25-AM49.jar
 The launcher will prompt you to select whether to start the server or one of the client modes (CLI or GUI) and then you are ready to play!
 
 
