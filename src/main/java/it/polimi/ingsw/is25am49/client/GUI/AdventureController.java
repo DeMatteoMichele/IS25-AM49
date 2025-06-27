@@ -31,9 +31,7 @@ import javafx.util.Pair;
 
 import java.awt.Point;
 import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class AdventureController extends GenericSceneController {
     @FXML
@@ -85,6 +83,7 @@ public class AdventureController extends GenericSceneController {
     private final String styleForDamage;
     private final String styleForTransparent;
     private final Map<Point, StackPane> highlightsMap;
+    protected StackPane highlightPane = new StackPane();
 
     public AdventureController() {
         coordinatesSet = new HashSet<>();
@@ -118,10 +117,10 @@ public class AdventureController extends GenericSceneController {
             }
         });
         String path = "/it/polimi/ingsw/is25am49/tokens/";
-        goodsMap.put(0, new Image(Objects.requireNonNull(getClass().getResource(path + "Redgood.png")).toExternalForm()));
-        goodsMap.put(1, new Image(Objects.requireNonNull(getClass().getResource(path + "Greengood.png")).toExternalForm()));
-        goodsMap.put(2, new Image(Objects.requireNonNull(getClass().getResource(path + "Bluegood.png")).toExternalForm()));
-        goodsMap.put(3, new Image(Objects.requireNonNull(getClass().getResource(path + "Yellowgood.png")).toExternalForm()));
+        goodsMap.put(0, new Image(Objects.requireNonNull(getClass().getResource(path + "redgood.png")).toExternalForm()));
+        goodsMap.put(1, new Image(Objects.requireNonNull(getClass().getResource(path + "greengood.png")).toExternalForm()));
+        goodsMap.put(2, new Image(Objects.requireNonNull(getClass().getResource(path + "bluegood.png")).toExternalForm()));
+        goodsMap.put(3, new Image(Objects.requireNonNull(getClass().getResource(path + "yellowgood.png")).toExternalForm()));
     }
 
     public void handleDrawButton() {
@@ -151,7 +150,7 @@ public class AdventureController extends GenericSceneController {
         cardEffect.setVisible(true);
         cardMessages.setVisible(true);
         damagePane.setStyle(styleForDamage);
-        highlightPane.setStyle(styleForHighlight);
+//        highlightPane.setStyle(styleForHighlight);
     }
 
     private void loadLeaderBoard() {
@@ -328,7 +327,7 @@ public class AdventureController extends GenericSceneController {
                         case SOUTH -> imageView.setRotate(180);
                         case WEST -> imageView.setRotate(270);
                     }
-                    Image i = new Image(Objects.requireNonNull(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/Graysquare.png")).toExternalForm());
+                    Image i = new Image(Objects.requireNonNull(getClass().getResource("/it/polimi/ingsw/is25am49/tokens/graysquare.png")).toExternalForm());
                     StackPane sp = getNodeFromGridPane(coordinates.x - 4, coordinates.y - 5);
                     sp.getChildren().add(imageView);
                     sp.getProperties().put("image", imageView);

@@ -279,16 +279,8 @@ public class LeaderBoard {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("""
-                        
-                                              ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○  ○
-                                          ○                                           ○
-                                        ○                  LEADERBOARD                  ○
-                        """).append(String.format("\t\t\t\t○                     [%3d]                     ○\n", numberOfCells)).
-                append("""
-                                        ○                                               ○
-                                        ○                                               ○
-                                          ○                                           ○
-                        """);
+                                                          LEADERBOARD                  
+                        """).append(String.format("\t\t\t\t                     [%3d]                     \n", numberOfCells));
         str.append(playersToString());
 
         str.append("\n");

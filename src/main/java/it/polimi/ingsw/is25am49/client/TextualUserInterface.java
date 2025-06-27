@@ -4,6 +4,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -59,7 +61,7 @@ public class TextualUserInterface implements UserInterface {
     public LineReader lineReader;
     ExecutorService executor;
 
-    int smallDeckIndex = -1; //todo hardcoddato, non ho un modo per capire che deck sta guardando il player
+    int smallDeckIndex = -1;
 
     /**
      * Initializes a new instance of the TextualUserInterface class.
@@ -510,38 +512,37 @@ public class TextualUserInterface implements UserInterface {
      * @param filename the name of the file containing shipboard information
      */
     public void readShipboardFromFile(String filename) {
-        filename="src/main/resources/it/polimi/ingsw/is25am49/"+filename;
         int delay = 150; // delay in milliseconds
-        try {
-            int tr=0;
-            File file = new File(filename);
-            if (!file.exists()) {
-                throw new FileNotFoundException("File ("+filename+") non trovato: " + file.getAbsolutePath());
-            } else {
-                Game game = gameSession.getGame().get();
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootArray = objectMapper.readTree(file);
-                for (JsonNode node : rootArray) {
-                    try {
-                        controller.userDrawTile(myId, node.get("id").asInt());
-                        Orientation o= Orientation.valueOf(node.get("orientation").asText());
-                        while (tr<35){
-                            tr++;
-                            try {
-                                Thread.sleep(delay);
-                                gameSession.getState().userRotateHandTile(myId, o);
-                                break;
-                            } catch (Exception _) {}
-                        }
-                        Thread.sleep(delay);
-                        Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
-                        controller.userPlaceTile(myId, p, o);
-                    }catch (Exception e){
-                        printUpdateMessage(error + e.getMessage());
-                    }
-                }
-                //controller.userFinishShipboard(myId);
+//        URL url = getClass().getResource("/it/polimi/ingsw/is25am49/" + filename);
+//        System.out.println("Cerco risorsa: " + url);
+        try (InputStream is = getClass().getResourceAsStream("/it/polimi/ingsw/is25am49/" + filename)) {
+            if (is == null) {
+                throw new FileNotFoundException("File (" + filename + ") non trovato nel classpath.");
             }
+            Game game = gameSession.getGame().get();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootArray = objectMapper.readTree(is);
+            int tr = 0;
+            for (JsonNode node : rootArray) {
+                try {
+                    controller.userDrawTile(myId, node.get("id").asInt());
+                    Orientation o = Orientation.valueOf(node.get("orientation").asText());
+                    while (tr < 35) {
+                        tr++;
+                        try {
+                            Thread.sleep(delay);
+                            gameSession.getState().userRotateHandTile(myId, o);
+                            break;
+                        } catch (Exception _) {}
+                    }
+                    Thread.sleep(delay);
+                    Point p = new Point(node.get("x").asInt(), node.get("y").asInt());
+                    controller.userPlaceTile(myId, p, o);
+                } catch (Exception e) {
+                    printUpdateMessage(error + e.getMessage());
+                }
+            }
+            //controller.userFinishShipboard(myId);
         } catch (FileNotFoundException e) {
             printUpdateMessage(error + e.getMessage());
         } catch (Exception e) {

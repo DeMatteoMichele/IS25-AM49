@@ -29,12 +29,6 @@
       <artifactId>controlsfx</artifactId>
       <version>11.2.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>
@@ -49,13 +43,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.jline</groupId>
       <artifactId>jline</artifactId>
       <version>3.29.0</version>
@@ -66,16 +53,50 @@
           <version>5.10.2</version>
           <scope>compile</scope>
       </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>5.16.0</version>
-      <scope>compile</scope>
-    </dependency>
 
   </dependencies>
+
   <build>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.json</include>
+          <include>**/*.fxml</include>
+          <include>**/*.png</include>
+          <include>**/*.jpg</include>
+        </includes>
+      </resource>
+    </resources>
+
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>it.polimi.ingsw.is25am49.GTLauncher</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -94,7 +115,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>it.polimi.ingsw.is25am49/it.polimi.ingsw.is25am49.HelloApplication</mainClass>
+              <mainClass>it.polimi.ingsw.is25am49/it.polimi.ingsw.is25am49.GTLauncher</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
@@ -108,6 +129,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M7</version>
         <configuration>
           <argLine>
             --add-opens javafx.base/javafx.util=com.fasterxml.jackson.databind
@@ -117,6 +139,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M7</version>
         <configuration>
           <argLine>
             --add-opens javafx.base/javafx.util=com.fasterxml.jackson.databind
@@ -124,5 +147,6 @@
         </configuration>
       </plugin>
     </plugins>
+
   </build>
 </project>
