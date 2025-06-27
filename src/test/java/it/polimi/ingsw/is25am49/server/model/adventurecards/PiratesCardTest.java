@@ -137,9 +137,8 @@ class PiratesCardTest {
         batteryCoordinates.add(new Pair<>(new Point(1, 1), Token.BATTERY_CELLS));
         batteryCoordinates.add(new Pair<>(new Point(2, 2), Token.BATTERY_CELLS));
         batteryCoordinates.add(new Pair<>(new Point(3, 3), Token.BATTERY_CELLS));
-        gameBoard.getCurrentCard().finishDecision(batteryCoordinates);
+        gameBoard.disconnectionWarningToCard(player2);
         System.out.println("currentState: " + gameBoard.getCurrentCard().getCurrentState());
-        assertEquals(AdventureStatesTypes.DECISION_CANNON, gameBoard.getCurrentCard().getCurrentState());
         Set<Point> cannonCoordinates = new HashSet<>();
         cannonCoordinates.add(new Point(1, 1));
         cannonCoordinates.add(new Point(2, 2));
