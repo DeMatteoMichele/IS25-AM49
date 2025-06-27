@@ -68,7 +68,7 @@ public abstract class GenericSceneController {
     }
 
     private ImageView createTokenImage(String imagePath) {
-        Image image = new Image(Objects.requireNonNull(getClass().getResource(imagePath)).toExternalForm());
+        Image image = new Image((getClass().getResource(imagePath)).toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(20);
         imageView.setFitHeight(20);
